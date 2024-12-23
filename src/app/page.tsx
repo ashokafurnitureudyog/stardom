@@ -1,4 +1,4 @@
-import ComingSoonPage from '@/components/marketing/ComingSoon'
+import ComingSoonPage from '@/components/marketing//coming-soon/ComingSoon'
 import React from 'react'
 
 const Home = () => {
