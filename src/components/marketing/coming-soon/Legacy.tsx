@@ -109,7 +109,7 @@ const LegacySection = () => {
             and modern design philosophy.
           </p>
           
-          <RainbowButton className='font-sans'>Dicover More Soon</RainbowButton>
+          <RainbowButton className='font-sans'>Discover More Soon</RainbowButton>
         </motion.div>
       </div>
     </div>
