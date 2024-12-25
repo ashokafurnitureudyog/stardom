@@ -34,7 +34,7 @@ const FeaturedProducts = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24">
           <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-8">
-            Signature <span className="font-normal">Collections</span>
+            Featured <span className="font-normal">Products</span>
           </h2>
           <p className="text-neutral-600 max-w-2xl mx-auto text-lg leading-relaxed">
             Experience unparalleled luxury with our masterfully curated collection,
