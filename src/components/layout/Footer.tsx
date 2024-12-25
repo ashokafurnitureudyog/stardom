@@ -8,8 +8,10 @@ import {
   Phone,
 } from "lucide-react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const Footer = () => {
+    const { theme } = useTheme();
   return (
     <footer className="w-full bg-background py-20 px-8 md:px-16 font-sans border-t border-primary/10">
       <div className="max-w-7xl mx-auto">
@@ -18,13 +20,14 @@ const Footer = () => {
           <div className="md:col-span-4 space-y-6">
             {/* Replace with your actual logo */}
             <div className="h-12 w-auto relative">
-              <Image
-                src="/images/logo.png"
+            <Image
+                src={theme === 'dark' ? "/images/logo-dark.png" : "/images/logo.png"}
                 width={100}
                 height={100}
                 alt="Stardom Logo"
                 className="transform hover:scale-105 transition-transform duration-300"
-              />
+                priority
+            />
             </div>
             <p className="text-muted-foreground/80 text-sm leading-relaxed">
               A premium collection of luxury office furniture by Ashoka
