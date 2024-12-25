@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Playfair_Display, Montserrat } from "next/font/google";
+import {NextUIProvider} from "@nextui-org/react";
+import {ThemeProvider as NextThemesProvider} from "next-themes";
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -34,10 +36,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scrollbar-hide overflow-x-hidden">
       {/* temp font */}
       <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}>
+        <NextUIProvider><NextThemesProvider attribute="class" defaultTheme="system">
         {children}
+      </NextThemesProvider></NextUIProvider>
       </body>
     </html>
   );

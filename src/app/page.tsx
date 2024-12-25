@@ -1,10 +1,29 @@
-import ComingSoonPage from '@/components/marketing//coming-soon/ComingSoon'
-import React from 'react'
+import BaseLayout from "@/components/layout/BaseLayout";
+import ConsultationSection from "@/components/marketing/ConsultationSection";
+import ContactSection from "@/components/marketing/ContactSection";
+import FeaturedProducts from "@/components/marketing/FeaturedProducts";
+import HeroSection from "@/components/marketing/Hero";
+import LegacySection from "@/components/marketing/Legacy";
+import PortfolioSection from "@/components/marketing/PortfolioSection";
+import CraftsmanshipSection from "@/components/marketing/Process";
+import SignatureCollection from "@/components/marketing/SignatureCollection";
+import TestimonialsSection from "@/components/marketing/Testimonials";
+import React from "react";
 
 const Home = () => {
   return (
-    <ComingSoonPage />
-  )
-}
+    <BaseLayout>
+      <HeroSection />
+      <FeaturedProducts />
+      <LegacySection />
+      <SignatureCollection />
+      <CraftsmanshipSection />
+      <PortfolioSection />
+      <ConsultationSection />
+      <TestimonialsSection />
+      <ContactSection />
+    </BaseLayout>
+  );
+};
 
-export default Home
+export default Home;
