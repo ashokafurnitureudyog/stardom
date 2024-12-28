@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -65,7 +65,14 @@ const MenuLink: React.FC<MenuLinkProps> = ({
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
+  const [logoSrc, setLogoSrc] = useState("/images/logo.png");
+
+  useEffect(() => {
+    // Use resolvedTheme to handle system theme preference
+    const currentTheme = resolvedTheme || theme;
+    setLogoSrc(currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png");
+  }, [theme, resolvedTheme]);
 
   const DesktopMenu = () => (
     <NavbarContent className="hidden sm:flex gap-12" justify="center">
@@ -134,11 +141,7 @@ export default function NavbarComponent() {
           <NavbarBrand>
             <Link href="/">
               <Image
-                src={
-                  theme === "dark"
-                    ? "/images/logo-dark.png"
-                    : "/images/logo.png"
-                }
+                src={logoSrc}
                 width={LOGO_DIMENSIONS.width}
                 height={LOGO_DIMENSIONS.height}
                 alt="Stardom Logo"

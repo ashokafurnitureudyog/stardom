@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Facebook,
   Instagram,
@@ -11,7 +11,15 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 
 const Footer = () => {
-    const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
+  const [logoSrc, setLogoSrc] = useState("/images/logo.png");
+
+  useEffect(() => {
+    // Use resolvedTheme to handle system theme preference
+    const currentTheme = resolvedTheme || theme;
+    setLogoSrc(currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png");
+  }, [theme, resolvedTheme]);
+
   return (
     <footer className="w-full bg-background py-20 px-8 md:px-16 font-sans border-t border-primary/10">
       <div className="max-w-7xl mx-auto">
@@ -20,14 +28,14 @@ const Footer = () => {
           <div className="md:col-span-4 space-y-6">
             {/* Replace with your actual logo */}
             <div className="h-12 w-auto relative">
-            <Image
-                src={theme === 'dark' ? "/images/logo-dark.png" : "/images/logo.png"}
+              <Image
+                src={logoSrc}
                 width={100}
                 height={100}
                 alt="Stardom Logo"
                 className="transform hover:scale-105 transition-transform duration-300"
                 priority
-            />
+              />
             </div>
             <p className="text-muted-foreground/80 text-sm leading-relaxed">
               A premium collection of luxury office furniture by Ashoka
@@ -163,7 +171,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Replace with maps. react leaflet */}
         <div className="border-t border-primary/10 mt-16 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground/60 text-sm">
