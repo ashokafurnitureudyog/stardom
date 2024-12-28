@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { AwardIcon } from "lucide-react"; // Changed to AwardIcon for more premium feel
+import Image from 'next/image';
 
 const LegacySection = () => {
     return (
@@ -49,7 +49,12 @@ const LegacySection = () => {
                         <div className="absolute -top-12 -left-12 w-32 h-32 border border-primary/10 rotate-45 transition-transform duration-500 hover:rotate-90" />
                         <div className="absolute -bottom-12 -right-12 w-32 h-32 border border-primary/10 rotate-45 transition-transform duration-500 hover:-rotate-90" />
                         <div className="aspect-square w-full bg-gradient-to-br from-accent/5 to-primary/5 flex items-center justify-center transition-all duration-500 hover:from-accent/10 hover:to-primary/10">
-                            <AwardIcon className="w-32 h-32 text-primary/30 transition-opacity duration-300 hover:text-primary/40" />
+                        <Image 
+                                src="/images/store.png" 
+                                alt='Store front' 
+                                fill 
+                                className='object-contain p-8 '
+                            />
                         </div>
                     </div>
                 </div>
