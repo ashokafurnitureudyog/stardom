@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Playfair_Display, Montserrat } from "next/font/google";
+import { Playfair_Display, Montserrat, Poppins } from "next/font/google";
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair',
+});
+const poppins = Poppins({
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  weight: "100"
 });
 
 const montserrat = Montserrat({
@@ -36,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* temp font */}
-      <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} ${poppins.variable} antialiased`}>
         {children}
       </body>
     </html>

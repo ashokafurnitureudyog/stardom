@@ -17,7 +17,11 @@ export default {
   			sans: [
   				'Montserrat',
   				'sans-serif'
-  			]
+  			],
+			  brand: [
+				'Poppins',
+				'sans-serif'
+			]
   		},
   		colors: {
   			background: 'hsl(var(--background))',
