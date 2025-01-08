@@ -2,14 +2,11 @@
 import React from 'react';
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Button } from "@/components/ui/button";
-import { RockingChairIcon } from '../ui/rocking-chair';
-import { UsersIcon } from '../ui/users';
-import { FingerprintIcon } from '../ui/fingerprint';
-import { ArrowRightIcon } from '../ui/arrow-right';
+import { ArrowRightIcon, FingerprintIcon, RockingChairIcon, SmartphoneChargingIcon, UsersIcon } from 'lucide-react';
 
 const features = [
   {
-    Icon: RockingChairIcon,
+    Icon: SmartphoneChargingIcon,
     name: "Luxury Executive Desks",
     description: "Handcrafted masterpieces for distinguished leaders",
     detail: "Imported Italian Wood",
@@ -94,7 +91,7 @@ export function FeaturedProducts() {
           <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-8">
             Featured <span className="font-normal">Products</span>
           </h2>
-          <p className="text-neutral-600 max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="text-neutral-500 max-w-2xl mx-auto text-lg leading-relaxed">
             Experience unparalleled luxury with our masterfully curated collection,
             where each piece embodies timeless elegance and refined sophistication.
           </p>
@@ -113,7 +110,7 @@ export function FeaturedProducts() {
         <div className="text-center mt-24">
           <Button 
             variant="link" 
-            className="text-neutral-800 hover:text-neutral-600 text-lg font-light tracking-wide"
+            className="text-neutral-600 hover:text-neutral-400 text-lg font-light tracking-wide"
           >
             View Full Collection <ArrowRightIcon />
           </Button>
