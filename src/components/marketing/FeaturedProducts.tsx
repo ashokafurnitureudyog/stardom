@@ -1,34 +1,92 @@
-"use client"
+/* eslint-disable @next/next/no-img-element */
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Button } from "@/components/ui/button";
 import { RockingChairIcon } from '../ui/rocking-chair';
 import { UsersIcon } from '../ui/users';
 import { FingerprintIcon } from '../ui/fingerprint';
 import { ArrowRightIcon } from '../ui/arrow-right';
 
-const FeaturedProducts = () => {
-  const products = [
-    {
-      icon: <RockingChairIcon />,
-      title: "Luxury Executive Desks",
-      description: "Handcrafted masterpieces for distinguished leaders",
-      detail: "Imported Italian Wood"
-    },
-    {
-      icon: <UsersIcon />,
-      title: "Premium Conference Solutions",
-      description: "Where visionary decisions take shape",
-      detail: "Smart Integration Ready"
-    },
-    {
-      icon: <FingerprintIcon />,
-      title: "Elite Ergonomic Seating",
-      description: "Precision-engineered comfort for excellence",
-      detail: "German Engineering"
-    }
-  ];
+const features = [
+  {
+    Icon: RockingChairIcon,
+    name: "Luxury Executive Desks",
+    description: "Handcrafted masterpieces for distinguished leaders",
+    detail: "Imported Italian Wood",
+    href: "#",
+    cta: "Discover More",
+    className: "col-span-3 lg:col-span-2",
+    background: (
+      <div className="absolute inset-0 w-full h-full">
+        <img 
+          src="https://images.unsplash.com/photo-1497215728101-856f4ea42174" 
+          alt="Luxury Executive Desk" 
+          className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-neutral-900/30 group-hover:bg-neutral-900/20 transition-all duration-500" />
+      </div>
+    ),
+  },
+  {
+    Icon: UsersIcon,
+    name: "Premium Conference Solutions",
+    description: "Where visionary decisions take shape",
+    detail: "Smart Integration Ready",
+    href: "#",
+    cta: "Discover More",
+    className: "col-span-3 lg:col-span-1",
+    background: (
+      <div className="absolute inset-0 w-full h-full">
+        <img 
+          src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407" 
+          alt="Conference Room" 
+          className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-neutral-900/30 group-hover:bg-neutral-900/20 transition-all duration-500" />
+      </div>
+    ),
+  },
+  {
+    Icon: FingerprintIcon,
+    name: "Elite Ergonomic Seating",
+    description: "Precision-engineered comfort for excellence",
+    detail: "German Engineering",
+    href: "#",
+    cta: "Discover More",
+    className: "col-span-3 lg:col-span-1",
+    background: (
+      <div className="absolute inset-0 w-full h-full">
+        <img 
+          src="https://images.unsplash.com/photo-1681418659069-eef28d44aeab" 
+          alt="Ergonomic Chair" 
+          className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-neutral-900/30 group-hover:bg-neutral-900/20 transition-all duration-500" />
+      </div>
+    ),
+  },
+  {
+    Icon: RockingChairIcon,
+    name: "Designer Lounge Collection",
+    description: "Contemporary comfort meets timeless sophistication",
+    detail: "Artisan Crafted",
+    href: "#",
+    cta: "Discover More",
+    className: "col-span-3 lg:col-span-2",
+    background: (
+      <div className="absolute inset-0 w-full h-full">
+        <img 
+          src="https://images.unsplash.com/photo-1464029902023-f42eba355bde" 
+          alt="Lounge Collection" 
+          className="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-neutral-900/30 group-hover:bg-neutral-900/20 transition-all duration-500" />
+      </div>
+    ),
+  },
+];
 
+export function FeaturedProducts() {
   return (
     <div className="w-full py-40 px-4 font-serif">
       <div className="max-w-7xl mx-auto">
@@ -42,36 +100,15 @@ const FeaturedProducts = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {products.map((product, index) => (
-            <div key={index} className="group h-full">
-              <Card className="border border-neutral-200 shadow-lg hover:shadow-xl transition-all duration-500 rounded-none h-full flex flex-col">
-                <CardHeader className="text-center pt-16 pb-12 px-8 flex-grow">
-                  <div className="mx-auto mb-10 transform group-hover:scale-110 transition-transform duration-500">
-                    {product.icon}
-                  </div>
-                  <CardTitle className="text-2xl mb-6 font-light tracking-wide">
-                    {product.title}
-                  </CardTitle>
-                  <p className="text-neutral-600 leading-relaxed">
-                    {product.description}
-                  </p>
-                </CardHeader>
-                <CardContent className="text-center pb-16 px-8">
-                  <p className="text-sm uppercase tracking-widest text-neutral-500 mb-8">
-                    {product.detail}
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="rounded-none px-8 py-6 border-neutral-300 hover:border-neutral-900 hover:bg-neutral-900 hover:text-white transition-all duration-300"
-                  >
-                    Discover More
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+        <BentoGrid className="max-w-7xl mx-auto">
+          {features.map((feature, idx) => (
+            <BentoCard
+              key={idx} 
+              {...feature}
+              className={`${feature.className} group overflow-hidden border border-neutral-200 shadow-lg hover:shadow-xl transition-all duration-500`}
+            />
           ))}
-        </div>
+        </BentoGrid>
 
         <div className="text-center mt-24">
           <Button 
@@ -84,6 +121,6 @@ const FeaturedProducts = () => {
       </div>
     </div>
   );
-};
+}
 
 export default FeaturedProducts;
