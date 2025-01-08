@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
+import { Link } from 'next-view-transitions';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -8,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const PageComingSoon = ({ 
   pageName = "This Section", 
-  returnPath = "/",
+  returnPath = "/", 
   expectedDate = "Soon" 
 }) => {
   const [, setMounted] = useState(false);
@@ -164,20 +165,21 @@ const PageComingSoon = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <Button 
-                  onClick={() => window.location.href = returnPath}
-                  variant="outline"
-                  className="border-primary/20 hover:bg-primary/5 text-primary/80 group relative overflow-hidden"
-                >
-                  <motion.span
-                    className="absolute inset-0 bg-primary/5"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: "100%" }}
-                    transition={{ duration: 0.6 }}
-                  />
-                  <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
-                  Return to Homepage
-                </Button>
+                <Link href={returnPath} passHref>
+                  <Button 
+                    variant="outline"
+                    className="border-primary/20 hover:bg-primary/5 text-primary/80 group relative overflow-hidden"
+                  >
+                    <motion.span
+                      className="absolute inset-0 bg-primary/5"
+                      initial={{ x: "-100%" }}
+                      whileHover={{ x: "100%" }}
+                      transition={{ duration: 0.6 }}
+                    />
+                    <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
+                    Return to Homepage
+                  </Button>
+                </Link>
               </motion.div>
             </motion.div>
           </CardContent>

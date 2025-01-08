@@ -8,12 +8,12 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Link,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { ModeToggle } from "../ui/ThemeSwitcher";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
+import { Link } from "next-view-transitions";
 
 const MENU_ITEMS = [
   { name: "Home", path: "/" },
@@ -71,7 +71,6 @@ const MenuLink: React.FC<MenuLinkProps> = ({
         }
         ${typeof index !== "undefined" ? "w-full" : ""}
       `}
-      size={typeof index !== "undefined" ? "lg" : undefined}
     >
       {item.name}
     </Link>
