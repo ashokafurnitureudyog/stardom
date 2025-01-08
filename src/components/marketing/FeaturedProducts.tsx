@@ -85,13 +85,13 @@ const features = [
 
 export function FeaturedProducts() {
   return (
-    <div className="w-full py-40 px-4 font-serif">
+    <div className="w-full py-40 px-4 font-sans">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-24">
-          <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-8">
+          <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-8 font-serif">
             Featured <span className="font-normal">Products</span>
           </h2>
-          <p className="text-neutral-500 max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
             Experience unparalleled luxury with our masterfully curated collection,
             where each piece embodies timeless elegance and refined sophistication.
           </p>

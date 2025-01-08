@@ -58,26 +58,31 @@ const SignatureCollection = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-24">
           {products.map((product) => (
             <div 
               key={product.id}
-              className="group relative overflow-hidden bg-gradient-to-br from-accent/5 to-primary/5 transition-all duration-500 hover:from-accent/10 hover:to-primary/10"
+              className="group relative overflow-hidden rounded-sm bg-gradient-to-br from-accent/5 to-primary/5 transition-all duration-700 hover:from-accent/10 hover:to-primary/10"
             >
-              <div className="aspect-[4/3] w-full">
+              <div className="aspect-[4/3] w-full overflow-hidden">
                 <img 
                   src={product.image}
                   alt={product.title}
-                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
                 />
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-background/95 to-transparent">
-                <h3 className="text-xl font-extralight text-foreground mb-2">
+              <div className="absolute bottom-0 left-0 right-0 p-10 bg-gradient-to-t from-background/95 via-background/90 to-transparent">
+                <h3 className="text-2xl font-extralight text-foreground mb-3">
                   {product.title}
                 </h3>
-                <p className="text-primary/80 text-sm tracking-wider uppercase">
+                <p className="text-primary tracking-wider uppercase text-sm mb-2">
                   {product.subtitle}
                 </p>
+              </div>
+              <div className="absolute top-0 left-0 right-0 p-6 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <Button variant="ghost" className="bg-background/80 hover:bg-background backdrop-blur-sm">
+                  Explore
+                </Button>
               </div>
             </div>
           ))}
