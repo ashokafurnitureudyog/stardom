@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPinIcon, MailIcon, PhoneIcon, Instagram, Linkedin } from "lucide-react";
+import { MapPinIcon, MailIcon, PhoneIcon } from "lucide-react";
 
 const ContactSection = () => {
   return (
@@ -56,15 +56,6 @@ const ContactSection = () => {
                   <p className="text-muted-foreground/80">Mon - Fri, 10:00 - 18:00</p>
                 </div>
               </div>
-            </div>
-
-            <div className="flex gap-6 pt-6">
-              <a href="#" className="text-primary/60 hover:text-primary transition-colors duration-300">
-                <Instagram className="h-8 w-8" />
-              </a>
-              <a href="#" className="text-primary/60 hover:text-primary transition-colors duration-300">
-                <Linkedin className="h-8 w-8" />
-              </a>
             </div>
           </div>
 

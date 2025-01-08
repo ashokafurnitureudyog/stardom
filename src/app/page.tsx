@@ -1,5 +1,4 @@
 import BaseLayout from "@/components/layout/BaseLayout";
-import ConsultationSection from "@/components/marketing/ConsultationSection";
 import ContactSection from "@/components/marketing/ContactSection";
 import FeaturedProducts from "@/components/marketing/FeaturedProducts";
 import HeroSection from "@/components/marketing/Hero";
@@ -19,7 +18,6 @@ const Home = () => {
       <SignatureCollection />
       <CraftsmanshipSection />
       <PortfolioSection />
-      <ConsultationSection />
       <TestimonialsSection />
       <ContactSection />
     </BaseLayout>

@@ -150,21 +150,21 @@ const Footer = () => {
               <div className="flex items-center gap-3">
                 <MapPin className="h-5 w-5 text-primary/60" />
                 <p className="text-muted-foreground/80 text-sm">
-                  123 Luxury Avenue, Design District
+                Plot No. 304, Industrial Area Phase 2
                   <br />
-                  Mumbai, India 400001
+                  Chandigarh, India 160002
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary/60" />
                 <p className="text-muted-foreground/80 text-sm">
-                  info@stardom.luxury
+                hello@stardom.co.in
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary/60" />
                 <p className="text-muted-foreground/80 text-sm">
-                  +91 98765 43210
+                  +91 62846 73783
                 </p>
               </div>
             </div>

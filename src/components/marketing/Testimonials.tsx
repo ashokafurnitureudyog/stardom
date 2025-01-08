@@ -1,26 +1,25 @@
 import React from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { QuoteIcon} from "lucide-react";
+import { FancyTestimonialsSlider } from '../ui/testimonialslider';
 
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      author: "Sarah Chen",
+      name: "Sarah Chen",
       role: "Chief Architect, Azure Design Co.",
       quote: "Stardom's attention to detail and commitment to quality has transformed our office space into a masterpiece of design and functionality.",
-      avatar: "https://avatar.iran.liara.run/public"
+      img: "https://avatar.iran.liara.run/public"
     },
     {
-      author: "James Morrison",
+      name: "James Morrison",
       role: "CEO, Global Finance Corp",
       quote: "The level of craftsmanship and personalized service we received from Stardom exceeded all our expectations.",
-      avatar: "https://avatar.iran.liara.run/public"
+      img: "https://avatar.iran.liara.run/public"
     },
     {
-      author: "Priya Patel",
+      name: "Priya Patel",
       role: "Interior Designer, Nexus Interiors",
       quote: "Working with Stardom has been a revelation. Their pieces are not just furniture, they're statements of luxury and sophistication.",
-      avatar: "https://avatar.iran.liara.run/public"
+      img: "https://avatar.iran.liara.run/public"
     }
   ];
 
@@ -49,32 +48,7 @@ const TestimonialsSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card 
-              key={index} 
-              className="bg-gradient-to-br from-accent/5 to-primary/5 hover:from-accent/10 hover:to-primary/10 transition-all duration-500 border-primary/10"
-            >
-              <CardContent className="p-8 space-y-6 relative">
-                <QuoteIcon className="h-10 w-10 text-primary/20 absolute top-6 right-6" />
-                <p className="text-foreground/90 italic text-lg leading-relaxed">
-                &quot;{testimonial.quote}&quot;
-                </p>
-                <div className="flex items-center gap-4 pt-4 border-t border-primary/10">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.author}
-                    className="rounded-full w-12 h-12 border-2 border-primary/10"
-                  />
-                  <div>
-                    <h4 className="font-medium text-foreground">{testimonial.author}</h4>
-                    <p className="text-sm text-primary/80">{testimonial.role}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <FancyTestimonialsSlider testimonials={testimonials} />
 
         <div className="grid grid-cols-3 gap-8 pt-12 border-t border-primary/10">
           {stats.map((stat, index) => (
