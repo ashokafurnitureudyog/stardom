@@ -15,3 +15,4 @@ export interface MenuLinkProps {
   item: MenuItem;
   isMobile?: boolean;
 }
+
