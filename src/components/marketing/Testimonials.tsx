@@ -31,9 +31,6 @@ const TestimonialsSection = () => {
 
   return (
     <div className="w-full bg-background py-20 md:py-32 px-8 md:px-16 font-sans relative">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-32 h-32 border border-primary/10 rotate-45" />
-      <div className="absolute bottom-0 right-0 w-32 h-32 border border-primary/10 rotate-45" />
       
       <div className="max-w-7xl mx-auto space-y-16 relative">
         <div className="text-center space-y-6">

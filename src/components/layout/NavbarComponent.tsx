@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Navbar,
@@ -14,176 +15,180 @@ import { ModeToggle } from "../ui/ThemeSwitcher";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { Link } from "next-view-transitions";
+import { MenuLinkProps } from "@/types/ComponentTypes";
+import { LOGO_DIMENSIONS, MENU_ITEMS } from "@/lib/constants/NavbarConstants";
 
-const MENU_ITEMS = [
-  { name: "Home", path: "/" },
-  { name: "Products", path: "/products" },
-  { name: "Heritage", path: "/heritage" },
-  { name: "Portfolio", path: "/portfolio" },
-  { name: "Contact", path: "/contact" }
-];
 
-const LOGO_DIMENSIONS = { width: 70, height: 100 };
-
-interface MenuLinkProps {
-  item: { name: string; path: string };
-  index?: number;
-  totalItems?: number;
-  isMobile?: boolean;
-}
-
-const MenuLink: React.FC<MenuLinkProps> = ({
-  item,
-  index,
-  totalItems = 0,
-  isMobile = false,
-}) => {
+const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
   const pathname = usePathname();
   const isActive = pathname === item.path;
+  const [isHovered, setIsHovered] = useState(false);
 
-  const getLinkColor = () => {
-    if (typeof index === "undefined") return isActive ? "primary" : "foreground";
-    return index === 2
-      ? "primary"
-      : index === totalItems - 1
-      ? "danger"
-      : "foreground";
-  };
+  const desktopStyles = !isMobile && (
+    <>
+      <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
+      <div className="absolute top-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
+      <div 
+        className={`
+          absolute 
+          -left-2 
+          top-1/2 
+          -translate-y-1/2 
+          opacity-0 
+          transition-all 
+          duration-300
+          ${isHovered ? "opacity-100 -translate-x-1" : ""}
+        `}
+      >
+        •
+      </div>
+      <div 
+        className={`
+          absolute 
+          -right-2 
+          top-1/2 
+          -translate-y-1/2 
+          opacity-0 
+          transition-all 
+          duration-300
+          ${isHovered ? "opacity-100 translate-x-1" : ""}
+        `}
+      >
+        •
+      </div>
+    </>
+  );
 
   return (
     <Link
-      color={getLinkColor()}
       href={item.path}
       className={`
         relative
-        ${isActive ? "font-medium" : "font-normal"}
-        ${
-          isMobile
-            ? "w-full text-lg py-4 px-6 hover:bg-default-100 rounded-lg transition-all duration-300"
-            : "group"
-        }
-        ${
-          !isMobile
-            ? `after:content-[""] after:absolute after:w-${
-                isActive ? "full" : "0"
-              } after:h-0.5 after:bg-primary/80 after:left-0 after:right-0 after:-bottom-1 after:mx-auto after:transition-all after:duration-300 hover:after:w-full`
-            : ""
-        }
-        ${typeof index !== "undefined" ? "w-full" : ""}
+        group
+        px-2
+        py-1
+        transition-all
+        duration-300
+        font-sans
+        ${isActive ? "text-primary font-medium" : "text-foreground"}
+        ${isMobile ? "w-full p-4 hover:bg-default-100 rounded-lg" : ""}
       `}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {item.name}
+      {desktopStyles}
+      <span className="relative">
+        {item.name}
+        <span 
+          className={`
+            absolute
+            -bottom-1
+            left-0
+            w-full
+            h-px
+            bg-primary
+            transform
+            scale-x-0
+            transition-transform
+            duration-300
+            ${isActive ? "scale-x-100" : ""}
+          `} 
+        />
+      </span>
     </Link>
   );
 };
 
-export default function NavbarComponent() {
+// Main component
+const NavbarComponent: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, resolvedTheme } = useTheme();
   const [logoSrc, setLogoSrc] = useState("/images/logo.png");
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    // Use resolvedTheme to handle system theme preference
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
     const currentTheme = resolvedTheme || theme;
-    setLogoSrc(
-      currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png"
-    );
+    setLogoSrc(currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png");
   }, [theme, resolvedTheme]);
 
-  // Close mobile menu when pathname changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [pathname]);
 
-  const DesktopMenu = () => (
-    <NavbarContent className="hidden sm:flex gap-12" justify="center">
-      {MENU_ITEMS.map((item) => (
-        <NavbarItem key={item.path}>
-          <MenuLink item={item} />
-        </NavbarItem>
-      ))}
-    </NavbarContent>
-  );
-
-  const MobileMenu = () => (
-    <NavbarMenu className="pt-6 bg-background/80 backdrop-blur-xl">
-      <div className="flex flex-col gap-2 mt-4">
-        {MENU_ITEMS.map((item, index) => (
-          <NavbarMenuItem
-            key={item.path}
-            className="animate-slideIn"
-            style={{
-              animationDelay: `${index * 75}ms`,
-              opacity: 0,
-              animation: `slideIn 0.4s ease-out ${index * 75}ms forwards`,
-            }}
-          >
-            <MenuLink
-              item={item}
-              index={index}
-              totalItems={MENU_ITEMS.length}
-              isMobile={true}
-            />
-          </NavbarMenuItem>
-        ))}
-      </div>
-    </NavbarMenu>
-  );
-
   return (
-    <>
-      <style jsx global>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-1rem);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        .animate-slideIn {
-          opacity: 0;
-        }
-      `}</style>
-      <Navbar
-        onMenuOpenChange={setIsMenuOpen}
-        className="font-sans lg:py-3 backdrop-blur-md bg-background/70"
-        isMenuOpen={isMenuOpen}
-        maxWidth="xl"
-        position="sticky"
-      >
-        <NavbarContent className="gap-4">
-          <NavbarMenuToggle
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            className="sm:hidden"
-          />
-          <NavbarBrand>
-            <Link href="/">
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      className={`
+        bg-background/80 
+        backdrop-blur-xl 
+        transition-all 
+        duration-300
+        ${scrolled ? "shadow-lg" : ""}
+      `}
+      isMenuOpen={isMenuOpen}
+      maxWidth="xl"
+      position="sticky"
+    >
+      {/* Left section with menu toggle and logo */}
+      <NavbarContent className="gap-4">
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+        <NavbarBrand>
+          <Link href="/">
+            <div className="overflow-hidden">
               <Image
                 src={logoSrc}
                 width={LOGO_DIMENSIONS.width}
                 height={LOGO_DIMENSIONS.height}
-                alt="Stardom Logo"
-                className="transform hover:scale-105 transition-transform duration-300"
+                alt="Logo"
+                className="transition-all duration-300 hover:scale-105"
                 priority
               />
-            </Link>
-          </NavbarBrand>
-        </NavbarContent>
+            </div>
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
 
-        <DesktopMenu />
-
-        <NavbarContent justify="end">
-          <NavbarItem>
-            <ModeToggle />
+      {/* Center section with navigation links */}
+      <NavbarContent className="hidden sm:flex gap-8" justify="center">
+        {MENU_ITEMS.map((item) => (
+          <NavbarItem key={item.path}>
+            <MenuLink item={item} />
           </NavbarItem>
-        </NavbarContent>
+        ))}
+      </NavbarContent>
 
-        <MobileMenu />
-      </Navbar>
-    </>
+      {/* Right section with theme toggle */}
+      <NavbarContent justify="end">
+        <NavbarItem>
+          <div className="transition-transform hover:scale-105">
+            <ModeToggle />
+          </div>
+        </NavbarItem>
+      </NavbarContent>
+
+      {/* Mobile menu */}
+      <NavbarMenu className="pt-6 gap-6 bg-background/95 backdrop-blur-xl">
+        {MENU_ITEMS.map((item) => (
+          <NavbarMenuItem key={item.path}>
+            <MenuLink item={item} isMobile={true} />
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
+    </Navbar>
   );
-}
+};
+
+export default NavbarComponent;

@@ -46,7 +46,7 @@ export function FancyTestimonialsSlider({
     <div className="mx-auto w-full max-w-4xl text-center">
       {/* Testimonial image */}
       <div className="relative h-32">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[480px] w-[480px] -translate-x-1/2 before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-gradient-to-b before:from-primary/5 before:via-primary/2 before:via-25% before:to-transparent before:to-75%">
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[420px] lg:w-[480px] lg:h-[480px] -translate-x-1/2 before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-gradient-to-b before:from-primary/5 before:via-primary/2 before:via-25% before:to-transparent before:to-75%">
           <div className="h-32 [mask-image:_linear-gradient(0deg,transparent,theme(colors.white)_20%,theme(colors.white))]">
             {testimonials.map((testimonial, index) => (
               <Transition

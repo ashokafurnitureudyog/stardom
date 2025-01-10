@@ -61,8 +61,6 @@ const ContactSection = () => {
 
           {/* Contact Form */}
           <div className="relative">
-            <div className="absolute -top-12 -left-12 w-32 h-32 border border-primary/10 rotate-45 transition-transform duration-500 hover:rotate-90" />
-            <div className="absolute -bottom-12 -right-12 w-32 h-32 border border-primary/10 rotate-45 transition-transform duration-500 hover:-rotate-90" />
             <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-8 rounded-lg space-y-8">
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-3">
