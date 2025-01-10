@@ -122,7 +122,7 @@ const HeroSection: React.FC = () => {
           </AnimatedText>
 
           <AnimatedText delay={0.2}>
-            <h1 className="text-6xl lg:text-7xl tracking-tight mb-4">
+            <h1 className="text-6xl lg:text-7xl tracking-tight mb-4 font-extralight">
               STARDOM
             </h1>
             <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
