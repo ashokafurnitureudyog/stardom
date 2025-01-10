@@ -102,7 +102,6 @@ const BackgroundSlideshow: React.FC = () => {
   );
 };
 
-// Main component
 const HeroSection: React.FC = () => {
   const buttonBaseClass = useMemo(
     () => "min-w-[240px] h-14 text-lg tracking-wide",
@@ -113,48 +112,63 @@ const HeroSection: React.FC = () => {
     <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden font-sans">
       <BackgroundSlideshow />
 
-      <div className="relative z-10 max-w-5xl mx-auto text-center px-4">
-        <AnimatedText className="mb-8">
-          <span className="text-primary font-serif text-lg tracking-widest uppercase">
-            Welcome to Excellence
-          </span>
-        </AnimatedText>
-
-        <AnimatedText delay={0.2}>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-            Redefine Your Workspace
-            <span className="block mt-4 text-primary font-serif text-4xl md:text-5xl">
-              with Timeless Luxury
+      <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 px-6">
+        {/* Brand Column */}
+        <div className="text-center lg:text-left">
+          <AnimatedText className="mb-4">
+            <span className="text-primary font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary/30 rounded px-4 py-2">
+              Since 1997
             </span>
-          </h1>
-        </AnimatedText>
+          </AnimatedText>
 
-        <AnimatedText
-          delay={0.4}
-          className="text-white/90 text-xl md:text-2xl mb-16 max-w-3xl mx-auto leading-relaxed"
-        >
-          Crafting exceptional office environments where luxury meets
-          functionality, designed for forward-thinking enterprises seeking
-          distinction
-        </AnimatedText>
+          <AnimatedText delay={0.2}>
+            <h1 className="text-6xl lg:text-7xl tracking-tight mb-4">
+              STARDOM
+            </h1>
+            <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
+            <span className="text-xl text-white/80 font-serif italic">by</span>
+            <p className="text-2xl text-white/90 font-serif mt-2">
+              Ashoka Furniture Udyog
+            </p>
+          </AnimatedText>
+        </div>
+        {/* Content Column */}
+        <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
+          <AnimatedText delay={0.4}>
+            <h2 className="text-3xl lg:text-4xl font-light leading-tight mb-8">
+              Elevate Your Workspace with{" "}
+              <span className="text-primary font-serif italic">Timeless</span>{" "}
+              Design
+            </h2>
+          </AnimatedText>
 
-        <AnimatedText delay={0.6}>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Button
-              size="lg"
-              className={`${buttonBaseClass} bg-primary hover:bg-primary/90`}
-            >
-              Explore Collection
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className={`${buttonBaseClass} border-2 border-primary text-primary hover:bg-primary/10`}
-            >
-              Book Consultation
-            </Button>
-          </div>
-        </AnimatedText>
+          <AnimatedText
+            delay={0.6}
+            className="text-white/80 text-lg mb-12 leading-relaxed"
+          >
+            Experience the fusion of artisanal craftsmanship and contemporary 
+            luxury in every piece. Creating distinguished office environments 
+            for those who demand excellence.
+          </AnimatedText>
+
+          <AnimatedText delay={0.8}>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+              <Button
+                size="lg"
+                className={`${buttonBaseClass} bg-primary hover:bg-primary/90`}
+              >
+                View Collection
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className={`${buttonBaseClass} border-2 border-white/20 hover:border-white hover:bg-white/10 text-foreground-700`}
+              >
+                Book Consultation
+              </Button>
+            </div>
+          </AnimatedText>
+        </div>
       </div>
     </section>
   );
