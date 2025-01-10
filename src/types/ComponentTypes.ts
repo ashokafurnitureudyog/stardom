@@ -16,3 +16,15 @@ export interface MenuLinkProps {
   isMobile?: boolean;
 }
 
+
+export interface Product {
+  id: string;
+  title: string;
+  subtitle: string;
+  image: string;
+}
+export interface Feature {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
