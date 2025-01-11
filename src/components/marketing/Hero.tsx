@@ -9,11 +9,8 @@ import {
   HERO_SLIDE_DURATION,
   HERO_TRANSITION_DURATION,
 } from "@/lib/constants/MediaConstants";
+import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 
-const fadeInUpVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
   children,
@@ -131,7 +128,14 @@ const HeroSection: React.FC = () => {
               Ashoka Furniture Udyog
             </p>
           </AnimatedText>
+
+          <AnimatedText delay={0.3} className="mt-6">
+            <p className="text-lg text-primary/90 font-serif italic tracking-wide">
+              Where Excellence Takes a Seat
+            </p>
+          </AnimatedText>
         </div>
+
         {/* Content Column */}
         <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
           <AnimatedText delay={0.4}>
