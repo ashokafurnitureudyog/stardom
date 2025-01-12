@@ -41,11 +41,11 @@ const Footer = () => {
           <div className="grid md:grid-cols-12 gap-8 lg:gap-16">
             {/* Logo and Description Column */}
             <div className="md:col-span-4 space-y-8">
-              <div className="h-12 w-auto relative">
+            <div className="flex h-16 items-center">
                 <img
                   src={logoSrc}
                   alt="Stardom Logo"
-                  className="h-full w-auto transform hover:scale-105 transition-transform duration-300"
+                  className="w-40 transform hover:scale-105 transition-transform duration-300"
                 />
               </div>
               <p className="text-muted-foreground/80 leading-relaxed">

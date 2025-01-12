@@ -9,6 +9,6 @@ export const MENU_ITEMS: MenuItem[] = [
 ] as const;
 
 export const LOGO_DIMENSIONS = {
-  width: 70,
+  width: 150,
   height: 100
 } as const;
