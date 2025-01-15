@@ -61,7 +61,7 @@ const FooterComingSoon = () => {
                                 Email: hello@stardom.co.in
                             </p>
                             <p className="flex items-center hover:text-white transition-colors duration-300">
-                                Phone: +91 988 872 3681
+                                Phone: +91 62846 73783
                             </p>
                             <p className="leading-relaxed hover:text-white transition-colors duration-300">
                                 Location: Plot N0. 304, Industrial Area Phase 2, Chandigarh, India
