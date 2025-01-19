@@ -5,6 +5,7 @@ import NumberTicker from "../ui/number-ticker";
 import { motion } from "framer-motion";
 import { StatisticProps } from "@/types/ComponentTypes";
 import { ArrowRightIcon } from "lucide-react";
+import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
 
 const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
   <motion.div
@@ -72,16 +73,7 @@ const LegacySection: React.FC = () => {
                 <span className="font-serif">Crafting</span>{" "}
                 <span className="text-primary/90 font-serif italic">Elegance</span>
                 <div className="text-4xl lg:text-5xl mt-4 flex items-center gap-4">
-                  <span className="font-light">Since 1997</span>
-                  <motion.div
-                    className="w-8 h-8 border border-primary/20 rotate-45"
-                    animate={{ rotate: 225 }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
+                  <span className="font-light">Since {BasicCompanyInfo.established}</span>
                 </div>
               </h2>
               
@@ -93,7 +85,7 @@ const LegacySection: React.FC = () => {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              <Statistic value={27} label="Years of Excellence" />
+              <Statistic value={28} label="Years of Excellence" />
               <Statistic value={1000} label="Premium Projects" />
             </div>
 

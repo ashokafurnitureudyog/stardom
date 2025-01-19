@@ -1,29 +1,28 @@
 "use client"
 import React from "react";
 import { Card } from "@/components/ui/card";
-import Image from "next/image";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { motion } from "framer-motion";
 
 const PortfolioSection = () => {
   const projects = [
     {
-      title: "Azure Technologies HQ",
-      description: "Complete executive floor furnishing",
+      title: "Chitkara Group",
+      description: "Complete office furniture and ergonomic solutions",
       image:
-        "https://miro.medium.com/v2/resize:fit:1400/0*MCsGhkvp8vwPqKFH.png",
+        "https://media.licdn.com/dms/image/v2/C4D0BAQFhoSxToxhXuQ/company-logo_200_200/company-logo_200_200/0/1659503334979?e=1745452800&v=beta&t=BhuUJ_GfsSRu8I2AhU7AGGToOGAbP4NF0L7-00LnA_Q",
     },
     {
-      title: "Global Finance Center",
-      description: "Premium conference solutions",
+      title: "Chandigarh University",
+      description: "Educational spaces and collaborative environments",
       image:
-        "https://images.forbesindia.com/media/images/2022/Sep/img_194683_singaporebg.jpg",
+        "https://i.ytimg.com/vi/tHhXkJdechQ/maxresdefault.jpg",
     },
     {
-      title: "Nexus Corporate Park",
-      description: "Complete office ecosystem",
+      title: "JLPL Group",
+      description: "Modern workspaces with premium amenities",
       image:
-        "https://listingsprod.blob.core.windows.net/ourlistings-aus/10744859-2dc7-4952-8dab-5a35a386d09b/c3ec1f28-d681-4313-89a2-86ad8f374d25-w",
+        "https://media.licdn.com/dms/image/v2/C4D0BAQEGPR18kzoxcw/company-logo_200_200/company-logo_200_200/0/1677217667273/jantahousing_logo?e=2147483647&v=beta&t=hBV4K6wqGujl49VuW0P5jYZ4iw0V2z5vbizFT9LLTS8",
     },
   ];
 
@@ -92,7 +91,7 @@ const PortfolioSection = () => {
           ))}
         </div>
 
-        <div className="text-center space-y-8">
+        {/* <div className="text-center space-y-8">
           <h4 className="text-lg text-muted-foreground/90">
             Trusted by Industry Leaders
           </h4>
@@ -155,7 +154,7 @@ const PortfolioSection = () => {
               </div>
             </section>
           </div>
-        </div>
+        </div> */}
 
         <div className="text-center mt-16">
           <button className="inline-flex items-center px-8 py-3 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 group font-light">

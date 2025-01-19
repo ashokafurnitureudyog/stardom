@@ -18,7 +18,7 @@ const CraftsmanshipSection = () => {
       icon: <Pencil className="w-12 h-12" />,
       title: "Master Crafting",
       description: "Each masterpiece is meticulously handcrafted by our skilled artisans, bringing decades of expertise to every intricate detail.",
-      detail: "45+ Years Experience"
+      detail: "30+ Years Experience"
     },
     {
       icon: <Check className="w-12 h-12" />,

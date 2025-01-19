@@ -80,40 +80,40 @@ const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) =>
 const SignatureCollection = () => {
   const products = [
     {
-      id: 'x1',
-      title: 'Executive Desk X1',
-      subtitle: 'Refined Sophistication',
-      image: 'https://i5.walmartimages.com/seo/Tribesigns-71-inch-Executive-Desk-L-Shaped-Desk-with-Cabinet-Storage-Executive-Office-Desk-with-Shelves_3f3a202b-8fbe-46cb-acbf-8ba6d0db7181.17aeb33a524344acbec24e5bf796e1c1.jpeg'
+      id: 'c2',
+      title: 'Artisanal Seating',
+      subtitle: 'Collaborative Excellence',
+      image: '/images/products/Seating_display.jpg'
     },
     {
-      id: 'c2',
-      title: 'Conference Table C2',
-      subtitle: 'Collaborative Excellence',
-      image: 'https://images-cdn.ubuy.co.in/634d1bf344fe685ddf68cc3e-tribesigns-8ft-rectangle-conference.jpg'
+      id: 'x1',
+      title: 'Executive Desks',
+      subtitle: 'Refined Sophistication',
+      image: '/images/products/exec-desk_display.jpg'
     },
     {
       id: 'e3',
-      title: 'Ergonomic Chair E3',
+      title: 'Luxury Lounges',
       subtitle: 'Comfort Redefined',
-      image: 'https://astride.furniture/cdn/shop/files/Chair_Info_1B_500x.jpg?v=1735100193'
+      image: '/images/products/luxury_lounge_display.jpg'
     }
   ];
 
   const features = [
     {
       icon: <HomeIcon className="w-8 h-8 text-primary/90" />,
-      title: "Bespoke Customization",
-      description: "Each piece meticulously tailored to your requirements"
+      title: "Artisanal Customization",
+      description: "Meticulously crafted solutions tailored to discerning brands and distinguished partners"
     },
     {
       icon: <Package className="w-8 h-8 text-primary/90" />,
-      title: "Immersive 3D Preview",
-      description: "Visualize perfection in your space before creation"
+      title: "Elite Logistics Network",
+      description: "Sophisticated nationwide distribution infrastructure serving premium retailers and distinguished clientele"
     },
     {
       icon: <Clock className="w-8 h-8 text-primary/90" />,
-      title: "Expedited Crafting",
-      description: "Artisanal creation within 4-6 weeks"
+      title: "Expedited Craftsmanship",
+      description: "Precision-engineered production ensuring swift fulfillment of prestigious bulk orders within 10-12 days"
     }
   ];
 

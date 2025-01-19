@@ -10,6 +10,7 @@ import {
   HERO_TRANSITION_DURATION,
 } from "@/lib/constants/MediaConstants";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
 
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
@@ -114,7 +115,7 @@ const HeroSection: React.FC = () => {
         <div className="text-center lg:text-left">
           <AnimatedText className="mb-4">
             <span className="text-primary font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary/30 rounded px-4 py-2">
-              Since 1997
+              Since {BasicCompanyInfo.established}
             </span>
           </AnimatedText>
 
