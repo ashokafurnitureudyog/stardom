@@ -15,7 +15,7 @@ const TestimonialsSection = () => {
     },
     {
       name: "James Morrison",
-      role: "CEO, Global Finance Corp",
+      role: "MD, Global Finance Corp",
       quote:
         "The level of craftsmanship and personalized service we received from Stardom exceeded all our expectations.",
       img: "https://avatar.iran.liara.run/public",
