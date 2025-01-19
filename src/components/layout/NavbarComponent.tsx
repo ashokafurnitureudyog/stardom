@@ -9,7 +9,7 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import Image from "next/image";
 import { ModeToggle } from "../ui/ThemeSwitcher";
 import { useTheme } from "next-themes";

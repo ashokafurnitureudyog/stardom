@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Playfair_Display, Montserrat } from "next/font/google";
-import { NextUIProvider } from "@nextui-org/react";
+import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ViewTransitions } from 'next-view-transitions';
 import "./globals.css";
@@ -112,11 +112,11 @@ export default function RootLayout({
       <body 
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}
       ><ViewTransitions>
-        <NextUIProvider>
+        <HeroUIProvider>
           <NextThemesProvider attribute="class" defaultTheme="system">
             {children}
           </NextThemesProvider>
-        </NextUIProvider>
+        </HeroUIProvider>
         </ViewTransitions>
       </body>
     </html>
