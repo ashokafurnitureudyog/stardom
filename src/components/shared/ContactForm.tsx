@@ -63,7 +63,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="mx-auto p-6 w-full">
       <h2 className="text-5xl font-light mb-8 font-serif">
         Get in <span className="font-serif italic text-primary">Touch</span>
       </h2>

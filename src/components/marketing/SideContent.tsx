@@ -83,7 +83,7 @@ export const SideContent: React.FC<SideContentProps> = ({
 
           {/* Social Links */}
           <motion.div {...fadeInUp} transition={{ duration: 0.4, delay: 0.2 }}>
-            <h2 className="text-3xl font-light mb-8 font-serif">
+            <h2 className="text-2xl lg:text-3xl font-light mb-8 font-serif">
               Connect with{" "}
               <span className="font-serif italic text-primary">Us</span>
             </h2>
@@ -108,7 +108,7 @@ export const SideContent: React.FC<SideContentProps> = ({
 
           {/* FAQs */}
           <motion.div {...fadeInUp} transition={{ duration: 0.4, delay: 0.3 }}>
-            <h3 className="text-3xl font-light mb-8 flex items-center gap-2 font-serif">
+            <h3 className="text-2xl lg:text-3xl font-light mb-8 flex items-center gap-2 font-serif">
               Frequently Asked{" "}
               <span className="font-serif italic text-primary relative">
                 Questions
