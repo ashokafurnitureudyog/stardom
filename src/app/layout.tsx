@@ -5,6 +5,7 @@ import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ViewTransitions } from 'next-view-transitions';
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -115,6 +116,7 @@ export default function RootLayout({
         <HeroUIProvider>
           <NextThemesProvider attribute="class" defaultTheme="system">
             {children}
+            <Toaster />
           </NextThemesProvider>
         </HeroUIProvider>
         </ViewTransitions>

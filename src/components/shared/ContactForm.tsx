@@ -1,155 +1,156 @@
-"use client"
-import React, { useState } from 'react';
-import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
-import { cn } from "@/lib/utils";
-import { FormData } from '@/types/ComponentTypes';
+import { toast } from "@/hooks/use-toast";
 
-export const ContactForm = () => {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+const formSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  phone: z
+    .string()
+    .regex(/^\+?[\d\s-]{10,}$/, "Please enter a valid phone number")
+    .optional()
+    .or(z.literal("")),
+  subject: z.string().min(3, "Subject must be at least 3 characters"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+export default function ContactForm() {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    },
   });
-  const [formStatus, setFormStatus] = useState<null | 'success' | 'error'>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setFormStatus(null);
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onSubmit = async (data: FormValues) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setFormStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      toast({
+        title: "Message Submitted",
+        description: "Your message has been sent successfully!",
       });
+
+      form.reset();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error(error);
-      setFormStatus('error');
-    } finally {
-      setIsSubmitting(false);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+      });
     }
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    field: keyof FormData
-  ) => {
-    setFormData(prev => ({ ...prev, [field]: e.target.value }));
-  };
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-    >
-      <h2 className="text-4xl font-light mb-8">
+    <div className="max-w-2xl mx-auto p-6">
+      <h2 className="text-5xl font-light mb-8 font-serif">
         Get in <span className="font-serif italic text-primary">Touch</span>
       </h2>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Form fields */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Name</label>
-            <Input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) => handleInputChange(e, "name")}
-              disabled={isSubmitting}
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Email</label>
-            <Input
-              type="email"
-              required
-              value={formData.email}
-              onChange={(e) => handleInputChange(e, "email")}
-              disabled={isSubmitting}
-            />
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Phone</label>
-          <Input
-            type="tel"
-            value={formData.phone}
-            onChange={(e) => handleInputChange(e, "phone")}
-            disabled={isSubmitting}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Subject</label>
-          <Input
-            type="text"
-            required
-            value={formData.subject}
-            onChange={(e) => handleInputChange(e, "subject")}
-            disabled={isSubmitting}
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Message</label>
-          <Textarea
-            required
-            rows={6}
-            value={formData.message}
-            onChange={(e) => handleInputChange(e, "message")}
-            disabled={isSubmitting}
-          />
-        </div>
-        
-        {formStatus && (
-          <Alert
-            className={cn(
-              "transition-all duration-200",
-              formStatus === "success" && "bg-success/10 border-success/20",
-              formStatus === "error" && "bg-destructive/10 border-destructive/20"
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone (optional)</FormLabel>
+                <FormControl>
+                  <Input type="tel" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
+          />
+
+          <FormField
+            control={form.control}
+            name="subject"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Subject</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Message</FormLabel>
+                <FormControl>
+                  <Textarea rows={6} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={form.formState.isSubmitting}
           >
-            {formStatus === "success" ? (
-              <CheckCircle2 className="w-4 h-4 text-success" />
-            ) : (
-              <AlertCircle className="w-4 h-4 text-destructive" />
-            )}
-            <AlertTitle>
-              {formStatus === "success" ? "Success" : "Error"}
-            </AlertTitle>
-            <AlertDescription>
-              {formStatus === "success"
-                ? "Your message has been sent successfully. We'll get back to you soon."
-                : "There was an error sending your message. Please try again later."}
-            </AlertDescription>
-          </Alert>
-        )}
-        
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Sending..." : "Send Message"}
-        </Button>
-      </form>
-    </motion.div>
+            {form.formState.isSubmitting ? "Sending..." : "Send Message"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
-};
+}
