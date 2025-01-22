@@ -70,7 +70,7 @@ export const SideContent: React.FC<SideContentProps> = ({
                     For urgent assistance outside business hours:
                     <br />
                     <a
-                      href="tel:+919876543210"
+                      href="tel:+919888723681"
                       className="font-medium text-primary hover:text-primary/80 transition-colors"
                     >
                       Emergency Hotline: +91 98887 23681
