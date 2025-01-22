@@ -47,6 +47,7 @@ export interface CompanyInfo {
   phone: string;
   email: string;
   website: string;
+  mapsLink: string;
 }
 
 export interface FAQ {

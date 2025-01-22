@@ -20,6 +20,7 @@ export const BasicCompanyInfo: CompanyInfo = {
   phone: "+91 62846 73783",
   email: "hello@stardom.co.in",
   website: "https://stardom.co.in/",
+  mapsLink: "https://maps.app.goo.gl/KjSFWv5XXerbHn9R7"
 };
 
 export const socialLinks: SocialLink[] = [

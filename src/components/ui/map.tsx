@@ -8,6 +8,9 @@ import 'leaflet/dist/leaflet.css';
 import { CompanyInfo } from '@/types/ComponentTypes';
 import { InfoCard } from '../marketing/InfoCard';
 
+// Override default Leaflet popup styles
+import './Map.css';
+
 const DefaultIcon = L.icon({
     iconUrl: icon.src,
     shadowUrl: iconShadow.src
@@ -46,16 +49,32 @@ export default function Map({ companyInfo }: MapSectionProps) {
           url={theme === 'dark' ? mapStyle.dark : mapStyle.light}
         />
         <Marker position={companyInfo.address.coordinates}>
-          <Popup className="rounded-lg overflow-hidden">
-            <div className="p-4 bg-card text-card-foreground">
-              <h3 className="font-serif italic text-lg text-primary mb-2">{companyInfo.name}</h3>
-              <p className="text-sm text-muted-foreground">{companyInfo.address.street}</p>
-              <p className="text-sm text-muted-foreground">{companyInfo.address.city}, {companyInfo.address.zip}</p>
+          <Popup closeButton={false}>
+            <div className="p-6 -m-4 bg-background shadow-lg rounded-lg">
+              <div className="space-y-3">
+                <h3 className="font-medium text-xl text-primary">{companyInfo.name}</h3>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">{companyInfo.address.street}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {companyInfo.address.city}, {companyInfo.address.zip}
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <a 
+                    href={companyInfo.mapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-sm text-primary hover:text-primary/80 transition-colors"
+                  >
+                    Get Directions →
+                  </a>
+                </div>
+              </div>
             </div>
           </Popup>
         </Marker>
       </MapContainer>
-        <InfoCard companyInfo={companyInfo} />
+      <InfoCard companyInfo={companyInfo} />
     </section>
   );
-};
+}

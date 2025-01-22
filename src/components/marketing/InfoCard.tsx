@@ -25,9 +25,10 @@ export const InfoCard: React.FC<InfoCardProps> = ({ companyInfo }) => {
   ];
 
   return (
-    <div className="absolute top-1/2 right-12 transform -translate-y-1/2 w-96 bg-card/95 backdrop-blur-sm shadow-2xl rounded-lg p-8 border border-border/50">
-      <h2 className="text-2xl font-light mb-6">
-        {companyInfo.name} <span className="font-serif italic text-primary">{companyInfo.parentCompany}</span>
+    <div className="hidden lg:block absolute top-1/2 right-12 transform -translate-y-1/2 w-96 bg-card/95 backdrop-blur-sm shadow-2xl rounded-lg p-8 border border-border/50">
+      <h2 className="text-2xl flex flex-col tracking-tight mb-4 font-extralight">
+        STARDOM
+        <span className='text-lg'>by <span className="font-serif italic text-primary text-2xl">{companyInfo.parentCompany}</span></span>
       </h2>
       
       <div className="space-y-4">
@@ -48,3 +49,5 @@ export const InfoCard: React.FC<InfoCardProps> = ({ companyInfo }) => {
     </div>
   );
 };
+
+export default InfoCard;
