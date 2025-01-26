@@ -1,3 +1,17 @@
-
+# Format code
 npx prettier --write .
-npx tsc || exit 1
+
+# Lint code
+npx eslint . --fix
+
+# Type check
+npx tsc --noEmit
+
+# Run tests
+# npm test
+
+# Check for debug statements
+git diff --cached --name-only | xargs grep -l "console.log" && exit 1
+
+# Check commit message format
+npx commitlint --edit 
