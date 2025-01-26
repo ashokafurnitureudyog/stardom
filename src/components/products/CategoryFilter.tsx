@@ -40,18 +40,18 @@ export const CategoryFilters = ({
         {currentCategory?.subcategories?.length && (
           <ScrollArea className="w-full whitespace-nowrap">
             <Tabs value={selectedSub} onValueChange={onSubSelect}>
-            <TabsList className="h-10">
-              <TabsTrigger value="all" className="px-4">
-                All {currentCategory.name}
-              </TabsTrigger>
-              {currentCategory.subcategories.map((sub) => (
-                <TabsTrigger key={sub.id} value={sub.id} className="px-4">
-                  {sub.name}
+              <TabsList className="h-10">
+                <TabsTrigger value="all" className="px-4">
+                  All {currentCategory.name}
                 </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-          <ScrollBar orientation="horizontal" />
+                {currentCategory.subcategories.map((sub) => (
+                  <TabsTrigger key={sub.id} value={sub.id} className="px-4">
+                    {sub.name}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+            <ScrollBar orientation="horizontal" />
           </ScrollArea>
         )}
       </div>
