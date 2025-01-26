@@ -38,7 +38,8 @@ export const CategoryFilters = ({
         </ScrollArea>
 
         {currentCategory?.subcategories?.length && (
-          <Tabs value={selectedSub} onValueChange={onSubSelect}>
+          <ScrollArea className="w-full whitespace-nowrap">
+            <Tabs value={selectedSub} onValueChange={onSubSelect}>
             <TabsList className="h-10">
               <TabsTrigger value="all" className="px-4">
                 All {currentCategory.name}
@@ -50,6 +51,8 @@ export const CategoryFilters = ({
               ))}
             </TabsList>
           </Tabs>
+          <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         )}
       </div>
     </div>

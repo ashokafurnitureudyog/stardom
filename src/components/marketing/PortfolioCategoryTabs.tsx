@@ -1,5 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PortfolioCategory } from "@/types/ComponentTypes";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 type CategoryTabsProps = {
   categories: PortfolioCategory[];
@@ -12,17 +13,22 @@ export const CategoryTabs = ({
   selectedCategory,
   onCategoryChange,
 }: CategoryTabsProps) => (
-  <Tabs value={selectedCategory} className="w-full">
-    <TabsList className="w-full justify-start mb-8">
-      {categories.map((category) => (
-        <TabsTrigger
-          key={category}
-          value={category}
-          onClick={() => onCategoryChange(category)}
-        >
-          {category}
-        </TabsTrigger>
-      ))}
-    </TabsList>
-  </Tabs>
+  <div className="max-w-7xl mx-auto px-6 py-6 space-y-4">
+    <ScrollArea className="w-full whitespace-nowrap">
+      <Tabs value={selectedCategory}>
+        <TabsList className="justify-start mb-8">
+          {categories.map((category) => (
+            <TabsTrigger
+              key={category}
+              value={category}
+              onClick={() => onCategoryChange(category)}
+            >
+              {category}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
+  </div>
 );
