@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants"
-import { TimelineEvent } from "@/types/ComponentTypes"
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import { TimelineEvent } from "@/types/ComponentTypes";
 
 export const Timeline = ({ events }: { events: TimelineEvent[] }) => (
   <div className="relative">
@@ -19,11 +19,13 @@ export const Timeline = ({ events }: { events: TimelineEvent[] }) => (
           transition={{ duration: 0.8, delay: index * 0.2 }}
           className={cn(
             "flex items-center",
-            index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
+            index % 2 === 0 ? "flex-row" : "flex-row-reverse",
           )}
         >
           <div className="w-1/2 pr-12 text-right">
-            <h3 className="text-5xl font-light text-primary mb-4">{event.year}</h3>
+            <h3 className="text-5xl font-light text-primary mb-4">
+              {event.year}
+            </h3>
             <h4 className="text-2xl font-light mb-2">{event.title}</h4>
             <p className="text-muted-foreground">{event.description}</p>
           </div>
@@ -35,4 +37,4 @@ export const Timeline = ({ events }: { events: TimelineEvent[] }) => (
       ))}
     </div>
   </div>
-)
+);

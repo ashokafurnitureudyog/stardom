@@ -6,7 +6,7 @@ export const SearchAndView = ({
   searchQuery,
   viewMode,
   onSearchChange,
-  onViewChange
+  onViewChange,
 }: {
   searchQuery: string;
   viewMode: "grid" | "list";

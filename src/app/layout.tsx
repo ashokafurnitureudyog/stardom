@@ -3,18 +3,18 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ViewTransitions } from 'next-view-transitions';
+import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
+  subsets: ["latin"],
+  variable: "--font-playfair",
 });
 
 const montserrat = Montserrat({
-  subsets: ['latin'],
-  variable: '--font-montserrat',
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 const geistSans = Geist({
@@ -28,11 +28,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://stardom.co.in'),
+  metadataBase: new URL("https://stardom.co.in"),
   title: "Stardom | Premium Office Furniture Manufacturers",
-  description: "Premium office furniture manufacturers in Chandigarh. Explore our range of executive chairs, desks & office solutions. Formerly known as Ashoka Furniture Udyog, delivering pan-India.",
+  description:
+    "Premium office furniture manufacturers in Chandigarh. Explore our range of executive chairs, desks & office solutions. Formerly known as Ashoka Furniture Udyog, delivering pan-India.",
   keywords: [
-    "office furniture", 
+    "office furniture",
     "premium office furniture",
     "executive chairs",
     "office desks",
@@ -40,25 +41,26 @@ export const metadata: Metadata = {
     "office furniture Chandigarh",
     "premium furniture manufacturer",
     "Stardom furniture",
-    "corporate furniture solutions"
+    "corporate furniture solutions",
   ],
   openGraph: {
-    type: 'website',
-    title: 'Stardom | Premium Office Furniture Manufacturers',
-    description: 'Transform your workspace with premium office furniture. From executive chairs to customized desks, discover quality craftsmanship by Stardom (formerly Ashoka Furniture Udyog).',
+    type: "website",
+    title: "Stardom | Premium Office Furniture Manufacturers",
+    description:
+      "Transform your workspace with premium office furniture. From executive chairs to customized desks, discover quality craftsmanship by Stardom (formerly Ashoka Furniture Udyog).",
     images: [
       {
-        url: '/images/logo.png',
+        url: "/images/logo.png",
         width: 1200,
         height: 630,
-        alt: 'Stardom Premium Office Furniture Collection',
+        alt: "Stardom Premium Office Furniture Collection",
       },
     ],
-    locale: 'en_IN',
-    siteName: 'Stardom',
+    locale: "en_IN",
+    siteName: "Stardom",
   },
   alternates: {
-    canonical: 'https://stardom.co.in',
+    canonical: "https://stardom.co.in",
   },
   robots: {
     index: true,
@@ -66,9 +68,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   // verification: {
@@ -77,23 +79,24 @@ export const metadata: Metadata = {
 };
 
 const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Stardom',
-  alternateName: 'Ashoka Furniture Udyog',
-  description: 'Premium office furniture manufacturers specializing in executive chairs, desks, and complete office solutions.',
-  url: 'https://stardom.co.in',
-  logo: 'https://www.stardom.co.in/_next/image?url=%2Fimages%2Flogo.png&w=128&q=75',
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Stardom",
+  alternateName: "Ashoka Furniture Udyog",
+  description:
+    "Premium office furniture manufacturers specializing in executive chairs, desks, and complete office solutions.",
+  url: "https://stardom.co.in",
+  logo: "https://www.stardom.co.in/_next/image?url=%2Fimages%2Flogo.png&w=128&q=75",
   address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Chandigarh',
-    addressCountry: 'IN'
+    "@type": "PostalAddress",
+    addressLocality: "Chandigarh",
+    addressCountry: "IN",
   },
   areaServed: {
-    '@type': 'Country',
-    name: 'India'
+    "@type": "Country",
+    name: "India",
   },
-  sameAs: [] // Add your social media URLs when available
+  sameAs: [], // Add your social media URLs when available
 };
 
 export default function RootLayout({
@@ -104,21 +107,25 @@ export default function RootLayout({
   return (
     <html lang="en" className="scrollbar-hide overflow-x-hidden">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body 
+      <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}
-      ><ViewTransitions>
-        <HeroUIProvider>
-          <NextThemesProvider attribute="class" defaultTheme="system">
-            {children}
-            <Toaster />
-          </NextThemesProvider>
-        </HeroUIProvider>
+      >
+        <ViewTransitions>
+          <HeroUIProvider>
+            <NextThemesProvider attribute="class" defaultTheme="system">
+              {children}
+              <Toaster />
+            </NextThemesProvider>
+          </HeroUIProvider>
         </ViewTransitions>
       </body>
     </html>

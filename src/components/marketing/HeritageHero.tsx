@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants"
-import { motion } from "framer-motion"
+import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import { motion } from "framer-motion";
 
 export const HeritageHero = () => (
   <section className="relative h-[60vh] overflow-hidden">
@@ -11,7 +11,7 @@ export const HeritageHero = () => (
       alt="Heritage Hero"
       className="absolute inset-0 w-full h-full object-cover"
     />
-    
+
     <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-center">
       <motion.div
         variants={fadeInUpVariants}
@@ -28,4 +28,4 @@ export const HeritageHero = () => (
       </motion.div>
     </div>
   </section>
-)
+);

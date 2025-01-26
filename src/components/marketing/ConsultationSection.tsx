@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,18 +8,21 @@ const ConsultationSection = () => {
     {
       number: "1",
       title: "Initial Consultation",
-      description: "Discuss your vision, requirements, and space dynamics with our design experts."
+      description:
+        "Discuss your vision, requirements, and space dynamics with our design experts.",
     },
     {
       number: "2",
       title: "Custom Design Proposal",
-      description: "Receive detailed 3D visualizations and comprehensive design recommendations."
+      description:
+        "Receive detailed 3D visualizations and comprehensive design recommendations.",
     },
     {
       number: "3",
       title: "Implementation Plan",
-      description: "Get a detailed execution timeline and professional installation service."
-    }
+      description:
+        "Get a detailed execution timeline and professional installation service.",
+    },
   ];
 
   return (
@@ -37,9 +40,10 @@ const ConsultationSection = () => {
                 <span className="block mt-2 text-primary/90">Consultation</span>
               </h2>
               <p className="text-muted-foreground/90 text-lg leading-relaxed max-w-xl">
-                Transform your workspace with our complimentary design consultation
-                service. Our experts will guide you through creating the perfect environment
-                that reflects your brand&apos;s prestige.
+                Transform your workspace with our complimentary design
+                consultation service. Our experts will guide you through
+                creating the perfect environment that reflects your brand&apos;s
+                prestige.
               </p>
             </div>
 
@@ -68,7 +72,7 @@ const ConsultationSection = () => {
           <div className="relative group">
             {/* Glow effect container */}
             <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-50 transition-all duration-700" />
-            
+
             <Card className="relative bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500">
               <CardHeader>
                 <CardTitle className="text-2xl font-light">
@@ -80,7 +84,7 @@ const ConsultationSection = () => {
                   <label className="text-sm text-muted-foreground/90">
                     Full Name
                   </label>
-                  <Input 
+                  <Input
                     placeholder="Enter your full name"
                     className="bg-background/50 border-primary/10 focus:border-primary/30"
                   />
@@ -90,7 +94,7 @@ const ConsultationSection = () => {
                   <label className="text-sm text-muted-foreground/90">
                     Company
                   </label>
-                  <Input 
+                  <Input
                     placeholder="Enter company name"
                     className="bg-background/50 border-primary/10 focus:border-primary/30"
                   />
@@ -100,7 +104,7 @@ const ConsultationSection = () => {
                   <label className="text-sm text-muted-foreground/90">
                     Email
                   </label>
-                  <Input 
+                  <Input
                     type="email"
                     placeholder="Enter your email"
                     className="bg-background/50 border-primary/10 focus:border-primary/30"
@@ -111,7 +115,7 @@ const ConsultationSection = () => {
                   <label className="text-sm text-muted-foreground/90">
                     Project Details
                   </label>
-                  <Textarea 
+                  <Textarea
                     placeholder="Brief description of your project"
                     className="bg-background/50 border-primary/10 focus:border-primary/30 min-h-[120px]"
                   />

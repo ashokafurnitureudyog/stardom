@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { motion, useAnimation } from 'motion/react';
-import type { Transition, Variants } from 'motion/react';
+import { motion, useAnimation } from "motion/react";
+import type { Transition, Variants } from "motion/react";
 
 const defaultTransition: Transition = {
-  type: 'spring',
+  type: "spring",
   stiffness: 100,
   damping: 12,
   mass: 0.4,
@@ -16,9 +16,9 @@ const rockingVariants: Variants = {
     rotate: [-5, 5, -5],
     transition: {
       repeat: Infinity,
-      repeatType: 'mirror' as const,
+      repeatType: "mirror" as const,
       duration: 1.2,
-      ease: 'easeInOut',
+      ease: "easeInOut",
     },
   },
 };
@@ -29,8 +29,8 @@ const RockingChairIcon = () => {
   return (
     <div
       className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center"
-      onMouseEnter={() => controls.start('animate')}
-      onMouseLeave={() => controls.start('normal')}
+      onMouseEnter={() => controls.start("animate")}
+      onMouseLeave={() => controls.start("normal")}
     >
       <motion.svg
         xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +44,7 @@ const RockingChairIcon = () => {
         strokeLinejoin="round"
         variants={rockingVariants}
         animate={controls}
-        style={{ originX: '10%', originY: '90%' }}
+        style={{ originX: "10%", originY: "90%" }}
       >
         <motion.polyline
           points="3.5 2 6.5 12.5 18 12.5"

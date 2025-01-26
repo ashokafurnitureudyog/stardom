@@ -34,13 +34,13 @@ export const ProductCard = ({
     <Card
       className={cn(
         "group overflow-hidden",
-        viewMode === "list" && "flex gap-8"
+        viewMode === "list" && "flex gap-8",
       )}
     >
       <div
         className={cn(
           "relative overflow-hidden",
-          viewMode === "grid" ? "h-64" : "w-80"
+          viewMode === "grid" ? "h-64" : "w-80",
         )}
       >
         <img

@@ -7,7 +7,7 @@ import {
   Mail,
   Phone,
   ArrowUp,
-  Heart
+  Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
@@ -18,7 +18,9 @@ const Footer = () => {
 
   useEffect(() => {
     const currentTheme = resolvedTheme || theme;
-    setLogoSrc(currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png");
+    setLogoSrc(
+      currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png",
+    );
   }, [theme, resolvedTheme]);
 
   const scrollToTop = () => {
@@ -41,7 +43,7 @@ const Footer = () => {
           <div className="grid md:grid-cols-12 gap-8 lg:gap-16">
             {/* Logo and Description Column */}
             <div className="md:col-span-4 space-y-8">
-            <div className="flex h-16 items-center">
+              <div className="flex h-16 items-center">
                 <img
                   src={logoSrc}
                   alt="Stardom Logo"
@@ -56,7 +58,7 @@ const Footer = () => {
                 {[
                   { Icon: Facebook, href: "#facebook" },
                   { Icon: Instagram, href: "#instagram" },
-                  { Icon: Linkedin, href: "#linkedin" }
+                  { Icon: Linkedin, href: "#linkedin" },
                 ].map(({ Icon, href }) => (
                   <a
                     key={href}
@@ -76,7 +78,7 @@ const Footer = () => {
                 {quickLinks.map((item) => (
                   <li key={item}>
                     <a
-                      href={`/${item.toLowerCase().replace(' ', '-')}`}
+                      href={`/${item.toLowerCase().replace(" ", "-")}`}
                       className="text-muted-foreground/80 hover:text-primary transition-all duration-300 group flex items-center"
                     >
                       <span className="h-px w-0 bg-primary mr-0 group-hover:w-4 group-hover:mr-2 transition-all duration-300" />
@@ -94,7 +96,7 @@ const Footer = () => {
                 {supportLinks.map((item) => (
                   <li key={item}>
                     <a
-                      href={`/${item.toLowerCase().replace(' ', '-')}`}
+                      href={`/${item.toLowerCase().replace(" ", "-")}`}
                       className="text-muted-foreground/80 hover:text-primary transition-all duration-300 group flex items-center"
                     >
                       <span className="h-px w-0 bg-primary mr-0 group-hover:w-4 group-hover:mr-2 transition-all duration-300" />
@@ -118,7 +120,7 @@ const Footer = () => {
                         <br />
                         Chandigarh, India 160002
                       </p>
-                    )
+                    ),
                   },
                   {
                     Icon: Mail,
@@ -129,7 +131,7 @@ const Footer = () => {
                       >
                         hello@stardom.co.in
                       </a>
-                    )
+                    ),
                   },
                   {
                     Icon: Phone,
@@ -140,8 +142,8 @@ const Footer = () => {
                       >
                         +91 62846 73783
                       </a>
-                    )
-                  }
+                    ),
+                  },
                 ].map(({ Icon, content }, index) => (
                   <div key={index} className="flex items-start gap-4 group">
                     <Icon className="h-6 w-6 text-primary/60 group-hover:text-primary transition-colors duration-300 mt-1" />
@@ -164,7 +166,7 @@ const Footer = () => {
                   {policyLinks.map((item) => (
                     <a
                       key={item}
-                      href={`/${item.toLowerCase().replace(' ', '-')}`}
+                      href={`/${item.toLowerCase().replace(" ", "-")}`}
                       className="text-muted-foreground/60 hover:text-primary text-sm transition-colors duration-300"
                     >
                       {item}

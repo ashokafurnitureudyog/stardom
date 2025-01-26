@@ -31,7 +31,7 @@ export default function ProductsPage() {
       filtered = filtered.filter(
         (p) =>
           p.name.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query)
+          p.description.toLowerCase().includes(query),
       );
     }
 
@@ -67,7 +67,7 @@ export default function ProductsPage() {
               "grid gap-8",
               viewMode === "grid"
                 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                : "grid-cols-1"
+                : "grid-cols-1",
             )}
           >
             {filteredProducts.map((product) => (

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { motion, useAnimation } from 'framer-motion';
+import { motion, useAnimation } from "framer-motion";
 
 const SmartphoneChargingIcon = () => {
   const controls = useAnimation();
@@ -9,10 +9,10 @@ const SmartphoneChargingIcon = () => {
     <div
       className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center"
       onMouseEnter={() => {
-        controls.start('animate');
+        controls.start("animate");
       }}
       onMouseLeave={() => {
-        controls.start('normal');
+        controls.start("normal");
       }}
     >
       <svg
@@ -36,7 +36,7 @@ const SmartphoneChargingIcon = () => {
               transition: {
                 duration: 1,
                 repeat: Infinity,
-                ease: 'easeInOut',
+                ease: "easeInOut",
               },
             },
           }}

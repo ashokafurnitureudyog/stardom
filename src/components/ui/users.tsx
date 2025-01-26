@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import type { Variants } from 'motion/react';
-import { motion, useAnimation } from 'motion/react';
+import type { Variants } from "motion/react";
+import { motion, useAnimation } from "motion/react";
 
 const pathVariants: Variants = {
   normal: {
     translateX: 0,
     transition: {
-      type: 'spring',
+      type: "spring",
       stiffness: 200,
       damping: 13,
     },
@@ -16,7 +16,7 @@ const pathVariants: Variants = {
     translateX: [-6, 0],
     transition: {
       delay: 0.1,
-      type: 'spring',
+      type: "spring",
       stiffness: 200,
       damping: 13,
     },
@@ -29,8 +29,8 @@ const UsersIcon = () => {
   return (
     <div
       className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center"
-      onMouseEnter={() => controls.start('animate')}
-      onMouseLeave={() => controls.start('normal')}
+      onMouseEnter={() => controls.start("animate")}
+      onMouseLeave={() => controls.start("normal")}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

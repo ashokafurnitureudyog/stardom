@@ -1,16 +1,16 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PortfolioCategory } from "@/types/ComponentTypes"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PortfolioCategory } from "@/types/ComponentTypes";
 
 type CategoryTabsProps = {
-  categories: PortfolioCategory[]
-  selectedCategory: PortfolioCategory
-  onCategoryChange: (category: PortfolioCategory) => void
-}
+  categories: PortfolioCategory[];
+  selectedCategory: PortfolioCategory;
+  onCategoryChange: (category: PortfolioCategory) => void;
+};
 
 export const CategoryTabs = ({
   categories,
   selectedCategory,
-  onCategoryChange
+  onCategoryChange,
 }: CategoryTabsProps) => (
   <Tabs value={selectedCategory} className="w-full">
     <TabsList className="w-full justify-start mb-8">
@@ -25,4 +25,4 @@ export const CategoryTabs = ({
       ))}
     </TabsList>
   </Tabs>
-)
+);

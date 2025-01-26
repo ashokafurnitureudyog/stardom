@@ -1,11 +1,11 @@
-"use client"
-import BaseLayout from '@/components/layout/BaseLayout';
-import { BasicCompanyInfo, socialLinks } from '@/lib/constants/CompanyInfo';
-import ContactForm from '@/components/shared/ContactForm';
-import { SideContent } from '@/components/marketing/SideContent';
-import { faqs } from '@/lib/constants/FAQ';
-import dynamic from 'next/dynamic';
-const Map = dynamic(() => import('@/components/ui/map'), { ssr: false })
+"use client";
+import BaseLayout from "@/components/layout/BaseLayout";
+import { BasicCompanyInfo, socialLinks } from "@/lib/constants/CompanyInfo";
+import ContactForm from "@/components/shared/ContactForm";
+import { SideContent } from "@/components/marketing/SideContent";
+import { faqs } from "@/lib/constants/FAQ";
+import dynamic from "next/dynamic";
+const Map = dynamic(() => import("@/components/ui/map"), { ssr: false });
 const ContactPage = () => {
   return (
     <BaseLayout className="min-h-screen bg-background font-sans">

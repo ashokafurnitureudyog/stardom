@@ -9,7 +9,7 @@ import Navbar from "./ComingSoonNavbar";
 const ComingSoonPage = () => {
   return (
     <>
-    <Navbar />
+      <Navbar />
       <HeroSection />
       <LegacySection />
       <CollectionPreview />

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
@@ -15,8 +15,7 @@ const PortfolioSection = () => {
     {
       title: "Chandigarh University",
       description: "Educational spaces and collaborative environments",
-      image:
-        "https://i.ytimg.com/vi/tHhXkJdechQ/maxresdefault.jpg",
+      image: "https://i.ytimg.com/vi/tHhXkJdechQ/maxresdefault.jpg",
     },
     {
       title: "JLPL Group",
@@ -29,37 +28,37 @@ const PortfolioSection = () => {
   return (
     <div className="w-full bg-background py-20 md:py-32 font-sans">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
-      <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,rgba(var(--primary-rgb),0.02)_49%,rgba(var(--primary-rgb),0.02)_51%,transparent_52%)] bg-[length:48px_48px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,rgba(var(--primary-rgb),0.02)_49%,rgba(var(--primary-rgb),0.02)_51%,transparent_52%)] bg-[length:48px_48px]" />
 
-<motion.div 
-  className="max-w-7xl mx-auto px-8 md:px-16 relative"
-  initial="hidden"
-  whileInView="visible"
-  viewport={{ once: true }}
-  transition={{ duration: 0.8 }}
-  variants={fadeInUpVariants}
->
-  <div className="text-center mb-24 md:mb-32">
-    <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
-      <div className="h-px w-8 bg-primary/40" />
-      <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-        Our Portfolio
-      </h3>
-    </div>
+        <motion.div
+          className="max-w-7xl mx-auto px-8 md:px-16 relative"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          variants={fadeInUpVariants}
+        >
+          <div className="text-center mb-24 md:mb-32">
+            <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
+              <div className="h-px w-8 bg-primary/40" />
+              <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
+                Our Portfolio
+              </h3>
+            </div>
 
-    <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-foreground font-serif mb-8">
-      Distinguished Spaces
-      <span className="block mt-4 font-normal italic text-primary/90">
-        We&apos;ve Transformed
-      </span>
-    </h2>
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-foreground font-serif mb-8">
+              Distinguished Spaces
+              <span className="block mt-4 font-normal italic text-primary/90">
+                We&apos;ve Transformed
+              </span>
+            </h2>
 
-    <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-      Explore our portfolio of prestigious projects that showcase our
-      commitment to excellence in corporate interior solutions.
-    </p>
-  </div>
-  </motion.div>
+            <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
+              Explore our portfolio of prestigious projects that showcase our
+              commitment to excellence in corporate interior solutions.
+            </p>
+          </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-24">
           {projects.map((project, index) => (

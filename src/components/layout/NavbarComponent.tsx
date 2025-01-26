@@ -18,7 +18,6 @@ import { Link } from "next-view-transitions";
 import { MenuLinkProps } from "@/types/ComponentTypes";
 import { LOGO_DIMENSIONS, MENU_ITEMS } from "@/lib/constants/NavbarConstants";
 
-
 const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
   const pathname = usePathname();
   const isActive = pathname === item.path;
@@ -28,7 +27,7 @@ const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
     <>
       <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
       <div className="absolute top-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
-      <div 
+      <div
         className={`
           absolute 
           -left-2 
@@ -42,7 +41,7 @@ const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
       >
         •
       </div>
-      <div 
+      <div
         className={`
           absolute 
           -right-2 
@@ -79,7 +78,7 @@ const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
       {desktopStyles}
       <span className="relative">
         {item.name}
-        <span 
+        <span
           className={`
             absolute
             -bottom-1
@@ -92,7 +91,7 @@ const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
             transition-transform
             duration-300
             ${isActive ? "scale-x-100" : ""}
-          `} 
+          `}
         />
       </span>
     </Link>
@@ -118,7 +117,9 @@ const NavbarComponent: React.FC = () => {
 
   useEffect(() => {
     const currentTheme = resolvedTheme || theme;
-    setLogoSrc(currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png");
+    setLogoSrc(
+      currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png",
+    );
   }, [theme, resolvedTheme]);
 
   useEffect(() => {

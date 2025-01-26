@@ -87,48 +87,51 @@ const SignatureCollection = () => {
       name: "Modern Workstations",
       subtitle: "Smart Ergonomics",
       image: "/images/products/modern_workstation.jpg",
-      description: "Premium ergonomic workstation featuring height-adjustable desk and integrated cable management",
+      description:
+        "Premium ergonomic workstation featuring height-adjustable desk and integrated cable management",
       price: "2499.99",
       features: [
         "Height adjustable",
         "Cable management system",
         "Built-in power outlets",
-        "Anti-fatigue surface"
+        "Anti-fatigue surface",
       ],
       mainCategory: "Workstations",
-      subCategory: "Adjustable Desks"
+      subCategory: "Adjustable Desks",
     },
     {
       id: "s2",
       name: "Storage Solutions",
       subtitle: "Elegant Organization",
       image: "/images/products/storage_solutions.jpg",
-      description: "Contemporary storage system with modular design and premium finish options",
+      description:
+        "Contemporary storage system with modular design and premium finish options",
       price: "1999.99",
       features: [
         "Modular design",
         "Soft-close mechanisms",
         "Premium finishes",
-        "Customizable interior"
+        "Customizable interior",
       ],
       mainCategory: "Storage",
-      subCategory: "Cabinets"
+      subCategory: "Cabinets",
     },
     {
       id: "c3",
       name: "Conference Tables",
       subtitle: "Professional Excellence",
       image: "/images/products/conference_table.jpg",
-      description: "Executive conference table with integrated technology and premium materials",
+      description:
+        "Executive conference table with integrated technology and premium materials",
       price: "3499.99",
       features: [
         "Built-in connectivity",
         "Power integration",
         "Premium wood finish",
-        "Cable management"
+        "Cable management",
       ],
       mainCategory: "Tables",
-      subCategory: "Conference"
+      subCategory: "Conference",
     },
   ];
 

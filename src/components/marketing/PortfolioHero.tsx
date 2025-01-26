@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export const PortfolioHero = () => (
   <section className="relative h-[60vh] overflow-hidden">
@@ -10,9 +10,9 @@ export const PortfolioHero = () => (
       alt="Portfolio Hero"
       className="absolute inset-0 w-full h-full object-cover"
     />
-    
+
     <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-center">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -25,13 +25,14 @@ export const PortfolioHero = () => (
           </span>
         </div>
         <h1 className="text-5xl md:text-7xl font-light mb-6 text-foreground font-serif">
-          Design <span className="font-serif italic text-primary">Excellence</span>
+          Design{" "}
+          <span className="font-serif italic text-primary">Excellence</span>
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Where visionary design meets meticulous craftsmanship - explore our portfolio
-          of transformative commercial interiors.
+          Where visionary design meets meticulous craftsmanship - explore our
+          portfolio of transformative commercial interiors.
         </p>
       </motion.div>
     </div>
   </section>
-)
+);

@@ -1,5 +1,5 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import {
   LayoutGrid,
   Box,
@@ -15,8 +15,8 @@ import {
   Plus,
   Edit2,
   Trash2,
-  Upload
-} from 'lucide-react';
+  Upload,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -72,24 +72,24 @@ interface SidebarItem {
 }
 
 const AdminDashboard = () => {
-  const [activeSection, setActiveSection] = useState('products');
+  const [activeSection, setActiveSection] = useState("products");
 
   const sidebarItems: SidebarItem[] = [
-    { id: 'products', icon: Package, label: 'Products' },
-    { id: 'featured', icon: Star, label: 'Featured Items' },
-    { id: 'categories', icon: LayoutGrid, label: 'Categories' },
-    { id: 'inventory', icon: Box, label: 'Inventory' },
-    { id: 'testimonials', icon: MessageSquare, label: 'Testimonials' },
-    { id: 'portfolio', icon: Image, label: 'Portfolio' },
-    { id: 'company', icon: Building2, label: 'Company Info' },
-    { id: 'users', icon: Users, label: 'User Management' },
+    { id: "products", icon: Package, label: "Products" },
+    { id: "featured", icon: Star, label: "Featured Items" },
+    { id: "categories", icon: LayoutGrid, label: "Categories" },
+    { id: "inventory", icon: Box, label: "Inventory" },
+    { id: "testimonials", icon: MessageSquare, label: "Testimonials" },
+    { id: "portfolio", icon: Image, label: "Portfolio" },
+    { id: "company", icon: Building2, label: "Company Info" },
+    { id: "users", icon: Users, label: "User Management" },
   ];
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'products':
+      case "products":
         return <ProductsSection />;
-      case 'featured':
+      case "featured":
         return <FeaturedSection />;
       default:
         return <div className="text-muted-foreground">Select a section</div>;
@@ -101,10 +101,12 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <div className="w-64 bg-card border-r shadow-sm p-4">
         <div className="mb-8">
-          <h1 className="text-2xl font-extralight tracking-tight mb-2">STARDOM</h1>
+          <h1 className="text-2xl font-extralight tracking-tight mb-2">
+            STARDOM
+          </h1>
           <p className="text-sm text-muted-foreground">Admin Dashboard</p>
         </div>
-        
+
         <nav className="space-y-1">
           {sidebarItems.map((item) => (
             <button
@@ -112,8 +114,8 @@ const AdminDashboard = () => {
               onClick={() => setActiveSection(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                 activeSection === item.id
-                ? 'bg-primary/10 text-primary font-medium'
-                : 'text-muted-foreground hover:bg-secondary'
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:bg-secondary"
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -130,10 +132,7 @@ const AdminDashboard = () => {
           <div className="flex items-center gap-4 flex-1">
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input 
-                placeholder="Search..."
-                className="pl-9 bg-background"
-              />
+              <Input placeholder="Search..." className="pl-9 bg-background" />
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -166,9 +165,7 @@ const AdminDashboard = () => {
 
         {/* Page Content */}
         <div className="flex-1 p-8 overflow-auto">
-          <div className="max-w-6xl mx-auto">
-            {renderContent()}
-          </div>
+          <div className="max-w-6xl mx-auto">{renderContent()}</div>
         </div>
       </div>
     </div>
@@ -179,23 +176,23 @@ const ProductsSection = () => {
   const [products] = useState<Product[]>([
     {
       id: 1,
-      name: 'Executive Desk X1',
-      category: 'Desks',
+      name: "Executive Desk X1",
+      category: "Desks",
       price: 2499,
       stock: 5,
       featured: true,
-      image: '/api/placeholder/400/300',
-      description: 'Premium executive desk with modern design'
+      image: "/api/placeholder/400/300",
+      description: "Premium executive desk with modern design",
     },
     {
       id: 2,
-      name: 'Ergonomic Chair Pro',
-      category: 'Chairs',
+      name: "Ergonomic Chair Pro",
+      category: "Chairs",
       price: 899,
       stock: 12,
       featured: false,
-      image: '/api/placeholder/400/300',
-      description: 'Professional ergonomic office chair'
+      image: "/api/placeholder/400/300",
+      description: "Professional ergonomic office chair",
     },
   ]);
 
@@ -235,9 +232,7 @@ const ProductsSection = () => {
                 className="w-full h-48 object-cover transition-transform group-hover:scale-105"
               />
               {product.featured && (
-                <Badge className="absolute top-4 right-4">
-                  Featured
-                </Badge>
+                <Badge className="absolute top-4 right-4">Featured</Badge>
               )}
             </div>
             <CardHeader>
@@ -285,7 +280,9 @@ const ProductForm = () => {
           <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
           <div className="text-sm text-muted-foreground">
             Drag & drop product image or
-            <Button variant="link" className="px-1">browse</Button>
+            <Button variant="link" className="px-1">
+              browse
+            </Button>
           </div>
         </div>
       </div>
@@ -367,7 +364,9 @@ const FeaturedSection = () => {
               />
               <div className="flex-1">
                 <h4 className="font-medium">Executive Desk X1</h4>
-                <p className="text-sm text-muted-foreground">Featured position: 1</p>
+                <p className="text-sm text-muted-foreground">
+                  Featured position: 1
+                </p>
               </div>
               <Button variant="ghost" size="icon">
                 <ChevronDown className="w-4 h-4" />
@@ -388,7 +387,9 @@ const FeaturedSection = () => {
               </div>
               <div className="flex-1">
                 <h4 className="font-medium">Executive Furniture</h4>
-                <p className="text-sm text-muted-foreground">Featured position: 1</p>
+                <p className="text-sm text-muted-foreground">
+                  Featured position: 1
+                </p>
               </div>
               <Button variant="ghost" size="icon">
                 <ChevronDown className="w-4 h-4" />

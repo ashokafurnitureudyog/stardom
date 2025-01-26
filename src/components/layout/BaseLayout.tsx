@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import NavbarComponent from "./NavbarComponent";
@@ -15,7 +15,7 @@ const BaseLayout = ({
     <div
       className={cn(
         "w-screen flex flex-col justify-between min-h-screen font-sans",
-        className
+        className,
       )}
     >
       <NavbarComponent />

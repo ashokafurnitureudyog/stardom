@@ -1,19 +1,19 @@
-"use client"
-import React, { useEffect, useState } from 'react';
-import { Link } from 'next-view-transitions';
+"use client";
+import React, { useEffect, useState } from "react";
+import { Link } from "next-view-transitions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Sparkles, Construction, Timer } from "lucide-react";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
-const PageComingSoon = ({ 
-  pageName = "This Section", 
-  returnPath = "/", 
-  expectedDate = "Soon" 
+const PageComingSoon = ({
+  pageName = "This Section",
+  returnPath = "/",
+  expectedDate = "Soon",
 }) => {
   const [, setMounted] = useState(false);
-  
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -21,11 +21,11 @@ const PageComingSoon = ({
   const messages = [
     "Crafting Excellence",
     "Perfecting Details",
-    "Design in Progress"
+    "Design in Progress",
   ];
-  
+
   const [messageIndex, setMessageIndex] = useState(0);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % messages.length);
@@ -33,33 +33,35 @@ const PageComingSoon = ({
     return () => clearInterval(interval);
   }, []);
 
-  const decorativeElements = Array(3).fill(null).map((_, i) => (
-    <motion.div
-      key={i}
-      className="absolute rounded-full border border-primary/10"
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ 
-        opacity: [0.4, 0.2, 0.4], 
-        scale: [1, 1.1, 1],
-        rotate: [0, 180, 360]
-      }}
-      transition={{ 
-        duration: 10, 
-        delay: i * 2,
-        repeat: Infinity,
-        ease: "linear"
-      }}
-      style={{
-        width: `${(i + 2) * 100}px`,
-        height: `${(i + 2) * 100}px`,
-      }}
-    />
-  ));
+  const decorativeElements = Array(3)
+    .fill(null)
+    .map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute rounded-full border border-primary/10"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{
+          opacity: [0.4, 0.2, 0.4],
+          scale: [1, 1.1, 1],
+          rotate: [0, 180, 360],
+        }}
+        transition={{
+          duration: 10,
+          delay: i * 2,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        style={{
+          width: `${(i + 2) * 100}px`,
+          height: `${(i + 2) * 100}px`,
+        }}
+      />
+    ));
 
   return (
     <div className="min-h-[80vh] w-full bg-background/95 flex items-center justify-center p-6 relative overflow-hidden font-sans">
       {/* Animated background gradients */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.08),transparent_50%)]"
         animate={{
           opacity: [0.5, 0.8, 0.5],
@@ -68,10 +70,10 @@ const PageComingSoon = ({
         transition={{
           duration: 8,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
       />
-      <motion.div 
+      <motion.div
         className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(var(--primary-rgb),0.08),transparent_50%)]"
         animate={{
           opacity: [0.8, 0.5, 0.8],
@@ -80,7 +82,7 @@ const PageComingSoon = ({
         transition={{
           duration: 8,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
       />
 
@@ -102,7 +104,7 @@ const PageComingSoon = ({
               initial="initial"
               animate="animate"
               variants={{
-                animate: { transition: { staggerChildren: 0.1 } }
+                animate: { transition: { staggerChildren: 0.1 } },
               }}
             >
               {/* Header Section */}
@@ -114,16 +116,16 @@ const PageComingSoon = ({
                 >
                   <Sparkles className="w-8 h-8 text-primary" />
                 </motion.div>
-                
-                <motion.h3 
+
+                <motion.h3
                   className="text-primary/90 uppercase tracking-widest text-sm font-medium"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
                   Refinement in Progress
                 </motion.h3>
-                
-                <motion.h2 
+
+                <motion.h2
                   className="text-3xl md:text-4xl font-light tracking-tight text-foreground font-serif"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -166,7 +168,7 @@ const PageComingSoon = ({
                 animate={{ opacity: 1, y: 0 }}
               >
                 <Link href={returnPath} passHref>
-                  <Button 
+                  <Button
                     variant="outline"
                     className="border-primary/20 hover:bg-primary/5 text-primary/80 group relative overflow-hidden"
                   >

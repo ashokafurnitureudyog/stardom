@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -18,9 +18,9 @@ const Navbar = () => {
 
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
   }, [isMobileMenuOpen]);
 
@@ -39,13 +39,13 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <div className="transform hover:scale-105 transition-transform duration-300">
-            <Image 
-                            src="/images/logo.png" 
-                            width={100} 
-                            height={100} 
-                            alt="Stardom Logo"
-                            className="transform hover:scale-105 transition-transform duration-300" 
-                        />
+              <Image
+                src="/images/logo.png"
+                width={100}
+                height={100}
+                alt="Stardom Logo"
+                className="transform hover:scale-105 transition-transform duration-300"
+              />
             </div>
 
             {/* Coming Soon Text */}
@@ -75,13 +75,17 @@ const Navbar = () => {
       {/* Fullscreen Mobile Menu */}
       <div
         className={`fixed font-sans inset-0 bg-black/90 backdrop-blur-lg z-40 transition-all duration-500 sm:hidden
-          ${isMobileMenuOpen 
-            ? "opacity-100 pointer-events-auto" 
-            : "opacity-0 pointer-events-none"}`}
+          ${
+            isMobileMenuOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          }`}
       >
         <div className="flex flex-col items-center justify-center h-full">
           <nav className="space-y-8 text-center">
-            <div className="block text-3xl text-gray-200 hover:text-white transition-colors duration-200">Coming Soon</div>
+            <div className="block text-3xl text-gray-200 hover:text-white transition-colors duration-200">
+              Coming Soon
+            </div>
           </nav>
         </div>
       </div>

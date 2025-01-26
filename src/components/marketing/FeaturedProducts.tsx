@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-"use client"
+"use client";
 import React from "react";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Button } from "@/components/ui/button";
@@ -95,29 +95,29 @@ export function FeaturedProducts() {
   return (
     <div className="w-full py-40 px-4 font-sans">
       <div className="max-w-7xl mx-auto">
-      <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-32"
         >
-        <div className="text-center mb-32">
-          <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
-            <div className="h-px w-8 bg-primary/40" />
-            <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-              Premium Selection
-            </h3>
+          <div className="text-center mb-32">
+            <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
+              <div className="h-px w-8 bg-primary/40" />
+              <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
+                Premium Selection
+              </h3>
+            </div>
+            <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-12 font-serif">
+              Featured{" "}
+              <span className="font-normal italic text-primary">Products</span>
+            </h2>
+            <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
+              Immerse yourself in a world of unparalleled sophistication. Each
+              piece in our signature collection represents the pinnacle of
+              artisanal craftsmanship and innovative design.
+            </p>
           </div>
-          <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-12 font-serif">
-            Featured{" "}
-            <span className="font-normal italic text-primary">Products</span>
-          </h2>
-          <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-            Immerse yourself in a world of unparalleled sophistication. Each
-            piece in our signature collection represents the pinnacle of
-            artisanal craftsmanship and innovative design.
-          </p>
-        </div>
         </motion.div>
 
         <BentoGrid className="max-w-7xl mx-auto">
@@ -131,11 +131,11 @@ export function FeaturedProducts() {
         </BentoGrid>
 
         <div className="text-center mt-24">
-        <Button 
-            variant="link" 
+          <Button
+            variant="link"
             className="text-neutral-600 dark:hover:text-neutral-400 hover:text-neutral-900 text-lg tracking-wide group transition-all duration-300"
           >
-            View Complete Portfolio 
+            View Complete Portfolio
             <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" />
           </Button>
         </div>

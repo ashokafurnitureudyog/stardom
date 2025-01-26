@@ -7,7 +7,7 @@ export const CategoryFilters = ({
   selectedMain,
   selectedSub,
   onMainSelect,
-  onSubSelect
+  onSubSelect,
 }: {
   categories: Category[];
   selectedMain: string;
@@ -15,15 +15,15 @@ export const CategoryFilters = ({
   onMainSelect: (id: string) => void;
   onSubSelect: (id: string) => void;
 }) => {
-  const currentCategory = categories.find(c => c.id === selectedMain);
-  
+  const currentCategory = categories.find((c) => c.id === selectedMain);
+
   return (
     <div className="border-b">
       <div className="max-w-7xl mx-auto px-6 py-6 space-y-4">
         <ScrollArea className="w-full whitespace-nowrap">
           <Tabs value={selectedMain} onValueChange={onMainSelect}>
             <TabsList className="h-12">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <TabsTrigger
                   key={category.id}
                   value={category.id}
@@ -43,7 +43,7 @@ export const CategoryFilters = ({
               <TabsTrigger value="all" className="px-4">
                 All {currentCategory.name}
               </TabsTrigger>
-              {currentCategory.subcategories.map(sub => (
+              {currentCategory.subcategories.map((sub) => (
                 <TabsTrigger key={sub.id} value={sub.id} className="px-4">
                   {sub.name}
                 </TabsTrigger>

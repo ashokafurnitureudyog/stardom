@@ -100,8 +100,12 @@ export function FancyTestimonialsSlider({
                   {testimonial.quote}
                 </p>
                 <div className="space-y-2">
-                  <p className="text-foreground font-medium">{testimonial.name}</p>
-                  <p className="text-sm text-primary/80 uppercase tracking-wider">{testimonial.role}</p>
+                  <p className="text-foreground font-medium">
+                    {testimonial.name}
+                  </p>
+                  <p className="text-sm text-primary/80 uppercase tracking-wider">
+                    {testimonial.role}
+                  </p>
                 </div>
               </div>
             </Transition>
@@ -120,7 +124,7 @@ export function FancyTestimonialsSlider({
               "border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
               active === index
                 ? "border-primary/20 bg-primary/5 text-primary"
-                : "border-transparent text-muted-foreground hover:text-primary/60"
+                : "border-transparent text-muted-foreground hover:text-primary/60",
             )}
             onClick={() => {
               setActive(index);

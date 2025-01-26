@@ -8,10 +8,7 @@ import { ArrowRightIcon } from "lucide-react";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
 
 const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
-  <motion.div
-    whileHover={{ scale: 1.02 }}
-    className="relative group"
-  >
+  <motion.div whileHover={{ scale: 1.02 }} className="relative group">
     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg transform -rotate-1" />
     <div className="relative p-8 border-l-2 border-primary/30">
       <NumberTicker
@@ -19,12 +16,17 @@ const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
         value={value}
       />
       <span className="text-primary text-5xl font-serif ml-1">+</span>
-      <p className="text-muted-foreground/90 mt-3 text-lg tracking-wide">{label}</p>
+      <p className="text-muted-foreground/90 mt-3 text-lg tracking-wide">
+        {label}
+      </p>
     </div>
   </motion.div>
 );
 
-const ImagePanel: React.FC<{ src: string; index: number }> = ({ src, index }) => (
+const ImagePanel: React.FC<{ src: string; index: number }> = ({
+  src,
+  index,
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -68,15 +70,19 @@ const LegacySection: React.FC = () => {
                   Heritage of Excellence
                 </h3>
               </div>
-              
+
               <h2 className="text-5xl lg:text-7xl font-light tracking-tight text-foreground">
                 <span className="font-serif">Crafting</span>{" "}
-                <span className="text-primary/90 font-serif italic">Elegance</span>
+                <span className="text-primary/90 font-serif italic">
+                  Elegance
+                </span>
                 <div className="text-4xl lg:text-5xl mt-4 flex items-center gap-4">
-                  <span className="font-light">Since {BasicCompanyInfo.established}</span>
+                  <span className="font-light">
+                    Since {BasicCompanyInfo.established}
+                  </span>
                 </div>
               </h2>
-              
+
               <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
                 From our inception as Ashoka Furniture Udyog to our position as
                 an industry leader in luxury office furniture, we have

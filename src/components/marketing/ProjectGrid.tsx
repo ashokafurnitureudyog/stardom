@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import { AnimatePresence, motion } from "framer-motion"
-import { Project } from "@/types/ComponentTypes"
-import { ProjectCard } from "./ProjectCard"
+import { AnimatePresence, motion } from "framer-motion";
+import { Project } from "@/types/ComponentTypes";
+import { ProjectCard } from "./ProjectCard";
 
 type ProjectGridProps = {
-  projects: Project[]
-  onProjectSelect: (project: Project) => void
-}
+  projects: Project[];
+  onProjectSelect: (project: Project) => void;
+};
 
-export const ProjectGrid = ({ projects, onProjectSelect }: ProjectGridProps) => (
-  <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+export const ProjectGrid = ({
+  projects,
+  onProjectSelect,
+}: ProjectGridProps) => (
+  <motion.div
+    layout
+    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+  >
     <AnimatePresence>
       {projects.map((project) => (
         <ProjectCard
@@ -21,4 +27,4 @@ export const ProjectGrid = ({ projects, onProjectSelect }: ProjectGridProps) => 
       ))}
     </AnimatePresence>
   </motion.div>
-)
+);

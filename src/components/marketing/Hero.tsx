@@ -12,7 +12,6 @@ import {
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
 
-
 const AnimatedText: React.FC<AnimatedTextProps> = ({
   children,
   delay = 2,
@@ -103,7 +102,7 @@ const BackgroundSlideshow: React.FC = () => {
 const HeroSection: React.FC = () => {
   const buttonBaseClass = useMemo(
     () => "min-w-[240px] h-14 text-lg tracking-wide",
-    []
+    [],
   );
 
   return (
@@ -151,8 +150,8 @@ const HeroSection: React.FC = () => {
             delay={0.6}
             className="text-white/80 text-lg mb-12 leading-relaxed"
           >
-            Experience the fusion of artisanal craftsmanship and contemporary 
-            luxury in every piece. Creating distinguished office environments 
+            Experience the fusion of artisanal craftsmanship and contemporary
+            luxury in every piece. Creating distinguished office environments
             for those who demand excellence.
           </AnimatedText>
 

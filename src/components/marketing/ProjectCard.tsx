@@ -1,9 +1,14 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ProjectCardProps } from "@/types/ComponentTypes"
+import { motion } from "framer-motion";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ProjectCardProps } from "@/types/ComponentTypes";
 
 export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
   <motion.div
@@ -16,8 +21,8 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
   >
     <Card className="overflow-hidden">
       <div className="relative h-64 overflow-hidden">
-        <img 
-          src={project.thumbnail} 
+        <img
+          src={project.thumbnail}
           alt={project.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -28,9 +33,11 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
         </div>
       </div>
       <CardHeader>
-        <CardTitle className="font-serif text-2xl font-light">{project.title}</CardTitle>
+        <CardTitle className="font-serif text-2xl font-light">
+          {project.title}
+        </CardTitle>
         <CardDescription>{project.category.toString()}</CardDescription>
       </CardHeader>
     </Card>
   </motion.div>
-)
+);

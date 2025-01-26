@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export const ProductsHero = () => (
   <section className="relative h-[40vh] overflow-hidden">
@@ -21,10 +21,10 @@ export const ProductsHero = () => (
           Our <span className="font-serif italic text-primary">Collection</span>
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl">
-          Discover our curated selection of premium office furniture,
-          where every piece tells a story of exceptional craftsmanship.
+          Discover our curated selection of premium office furniture, where
+          every piece tells a story of exceptional craftsmanship.
         </p>
       </motion.div>
     </div>
   </section>
-)
+);
