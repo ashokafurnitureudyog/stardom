@@ -5,7 +5,7 @@ import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
 
 export const HeritageHero = () => (
-  <section className="relative min-h-[60vh] flex items-center justify-center text-white overflow-hidden font-sans">
+  <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
     {/* Background */}
     <div className="absolute inset-0 w-full h-full">
       <img

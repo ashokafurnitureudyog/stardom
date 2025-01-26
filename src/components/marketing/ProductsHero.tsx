@@ -6,7 +6,7 @@ import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
 
 export const ProductsHero = () => (
-  <section className="relative min-h-[60vh] flex items-center justify-center text-white overflow-hidden font-sans">
+  <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
     <div className="absolute inset-0 w-full h-full">
       <img
         src="https://images.unsplash.com/photo-1497366216548-37526070297c"
@@ -40,7 +40,8 @@ export const ProductsHero = () => (
           transition={{ duration: 1, delay: 0.2 }}
         >
           <h1 className="text-6xl lg:text-7xl tracking-tight mb-4 font-extralight">
-            Our <span className="font-serif italic text-primary">Collection</span>
+            Our{" "}
+            <span className="font-serif italic text-primary">Collection</span>
           </h1>
           <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
           <p className="text-2xl text-white/90 font-serif">
@@ -59,7 +60,11 @@ export const ProductsHero = () => (
           className="text-3xl lg:text-4xl font-light leading-tight mb-8"
         >
           <h2>
-            Where <span className="text-primary font-serif italic">Craftsmanship</span> Meets{" "}
+            Where{" "}
+            <span className="text-primary font-serif italic">
+              Craftsmanship
+            </span>{" "}
+            Meets{" "}
             <span className="text-primary font-serif italic">Innovation</span>
           </h2>
         </motion.div>
@@ -71,9 +76,9 @@ export const ProductsHero = () => (
           transition={{ duration: 1, delay: 0.6 }}
           className="text-white/80 text-lg mb-12 leading-relaxed"
         >
-          Explore our signature pieces that redefine office luxury. Each creation 
-          embodies our legacy of precision engineering and artistic vision, 
-          offering unparalleled comfort and sophistication.
+          Explore our signature pieces that redefine office luxury. Each
+          creation embodies our legacy of precision engineering and artistic
+          vision, offering unparalleled comfort and sophistication.
         </motion.div>
 
         <motion.div
