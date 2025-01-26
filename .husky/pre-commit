@@ -1,3 +1,2 @@
 npx lint-staged
 npx tsc || exit 1
-git add -A .

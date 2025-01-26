@@ -65,6 +65,6 @@
     "typescript": "^5"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "npx prettier --write --ignore-unknown"
   }
 }
