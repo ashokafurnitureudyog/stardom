@@ -1,4 +1,3 @@
-// components/portfolio/ProjectCard.tsx
 "use client"
 
 import { motion } from "framer-motion"
@@ -30,7 +29,7 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
       </div>
       <CardHeader>
         <CardTitle className="font-serif text-2xl font-light">{project.title}</CardTitle>
-        <CardDescription>{project.category}</CardDescription>
+        <CardDescription>{project.category.toString()}</CardDescription>
       </CardHeader>
     </Card>
   </motion.div>

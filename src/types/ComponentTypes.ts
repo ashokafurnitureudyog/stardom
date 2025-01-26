@@ -15,13 +15,6 @@ export interface MenuLinkProps {
   item: MenuItem;
   isMobile?: boolean;
 }
-
-export interface Product {
-  id: string;
-  title: string;
-  subtitle: string;
-  image: string;
-}
 export interface Feature {
   icon: React.ReactNode;
   title: string;
@@ -67,7 +60,7 @@ export interface FormData {
   subject: string;
   message: string;
 }
-export type Category =
+export type PortfolioCategory =
   | "All Projects"
   | "Executive Offices"
   | "Conference Rooms"
@@ -76,7 +69,7 @@ export type Category =
 export interface Project {
   id: number;
   title: string;
-  category: Category;
+  category: PortfolioCategory;
   thumbnail: string;
   description: string;
   challenge: string;
@@ -117,4 +110,22 @@ export interface Achievement {
   title: string;
   description: string;
   icon: React.FC<{ className?: string }>;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  subtitle: string;
+  mainCategory?: string;
+  subCategory?: string;
+  description: string;
+  price: string;
+  image: string;
+  features: string[];
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  subcategories?: Category[];
 }

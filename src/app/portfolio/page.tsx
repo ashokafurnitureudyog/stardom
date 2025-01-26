@@ -6,10 +6,10 @@ import { PortfolioCTA } from '@/components/marketing/PortfolioCTA';
 import { PortfolioHero } from '@/components/marketing/PortfolioHero';
 import { ProjectDetails } from '@/components/marketing/ProjectDetails';
 import { ProjectGrid } from '@/components/marketing/ProjectGrid';
-import { Category, Project } from '@/types/ComponentTypes';
+import { PortfolioCategory, Project } from '@/types/ComponentTypes';
 import React from 'react'
 
-const categories: Category[] = [
+const categories: PortfolioCategory[] = [
   "All Projects",
   "Executive Offices",
   "Conference Rooms",
@@ -41,7 +41,7 @@ const projects: Project[] = [
 ];
 
 const PortfolioPage = () => {
-  const [selectedCategory, setSelectedCategory] = React.useState<Category>("All Projects")
+  const [selectedCategory, setSelectedCategory] = React.useState<PortfolioCategory>("All Projects")
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(null)
   const [filteredProjects, setFilteredProjects] = React.useState(projects)
 

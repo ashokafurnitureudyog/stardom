@@ -1,10 +1,10 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Category } from "@/types/ComponentTypes"
+import { PortfolioCategory } from "@/types/ComponentTypes"
 
 type CategoryTabsProps = {
-  categories: Category[]
-  selectedCategory: Category
-  onCategoryChange: (category: Category) => void
+  categories: PortfolioCategory[]
+  selectedCategory: PortfolioCategory
+  onCategoryChange: (category: PortfolioCategory) => void
 }
 
 export const CategoryTabs = ({

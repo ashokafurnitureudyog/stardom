@@ -1,13 +1,17 @@
 "use client";
-import React from 'react';
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { HomeIcon, Package, Clock, ArrowRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { Feature, Product } from '@/types/ComponentTypes';
+import { Feature, Product } from "@/types/ComponentTypes";
 
-
-
-const ProductCard = ({ product, index }: { product: Product; index: number }) => (
+const ProductCard = ({
+  product,
+  index,
+}: {
+  product: Product;
+  index: number;
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -17,17 +21,17 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
     {/* Decorative corner elements */}
     <div className="absolute top-0 left-0 w-16 h-16 border-t border-l border-primary/20 opacity-0 group-hover:opacity-100 transition-all duration-500" />
     <div className="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-primary/20 opacity-0 group-hover:opacity-100 transition-all duration-500" />
-    
+
     <div className="relative overflow-hidden">
       <div className="aspect-[4/3] w-full">
-        <img 
+        <img
           src={product.image}
-          alt={product.title}
+          alt={product.name}
           className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transform transition-all duration-1000 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 group-hover:opacity-0 transition-opacity duration-500" />
       </div>
-      
+
       <div className="absolute bottom-0 left-0 right-0 p-12 bg-gradient-to-t from-background via-background/95 to-transparent transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -35,15 +39,12 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h3 className="text-3xl font-light text-foreground mb-4 font-serif">
-            {product.title}
+            {product.name}
           </h3>
           <p className="text-primary/90 tracking-wider uppercase text-sm mb-6 font-medium">
             {product.subtitle}
           </p>
-          <Button 
-            variant="ghost" 
-            className="group/btn hover:bg-primary/5 px-6"
-          >
+          <Button variant="ghost" className="group/btn hover:bg-primary/5 px-6">
             Discover
             <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform duration-300" />
           </Button>
@@ -53,9 +54,13 @@ const ProductCard = ({ product, index }: { product: Product; index: number }) =>
   </motion.div>
 );
 
-
-
-const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) => (
+const FeatureCard = ({
+  feature,
+  index,
+}: {
+  feature: Feature;
+  index: number;
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -70,9 +75,7 @@ const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) =>
       <h3 className="text-xl font-medium text-foreground mb-4 tracking-wide">
         {feature.title}
       </h3>
-      <p className="text-muted-foreground/80 text-lg">
-        {feature.description}
-      </p>
+      <p className="text-muted-foreground/80 text-lg">{feature.description}</p>
     </div>
   </motion.div>
 );
@@ -80,41 +83,74 @@ const FeatureCard = ({ feature, index }: { feature: Feature; index: number }) =>
 const SignatureCollection = () => {
   const products = [
     {
-      id: 'c2',
-      title: 'Artisanal Seating',
-      subtitle: 'Collaborative Excellence',
-      image: '/images/products/Seating_display.jpg'
+      id: "m1",
+      name: "Modern Workstations",
+      subtitle: "Smart Ergonomics",
+      image: "/images/products/modern_workstation.jpg",
+      description: "Premium ergonomic workstation featuring height-adjustable desk and integrated cable management",
+      price: "2499.99",
+      features: [
+        "Height adjustable",
+        "Cable management system",
+        "Built-in power outlets",
+        "Anti-fatigue surface"
+      ],
+      mainCategory: "Workstations",
+      subCategory: "Adjustable Desks"
     },
     {
-      id: 'x1',
-      title: 'Executive Desks',
-      subtitle: 'Refined Sophistication',
-      image: '/images/products/exec-desk_display.jpg'
+      id: "s2",
+      name: "Storage Solutions",
+      subtitle: "Elegant Organization",
+      image: "/images/products/storage_solutions.jpg",
+      description: "Contemporary storage system with modular design and premium finish options",
+      price: "1999.99",
+      features: [
+        "Modular design",
+        "Soft-close mechanisms",
+        "Premium finishes",
+        "Customizable interior"
+      ],
+      mainCategory: "Storage",
+      subCategory: "Cabinets"
     },
     {
-      id: 'e3',
-      title: 'Luxury Lounges',
-      subtitle: 'Comfort Redefined',
-      image: '/images/products/luxury_lounge_display.jpg'
-    }
+      id: "c3",
+      name: "Conference Tables",
+      subtitle: "Professional Excellence",
+      image: "/images/products/conference_table.jpg",
+      description: "Executive conference table with integrated technology and premium materials",
+      price: "3499.99",
+      features: [
+        "Built-in connectivity",
+        "Power integration",
+        "Premium wood finish",
+        "Cable management"
+      ],
+      mainCategory: "Tables",
+      subCategory: "Conference"
+    },
   ];
 
   const features = [
     {
       icon: <HomeIcon className="w-8 h-8 text-primary/90" />,
       title: "Artisanal Customization",
-      description: "Meticulously crafted solutions tailored to discerning brands and distinguished partners"
+      description:
+        "Meticulously crafted solutions tailored to discerning brands and distinguished partners",
     },
     {
       icon: <Package className="w-8 h-8 text-primary/90" />,
       title: "Elite Logistics Network",
-      description: "Sophisticated nationwide distribution infrastructure serving premium retailers and distinguished clientele"
+      description:
+        "Sophisticated nationwide distribution infrastructure serving premium retailers and distinguished clientele",
     },
     {
       icon: <Clock className="w-8 h-8 text-primary/90" />,
       title: "Expedited Craftsmanship",
-      description: "Precision-engineered production ensuring swift fulfillment of prestigious bulk orders within 10-12 days"
-    }
+      description:
+        "Precision-engineered production ensuring swift fulfillment of prestigious bulk orders within 10-12 days",
+    },
   ];
 
   return (
@@ -124,7 +160,7 @@ const SignatureCollection = () => {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
 
       <div className="max-w-7xl mx-auto relative">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -136,15 +172,18 @@ const SignatureCollection = () => {
               Curated Excellence
             </h3>
           </div>
-          
+
           <h2 className="text-5xl md:text-7xl font-light tracking-tight text-foreground mb-8">
             <span className="font-serif">Signature</span>{" "}
-            <span className="text-primary/90 font-serif italic">Collection</span>
+            <span className="text-primary/90 font-serif italic">
+              Collection
+            </span>
           </h2>
-          
+
           <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-            Discover our most prestigious pieces, where form meets function in perfect harmony.
-            Each creation embodies the epitome of luxury office furnishing.
+            Discover our most prestigious pieces, where form meets function in
+            perfect harmony. Each creation embodies the epitome of luxury office
+            furnishing.
           </p>
         </motion.div>
 
@@ -163,7 +202,7 @@ const SignatureCollection = () => {
         </div>
 
         {/* CTA Button */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
