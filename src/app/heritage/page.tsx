@@ -131,7 +131,7 @@ const HeritagePage: React.FC = () => {
           
           <div className="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-center">
             <motion.div {...fadeInUpVariant}>
-              <h1 className="text-5xl md:text-7xl font-light mb-6 text-foreground">
+              <h1 className="text-5xl md:text-7xl font-light mb-6 text-foreground font-serif">
                 Our <span className="font-serif italic text-primary">Heritage</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl">

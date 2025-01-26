@@ -67,3 +67,36 @@ export interface FormData {
   subject: string;
   message: string;
 }
+export type Category =
+  | "All Projects"
+  | "Executive Offices"
+  | "Conference Rooms"
+  | "Lounges"
+  | "Collaborative Spaces";
+export interface Project {
+  id: number;
+  title: string;
+  category: Category;
+  thumbnail: string;
+  description: string;
+  challenge: string;
+  solution: string;
+  impact: string;
+  testimonial: Testimonial;
+  gallery: string[];
+}
+export interface Testimonial {
+  quote: string;
+  author: string;
+  position: string;
+}
+export interface ProjectCardProps {
+  project: Project;
+  onClick: () => void;
+}
+
+export interface ProjectDetailsProps {
+  project: Project | null;
+  open: boolean;
+  onClose: () => void;
+}

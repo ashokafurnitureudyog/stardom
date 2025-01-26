@@ -50,7 +50,7 @@ const Footer = () => {
               </div>
               <p className="text-muted-foreground/80 leading-relaxed">
                 A premium collection of luxury office furniture by Ashoka
-                Furniture Udyog. Crafting elegance and functionality since 1997.
+                Furniture Udyog. Crafting elegance and functionality since 1996.
               </p>
               <div className="flex gap-6">
                 {[
