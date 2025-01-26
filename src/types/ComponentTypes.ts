@@ -100,3 +100,21 @@ export interface ProjectDetailsProps {
   open: boolean;
   onClose: () => void;
 }
+export interface TimelineEvent {
+  year: string;
+  title: string;
+  description: string;
+}
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+}
+
+export interface Achievement {
+  title: string;
+  description: string;
+  icon: React.FC<{ className?: string }>;
+}
