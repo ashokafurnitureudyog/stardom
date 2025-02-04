@@ -29,6 +29,7 @@ const TestimonialsSection = () => {
     },
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const stats = [
     { value: "98%", label: "Client Satisfaction", icon: "★" },
     { value: "250+", label: "Projects Completed", icon: "✦" },
@@ -69,7 +70,7 @@ const TestimonialsSection = () => {
 
         <FancyTestimonialsSlider testimonials={testimonials} />
 
-        <div className="grid grid-cols-3 gap-8 pt-12 border-t border-primary/10">
+        {/* <div className="grid grid-cols-3 gap-8 pt-12 border-t border-primary/10">
           {stats.map((stat, index) => (
             <div key={index} className="text-center space-y-3">
               <span className="text-primary/40 text-2xl">{stat.icon}</span>
@@ -81,7 +82,7 @@ const TestimonialsSection = () => {
               </p>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

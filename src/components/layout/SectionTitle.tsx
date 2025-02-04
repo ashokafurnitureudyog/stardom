@@ -10,6 +10,6 @@ export const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     variants={fadeInUpVariants}
     className="text-center mb-16"
   >
-    <h2 className="text-4xl font-light mb-6">{children}</h2>
+    <h2 className="text-5xl font-light mb-6">{children}</h2>
   </motion.div>
 );
