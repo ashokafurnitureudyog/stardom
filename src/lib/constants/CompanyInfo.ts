@@ -31,9 +31,15 @@ export const socialLinks: SocialLink[] = [
 
 export const teamMembers: TeamMember[] = [
   {
-    name: "Rajesh Kumar",
-    role: "Managing Director",
+    name: "Sandeep Jain",
+    role: "Founder & Director",
     bio: "30+ years of expertise in luxury furniture manufacturing",
-    image: "https://images.unsplash.com/photo-1664575602554-2087b04935a5",
+    image: "https://images.unsplash.com/photo-1553484771-cc0d9b8c2b33",
+  },
+  {
+    name: "Ishaan Jain",
+    role: "Co-Founder & Director",
+    bio: "Young entrepreneur with business acumen and hands-on experience",
+    image: "/images/team/ishaan.png",
   },
 ];

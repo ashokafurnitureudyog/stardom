@@ -17,7 +17,7 @@ export const MissionStatement = () => (
       className="text-5xl font-light mb-8 tracking-wide"
     >
       Our{" "}
-      <span className="font-serif italic text-primary relative">Mission</span>
+      <span className="font-serif italic text-primary relative">Vision</span>
     </motion.h2>
     <motion.p
       initial={{ opacity: 0 }}
@@ -25,15 +25,13 @@ export const MissionStatement = () => (
       transition={{ delay: 0.4, duration: 0.8 }}
       className="text-xl text-muted-foreground leading-relaxed font-light"
     >
-      To craft furniture that transcends utility, creating spaces where
-      <span className="text-primary font-medium">
-        {" "}
-        innovation meets tradition
-      </span>
-      , and where every piece tells a story of
-      <span className="text-primary font-medium"> excellence</span>,
-      <span className="text-primary font-medium"> sustainability</span>, and
-      <span className="text-primary font-medium"> timeless elegance</span>.
+      To create extraordinary masterpieces that exemplify the pinnacle of
+      <span className="text-primary font-medium"> artisanal craftsmanship</span>
+      . Each bespoke piece embodies our dedication to
+      <span className="text-primary font-medium"> unparalleled quality</span>,
+      <span className="text-primary font-medium"> refined sophistication</span>,
+      and
+      <span className="text-primary font-medium"> enduring luxury</span>.
     </motion.p>
   </motion.div>
 );

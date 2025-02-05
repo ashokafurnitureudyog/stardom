@@ -7,24 +7,24 @@ import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      name: "Sarah Chen",
-      role: "Chief Architect, Azure Design Co.",
+      name: "Rajesh Kumar",
+      role: "Chief Architect, Infinity Designs",
       quote:
-        "Stardom's attention to detail and commitment to quality has transformed our office space into a masterpiece of design and functionality.",
+        "Stardom's meticulous craftsmanship and innovative designs have completely transformed our corporate headquarters. Their furniture perfectly balances aesthetics with functionality.",
       img: "https://avatar.iran.liara.run/public",
     },
     {
-      name: "James Morrison",
-      role: "MD, Global Finance Corp",
+      name: "Priya Sharma",
+      role: "Director, Global Spaces Ltd",
       quote:
-        "The level of craftsmanship and personalized service we received from Stardom exceeded all our expectations.",
+        "The quality and elegance of Stardom's furniture collection has elevated our office ambiance. Their team's professional approach and attention to detail is commendable.",
       img: "https://avatar.iran.liara.run/public",
     },
     {
-      name: "Priya Patel",
-      role: "Interior Designer, Nexus Interiors",
+      name: "Amit Verma",
+      role: "Principal Designer, Ethereal Interiors",
       quote:
-        "Working with Stardom has been a revelation. Their pieces are not just furniture, they're statements of luxury and sophistication.",
+        "As an interior designer, I've worked with many furniture brands, but Stardom's commitment to excellence and contemporary designs sets them apart in the industry.",
       img: "https://avatar.iran.liara.run/public",
     },
   ];

@@ -1,15 +1,20 @@
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
-import { CultureGallery } from "@/components/marketing/CultureGallery";
+import CertificationsSection from "@/components/marketing/CertificationSection";
 import { HeritageHero } from "@/components/marketing/HeritageHero";
 import { MissionStatement } from "@/components/marketing/MissionStatement";
 import { TeamSection } from "@/components/marketing/TeamSection";
-import TestimonialsSection from "@/components/marketing/Testimonials";
+import TestingToolsSection from "@/components/marketing/TestingTools";
+import {
+  AnimatedSpan,
+  Terminal,
+  TypingAnimation,
+} from "@/components/ui/terminal";
 import { Timeline } from "@/components/ui/timeline";
-import WorldMap from "@/components/ui/world-map";
 import { teamMembers } from "@/lib/constants/CompanyInfo";
-const data = [
+
+const timelineData = [
   {
     title: "1996",
     content: (
@@ -37,7 +42,8 @@ const data = [
     content: (
       <div>
         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Expanded operations to nearby regions of Punjab, Haryana and Himachal
+          Expanded operations across Northern India including Delhi NCR, Punjab,
+          Haryana, Himachal Pradesh and Uttar Pradesh
         </p>
         <div className="grid grid-cols-2 gap-4">
           <img
@@ -59,42 +65,13 @@ const data = [
     content: (
       <div>
         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Started international business operations with China
+          Expanded into international markets and global partnerships
         </p>
         <div>
-          <WorldMap
-            dots={[
-              {
-                start: {
-                  lat: 30.7333,
-                  lng: 76.7794,
-                }, // Chandigarh
-                end: {
-                  lat: 19.076,
-                  lng: 72.8777,
-                }, // Mumbai
-              },
-              {
-                start: { lat: 30.7333, lng: 76.7794 }, // Chandigarh
-                end: { lat: 39.9042, lng: 116.4074 }, // Beijing
-              },
-              {
-                start: { lat: 30.7333, lng: 76.7794 }, // Chandigarh
-                end: { lat: 31.2304, lng: 121.4737 }, // Shanghai
-              },
-              {
-                start: { lat: 30.7333, lng: 76.7794 }, // Chandigarh
-                end: { lat: 30.5723, lng: 104.0665 }, // Chengdu
-              },
-              {
-                start: { lat: 30.7333, lng: 76.7794 }, // Chandigarh
-                end: { lat: 43.1332, lng: 131.9113 }, // Vladivostok
-              },
-              {
-                start: { lat: 30.7333, lng: 76.7794 }, // Chandigarh
-                end: { lat: 1.3521, lng: 103.8198 }, // Singapore
-              },
-            ]}
+          <img
+            src="https://images.unsplash.com/photo-1536731578915-ab4e400a6395"
+            alt="Local showroom"
+            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
           />
         </div>
       </div>
@@ -105,20 +82,14 @@ const data = [
     content: (
       <div>
         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Established Stardom as a premium furniture brand
+          Launched Stardom as a premium furniture brand under Ashoka Furniture
+          Udyog
         </p>
-        <div className="grid grid-cols-2 gap-4">
-          <img
-            src="/images/logo.png"
-            alt="Stardom launch"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
-          <img
-            src="https://images.unsplash.com/photo-1647943499244-032308c2088a"
-            alt="Premium collection"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
-        </div>
+        <img
+          src="/images/logo.png"
+          alt="Stardom launch"
+          className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+        />
       </div>
     ),
   },
@@ -129,20 +100,55 @@ const data = [
         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
           Integrated modern solutions and expanded online presence
         </p>
-        <div className="grid grid-cols-2 gap-4">
-          <img
-            src="https://images.unsplash.com/photo-1472851294608-062f824d29cc"
-            alt="Digital platform"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
-        </div>
+        <Terminal>
+          <TypingAnimation>
+            &gt; stardom.init --digital-transformation
+          </TypingAnimation>
+
+          <AnimatedSpan delay={1500} className="text-green-500">
+            <span>✔ Launching stardom.co.in</span>
+          </AnimatedSpan>
+
+          <AnimatedSpan delay={2000} className="text-green-500">
+            <span>✔ Enabling online furniture catalog</span>
+          </AnimatedSpan>
+
+          <AnimatedSpan delay={2500} className="text-green-500">
+            <span>✔ Setting up virtual showroom tours</span>
+          </AnimatedSpan>
+
+          <AnimatedSpan delay={3000} className="text-green-500">
+            <span>✔ Implementing digital design consultations</span>
+          </AnimatedSpan>
+
+          <AnimatedSpan delay={3500} className="text-green-500">
+            <span>✔ Creating detailed product catalogs</span>
+          </AnimatedSpan>
+
+          <AnimatedSpan delay={4000} className="text-green-500">
+            <span>✔ Building customer support portal</span>
+          </AnimatedSpan>
+
+          <AnimatedSpan delay={4500} className="text-blue-500">
+            <span>🎉 Digital presence established!</span>
+          </AnimatedSpan>
+
+          <TypingAnimation delay={5000} className="text-muted-foreground">
+            Welcome to the future of furniture shopping
+          </TypingAnimation>
+
+          <TypingAnimation delay={5500} className="text-muted-foreground">
+            Experience Stardom anywhere, anytime
+          </TypingAnimation>
+        </Terminal>
       </div>
     ),
   },
 ];
-const HeritagePage = () => {
+
+const HeritagePage: React.FC = () => {
   return (
-    <BaseLayout>
+    <BaseLayout className="overflow-x-hidden lg:overflow-auto">
       <div className="min-h-screen bg-background font-sans">
         <HeritageHero />
 
@@ -154,7 +160,21 @@ const HeritagePage = () => {
           <SectionTitle>
             Our <span className="font-serif italic text-primary">Journey</span>
           </SectionTitle>
-          <Timeline data={data} />
+          <Timeline data={timelineData} />
+        </Section>
+        <Section className="bg-background">
+          <SectionTitle>
+            Our{" "}
+            <span className="font-serif italic text-primary">Standards</span>
+          </SectionTitle>
+          <CertificationsSection />
+        </Section>
+        <Section className="bg-background">
+          <SectionTitle>
+            Testing{" "}
+            <span className="font-serif italic text-primary">Equipment</span>
+          </SectionTitle>
+          <TestingToolsSection />
         </Section>
 
         <Section className="bg-card">
@@ -163,15 +183,6 @@ const HeritagePage = () => {
           </SectionTitle>
           <TeamSection members={teamMembers} />
         </Section>
-
-        <Section className="bg-card">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Culture</span>
-          </SectionTitle>
-          <CultureGallery />
-        </Section>
-
-        <TestimonialsSection />
       </div>
     </BaseLayout>
   );
