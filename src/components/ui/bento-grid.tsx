@@ -3,6 +3,7 @@ import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { LucideIcon } from "lucide-react";
 
 type BentoGridProps = {
   children: ReactNode;
@@ -13,7 +14,7 @@ type BentoCardProps = {
   name: string;
   className: string;
   background: ReactNode;
-  Icon: React.ElementType;
+  Icon: LucideIcon;
   description: string;
   href: string;
   cta: string;

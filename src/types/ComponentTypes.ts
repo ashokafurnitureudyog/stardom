@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 export interface CarouselProps {
   images: string[];
 }
@@ -49,7 +51,7 @@ export interface FAQ {
 }
 
 export interface SocialLink {
-  icon: React.ElementType;
+  icon: LucideIcon;
   url: string;
 }
 

@@ -65,9 +65,11 @@ interface Product {
   description?: string;
 }
 
+import { LucideIcon } from "lucide-react";
+
 interface SidebarItem {
   id: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   label: string;
 }
 
