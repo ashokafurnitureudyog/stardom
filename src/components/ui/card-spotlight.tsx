@@ -23,6 +23,7 @@ export const CardSpotlight = ({
     clientX,
     clientY,
   }: ReactMouseEvent<HTMLDivElement>) {
+    // eslint-disable-next-line prefer-const
     let { left, top } = currentTarget.getBoundingClientRect();
 
     mouseX.set(clientX - left);
