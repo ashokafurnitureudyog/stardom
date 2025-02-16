@@ -1,11 +1,11 @@
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
-import CertificationsSection from "@/components/marketing/CertificationSection";
 import { HeritageHero } from "@/components/marketing/HeritageHero";
 import { MissionStatement } from "@/components/marketing/MissionStatement";
 import { TeamSection } from "@/components/marketing/TeamSection";
 import TestingToolsSection from "@/components/marketing/TestingTools";
+import { LogoRevealCard } from "@/components/shared/RevealCard";
 import {
   AnimatedSpan,
   Terminal,
@@ -14,6 +14,7 @@ import {
 import { Timeline } from "@/components/ui/timeline";
 import { teamMembers } from "@/lib/constants/CompanyInfo";
 
+//Will not shift to constants as it integrates react components
 const timelineData = [
   {
     title: "1996",
@@ -85,11 +86,12 @@ const timelineData = [
           Launched Stardom as a premium furniture brand under Ashoka Furniture
           Udyog
         </p>
-        <img
-          src="/images/logo.png"
-          alt="Stardom launch"
-          className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-        />
+        <div className="flex items-center justify-center w-full mx-auto">
+          <LogoRevealCard
+            imageUrl="/images/logo.png"
+            revealText="stardom.co.in"
+          />
+        </div>
       </div>
     ),
   },
@@ -98,47 +100,45 @@ const timelineData = [
     content: (
       <div>
         <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Integrated modern solutions and expanded online presence
+          Launched comprehensive digital product showcase platform
         </p>
         <Terminal>
-          <TypingAnimation>
-            &gt; stardom.init --digital-transformation
-          </TypingAnimation>
+          <TypingAnimation>&gt; stardom.init --digital-catalog</TypingAnimation>
 
           <AnimatedSpan delay={1500} className="text-green-500">
             <span>✔ Launching stardom.co.in</span>
           </AnimatedSpan>
 
           <AnimatedSpan delay={2000} className="text-green-500">
-            <span>✔ Enabling online furniture catalog</span>
+            <span>✔ Creating extensive product catalog</span>
           </AnimatedSpan>
 
           <AnimatedSpan delay={2500} className="text-green-500">
-            <span>✔ Setting up virtual showroom tours</span>
+            <span>✔ Adding detailed product specifications</span>
           </AnimatedSpan>
 
           <AnimatedSpan delay={3000} className="text-green-500">
-            <span>✔ Implementing digital design consultations</span>
+            <span>✔ Implementing product categories</span>
           </AnimatedSpan>
 
           <AnimatedSpan delay={3500} className="text-green-500">
-            <span>✔ Creating detailed product catalogs</span>
+            <span>✔ Setting up contact channels</span>
           </AnimatedSpan>
 
           <AnimatedSpan delay={4000} className="text-green-500">
-            <span>✔ Building customer support portal</span>
+            <span>✔ Enabling product inquiries</span>
           </AnimatedSpan>
 
           <AnimatedSpan delay={4500} className="text-blue-500">
-            <span>🎉 Digital presence established!</span>
+            <span>🎉 Digital catalog launched!</span>
           </AnimatedSpan>
 
           <TypingAnimation delay={5000} className="text-muted-foreground">
-            Welcome to the future of furniture shopping
+            Explore our complete furniture collection
           </TypingAnimation>
 
           <TypingAnimation delay={5500} className="text-muted-foreground">
-            Experience Stardom anywhere, anytime
+            Connect with us to learn more
           </TypingAnimation>
         </Terminal>
       </div>
@@ -162,13 +162,14 @@ const HeritagePage: React.FC = () => {
           </SectionTitle>
           <Timeline data={timelineData} />
         </Section>
-        <Section className="bg-background">
+        {/* Below Section is Commented out due to non availability of said standards. Include back on when available */}
+        {/* <Section className="bg-background">
           <SectionTitle>
             Our{" "}
             <span className="font-serif italic text-primary">Standards</span>
           </SectionTitle>
           <CertificationsSection />
-        </Section>
+        </Section> */}
         <Section className="bg-background">
           <SectionTitle>
             Testing{" "}

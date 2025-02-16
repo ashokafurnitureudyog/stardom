@@ -33,7 +33,7 @@ export const teamMembers: TeamMember[] = [
   {
     name: "Sandeep Jain",
     role: "Founder & Director",
-    bio: "30+ years of expertise in luxury furniture manufacturing",
+    bio: "30+ years of expertise in office furniture manufacturing",
     image: "https://images.unsplash.com/photo-1553484771-cc0d9b8c2b33",
   },
   {
@@ -41,5 +41,11 @@ export const teamMembers: TeamMember[] = [
     role: "Co-Founder & Director",
     bio: "Young entrepreneur with business acumen and hands-on experience",
     image: "/images/team/ishaan.png",
+  },
+  {
+    name: "Abhishek Sharma",
+    role: "Software Development Intern",
+    bio: "Led company's digital transformation and brand enhancement",
+    image: "https://github.com/abhisheksharm-3.png",
   },
 ];

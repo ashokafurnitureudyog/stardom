@@ -6,8 +6,8 @@ import {
   TestTubeIcon,
   TargetIcon,
   ScaleIcon,
-  WeightIcon,
-  FlameIcon,
+  ActivityIcon,
+  LayersIcon,
   GaugeIcon,
 } from "lucide-react";
 import { MagicCard } from "../ui/magic-card";
@@ -16,38 +16,41 @@ const testingToolsData = [
   {
     Icon: ScaleIcon,
     name: "Indentation Hardness Tester",
-    description: "Precise measurement of foam compression characteristics",
-    detail: "Digital Computerized Model",
+    description:
+      "Advanced digital measurement system for precise compression analysis",
+    detail: "High-Precision Digital Interface",
   },
   {
-    Icon: WeightIcon,
-    name: "Flex Tester",
-    description: "Simulates repeated pressing for rubberized coir sheets",
-    detail: "240 Cycles per Minute",
+    Icon: ActivityIcon,
+    name: "DeMattia Upper Flex Tester",
+    description:
+      "Industrial-grade flexibility assessment for leatherette durability",
+    detail: "Advanced 360° Motion Analysis",
   },
   {
     Icon: TargetIcon,
     name: "Shear Fatigue Tester",
-    description: "Evaluates polyurethane foam durability",
-    detail: "28 Compression Cycles",
+    description:
+      "State-of-the-art evaluation of material endurance under stress",
+    detail: "Precision-Engineered Testing Cycles",
   },
   {
     Icon: GaugeIcon,
-    name: "Soft Material Thickness Gauge",
-    description: "Precise thickness measurement for foam specimens",
-    detail: "0-100mm Range",
+    name: "Bursting Strength Tester",
+    description: "Premium hydraulic system for material integrity assessment",
+    detail: "Digital Pressure Monitoring",
   },
   {
-    Icon: FlameIcon,
-    name: "Flammability Tester",
-    description: "Comprehensive fire resistance evaluation",
-    detail: "PU Foam Safety Testing",
+    Icon: LayersIcon,
+    name: "Martindale Abrasion Tester",
+    description: "Superior surface wear and durability evaluation system",
+    detail: "Multi-Station Testing Platform",
   },
   {
     Icon: TestTubeIcon,
     name: "Ball Resilience Tester",
-    description: "Measures foam bounce-back characteristics",
-    detail: "500mm Drop Height",
+    description: "High-precision rebound characteristics measurement",
+    detail: "Computer-Aided Analysis",
   },
 ];
 
@@ -64,8 +67,9 @@ export function TestingToolsSection() {
           className="text-center mb-32"
         >
           <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-            Rigorous testing ensures the highest standards of comfort,
-            durability, and safety in every piece of furniture we create.
+            Our state-of-the-art testing facility employs precision engineering
+            to ensure exceptional quality, longevity, and refined comfort in
+            every product we craft.
           </p>
         </motion.div>
 
@@ -78,7 +82,7 @@ export function TestingToolsSection() {
               transition={{ duration: 0.6, delay: idx * 0.1 }}
             >
               <MagicCard
-                className="cursor-pointer flex-col items-center justify-center p-6 h-full"
+                className="flex-col items-center justify-center p-6 h-full"
                 gradientColor={theme === "dark" ? "#262626" : "#D9D9D955"}
               >
                 <div className="flex items-center mb-4">
