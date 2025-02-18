@@ -1,7 +1,9 @@
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
+import CertificationsSection from "@/components/marketing/CertificationSection";
 import { HeritageHero } from "@/components/marketing/HeritageHero";
+import ManufacturingFacilities from "@/components/marketing/ManufacturingFacilities";
 import { MissionStatement } from "@/components/marketing/MissionStatement";
 import { TeamSection } from "@/components/marketing/TeamSection";
 import TestingToolsSection from "@/components/marketing/TestingTools";
@@ -162,14 +164,20 @@ const HeritagePage: React.FC = () => {
           </SectionTitle>
           <Timeline data={timelineData} />
         </Section>
-        {/* Below Section is Commented out due to non availability of said standards. Include back on when available */}
-        {/* <Section className="bg-background">
+        <Section className="bg-background">
+          <SectionTitle>
+            Our{" "}
+            <span className="font-serif italic text-primary">Facilities</span>
+          </SectionTitle>
+          <ManufacturingFacilities />
+        </Section>
+        <Section className="bg-background">
           <SectionTitle>
             Our{" "}
             <span className="font-serif italic text-primary">Standards</span>
           </SectionTitle>
           <CertificationsSection />
-        </Section> */}
+        </Section>
         <Section className="bg-background">
           <SectionTitle>
             Testing{" "}

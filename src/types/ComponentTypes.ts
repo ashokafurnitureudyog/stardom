@@ -131,3 +131,18 @@ export interface Category {
   name: string;
   subcategories?: Category[];
 }
+export interface FacilityContentProps {
+  facility: {
+    highlight: string;
+    description: string;
+  };
+}
+
+export interface FacilityData {
+  category: string;
+  title: string;
+  src: string;
+  highlight: string;
+  description: string;
+  content: React.ReactNode;
+}
