@@ -9,81 +9,51 @@ import TestimonialsSection from "@/components/marketing/Testimonials";
 import { PortfolioCTA } from "@/components/marketing/PortfolioCTA";
 import { PortfolioProjects } from "@/lib/constants/PortfolioProjects";
 import { PortfolioProject } from "@/types/ComponentTypes";
+import { Section } from "@/components/layout/Section";
+import { SectionTitle } from "@/components/layout/SectionTitle";
+import CertificationsSection from "@/components/marketing/CertificationSection";
 
 const PortfolioPage = () => {
   const [selectedProject, setSelectedProject] =
     useState<PortfolioProject | null>(null);
 
-  // Handle project selection
   const handleProjectSelect = (project: PortfolioProject) => {
     setSelectedProject(project);
-    // Optional: Scroll to top or to details section when a project is selected
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  // Handle closing project details
-  const handleCloseDetails = () => {
-    setSelectedProject(null);
   };
 
   return (
     <BaseLayout className="min-h-screen bg-background font-sans">
-      {/* Main content - conditionally render based on selection state */}
-      {!selectedProject ? (
-        <>
-          {/* Step 1: Introduction */}
-          <PortfolioHero />
+      {/* Hero Section */}
+      <PortfolioHero />
 
-          {/* Step 2: Show work samples */}
-          <section id="projects" className="py-20">
-            <div className="max-w-7xl mx-auto px-4">
-              <ProjectGrid
-                projects={PortfolioProjects}
-                onProjectSelect={handleProjectSelect}
-              />
-            </div>
-          </section>
+      {/* Projects Section */}
+      <Section className="bg-background">
+        <SectionTitle>
+          Our <span className="font-serif italic text-primary">Work</span>
+        </SectionTitle>
+        <ProjectGrid
+          projects={PortfolioProjects}
+          onProjectSelect={handleProjectSelect}
+        />
+      </Section>
+      <Section className="bg-background">
+        <SectionTitle>
+          Our <span className="font-serif italic text-primary">Standards</span>
+        </SectionTitle>
+        <CertificationsSection />
+      </Section>
+      {/* Testimonials Section */}
+      <TestimonialsSection />
 
-          {/* Step 3: Social proof */}
-          <TestimonialsSection />
+      {/* Call to Action */}
+      <PortfolioCTA />
 
-          {/* Step 4: Call to action */}
-          <PortfolioCTA />
-        </>
-      ) : (
-        <>
-          {/* Project details view */}
-          <ProjectDetails
-            project={selectedProject}
-            open={true}
-            onClose={handleCloseDetails}
-          />
-
-          {/* Show related projects section */}
-          <section className="py-16 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4">
-              <h3 className="text-2xl font-bold mb-8">More Projects</h3>
-              <ProjectGrid
-                projects={PortfolioProjects.filter(
-                  (p) => p.id !== selectedProject.id,
-                ).slice(0, 3)}
-                onProjectSelect={handleProjectSelect}
-              />
-              <div className="mt-10 text-center">
-                <button
-                  onClick={handleCloseDetails}
-                  className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition"
-                >
-                  View All Projects
-                </button>
-              </div>
-            </div>
-          </section>
-          <div className="py-16">
-            <PortfolioCTA />
-          </div>
-        </>
-      )}
+      {/* Project Details Dialog */}
+      <ProjectDetails
+        project={selectedProject}
+        open={selectedProject !== null}
+        onClose={() => setSelectedProject(null)}
+      />
     </BaseLayout>
   );
 };
