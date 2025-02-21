@@ -1,12 +1,12 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Project } from "@/types/ComponentTypes";
+import { PortfolioProject } from "@/types/ComponentTypes";
 import { ProjectCard } from "./ProjectCard";
 
 type ProjectGridProps = {
-  projects: Project[];
-  onProjectSelect: (project: Project) => void;
+  projects: PortfolioProject[];
+  onProjectSelect: (project: PortfolioProject) => void;
 };
 
 export const ProjectGrid = ({

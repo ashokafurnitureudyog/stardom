@@ -1,92 +1,89 @@
 "use client";
 
+import { useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
-import { CategoryTabs } from "@/components/marketing/PortfolioCategoryTabs";
-import { PortfolioCTA } from "@/components/marketing/PortfolioCTA";
 import { PortfolioHero } from "@/components/marketing/PortfolioHero";
-import { ProjectDetails } from "@/components/marketing/ProjectDetails";
 import { ProjectGrid } from "@/components/marketing/ProjectGrid";
-import { PortfolioCategory, Project } from "@/types/ComponentTypes";
-import React from "react";
-
-const categories: PortfolioCategory[] = [
-  "All Projects",
-  "Executive Offices",
-  "Conference Rooms",
-  "Lounges",
-  "Collaborative Spaces",
-];
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "Goldman Sachs Executive Floor",
-    category: "Executive Offices",
-    thumbnail: "https://images.unsplash.com/photo-1552793494-111afe03d0ca",
-    description:
-      "Complete redesign of executive floor featuring custom Italian wood desks and ergonomic solutions.",
-    challenge:
-      "Create a space that reflects global leadership while maintaining warmth and accessibility.",
-    solution:
-      "Integrated traditional craftmanship with modern technology, using sustainable materials.",
-    impact:
-      "30% increase in executive satisfaction, LEED Platinum certification achieved.",
-    testimonial: {
-      quote:
-        "Stardom transformed our space into something truly extraordinary. The attention to detail is remarkable.",
-      author: "Sarah Chen",
-      position: "Global Facilities Director",
-    },
-    gallery: [
-      "https://images.unsplash.com/photo-1431540015161-0bf868a2d407",
-      "https://images.unsplash.com/photo-1497366811353-6870744d04b2",
-      "https://images.unsplash.com/photo-1511649475669-e288648b2339",
-    ],
-  },
-];
+import { ProjectDetails } from "@/components/marketing/ProjectDetails";
+import TestimonialsSection from "@/components/marketing/Testimonials";
+import { PortfolioCTA } from "@/components/marketing/PortfolioCTA";
+import { PortfolioProjects } from "@/lib/constants/PortfolioProjects";
+import { PortfolioProject } from "@/types/ComponentTypes";
 
 const PortfolioPage = () => {
-  const [selectedCategory, setSelectedCategory] =
-    React.useState<PortfolioCategory>("All Projects");
-  const [selectedProject, setSelectedProject] = React.useState<Project | null>(
-    null,
-  );
-  const [filteredProjects, setFilteredProjects] = React.useState(projects);
+  const [selectedProject, setSelectedProject] =
+    useState<PortfolioProject | null>(null);
 
-  React.useEffect(() => {
-    setFilteredProjects(
-      selectedCategory === "All Projects"
-        ? projects
-        : projects.filter((project) => project.category === selectedCategory),
-    );
-  }, [selectedCategory]);
+  // Handle project selection
+  const handleProjectSelect = (project: PortfolioProject) => {
+    setSelectedProject(project);
+    // Optional: Scroll to top or to details section when a project is selected
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Handle closing project details
+  const handleCloseDetails = () => {
+    setSelectedProject(null);
+  };
 
   return (
     <BaseLayout className="min-h-screen bg-background font-sans">
-      <PortfolioHero />
+      {/* Main content - conditionally render based on selection state */}
+      {!selectedProject ? (
+        <>
+          {/* Step 1: Introduction */}
+          <PortfolioHero />
 
-      <div className="max-w-7xl mx-auto px-4 mb-12">
-        <CategoryTabs
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
-      </div>
+          {/* Step 2: Show work samples */}
+          <section id="projects" className="py-20">
+            <div className="max-w-7xl mx-auto px-4">
+              <ProjectGrid
+                projects={PortfolioProjects}
+                onProjectSelect={handleProjectSelect}
+              />
+            </div>
+          </section>
 
-      <div className="max-w-7xl mx-auto px-4 mb-32">
-        <ProjectGrid
-          projects={filteredProjects}
-          onProjectSelect={setSelectedProject}
-        />
-      </div>
+          {/* Step 3: Social proof */}
+          <TestimonialsSection />
 
-      <PortfolioCTA />
+          {/* Step 4: Call to action */}
+          <PortfolioCTA />
+        </>
+      ) : (
+        <>
+          {/* Project details view */}
+          <ProjectDetails
+            project={selectedProject}
+            open={true}
+            onClose={handleCloseDetails}
+          />
 
-      <ProjectDetails
-        project={selectedProject!}
-        open={!!selectedProject}
-        onClose={() => setSelectedProject(null)}
-      />
+          {/* Show related projects section */}
+          <section className="py-16 bg-gray-50">
+            <div className="max-w-7xl mx-auto px-4">
+              <h3 className="text-2xl font-bold mb-8">More Projects</h3>
+              <ProjectGrid
+                projects={PortfolioProjects.filter(
+                  (p) => p.id !== selectedProject.id,
+                ).slice(0, 3)}
+                onProjectSelect={handleProjectSelect}
+              />
+              <div className="mt-10 text-center">
+                <button
+                  onClick={handleCloseDetails}
+                  className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition"
+                >
+                  View All Projects
+                </button>
+              </div>
+            </div>
+          </section>
+          <div className="py-16">
+            <PortfolioCTA />
+          </div>
+        </>
+      )}
     </BaseLayout>
   );
 };

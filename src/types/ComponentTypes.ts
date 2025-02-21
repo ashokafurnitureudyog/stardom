@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import { MediaItem } from "./MediaTypes";
 
 export interface CarouselProps {
   images: string[];
@@ -62,16 +63,10 @@ export interface FormData {
   subject: string;
   message: string;
 }
-export type PortfolioCategory =
-  | "All Projects"
-  | "Executive Offices"
-  | "Conference Rooms"
-  | "Lounges"
-  | "Collaborative Spaces";
-export interface Project {
+export interface PortfolioProject {
   id: number;
   title: string;
-  category: PortfolioCategory;
+  tags: string[];
   thumbnail: string;
   description: string;
   challenge: string;
@@ -86,12 +81,12 @@ export interface Testimonial {
   position: string;
 }
 export interface ProjectCardProps {
-  project: Project;
+  project: PortfolioProject;
   onClick: () => void;
 }
 
 export interface ProjectDetailsProps {
-  project: Project | null;
+  project: PortfolioProject | null;
   open: boolean;
   onClose: () => void;
 }
@@ -146,3 +141,9 @@ export interface FacilityData {
   description: string;
   content: React.ReactNode;
 }
+export type PortfolioHeroProps = {
+  mediaItems?: MediaItem[];
+  slideDuration?: number;
+  transitionDuration?: number;
+  overlayOpacity?: number;
+};

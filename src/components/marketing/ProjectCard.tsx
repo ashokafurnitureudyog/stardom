@@ -5,9 +5,11 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
+  CardContent,
+  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ProjectCardProps } from "@/types/ComponentTypes";
 
 export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
@@ -19,7 +21,7 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
     className="group cursor-pointer"
     onClick={onClick}
   >
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden h-full flex flex-col">
       <div className="relative h-64 overflow-hidden">
         <img
           src={project.thumbnail}
@@ -36,8 +38,50 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
         <CardTitle className="font-serif text-2xl font-light">
           {project.title}
         </CardTitle>
-        <CardDescription>{project.category.toString()}</CardDescription>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {project.tags?.map((tag, index) => (
+            <Badge key={index} variant="outline" className="text-xs">
+              {tag}
+            </Badge>
+          )) || (
+            <>
+              <Badge variant="outline" className="text-xs">
+                Interior Design
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                Corporate
+              </Badge>
+            </>
+          )}
+        </div>
       </CardHeader>
+      <CardContent className="flex-grow">
+        <p className="text-sm text-muted-foreground line-clamp-3">
+          {project.description}
+        </p>
+        {project.impact && (
+          <div className="mt-4 p-3 bg-muted/30 rounded-md">
+            <p className="text-sm font-medium">Impact</p>
+            <p className="text-sm text-muted-foreground">{project.impact}</p>
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className="pt-0 flex justify-between items-center">
+        <div className="text-xs text-muted-foreground">
+          {project.testimonial ? (
+            <span>&apos;{project.testimonial.author}&apos;</span>
+          ) : (
+            <span>Client project</span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          {project.gallery && (
+            <span className="text-xs text-muted-foreground">
+              {project.gallery.length} photos
+            </span>
+          )}
+        </div>
+      </CardFooter>
     </Card>
   </motion.div>
 );
