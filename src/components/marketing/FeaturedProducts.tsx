@@ -11,6 +11,7 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "next-view-transitions";
 
 const features = [
   {
@@ -18,7 +19,7 @@ const features = [
     name: "Luxury Executive Desks",
     description: "Handcrafted masterpieces for distinguished leaders",
     detail: "Imported Italian Wood",
-    href: "#",
+    href: "/products",
     cta: "Discover More",
     className: "col-span-3 lg:col-span-2",
     background: (
@@ -37,7 +38,7 @@ const features = [
     name: "Premium Conference Solutions",
     description: "Where visionary decisions take shape",
     detail: "Smart Integration Ready",
-    href: "#",
+    href: "/products",
     cta: "Discover More",
     className: "col-span-3 lg:col-span-1",
     background: (
@@ -56,7 +57,7 @@ const features = [
     name: "Elite Ergonomic Seating",
     description: "Precision-engineered comfort for excellence",
     detail: "German Engineering",
-    href: "#",
+    href: "/products",
     cta: "Discover More",
     className: "col-span-3 lg:col-span-1",
     background: (
@@ -75,7 +76,7 @@ const features = [
     name: "Designer Lounge Collection",
     description: "Contemporary comfort meets timeless sophistication",
     detail: "Artisan Crafted",
-    href: "#",
+    href: "/products",
     cta: "Discover More",
     className: "col-span-3 lg:col-span-2",
     background: (
@@ -134,9 +135,12 @@ export function FeaturedProducts() {
           <Button
             variant="link"
             className="text-neutral-600 dark:hover:text-neutral-400 hover:text-neutral-900 text-lg tracking-wide group transition-all duration-300"
+            asChild
           >
-            View Complete Portfolio
-            <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+            <div>
+              <Link href="/products">View Complete Portfolio</Link>
+              <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+            </div>
           </Button>
         </div>
       </div>

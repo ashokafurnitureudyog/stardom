@@ -11,6 +11,7 @@ import {
 } from "@/lib/constants/MediaConstants";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
+import { Link } from "next-view-transitions";
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
   children,
@@ -160,15 +161,17 @@ const HeroSection: React.FC = () => {
               <Button
                 size="lg"
                 className={`${buttonBaseClass} bg-primary hover:bg-primary/90`}
+                asChild
               >
-                View Collection
+                <Link href="/products">View Collection</Link>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className={`${buttonBaseClass} border-2 border-white/20 hover:border-white hover:bg-white/10 text-foreground-700`}
+                asChild
               >
-                Book Consultation
+                <Link href="/contact">Book Consultation</Link>
               </Button>
             </div>
           </AnimatedText>
