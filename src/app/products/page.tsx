@@ -1,13 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useEffect } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
-import { ProductCard } from "@/components/products/ProductCard";
-import { SearchAndView } from "@/components/products/SearchAndView";
-import { categories, products } from "@/lib/constants/ProductData";
-import { cn } from "@/lib/utils";
+import { products } from "@/lib/constants/ProductData";
 import { ProductsHero } from "@/components/marketing/ProductsHero";
-import { CategoryFilters } from "@/components/products/CategoryFilter";
-
+import PageComingSoon from "@/components/shared/SectionComingSoon";
+// TODO: show custom solutions option when user cant find what they are looking for or att end of products grid
 export default function ProductsPage() {
   const [selectedMain, setSelectedMain] = useState("all");
   const [selectedSub, setSelectedSub] = useState("all");
@@ -43,7 +41,7 @@ export default function ProductsPage() {
       <div className="min-h-screen bg-background">
         <ProductsHero />
 
-        <CategoryFilters
+        {/* <CategoryFilters
           categories={categories}
           selectedMain={selectedMain}
           selectedSub={selectedSub}
@@ -59,9 +57,10 @@ export default function ProductsPage() {
           viewMode={viewMode}
           onSearchChange={setSearchQuery}
           onViewChange={setViewMode}
-        />
+        /> */}
 
         <main className="max-w-7xl mx-auto px-6 py-12">
+          {/* Product grid commented out temporarily
           <div
             className={cn(
               "grid gap-8",
@@ -78,6 +77,9 @@ export default function ProductsPage() {
               />
             ))}
           </div>
+          */}
+
+          <PageComingSoon pageName="Product Catalog" />
         </main>
       </div>
     </BaseLayout>

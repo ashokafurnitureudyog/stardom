@@ -30,7 +30,7 @@ export const HeritageHero = () => {
           </AnimatedText>
 
           <AnimatedText delay={0.2}>
-            <h1 className="text-6xl lg:text-7xl tracking-tight mb-4 font-extralight">
+            <h1 className="text-5xl lg:text-6xl tracking-tight mb-4 font-extralight">
               Our{" "}
               <span className="font-serif italic text-primary">Heritage</span>
             </h1>

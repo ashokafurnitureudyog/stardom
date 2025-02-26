@@ -58,7 +58,7 @@ const ContactSection = () => {
                 <MapPinIcon className="h-10 w-10 text-primary/60 shrink-0" />
                 <div>
                   <h3 className="font-serif italic text-xl mb-4 text-foreground">
-                    Luxury Showroom
+                    Our Store
                   </h3>
                   <p className="text-muted-foreground/80 leading-relaxed">
                     Plot No. 304, Industrial Area Phase 2

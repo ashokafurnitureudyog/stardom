@@ -1,9 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
+import AnimatedText from "../shared/HeroAnimatedText";
 
 export const ProductsHero = () => (
   <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
@@ -21,25 +19,14 @@ export const ProductsHero = () => (
 
     <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 px-6">
       <div className="text-center lg:text-left">
-        <motion.div
-          variants={fadeInUpVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ duration: 1 }}
-          className="mb-4"
-        >
+        <AnimatedText className="mb-4" delay={0}>
           <span className="text-primary font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary/30 rounded px-4 py-2">
             Since {BasicCompanyInfo.established}
           </span>
-        </motion.div>
+        </AnimatedText>
 
-        <motion.div
-          variants={fadeInUpVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ duration: 1, delay: 0.2 }}
-        >
-          <h1 className="text-6xl lg:text-7xl tracking-tight mb-4 font-extralight">
+        <AnimatedText delay={0.2}>
+          <h1 className="text-5xl lg:text-6xl tracking-tight mb-4 font-extralight">
             Our{" "}
             <span className="font-serif italic text-primary">Collection</span>
           </h1>
@@ -47,16 +34,13 @@ export const ProductsHero = () => (
           <p className="text-2xl text-white/90 font-serif">
             Curated Excellence in Office Design
           </p>
-        </motion.div>
+        </AnimatedText>
       </div>
 
       {/* Content Column */}
       <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
-        <motion.div
-          variants={fadeInUpVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ duration: 1, delay: 0.4 }}
+        <AnimatedText
+          delay={0.4}
           className="text-3xl lg:text-4xl font-light leading-tight mb-8"
         >
           <h2>
@@ -67,41 +51,16 @@ export const ProductsHero = () => (
             Meets{" "}
             <span className="text-primary font-serif italic">Innovation</span>
           </h2>
-        </motion.div>
+        </AnimatedText>
 
-        <motion.div
-          variants={fadeInUpVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ duration: 1, delay: 0.6 }}
+        <AnimatedText
+          delay={0.6}
           className="text-white/80 text-lg mb-12 leading-relaxed"
         >
           Explore our signature pieces that redefine office luxury. Each
           creation embodies our legacy of precision engineering and artistic
           vision, offering unparalleled comfort and sophistication.
-        </motion.div>
-
-        <motion.div
-          variants={fadeInUpVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ duration: 1, delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start"
-        >
-          <Button
-            size="lg"
-            className="min-w-[240px] h-14 text-lg tracking-wide bg-primary hover:bg-primary/90"
-          >
-            Browse Catalog
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="min-w-[240px] h-14 text-lg tracking-wide border-2 border-white/20 hover:border-white hover:bg-white/10 text-foreground-700"
-          >
-            Custom Solutions
-          </Button>
-        </motion.div>
+        </AnimatedText>
       </div>
     </div>
   </section>
