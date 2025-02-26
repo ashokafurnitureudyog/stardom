@@ -24,9 +24,6 @@ export const InfoCard: React.FC<InfoCardProps> = ({ companyInfo }) => {
             Weekdays: {companyInfo.hours.weekday}
           </p>
           <p className="text-muted-foreground">
-            Saturday: {companyInfo.hours.saturday}
-          </p>
-          <p className="text-muted-foreground">
             Sunday: {companyInfo.hours.sunday}
           </p>
         </>

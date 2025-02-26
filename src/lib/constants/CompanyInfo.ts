@@ -13,8 +13,7 @@ export const BasicCompanyInfo: CompanyInfo = {
     coordinates: [30.696056, 76.785417],
   },
   hours: {
-    weekday: "9:00 AM - 6:00 PM",
-    saturday: "10:00 AM - 4:00 PM",
+    weekday: "10:00 AM - 6:30 PM",
     sunday: "Closed",
   },
   phone: "+91 62846 73783",

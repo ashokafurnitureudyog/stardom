@@ -37,7 +37,6 @@ export interface CompanyInfo {
   };
   hours: {
     weekday: string;
-    saturday: string;
     sunday: string;
   };
   phone: string;

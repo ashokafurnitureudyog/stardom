@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
+import { Link } from "next-view-transitions";
 
 const Footer = () => {
   const { theme, resolvedTheme } = useTheme();
@@ -27,9 +28,23 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const quickLinks = ["About Us", "Collections", "Portfolio", "Careers"];
-  const supportLinks = ["Contact Us", "FAQs", "Shipping Info", "Care Guide"];
-  const policyLinks = ["Privacy Policy", "Terms of Service", "Cookie Policy"];
+  const quickLinks = [
+    { name: "Products", href: "/products" },
+    { name: "Heritage", href: "/heritage" },
+    { name: "Portfolio", href: "/portfolio" },
+  ];
+
+  const supportLinks = [
+    { name: "Contact Us", href: "/contact-us" },
+    { name: "FAQs", href: "/faqs" },
+    { name: "Shipping Info", href: "/shipping-info" },
+  ];
+
+  const policyLinks = [
+    { name: "Privacy Policy", href: "/privacy-policy" },
+    { name: "Terms of Service", href: "/terms-of-service" },
+    { name: "Cookie Policy", href: "/cookie-policy" },
+  ];
 
   return (
     <footer className="w-full bg-background relative overflow-hidden">
@@ -44,11 +59,13 @@ const Footer = () => {
             {/* Logo and Description Column */}
             <div className="md:col-span-4 space-y-8">
               <div className="flex h-16 items-center">
-                <img
-                  src={logoSrc}
-                  alt="Stardom Logo"
-                  className="w-40 transform hover:scale-105 transition-transform duration-300"
-                />
+                <Link href="/">
+                  <img
+                    src={logoSrc}
+                    alt="Stardom Logo"
+                    className="w-40 transform hover:scale-105 transition-transform duration-300"
+                  />
+                </Link>
               </div>
               <p className="text-muted-foreground/80 leading-relaxed">
                 A premium collection of luxury office furniture by Ashoka
@@ -60,13 +77,13 @@ const Footer = () => {
                   { Icon: Instagram, href: "#instagram" },
                   { Icon: Linkedin, href: "#linkedin" },
                 ].map(({ Icon, href }) => (
-                  <a
+                  <Link
                     key={href}
                     href={href}
                     className="text-primary/60 hover:text-primary transition-colors duration-300"
                   >
                     <Icon className="h-5 w-5" />
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -76,14 +93,14 @@ const Footer = () => {
               <h3 className="font-serif italic text-xl mb-8">Quick Links</h3>
               <ul className="space-y-4">
                 {quickLinks.map((item) => (
-                  <li key={item}>
-                    <a
-                      href={`/${item.toLowerCase().replace(" ", "-")}`}
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
                       className="text-muted-foreground/80 hover:text-primary transition-all duration-300 group flex items-center"
                     >
                       <span className="h-px w-0 bg-primary mr-0 group-hover:w-4 group-hover:mr-2 transition-all duration-300" />
-                      {item}
-                    </a>
+                      {item.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -94,14 +111,14 @@ const Footer = () => {
               <h3 className="font-serif italic text-xl mb-8">Support</h3>
               <ul className="space-y-4">
                 {supportLinks.map((item) => (
-                  <li key={item}>
-                    <a
-                      href={`/${item.toLowerCase().replace(" ", "-")}`}
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
                       className="text-muted-foreground/80 hover:text-primary transition-all duration-300 group flex items-center"
                     >
                       <span className="h-px w-0 bg-primary mr-0 group-hover:w-4 group-hover:mr-2 transition-all duration-300" />
-                      {item}
-                    </a>
+                      {item.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -109,7 +126,7 @@ const Footer = () => {
 
             {/* Contact Information */}
             <div className="md:col-span-4 space-y-8">
-              <h3 className="font-serif italic text-xl">Visit Our Showroom</h3>
+              <h3 className="font-serif italic text-xl">Visit Our Store</h3>
               <div className="space-y-6">
                 {[
                   {
@@ -125,23 +142,23 @@ const Footer = () => {
                   {
                     Icon: Mail,
                     content: (
-                      <a
+                      <Link
                         href="mailto:hello@stardom.co.in"
                         className="text-muted-foreground/80 hover:text-primary transition-colors duration-300"
                       >
                         hello@stardom.co.in
-                      </a>
+                      </Link>
                     ),
                   },
                   {
                     Icon: Phone,
                     content: (
-                      <a
+                      <Link
                         href="tel:+916284673783"
                         className="text-muted-foreground/80 hover:text-primary transition-colors duration-300"
                       >
                         +91 62846 73783
-                      </a>
+                      </Link>
                     ),
                   },
                 ].map(({ Icon, content }, index) => (
@@ -164,13 +181,13 @@ const Footer = () => {
                 </p>
                 <div className="flex items-center gap-8">
                   {policyLinks.map((item) => (
-                    <a
-                      key={item}
-                      href={`/${item.toLowerCase().replace(" ", "-")}`}
+                    <Link
+                      key={item.name}
+                      href={item.href}
                       className="text-muted-foreground/60 hover:text-primary text-sm transition-colors duration-300"
                     >
-                      {item}
-                    </a>
+                      {item.name}
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -185,14 +202,14 @@ const Footer = () => {
                   <span className="text-muted-foreground/40 text-sm font-light tracking-wide">
                     by
                   </span>
-                  <a
+                  <Link
                     href="https://abhisheksharma.tech"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-serif italic text-muted-foreground/60 hover:text-primary/80 transition-all duration-300 text-sm group-hover:tracking-wide"
                   >
                     Abhishek
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
