@@ -1,8 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
+import AnimatedText from "../shared/HeroAnimatedText";
 
 export const HeritageHero = () => {
   return (
@@ -24,24 +23,13 @@ export const HeritageHero = () => {
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 px-6">
         {/* Left Column - Brand Identity */}
         <div className="text-center lg:text-left">
-          <motion.div
-            variants={fadeInUpVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ duration: 1 }}
-            className="mb-4"
-          >
+          <AnimatedText className="mb-4" delay={0}>
             <span className="font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary rounded px-4 py-2">
               Since {BasicCompanyInfo.established}
             </span>
-          </motion.div>
+          </AnimatedText>
 
-          <motion.div
-            variants={fadeInUpVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ duration: 1, delay: 0.2 }}
-          >
+          <AnimatedText delay={0.2}>
             <h1 className="text-6xl lg:text-7xl tracking-tight mb-4 font-extralight">
               Our{" "}
               <span className="font-serif italic text-primary">Heritage</span>
@@ -50,17 +38,13 @@ export const HeritageHero = () => {
             <p className="text-2xl text-white/90 font-serif">
               Crafting Legacy Through Design
             </p>
-          </motion.div>
+          </AnimatedText>
         </div>
 
         {/* Right Column - Content */}
-        {/* TODO: Replace with HeroAnimatedText */}
         <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
-          <motion.div
-            variants={fadeInUpVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ duration: 1, delay: 0.4 }}
+          <AnimatedText
+            delay={0.4}
             className="text-3xl lg:text-4xl font-light leading-tight mb-8"
           >
             <h2>
@@ -68,20 +52,17 @@ export const HeritageHero = () => {
               of{" "}
               <span className="text-primary font-serif italic">Excellence</span>
             </h2>
-          </motion.div>
+          </AnimatedText>
 
-          <motion.div
-            variants={fadeInUpVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ duration: 1, delay: 0.6 }}
+          <AnimatedText
+            delay={0.6}
             className="text-white/80 text-lg mb-12 leading-relaxed"
           >
             For decades, we&apos;ve shaped the art of office craftsmanship,
             blending traditional techniques with modern innovation. Our legacy
             is built on relentless pursuit of perfection and timeless design
             philosophy.
-          </motion.div>
+          </AnimatedText>
         </div>
       </div>
     </section>

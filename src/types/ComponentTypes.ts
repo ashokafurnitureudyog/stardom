@@ -150,3 +150,9 @@ export interface BackgroundMediaProps {
   item: MediaItem;
   isActive: boolean;
 }
+export interface TestingTool {
+  Icon: LucideIcon;
+  name: string;
+  description: string;
+  detail: string;
+}
