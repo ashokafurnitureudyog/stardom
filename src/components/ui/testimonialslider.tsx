@@ -90,7 +90,7 @@ export function FancyTestimonialsSlider({
               enter="transition ease-in-out duration-500 delay-200 order-first"
               enterFrom="opacity-0 translate-y-4"
               enterTo="opacity-100 translate-y-0"
-              leave="transition ease-out duration-300 delay-300 absolute"
+              leave="transition ease-out duration-300 delay-300 absolute inset-0"
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-4"
               beforeEnter={() => heightFix()}

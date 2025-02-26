@@ -54,6 +54,7 @@ export const HeritageHero = () => {
         </div>
 
         {/* Right Column - Content */}
+        {/* TODO: Replace with HeroAnimatedText */}
         <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
           <motion.div
             variants={fadeInUpVariants}

@@ -1,19 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
-import { MediaItem } from "@/types/MediaTypes";
-import { PortfolioHeroProps } from "@/types/ComponentTypes";
+import {
+  BackgroundMediaProps,
+  PortfolioHeroProps,
+} from "@/types/ComponentTypes";
+import AnimatedText from "../shared/HeroAnimatedText";
 
-const BackgroundMedia = ({
-  item,
-  isActive,
-}: {
-  item: MediaItem;
-  isActive: boolean;
-}) => {
+const BackgroundMedia = ({ item, isActive }: BackgroundMediaProps) => {
   const className = `absolute inset-0 w-full h-full transition-all duration-1000 ${
     isActive ? "opacity-100 scale-100" : "opacity-0 scale-105"
   }`;
@@ -27,6 +22,7 @@ const BackgroundMedia = ({
           loop
           playsInline
           className="object-cover w-full h-full"
+          aria-hidden="true"
         >
           <source src={item.src} type="video/mp4" />
         </video>
@@ -38,44 +34,24 @@ const BackgroundMedia = ({
     <div className={className}>
       <img
         src={item.src}
-        alt={item.alt || ""}
+        alt={item.alt || "Background image"}
         className="object-cover w-full h-full"
+        loading="eager"
       />
     </div>
   );
 };
 
-// Animated Text Component
-const AnimatedText = ({
-  children,
-  delay = 0.2,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) => (
-  <motion.div
-    variants={fadeInUpVariants}
-    initial="hidden"
-    animate="visible"
-    transition={{ duration: 1, delay }}
-    className={className}
-  >
-    {children}
-  </motion.div>
-);
-
 export const PortfolioHero = ({
   mediaItems = [
     {
       type: "video",
-      src: "/videos/chitkara_audi.mov",
+      src: "/videos/chitkara_audi.webm",
       alt: "Portfolio Hero",
     },
     {
       type: "video",
-      src: "/videos/chitkara_audi_2.mp4",
+      src: "/videos/chitkara_audi_2.webm",
       alt: "Portfolio Hero",
     },
   ],
@@ -87,23 +63,26 @@ export const PortfolioHero = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Handle slideshow with useEffect
   useEffect(() => {
-    // Only set up slideshow if there are multiple media items
-    if (mediaItems.length <= 1) return;
+    // Skip slideshow setup for single item
+    if (mediaItems.length <= 1) return undefined;
+
+    let transitionTimer: NodeJS.Timeout;
 
     const slideTimer = setInterval(() => {
       setIsTransitioning(true);
 
-      const transitionTimer = setTimeout(() => {
+      transitionTimer = setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % mediaItems.length);
         setIsTransitioning(false);
       }, transitionDuration);
-
-      return () => clearTimeout(transitionTimer);
     }, slideDuration);
 
-    return () => clearInterval(slideTimer);
+    // Proper cleanup of both timers
+    return () => {
+      clearInterval(slideTimer);
+      clearTimeout(transitionTimer);
+    };
   }, [mediaItems.length, slideDuration, transitionDuration]);
 
   return (
@@ -112,7 +91,7 @@ export const PortfolioHero = ({
         {/* Background Media Items */}
         {mediaItems.map((item, index) => (
           <BackgroundMedia
-            key={item.src}
+            key={`media-${index}-${item.src}`}
             item={item}
             isActive={index === currentIndex}
           />

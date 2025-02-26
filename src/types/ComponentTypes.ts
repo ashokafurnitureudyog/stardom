@@ -146,3 +146,7 @@ export type PortfolioHeroProps = {
   transitionDuration?: number;
   overlayOpacity?: number;
 };
+export interface BackgroundMediaProps {
+  item: MediaItem;
+  isActive: boolean;
+}
