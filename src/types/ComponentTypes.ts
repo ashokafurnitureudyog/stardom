@@ -108,7 +108,7 @@ export interface Achievement {
   icon: React.FC<{ className?: string }>;
 }
 
-export interface Product {
+export interface Collection {
   id: string;
   name: string;
   subtitle: string;

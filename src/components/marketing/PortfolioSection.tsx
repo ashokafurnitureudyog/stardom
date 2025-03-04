@@ -3,6 +3,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { motion } from "framer-motion";
+import { Link } from "next-view-transitions";
 
 const PortfolioSection = () => {
   const projects = [
@@ -90,77 +91,16 @@ const PortfolioSection = () => {
           ))}
         </div>
 
-        {/* <div className="text-center space-y-8">
-          <h4 className="text-lg text-muted-foreground/90">
-            Trusted by Industry Leaders
-          </h4>
-          <div className="flex justify-center items-center gap-16 flex-wrap">
-            <section
-              id="clients"
-              className="mx-auto max-w-7xl px-6 text-center md:px-8"
-            >
-              <div className="mx-auto max-w-screen-xl px-4 md:px-8">
-                <div className="mt-6">
-                  <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6 md:gap-x-16 [&_path]:fill-white">
-                    <li>
-                      <Image
-                        alt="Google"
-                        src="https://res.cloudinary.com/eldoraui/image/upload/v1733986674/Google_hcdc9g.svg"
-                        className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
-                        width={28}
-                        height={8}
-                      />
-                    </li>
-                    <li>
-                      <Image
-                        alt="Microsoft"
-                        src="https://res.cloudinary.com/eldoraui/image/upload/v1733986674/Microsoft_y2tjeg.svg"
-                        className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
-                        width={28}
-                        height={8}
-                      />
-                    </li>
-                    <li>
-                      <Image
-                        alt="GitHub"
-                        src="https://res.cloudinary.com/eldoraui/image/upload/v1733986674/GitHub_lubmi9.svg"
-                        className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
-                        width={28}
-                        height={8}
-                      />
-                    </li>
-
-                    <li>
-                      <Image
-                        alt="Uber"
-                        src="https://res.cloudinary.com/eldoraui/image/upload/v1733986675/Uber_imzjlc.svg"
-                        className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
-                        width={28}
-                        height={8}
-                      />
-                    </li>
-                    <li>
-                      <Image
-                        alt="Notion"
-                        src="https://res.cloudinary.com/eldoraui/image/upload/v1733986674/Notion_lno53n.svg"
-                        className="h-8 w-28 px-2 dark:brightness-0 dark:invert"
-                        width={28}
-                        height={8}
-                      />
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div> */}
-
         <div className="text-center mt-16">
           <button className="inline-flex items-center px-8 py-3 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 group font-light">
-            View Complete Portfolio
-            <span className="ml-3 group-hover:translate-x-1.5 transition-transform duration-300">
-              →
-            </span>
+            <Link href="/portfolio">
+              <div>
+                View Complete Portfolio
+                <span className="ml-3 group-hover:translate-x-1.5 transition-transform duration-300">
+                  →
+                </span>
+              </div>
+            </Link>
           </button>
         </div>
       </div>

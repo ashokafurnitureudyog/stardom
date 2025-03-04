@@ -3,13 +3,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { HomeIcon, Package, Clock, ArrowRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { Feature, Product } from "@/types/ComponentTypes";
+import { Feature, Collection } from "@/types/ComponentTypes";
+import { Link } from "next-view-transitions";
 
 const ProductCard = ({
-  product,
+  collection,
   index,
 }: {
-  product: Product;
+  collection: Collection;
   index: number;
 }) => (
   <motion.div
@@ -25,8 +26,8 @@ const ProductCard = ({
     <div className="relative overflow-hidden">
       <div className="aspect-[4/3] w-full">
         <img
-          src={product.image}
-          alt={product.name}
+          src={collection.image}
+          alt={collection.name}
           className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transform transition-all duration-1000 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 group-hover:opacity-0 transition-opacity duration-500" />
@@ -39,14 +40,22 @@ const ProductCard = ({
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h3 className="text-3xl font-light text-foreground mb-4 font-serif">
-            {product.name}
+            {collection.name}
           </h3>
           <p className="text-primary/90 tracking-wider uppercase text-sm mb-6 font-medium">
-            {product.subtitle}
+            {collection.subtitle}
           </p>
-          <Button variant="ghost" className="group/btn hover:bg-primary/5 px-6">
-            Discover
-            <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform duration-300" />
+          <Button
+            variant="ghost"
+            className="group/btn hover:bg-primary/5 px-6"
+            asChild
+          >
+            <Link href={`/products/collections/${collection.id}`}>
+              <div className="cursor-pointer flex items-center">
+                Discover
+                <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform duration-300" />
+              </div>
+            </Link>
           </Button>
         </motion.div>
       </div>
@@ -81,57 +90,57 @@ const FeatureCard = ({
 );
 
 const SignatureCollection = () => {
-  const products = [
+  const collections = [
     {
       id: "m1",
-      name: "Modern Workstations",
-      subtitle: "Smart Ergonomics",
-      image: "/images/products/modern_workstation.jpg",
+      name: "Executive Desks",
+      subtitle: "Professional Elegance",
+      image: "/images/products/exec-desk-display.jpg",
       description:
-        "Premium ergonomic workstation featuring height-adjustable desk and integrated cable management",
+        "Premium executive desk solutions with sophisticated design and integrated technology",
       price: "2499.99",
       features: [
-        "Height adjustable",
-        "Cable management system",
-        "Built-in power outlets",
-        "Anti-fatigue surface",
+        "Premium wood finishes",
+        "Integrated cable management",
+        "Executive styling",
+        "Spacious work surface",
       ],
-      mainCategory: "Workstations",
-      subCategory: "Adjustable Desks",
+      mainCategory: "Desks",
+      subCategory: "Executive",
     },
     {
       id: "s2",
-      name: "Storage Solutions",
-      subtitle: "Elegant Organization",
-      image: "/images/products/storage_solutions.jpg",
+      name: "Luxury Lounges",
+      subtitle: "Refined Comfort",
+      image: "/images/products/luxury_lounge_display.jpg",
       description:
-        "Contemporary storage system with modular design and premium finish options",
-      price: "1999.99",
+        "Sophisticated lounge furniture combining contemporary style with unparalleled comfort",
+      price: "3599.99",
       features: [
-        "Modular design",
-        "Soft-close mechanisms",
-        "Premium finishes",
-        "Customizable interior",
+        "Premium upholstery",
+        "Ergonomic design",
+        "Modern aesthetics",
+        "Versatile configurations",
       ],
-      mainCategory: "Storage",
-      subCategory: "Cabinets",
+      mainCategory: "Lounges",
+      subCategory: "Reception",
     },
     {
       id: "c3",
-      name: "Conference Tables",
-      subtitle: "Professional Excellence",
-      image: "/images/products/conference_table.jpg",
+      name: "Premium Seating",
+      subtitle: "Ergonomic Excellence",
+      image: "/images/products/Seating_display.jpg",
       description:
-        "Executive conference table with integrated technology and premium materials",
-      price: "3499.99",
+        "High-performance ergonomic seating solutions designed for all-day comfort",
+      price: "1299.99",
       features: [
-        "Built-in connectivity",
-        "Power integration",
-        "Premium wood finish",
-        "Cable management",
+        "Adjustable support",
+        "Breathable materials",
+        "Customizable settings",
+        "Modern design language",
       ],
-      mainCategory: "Tables",
-      subCategory: "Conference",
+      mainCategory: "Seating",
+      subCategory: "Office Chairs",
     },
   ];
 
@@ -192,8 +201,12 @@ const SignatureCollection = () => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-32">
-          {products.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
+          {collections.map((collectionItem, index) => (
+            <ProductCard
+              key={collectionItem.id}
+              collection={collectionItem}
+              index={index}
+            />
           ))}
         </div>
 
@@ -214,9 +227,17 @@ const SignatureCollection = () => {
           <Button
             variant="ghost"
             className="text-lg group px-8 py-6 hover:bg-primary/5"
+            asChild
           >
-            Explore Complete Collection
-            <ArrowRightIcon className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+            <Link
+              href="/products/collections"
+              className="flex items-center justify-center"
+            >
+              <div className="flex items-center justify-center">
+                Explore Complete Collection
+                <ArrowRightIcon className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+              </div>
+            </Link>
           </Button>
         </motion.div>
       </div>

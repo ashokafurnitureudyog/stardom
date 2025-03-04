@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { StatisticProps } from "@/types/ComponentTypes";
 import { ArrowRightIcon } from "lucide-react";
 import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
+import { Link } from "next-view-transitions";
 
 const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
   <motion.div whileHover={{ scale: 1.02 }} className="relative group">
@@ -92,15 +93,18 @@ const LegacySection: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-8">
               <Statistic value={28} label="Years of Excellence" />
-              <Statistic value={1000} label="Premium Projects" />
+              <Statistic value={1000} label="Projects" />
             </div>
 
             <Button
               variant="ghost"
               className="text-lg group px-8 py-6 hover:bg-primary/5"
+              asChild
             >
-              Explore Our Legacy
-              <ArrowRightIcon className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+              <div>
+                <Link href="/heritage">Explore Our Legacy</Link>
+                <ArrowRightIcon className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+              </div>
             </Button>
           </motion.div>
 

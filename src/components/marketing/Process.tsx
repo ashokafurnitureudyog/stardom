@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileStack, Pencil, Check, ArrowRightIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-
+import { Link } from "next-view-transitions";
+// TODO Fix the scattered implementation of motion.div in the codebase
 const CraftsmanshipSection = () => {
   const processes = [
     {
@@ -32,7 +33,7 @@ const CraftsmanshipSection = () => {
   ];
 
   const stats = [
-    { value: "45+", label: "Master Artisans", prefix: "" },
+    { value: "15+", label: "Master Artisans", prefix: "" },
     { value: "200", label: "Crafting Hours", prefix: "+" },
     { value: "12", label: "Quality Stages", prefix: "" },
     { value: "100", label: "Client Satisfaction", prefix: "%" },
@@ -132,9 +133,14 @@ const CraftsmanshipSection = () => {
           <Button
             variant="link"
             className="text-lg text-primary/90 hover:text-primary group font-light tracking-wide"
+            asChild
           >
-            Discover Our Craftsmanship Process
-            <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" />
+            <Link href="/heritage">
+              <div className="flex items-center">
+                Discover Our Craftsmanship Process
+                <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" />
+              </div>
+            </Link>
           </Button>
         </motion.div>
       </motion.div>
