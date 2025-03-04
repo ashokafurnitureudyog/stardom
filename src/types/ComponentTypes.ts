@@ -107,7 +107,18 @@ export interface Achievement {
   description: string;
   icon: React.FC<{ className?: string }>;
 }
-
+//TODO: Fix this duplicate types and clean up the code
+export interface Product {
+  id: string;
+  name: string;
+  subtitle: string;
+  mainCategory?: string;
+  subCategory?: string;
+  description: string;
+  price: string;
+  image: string;
+  features: string[];
+}
 export interface Collection {
   id: string;
   name: string;
