@@ -1,87 +1,46 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useState, useEffect } from "react";
+
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import BaseLayout from "@/components/layout/BaseLayout";
-import { products } from "@/lib/constants/ProductData";
+import { Section } from "@/components/layout/Section";
+import { SectionTitle } from "@/components/layout/SectionTitle";
 import { ProductsHero } from "@/components/marketing/ProductsHero";
-import PageComingSoon from "@/components/shared/SectionComingSoon";
-// TODO: show custom solutions option when user cant find what they are looking for or att end of products grid
+import { ProductFilter } from "@/components/products/ProductFilters";
+import { ProductGrid } from "@/components/products/ProductGrid";
+import { CustomSolutionsSection } from "@/components/products/CustomSolution";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 export default function ProductsPage() {
-  const [selectedMain, setSelectedMain] = useState("all");
-  const [selectedSub, setSelectedSub] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [filteredProducts, setFilteredProducts] = useState(products);
-
-  useEffect(() => {
-    let filtered = products;
-
-    if (selectedMain !== "all") {
-      filtered = filtered.filter((p) => p.mainCategory === selectedMain);
-
-      if (selectedSub !== "all") {
-        filtered = filtered.filter((p) => p.subCategory === selectedSub);
-      }
-    }
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (p) =>
-          p.name.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query),
-      );
-    }
-
-    setFilteredProducts(filtered);
-  }, [selectedMain, selectedSub, searchQuery]);
-
   return (
-    <BaseLayout>
-      <div className="min-h-screen bg-background">
-        <ProductsHero />
+    <QueryClientProvider client={queryClient}>
+      <BaseLayout>
+        <div className="min-h-screen bg-background">
+          <ProductsHero />
 
-        {/* <CategoryFilters
-          categories={categories}
-          selectedMain={selectedMain}
-          selectedSub={selectedSub}
-          onMainSelect={(id) => {
-            setSelectedMain(id);
-            setSelectedSub("all");
-          }}
-          onSubSelect={setSelectedSub}
-        />
+          <Section className="bg-background">
+            <SectionTitle>
+              Our{" "}
+              <span className="font-serif italic text-primary">Collection</span>
+            </SectionTitle>
 
-        <SearchAndView
-          searchQuery={searchQuery}
-          viewMode={viewMode}
-          onSearchChange={setSearchQuery}
-          onViewChange={setViewMode}
-        /> */}
+            <ProductFilter />
+            <ProductGrid />
+          </Section>
 
-        <main className="max-w-7xl mx-auto px-6 py-12">
-          {/* Product grid commented out temporarily
-          <div
-            className={cn(
-              "grid gap-8",
-              viewMode === "grid"
-                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-                : "grid-cols-1",
-            )}
-          >
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                viewMode={viewMode}
-              />
-            ))}
-          </div>
-          */}
-
-          <PageComingSoon pageName="Product Catalog" />
-        </main>
-      </div>
-    </BaseLayout>
+          <Section className="bg-background">
+            <CustomSolutionsSection />
+          </Section>
+        </div>
+      </BaseLayout>
+    </QueryClientProvider>
   );
 }

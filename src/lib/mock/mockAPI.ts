@@ -1,0 +1,187 @@
+import { Product } from "@/types/ComponentTypes";
+
+const mockProducts: Product[] = [
+  {
+    id: 1,
+    name: "Ergonomic Executive Chair",
+    description:
+      "Premium ergonomic design with lumbar support and adjustable features for all-day comfort.",
+    price: 12500,
+    category: "chairs",
+    collection: "premium",
+    image:
+      "https://images.unsplash.com/photo-1505843490701-5be5d24ab61c?q=80&w=1000",
+    features: [
+      "Adjustable height",
+      "Lumbar support",
+      "Premium leather",
+      "360° swivel",
+    ],
+    colors: ["Black", "Brown", "Navy"],
+    inStock: true,
+    rating: 4.8,
+  },
+  {
+    id: 2,
+    name: "Modern Conference Table",
+    description:
+      "Sleek design conference table ideal for corporate meetings and collaborative workspaces.",
+    price: 35000,
+    category: "tables",
+    collection: "premium",
+    image:
+      "https://images.unsplash.com/photo-1573497701240-345a300b8d36?q=80&w=1000",
+    features: [
+      "Power outlets",
+      "Cable management",
+      "Modular design",
+      "Premium finish",
+    ],
+    colors: ["Oak", "Walnut", "Ebony"],
+    inStock: true,
+    rating: 4.6,
+  },
+  {
+    id: 3,
+    name: "Minimalist Workstation",
+    description:
+      "Clean, minimalist desk designed for productivity with smart storage solutions.",
+    price: 18000,
+    category: "desks",
+    collection: "aesthetic",
+    image:
+      "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=1000",
+    features: [
+      "Cable management",
+      "Adjustable height",
+      "Sustainable materials",
+    ],
+    colors: ["White", "Natural Oak", "Black"],
+    inStock: true,
+    rating: 4.7,
+  },
+  {
+    id: 4,
+    name: "Collaborative Lounge Set",
+    description:
+      "Versatile lounge furniture designed for informal meetings and collaborative work.",
+    price: 45000,
+    category: "lounges",
+    collection: "collaborative",
+    image:
+      "https://images.unsplash.com/photo-1519974719765-e6559eac2575?q=80&w=1000",
+    features: [
+      "Modular arrangement",
+      "Acoustic properties",
+      "Stain-resistant fabric",
+    ],
+    colors: ["Teal", "Gray", "Charcoal"],
+    inStock: true,
+    rating: 4.5,
+  },
+  {
+    id: 5,
+    name: "Acoustic Privacy Booth",
+    description:
+      "Self-contained privacy booth with acoustic properties for focused work or calls.",
+    price: 85000,
+    category: "booths",
+    collection: "premium",
+    image:
+      "https://images.unsplash.com/photo-1516705346105-4b6d739b1d61?q=80&w=1000",
+    features: [
+      "Soundproof",
+      "Integrated lighting",
+      "Ventilation",
+      "Power outlets",
+    ],
+    colors: ["Gray", "White", "Custom"],
+    inStock: false,
+    rating: 4.9,
+  },
+  {
+    id: 6,
+    name: "Scandinavian Office Chair",
+    description:
+      "Elegant wooden office chair inspired by Scandinavian design principles.",
+    price: 8500,
+    category: "chairs",
+    collection: "aesthetic",
+    image:
+      "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1000",
+    features: ["Wooden frame", "Ergonomic design", "Sustainable materials"],
+    colors: ["Natural", "Black", "White"],
+    inStock: true,
+    rating: 4.4,
+  },
+  {
+    id: 7,
+    name: "Industrial Storage Cabinet",
+    description:
+      "Durable metal storage solution with industrial aesthetic for modern offices.",
+    price: 15000,
+    category: "storage",
+    collection: "industrial",
+    image:
+      "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1000",
+    features: ["Lockable", "Adjustable shelves", "Heavy duty"],
+    colors: ["Black", "Gray", "White"],
+    inStock: true,
+    rating: 4.5,
+  },
+  {
+    id: 8,
+    name: "Executive L-Shaped Desk",
+    description:
+      "Spacious L-shaped executive desk with integrated storage and premium materials.",
+    price: 42000,
+    category: "desks",
+    collection: "premium",
+    image:
+      "https://images.unsplash.com/photo-1593062096033-9a26b09da705?q=80&w=1000",
+    features: [
+      "L-shaped design",
+      "Built-in storage",
+      "Cable management",
+      "Premium materials",
+    ],
+    colors: ["Mahogany", "Cherry", "Dark Walnut"],
+    inStock: true,
+    rating: 4.7,
+  },
+];
+
+export const productService = {
+  // Fetch all products (simulating API call)
+  getProducts: async (): Promise<Product[]> => {
+    // Simulate API latency
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    return mockProducts;
+  },
+
+  // Get unique categories from products
+  getCategories: async (): Promise<string[]> => {
+    const products = await productService.getProducts();
+    return [...new Set(products.map((p) => p.category))];
+  },
+
+  // Get unique collections from products
+  getCollections: async (): Promise<string[]> => {
+    const products = await productService.getProducts();
+    return [...new Set(products.map((p) => p.collection))];
+  },
+
+  // Filter products by category and collection
+  filterProducts: (
+    products: Product[],
+    category: string,
+    collection: string,
+  ): Product[] => {
+    return products.filter((product) => {
+      const categoryMatch = category === "all" || product.category === category;
+      const collectionMatch =
+        collection === "all" || product.collection === collection;
+      return categoryMatch && collectionMatch;
+    });
+  },
+};

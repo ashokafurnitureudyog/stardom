@@ -1,111 +1,68 @@
-"use client";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+import React from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Product } from "@/types/ComponentTypes";
 
-export const ProductCard = ({
-  product,
-  viewMode,
-}: {
+interface ProductCardProps {
   product: Product;
-  viewMode: "grid" | "list";
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <Card
-      className={cn(
-        "group overflow-hidden",
-        viewMode === "list" && "flex gap-8",
-      )}
-    >
-      <div
-        className={cn(
-          "relative overflow-hidden",
-          viewMode === "grid" ? "h-64" : "w-80",
-        )}
-      >
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      </div>
+}
 
-      <div className="flex-1">
-        <CardHeader>
-          <CardTitle className="font-light">{product.name}</CardTitle>
-          <p className="text-muted-foreground">{product.description}</p>
-        </CardHeader>
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { name, description, price, image, collection, inStock, rating } =
+    product;
 
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {product.features.map((feature, index) => (
-              <span
-                key={index}
-                className="text-xs px-3 py-1 bg-primary/10 text-primary rounded-full"
-              >
-                {feature}
-              </span>
-            ))}
+  return (
+    <div className="group relative">
+      {/* Glow effect container */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
+
+      {/* Inner glow effect */}
+      <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
+
+      <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 h-full flex flex-col">
+        <div className="aspect-[4/3] w-full relative overflow-hidden">
+          <img
+            src={image}
+            alt={name}
+            className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+          />
+          {!inStock && (
+            <div className="absolute top-0 right-0 bg-foreground/80 text-background px-3 py-1 text-sm">
+              Out of Stock
+            </div>
+          )}
+          <div className="absolute bottom-0 left-0 p-3">
+            <Badge
+              variant="secondary"
+              className="bg-background/80 hover:bg-background/90"
+            >
+              {collection.charAt(0).toUpperCase() + collection.slice(1)}
+            </Badge>
           </div>
-        </CardContent>
-
-        <CardFooter className="flex items-center justify-between">
-          <span className="font-serif italic text-primary text-lg">
-            {product.price}
-          </span>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="border-2">
-                Learn More
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle className="text-3xl font-light">
-                  {product.name}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-6">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-80 object-cover rounded-lg"
-                />
-                <p className="text-muted-foreground">{product.description}</p>
-                <div className="space-y-4">
-                  <h4 className="font-medium">Key Features</h4>
-                  <ul className="list-disc pl-4 space-y-2 text-muted-foreground">
-                    {product.features.map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
-                </div>
-                <Button className="w-full">Request Information</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </CardFooter>
-      </div>
-    </Card>
-  </motion.div>
-);
+        </div>
+        <div className="p-6 flex flex-col flex-grow">
+          <h3 className="text-xl font-light text-foreground font-serif">
+            {name}
+          </h3>
+          <p className="text-muted-foreground/80 text-sm mt-2 line-clamp-2 flex-grow">
+            {description}
+          </p>
+          <div className="mt-4 flex justify-between items-center">
+            <span className="text-lg font-light">
+              ₹{price.toLocaleString()}
+            </span>
+            <div className="flex items-center">
+              <span className="text-yellow-500 mr-1">★</span>
+              <span className="text-sm">{rating}</span>
+            </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-primary/10">
+            <button className="w-full py-2 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 font-light">
+              View Details
+            </button>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};

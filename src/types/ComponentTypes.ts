@@ -107,18 +107,7 @@ export interface Achievement {
   description: string;
   icon: React.FC<{ className?: string }>;
 }
-//TODO: Fix this duplicate types and clean up the code
-export interface Product {
-  id: string;
-  name: string;
-  subtitle: string;
-  mainCategory?: string;
-  subCategory?: string;
-  description: string;
-  price: string;
-  image: string;
-  features: string[];
-}
+
 export interface Collection {
   id: string;
   name: string;
@@ -166,4 +155,25 @@ export interface TestingTool {
   name: string;
   description: string;
   detail: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  collection: string;
+  image: string;
+  features: string[];
+  colors: string[];
+  inStock: boolean;
+  rating: number;
+}
+
+export type FilterType = "category" | "collection";
+
+export interface ProductFilters {
+  selectedCategory: string;
+  selectedCollection: string;
 }
