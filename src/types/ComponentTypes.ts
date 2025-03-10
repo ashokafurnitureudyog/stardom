@@ -177,3 +177,10 @@ export interface ProductFilters {
   selectedCategory: string;
   selectedCollection: string;
 }
+export type SortOption =
+  | "featured"
+  | "price-low-high"
+  | "price-high-low"
+  | "name-a-z"
+  | "name-z-a"
+  | "rating-high-low";

@@ -1,4 +1,4 @@
-import { Product } from "@/types/ComponentTypes";
+import { Product, SortOption } from "@/types/ComponentTypes";
 
 const mockProducts: Product[] = [
   {
@@ -171,17 +171,59 @@ export const productService = {
     return [...new Set(products.map((p) => p.collection))];
   },
 
-  // Filter products by category and collection
+  // Filter and sort products
   filterProducts: (
     products: Product[],
     category: string,
     collection: string,
+    searchQuery: string,
+    sortOption: SortOption,
   ): Product[] => {
-    return products.filter((product) => {
+    // First filter products
+    const filtered = products.filter((product) => {
       const categoryMatch = category === "all" || product.category === category;
       const collectionMatch =
         collection === "all" || product.collection === collection;
-      return categoryMatch && collectionMatch;
+
+      // Search query matching
+      const searchMatch =
+        searchQuery === "" ||
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.collection.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return categoryMatch && collectionMatch && searchMatch;
     });
+
+    // Then sort filtered products
+    return productService.sortProducts(filtered, sortOption);
+  },
+
+  // Sort products based on sort option
+  sortProducts: (products: Product[], sortOption: SortOption): Product[] => {
+    const sortedProducts = [...products];
+
+    switch (sortOption) {
+      case "price-low-high":
+        return sortedProducts.sort((a, b) => a.price - b.price);
+
+      case "price-high-low":
+        return sortedProducts.sort((a, b) => b.price - a.price);
+
+      case "name-a-z":
+        return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+
+      case "name-z-a":
+        return sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+
+      case "rating-high-low":
+        return sortedProducts.sort((a, b) => b.rating - a.rating);
+
+      case "featured":
+      default:
+        // Assuming id represents the natural "featured" order
+        return sortedProducts.sort((a, b) => a.id - b.id);
+    }
   },
 };
