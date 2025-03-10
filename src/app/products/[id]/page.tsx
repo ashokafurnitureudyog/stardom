@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
@@ -82,8 +83,8 @@ const mockRelatedProducts: Product[] = [
   },
 ];
 
-const ProductDisplay = ({}: { productId?: number }) => {
-  // In a real app, you'd use productId to fetch data
+const ProductDisplay = ({ params }: { params: { id: string } }) => {
+  const productId = parseInt(params.id);
   const currentProduct = mockCurrentProduct;
   const relatedProducts = mockRelatedProducts;
 
