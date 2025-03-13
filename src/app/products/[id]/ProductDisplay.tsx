@@ -11,6 +11,7 @@ import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
 import { useProducts } from "@/hooks/useProducts";
 import { usePathname } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Client component that receives the ID as a prop
 interface ProductDisplayProps {
@@ -30,8 +31,55 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
   if (individualProductQuery.isLoading) {
     return (
       <BaseLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
+        <div className="min-h-screen">
+          <Section className="pt-24 pb-32">
+            <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
+              <div className="flex items-center text-sm text-muted-foreground mb-12">
+                <Skeleton className="h-4 w-16" />
+                <span className="mx-3">/</span>
+                <Skeleton className="h-4 w-24" />
+                <span className="mx-3">/</span>
+                <Skeleton className="h-4 w-32" />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
+                {/* Product Image Skeleton */}
+                <div>
+                  <Skeleton className="w-full h-[400px] rounded-3xl" />
+                </div>
+
+                {/* Product Info Skeleton */}
+                <div className="flex flex-col justify-center space-y-6">
+                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className="h-12 w-3/4" />
+                  <Skeleton className="h-24 w-full" />
+
+                  {/* Features Skeleton */}
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-32" />
+                    <div className="space-y-3">
+                      <Skeleton className="h-6 w-full" />
+                      <Skeleton className="h-6 w-full" />
+                      <Skeleton className="h-6 w-3/4" />
+                    </div>
+                  </div>
+
+                  {/* Colors Skeleton */}
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-40" />
+                    <div className="flex gap-4">
+                      <Skeleton className="h-10 w-20 rounded-full" />
+                      <Skeleton className="h-10 w-20 rounded-full" />
+                      <Skeleton className="h-10 w-20 rounded-full" />
+                    </div>
+                  </div>
+
+                  {/* Button Skeleton */}
+                  <Skeleton className="h-14 w-full md:w-2/3 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </Section>
         </div>
       </BaseLayout>
     );
@@ -71,7 +119,7 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
   // WhatsApp inquiry function
   const handleWhatsAppInquiry = () => {
     // Get the current page URL to include in the message
-    const currentUrl = pathname;
+    const currentUrl = "https://stardom.co.in" + pathname;
 
     // Create the message with product details and URL
     const message = encodeURIComponent(
@@ -215,8 +263,15 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
             </SectionTitle>
 
             {similarProductQuery.isLoading ? (
-              <div className="flex justify-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10 py-10">
+                {[1, 2, 3].map((index) => (
+                  <div key={index} className="flex flex-col space-y-4">
+                    <Skeleton className="h-64 w-full rounded-xl" />
+                    <Skeleton className="h-6 w-2/3" />
+                    <Skeleton className="h-5 w-1/2" />
+                    <Skeleton className="h-10 w-1/3" />
+                  </div>
+                ))}
               </div>
             ) : relatedProducts.length > 0 ? (
               <motion.div
