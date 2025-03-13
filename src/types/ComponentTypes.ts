@@ -163,7 +163,7 @@ export interface Product {
   description: string;
   category: string;
   collection: string;
-  image: string;
+  images: string[];
   features: string[];
   colors: string[];
 }

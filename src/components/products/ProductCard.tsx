@@ -3,13 +3,20 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Product } from "@/types/ComponentTypes";
 import { Link } from "next-view-transitions";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { id, name, description, image, collection } = product;
+  const { id, name, description, images, collection } = product;
 
   return (
     <div className="group relative">
@@ -21,12 +28,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 h-full flex flex-col">
         <div className="aspect-[4/3] w-full relative overflow-hidden">
-          <img
-            src={image}
-            alt={name}
-            className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute bottom-0 left-0 p-3">
+          <Carousel className="w-full" opts={{ loop: true }}>
+            <CarouselContent>
+              {images.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div className="p-1">
+                    <img
+                      src={image}
+                      alt={`${name} - image ${index + 1}`}
+                      className="object-cover w-full h-full aspect-[4/3] transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2 opacity-0 group-hover:opacity-70 transition-opacity" />
+            <CarouselNext className="right-2 opacity-0 group-hover:opacity-70 transition-opacity" />
+          </Carousel>
+          <div className="absolute bottom-0 left-0 p-3 z-10">
             <Badge
               variant="secondary"
               className="bg-background/80 hover:bg-background/90"

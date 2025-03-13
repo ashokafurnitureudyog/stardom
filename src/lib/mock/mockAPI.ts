@@ -8,8 +8,11 @@ const mockProducts: Product[] = [
       "Premium ergonomic design with lumbar support and adjustable features for all-day comfort.",
     category: "chairs",
     collection: "premium",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1505843490701-5be5d24ab61c?q=80&w=1000",
+      "https://images.unsplash.com/photo-1589364222378-3e94f2cdf659?q=80&w=1000",
+      "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?q=80&w=1000",
+    ],
     features: [
       "Adjustable height",
       "Lumbar support",
@@ -25,8 +28,11 @@ const mockProducts: Product[] = [
       "Sleek design conference table ideal for corporate meetings and collaborative workspaces.",
     category: "tables",
     collection: "premium",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1573497701240-345a300b8d36?q=80&w=1000",
+      "https://images.unsplash.com/photo-1564069114553-7215e1ff1890?q=80&w=1000",
+      "https://images.unsplash.com/photo-1505409859467-3a796fd5798e?q=80&w=1000",
+    ],
     features: [
       "Power outlets",
       "Cable management",
@@ -42,8 +48,11 @@ const mockProducts: Product[] = [
       "Clean, minimalist desk designed for productivity with smart storage solutions.",
     category: "desks",
     collection: "aesthetic",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?q=80&w=1000",
+      "https://images.unsplash.com/photo-1542435503-956c469947f6?q=80&w=1000",
+      "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1000",
+    ],
     features: [
       "Cable management",
       "Adjustable height",
@@ -58,8 +67,11 @@ const mockProducts: Product[] = [
       "Versatile lounge furniture designed for informal meetings and collaborative work.",
     category: "lounges",
     collection: "collaborative",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1519974719765-e6559eac2575?q=80&w=1000",
+      "https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=1000",
+      "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=1000",
+    ],
     features: [
       "Modular arrangement",
       "Acoustic properties",
@@ -74,8 +86,11 @@ const mockProducts: Product[] = [
       "Self-contained privacy booth with acoustic properties for focused work or calls.",
     category: "booths",
     collection: "premium",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1516705346105-4b6d739b1d61?q=80&w=1000",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=80&w=1000",
+      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=1000",
+    ],
     features: [
       "Soundproof",
       "Integrated lighting",
@@ -91,8 +106,11 @@ const mockProducts: Product[] = [
       "Elegant wooden office chair inspired by Scandinavian design principles.",
     category: "chairs",
     collection: "aesthetic",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1000",
+      "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?q=80&w=1000",
+      "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=1000",
+    ],
     features: ["Wooden frame", "Ergonomic design", "Sustainable materials"],
     colors: ["Natural", "Black", "White"],
   },
@@ -103,8 +121,11 @@ const mockProducts: Product[] = [
       "Durable metal storage solution with industrial aesthetic for modern offices.",
     category: "storage",
     collection: "industrial",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1000",
+      "https://images.unsplash.com/photo-1605329540489-494d4cce8315?q=80&w=1000",
+      "https://images.unsplash.com/photo-1548094990-c16ca90f1f0d?q=80&w=1000",
+    ],
     features: ["Lockable", "Adjustable shelves", "Heavy duty"],
     colors: ["Black", "Gray", "White"],
   },
@@ -115,8 +136,11 @@ const mockProducts: Product[] = [
       "Spacious L-shaped executive desk with integrated storage and premium materials.",
     category: "desks",
     collection: "premium",
-    image:
+    images: [
       "https://images.unsplash.com/photo-1593062096033-9a26b09da705?q=80&w=1000",
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1000",
+      "https://images.unsplash.com/photo-1568654360516-7a3aff4c3b4f?q=80&w=1000",
+    ],
     features: [
       "L-shaped design",
       "Built-in storage",
