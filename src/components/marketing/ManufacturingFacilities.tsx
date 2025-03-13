@@ -23,7 +23,7 @@ const facilitiesData: FacilityData[] = [
   {
     category: "Production",
     title: "State-of-the-Art Manufacturing Unit",
-    src: "https://images.unsplash.com/photo-1469289759076-d1484757abc3",
+    src: "/images/Workshop/leather-work.jpg",
     highlight: "100,000 sq. ft. of excellence in furniture crafting.",
     description:
       "Our flagship facility combines advanced automation with traditional craftsmanship. Equipped with the latest CNC machinery and robotics-assisted production lines, we ensure precision in every piece we create.",

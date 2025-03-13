@@ -2,14 +2,14 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Product } from "@/types/ComponentTypes";
+import { Link } from "next-view-transitions";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { name, description, price, image, collection, inStock, rating } =
-    product;
+  const { id, name, description, image, collection } = product;
 
   return (
     <div className="group relative">
@@ -26,11 +26,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             alt={name}
             className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
           />
-          {!inStock && (
-            <div className="absolute top-0 right-0 bg-foreground/80 text-background px-3 py-1 text-sm">
-              Out of Stock
-            </div>
-          )}
           <div className="absolute bottom-0 left-0 p-3">
             <Badge
               variant="secondary"
@@ -47,19 +42,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <p className="text-muted-foreground/80 text-sm mt-2 line-clamp-2 flex-grow">
             {description}
           </p>
-          <div className="mt-4 flex justify-between items-center">
-            <span className="text-lg font-light">
-              ₹{price.toLocaleString()}
-            </span>
-            <div className="flex items-center">
-              <span className="text-yellow-500 mr-1">★</span>
-              <span className="text-sm">{rating}</span>
-            </div>
-          </div>
+
           <div className="mt-4 pt-4 border-t border-primary/10">
-            <button className="w-full py-2 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 font-light">
-              View Details
-            </button>
+            <Link href={`/products/${id}`}>
+              <button className="w-full py-2 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 font-light">
+                View Details
+              </button>
+            </Link>
           </div>
         </div>
       </Card>

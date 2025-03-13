@@ -158,17 +158,14 @@ export interface TestingTool {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   description: string;
-  price: number;
   category: string;
   collection: string;
   image: string;
   features: string[];
   colors: string[];
-  inStock: boolean;
-  rating: number;
 }
 
 export type FilterType = "category" | "collection";

@@ -2,11 +2,10 @@ import { Product, SortOption } from "@/types/ComponentTypes";
 
 const mockProducts: Product[] = [
   {
-    id: 1,
+    id: "1",
     name: "Ergonomic Executive Chair",
     description:
       "Premium ergonomic design with lumbar support and adjustable features for all-day comfort.",
-    price: 12500,
     category: "chairs",
     collection: "premium",
     image:
@@ -18,15 +17,12 @@ const mockProducts: Product[] = [
       "360° swivel",
     ],
     colors: ["Black", "Brown", "Navy"],
-    inStock: true,
-    rating: 4.8,
   },
   {
-    id: 2,
+    id: "2",
     name: "Modern Conference Table",
     description:
       "Sleek design conference table ideal for corporate meetings and collaborative workspaces.",
-    price: 35000,
     category: "tables",
     collection: "premium",
     image:
@@ -38,15 +34,12 @@ const mockProducts: Product[] = [
       "Premium finish",
     ],
     colors: ["Oak", "Walnut", "Ebony"],
-    inStock: true,
-    rating: 4.6,
   },
   {
-    id: 3,
+    id: "3",
     name: "Minimalist Workstation",
     description:
       "Clean, minimalist desk designed for productivity with smart storage solutions.",
-    price: 18000,
     category: "desks",
     collection: "aesthetic",
     image:
@@ -57,15 +50,12 @@ const mockProducts: Product[] = [
       "Sustainable materials",
     ],
     colors: ["White", "Natural Oak", "Black"],
-    inStock: true,
-    rating: 4.7,
   },
   {
-    id: 4,
+    id: "4",
     name: "Collaborative Lounge Set",
     description:
       "Versatile lounge furniture designed for informal meetings and collaborative work.",
-    price: 45000,
     category: "lounges",
     collection: "collaborative",
     image:
@@ -76,15 +66,12 @@ const mockProducts: Product[] = [
       "Stain-resistant fabric",
     ],
     colors: ["Teal", "Gray", "Charcoal"],
-    inStock: true,
-    rating: 4.5,
   },
   {
-    id: 5,
+    id: "5",
     name: "Acoustic Privacy Booth",
     description:
       "Self-contained privacy booth with acoustic properties for focused work or calls.",
-    price: 85000,
     category: "booths",
     collection: "premium",
     image:
@@ -96,45 +83,36 @@ const mockProducts: Product[] = [
       "Power outlets",
     ],
     colors: ["Gray", "White", "Custom"],
-    inStock: false,
-    rating: 4.9,
   },
   {
-    id: 6,
+    id: "6",
     name: "Scandinavian Office Chair",
     description:
       "Elegant wooden office chair inspired by Scandinavian design principles.",
-    price: 8500,
     category: "chairs",
     collection: "aesthetic",
     image:
       "https://images.unsplash.com/photo-1581539250439-c96689b516dd?q=80&w=1000",
     features: ["Wooden frame", "Ergonomic design", "Sustainable materials"],
     colors: ["Natural", "Black", "White"],
-    inStock: true,
-    rating: 4.4,
   },
   {
-    id: 7,
+    id: "8",
     name: "Industrial Storage Cabinet",
     description:
       "Durable metal storage solution with industrial aesthetic for modern offices.",
-    price: 15000,
     category: "storage",
     collection: "industrial",
     image:
       "https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=1000",
     features: ["Lockable", "Adjustable shelves", "Heavy duty"],
     colors: ["Black", "Gray", "White"],
-    inStock: true,
-    rating: 4.5,
   },
   {
-    id: 8,
+    id: "9",
     name: "Executive L-Shaped Desk",
     description:
       "Spacious L-shaped executive desk with integrated storage and premium materials.",
-    price: 42000,
     category: "desks",
     collection: "premium",
     image:
@@ -146,8 +124,6 @@ const mockProducts: Product[] = [
       "Premium materials",
     ],
     colors: ["Mahogany", "Cherry", "Dark Walnut"],
-    inStock: true,
-    rating: 4.7,
   },
 ];
 
@@ -169,6 +145,19 @@ export const productService = {
   getCollections: async (): Promise<string[]> => {
     const products = await productService.getProducts();
     return [...new Set(products.map((p) => p.collection))];
+  },
+  getProductById: async (id: string): Promise<Product | undefined> => {
+    const products = await productService.getProducts();
+    return products.find((p) => p.id === id);
+  },
+
+  getSimilarProducts: async (id: string): Promise<Product[]> => {
+    const products = await productService.getProducts();
+    const product = products.find((p) => p.id === id);
+    if (!product) return [];
+    return products.filter(
+      (p) => p.category === product.category && p.id !== product.id,
+    );
   },
 
   // Filter and sort products
@@ -205,25 +194,16 @@ export const productService = {
     const sortedProducts = [...products];
 
     switch (sortOption) {
-      case "price-low-high":
-        return sortedProducts.sort((a, b) => a.price - b.price);
-
-      case "price-high-low":
-        return sortedProducts.sort((a, b) => b.price - a.price);
-
       case "name-a-z":
         return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
 
       case "name-z-a":
         return sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
 
-      case "rating-high-low":
-        return sortedProducts.sort((a, b) => b.rating - a.rating);
-
       case "featured":
       default:
         // Assuming id represents the natural "featured" order
-        return sortedProducts.sort((a, b) => a.id - b.id);
+        return sortedProducts.sort((a, b) => a.id.localeCompare(b.id));
     }
   },
 };

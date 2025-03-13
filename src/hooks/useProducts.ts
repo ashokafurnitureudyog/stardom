@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { SortOption } from "@/types/ComponentTypes";
 
-export const useProducts = () => {
+export const useProducts = (productId?: string) => {
   // Get filters from Zustand store
   const {
     filters,
@@ -32,6 +32,20 @@ export const useProducts = () => {
   const collectionsQuery = useQuery({
     queryKey: ["collections"],
     queryFn: productService.getCollections,
+  });
+
+  const individualProductQuery = useQuery({
+    queryKey: ["product", productId],
+    queryFn: () => productService.getProductById(productId || "null"),
+    // Only enable this query when productId is provided
+    enabled: !!productId,
+  });
+
+  const similarProductQuery = useQuery({
+    queryKey: ["similarProducts", productId],
+    queryFn: () => productService.getSimilarProducts(productId || "null"),
+    // Only enable this query when productId is provided
+    enabled: !!productId,
   });
 
   // Filter products based on current filters, search, and sort
@@ -101,5 +115,7 @@ export const useProducts = () => {
     filters,
     searchQuery,
     sortOption,
+    individualProductQuery,
+    similarProductQuery,
   };
 };
