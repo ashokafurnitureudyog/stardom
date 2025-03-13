@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Playfair_Display, Montserrat } from "next/font/google";
-import { HeroUIProvider } from "@heroui/react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Providers } from "./providers";
 
 const playfairDisplay = Playfair_Display({
@@ -100,14 +97,6 @@ const jsonLd = {
   },
   sameAs: [], // Add your social media URLs when available
 };
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 export default function RootLayout({
   children,
 }: Readonly<{
