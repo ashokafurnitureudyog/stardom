@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Product } from "@/types/ComponentTypes";
@@ -17,6 +17,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { id, name, description, images, collection } = product;
+  const [imgError, setImgError] = useState(false);
 
   return (
     <div className="group relative">
@@ -34,9 +35,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 <CarouselItem key={index}>
                   <div className="p-1">
                     <img
-                      src={image}
+                      onError={() => setImgError(true)}
+                      src={
+                        imgError
+                          ? "https://images.unsplash.com/photo-1610513320995-1ad4bbf25e55"
+                          : image
+                      }
                       alt={`${name} - image ${index + 1}`}
                       className="object-cover w-full h-full aspect-[4/3] transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
                     />
                   </div>
                 </CarouselItem>
