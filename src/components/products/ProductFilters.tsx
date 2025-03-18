@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -10,11 +10,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, X, Filter, ArrowUpDown } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+} from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { SortOption } from "@/types/ComponentTypes";
 
-export const ProductFilter: React.FC = () => {
+export const ProductFilter = () => {
   const {
     categories,
     collections,
@@ -30,10 +45,29 @@ export const ProductFilter: React.FC = () => {
   } = useProducts();
 
   const [localSearch, setLocalSearch] = useState(searchQuery);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  // Initialize and update the isDesktop state
+  useEffect(() => {
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 768);
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
+
+  // Handle search with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSearch !== searchQuery) {
+        handleSearch(localSearch);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [localSearch, handleSearch, searchQuery]);
 
   // Handle search submit
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     handleSearch(localSearch);
   };
@@ -52,143 +86,204 @@ export const ProductFilter: React.FC = () => {
     sortOption !== "featured" ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
-  return (
-    <div className="mb-12 w-full">
-      {/* Search and Sort Row */}
-      <div className="fle</Tabs>x flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mb-6">
-        {/* Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="relative flex-1">
-          <Input
-            placeholder="Search products..."
-            value={localSearch}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              setLocalSearch(newValue);
-              handleSearch(newValue);
-            }}
-            className="pl-10 pr-10 w-full h-10"
-          />
-          <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-          {localSearch && (
-            <button
-              type="button"
-              onClick={clearSearch}
-              className="absolute right-3 top-2.5"
-            >
-              <X className="h-5 w-5 text-muted-foreground hover:text-foreground" />
-            </button>
-          )}
-          <button type="submit" className="sr-only">
-            Search
-          </button>
-        </form>
+  // Handle filter reset
+  const handleResetFilters = () => {
+    resetFilters();
+    setLocalSearch("");
+    setSheetOpen(false);
+  };
 
-        {/* Filters Toggle for Mobile */}
-        <Button
-          variant="outline"
-          className="md:hidden flex items-center gap-2"
-          onClick={() => setFiltersOpen(!filtersOpen)}
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-          Filters
-          {activeFiltersCount > 0 && (
-            <span className="ml-1 rounded-full bg-primary text-primary-foreground text-xs px-1.5 py-0.5">
-              {activeFiltersCount}
-            </span>
-          )}
-        </Button>
+  // Filter options component - used in both desktop and mobile views
+  const FilterOptions = () => (
+    <Tabs defaultValue="categories" className="w-full">
+      <div className="flex justify-center w-full mb-4">
+        <TabsList className="grid w-full max-w-xs mx-auto grid-cols-2">
+          <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="collections">Collections</TabsTrigger>
+        </TabsList>
+      </div>
 
-        {/* Sort Dropdown */}
-        <div className="flex-shrink-0">
-          <Select
-            value={sortOption}
-            onValueChange={(value: SortOption) => handleSort(value)}
+      <TabsContent value="categories" className="mt-2">
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
+          <button
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              selectedCategory === "all"
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted hover:bg-muted/80"
+            }`}
+            onClick={() => filterByCategory("all")}
           >
-            <SelectTrigger className="w-[180px] h-10">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            All
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                selectedCategory === category
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80"
+              }`}
+              onClick={() => filterByCategory(category)}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </button>
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="collections" className="mt-2">
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
+          <button
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              selectedCollection === "all"
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted hover:bg-muted/80"
+            }`}
+            onClick={() => filterByCollection("all")}
+          >
+            All
+          </button>
+          {collections.map((collection) => (
+            <button
+              key={collection}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                selectedCollection === collection
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80"
+              }`}
+              onClick={() => filterByCollection(collection)}
+            >
+              {collection.charAt(0).toUpperCase() + collection.slice(1)}
+            </button>
+          ))}
+        </div>
+      </TabsContent>
+    </Tabs>
+  );
+
+  return (
+    <div className="w-full space-y-4">
+      {/* Search and Sort Row */}
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+        {/* Search Bar */}
+        <div className="relative flex-1">
+          <form onSubmit={handleSearchSubmit} className="relative w-full">
+            <Input
+              placeholder="Search products..."
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              className="pl-10 pr-10 h-10"
+              aria-label="Search products"
+            />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground pointer-events-none" />
+            {localSearch && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={clearSearch}
+                className="absolute right-2 top-2 h-6 w-6 p-0"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+            <button type="submit" className="sr-only">
+              Search
+            </button>
+          </form>
+        </div>
+
+        <div className="flex gap-2">
+          {/* Mobile Filter Sheet */}
+          {!isDesktop && (
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2 flex-1 sm:flex-none"
+                  aria-label="Open filters"
+                >
+                  <Filter className="h-4 w-4" />
+                  <span>Filters</span>
+                  {activeFiltersCount > 0 && (
+                    <Badge
+                      variant="secondary"
+                      className="ml-1 px-1.5 py-px text-xs"
+                    >
+                      {activeFiltersCount}
+                    </Badge>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full max-w-sm sm:max-w-md font-sans">
+                <SheetHeader>
+                  <SheetTitle className="font-serif">Filters</SheetTitle>
+                  <SheetDescription>
+                    Refine your product search
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="py-4">
+                  <FilterOptions />
+                </div>
+                <SheetFooter className="flex gap-2">
+                  <Button variant="outline" onClick={handleResetFilters}>
+                    Reset all filters
+                  </Button>
+                  <Button onClick={() => setSheetOpen(false)}>
+                    Apply filters
+                  </Button>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
+          )}
+
+          {/* Sort Dropdown */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex-shrink-0">
+                  <Select
+                    value={sortOption}
+                    onValueChange={(value: SortOption) => handleSort(value)}
+                  >
+                    <SelectTrigger
+                      className="w-[150px] sm:w-[180px] h-10"
+                      aria-label="Sort options"
+                    >
+                      <div className="flex items-center gap-2 truncate">
+                        <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+                        <SelectValue placeholder="Sort by" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sortOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>Sort products</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 
-      {/* Filters Section - Shown by default on desktop, toggleable on mobile */}
-      <div
-        className={`transition-all duration-300 ease-in-out ${filtersOpen ? "max-h-96" : "max-h-0 md:max-h-96"} overflow-hidden md:overflow-visible`}
-      >
-        <Tabs defaultValue="categories" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-            <TabsTrigger value="categories">Categories</TabsTrigger>
-            <TabsTrigger value="collections">Collections</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="categories" className="mt-6">
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <button
-                className={`px-4 py-2 rounded-full text-sm ${
-                  selectedCategory === "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80"
-                }`}
-                onClick={() => filterByCategory("all")}
-              >
-                All
-              </button>
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  className={`px-4 py-2 rounded-full text-sm ${
-                    selectedCategory === category
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted hover:bg-muted/80"
-                  }`}
-                  onClick={() => filterByCategory(category)}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="collections" className="mt-6">
-            <div className="flex flex-wrap justify-center gap-3 mb-8">
-              <button
-                className={`px-4 py-2 rounded-full text-sm ${
-                  selectedCollection === "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80"
-                }`}
-                onClick={() => filterByCollection("all")}
-              >
-                All
-              </button>
-              {collections.map((collection) => (
-                <button
-                  key={collection}
-                  className={`px-4 py-2 rounded-full text-sm ${
-                    selectedCollection === collection
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted hover:bg-muted/80"
-                  }`}
-                  onClick={() => filterByCollection(collection)}
-                >
-                  {collection.charAt(0).toUpperCase() + collection.slice(1)}
-                </button>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+      {/* Desktop Filters */}
+      {isDesktop && (
+        <div className="hidden md:block">
+          <FilterOptions />
+        </div>
+      )}
 
       {/* Active Filters Summary */}
       {activeFiltersCount > 0 && (
-        <div className="flex items-center justify-between mt-4 pb-4 border-b">
+        <div className="flex flex-wrap items-center justify-between gap-y-2 pt-1 pb-3 border-b">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-muted-foreground">
               Active filters:
@@ -196,14 +291,17 @@ export const ProductFilter: React.FC = () => {
             {selectedCategory !== "all" && (
               <Badge
                 variant="secondary"
-                className="pl-3 pr-1 py-1 flex items-center gap-1"
+                className="pl-2.5 pr-1 py-1 flex items-center gap-1"
               >
-                Category: {selectedCategory}
+                <span className="truncate max-w-[140px]">
+                  Category: {selectedCategory}
+                </span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-4 w-4 p-0 ml-1"
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent hover:text-primary"
                   onClick={() => filterByCategory("all")}
+                  aria-label={`Remove ${selectedCategory} category filter`}
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -212,14 +310,17 @@ export const ProductFilter: React.FC = () => {
             {selectedCollection !== "all" && (
               <Badge
                 variant="secondary"
-                className="pl-3 pr-1 py-1 flex items-center gap-1"
+                className="pl-2.5 pr-1 py-1 flex items-center gap-1"
               >
-                Collection: {selectedCollection}
+                <span className="truncate max-w-[140px]">
+                  Collection: {selectedCollection}
+                </span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-4 w-4 p-0 ml-1"
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent hover:text-primary"
                   onClick={() => filterByCollection("all")}
+                  aria-label={`Remove ${selectedCollection} collection filter`}
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -228,14 +329,17 @@ export const ProductFilter: React.FC = () => {
             {searchQuery && (
               <Badge
                 variant="secondary"
-                className="pl-3 pr-1 py-1 flex items-center gap-1"
+                className="pl-2.5 pr-1 py-1 flex items-center gap-1"
               >
-                Search: {searchQuery}
+                <span className="truncate max-w-[140px]">
+                  Search: {searchQuery}
+                </span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-4 w-4 p-0 ml-1"
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent hover:text-primary"
                   onClick={clearSearch}
+                  aria-label="Clear search query"
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -244,14 +348,17 @@ export const ProductFilter: React.FC = () => {
             {sortOption !== "featured" && (
               <Badge
                 variant="secondary"
-                className="pl-3 pr-1 py-1 flex items-center gap-1"
+                className="pl-2.5 pr-1 py-1 flex items-center gap-1"
               >
-                Sort: {sortOptions.find((o) => o.value === sortOption)?.label}
+                <span className="truncate max-w-[140px]">
+                  Sort: {sortOptions.find((o) => o.value === sortOption)?.label}
+                </span>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-4 w-4 p-0 ml-1"
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent hover:text-primary"
                   onClick={() => handleSort("featured")}
+                  aria-label="Reset sort order"
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -261,7 +368,7 @@ export const ProductFilter: React.FC = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={resetFilters}
+            onClick={handleResetFilters}
             className="text-sm"
           >
             Clear all
@@ -271,3 +378,5 @@ export const ProductFilter: React.FC = () => {
     </div>
   );
 };
+
+export default ProductFilter;
