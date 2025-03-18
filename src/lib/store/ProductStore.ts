@@ -1,15 +1,5 @@
-import { ProductFilters, SortOption } from "@/types/ComponentTypes";
+import { ProductState } from "@/types/ComponentTypes";
 import { create } from "zustand";
-
-interface ProductState {
-  filters: ProductFilters;
-  searchQuery: string;
-  sortOption: SortOption;
-  setFilter: (type: "category" | "collection", value: string) => void;
-  setSearchQuery: (query: string) => void;
-  setSortOption: (option: SortOption) => void;
-  resetFilters: () => void;
-}
 
 export const useProductStore = create<ProductState>((set) => ({
   // State

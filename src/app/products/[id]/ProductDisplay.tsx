@@ -81,8 +81,8 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
               <span className="mx-3">/</span>
               <span className="text-foreground">{currentProduct.name}</span>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
+            {/* TODO: Improve this diplay ui */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-20 ">
               {/* Product Image Carousel */}
               <ProductImages
                 images={currentProduct.images}

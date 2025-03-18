@@ -175,3 +175,12 @@ export interface ProductFilters {
   selectedCollection: string;
 }
 export type SortOption = "featured" | "name-a-z" | "name-z-a";
+export interface ProductState {
+  filters: ProductFilters;
+  searchQuery: string;
+  sortOption: SortOption;
+  setFilter: (type: "category" | "collection", value: string) => void;
+  setSearchQuery: (query: string) => void;
+  setSortOption: (option: SortOption) => void;
+  resetFilters: () => void;
+}
