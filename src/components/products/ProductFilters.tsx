@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { SortOption } from "@/types/ComponentTypes";
@@ -54,13 +55,17 @@ export const ProductFilter: React.FC = () => {
   return (
     <div className="mb-12 w-full">
       {/* Search and Sort Row */}
-      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mb-6">
+      <div className="fle</Tabs>x flex-col md:flex-row gap-4 items-stretch md:items-center justify-between mb-6">
         {/* Search Bar */}
         <form onSubmit={handleSearchSubmit} className="relative flex-1">
           <Input
             placeholder="Search products..."
             value={localSearch}
-            onChange={(e) => setLocalSearch(e.target.value)}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              setLocalSearch(newValue);
+              handleSearch(newValue);
+            }}
             className="pl-10 pr-10 w-full h-10"
           />
           <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
@@ -189,21 +194,67 @@ export const ProductFilter: React.FC = () => {
               Active filters:
             </span>
             {selectedCategory !== "all" && (
-              <Badge onClear={() => filterByCategory("all")}>
+              <Badge
+                variant="secondary"
+                className="pl-3 pr-1 py-1 flex items-center gap-1"
+              >
                 Category: {selectedCategory}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 ml-1"
+                  onClick={() => filterByCategory("all")}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </Badge>
             )}
             {selectedCollection !== "all" && (
-              <Badge onClear={() => filterByCollection("all")}>
+              <Badge
+                variant="secondary"
+                className="pl-3 pr-1 py-1 flex items-center gap-1"
+              >
                 Collection: {selectedCollection}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 ml-1"
+                  onClick={() => filterByCollection("all")}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </Badge>
             )}
             {searchQuery && (
-              <Badge onClear={clearSearch}>Search: {searchQuery}</Badge>
+              <Badge
+                variant="secondary"
+                className="pl-3 pr-1 py-1 flex items-center gap-1"
+              >
+                Search: {searchQuery}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 ml-1"
+                  onClick={clearSearch}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
             )}
             {sortOption !== "featured" && (
-              <Badge onClear={() => handleSort("featured")}>
+              <Badge
+                variant="secondary"
+                className="pl-3 pr-1 py-1 flex items-center gap-1"
+              >
                 Sort: {sortOptions.find((o) => o.value === sortOption)?.label}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 ml-1"
+                  onClick={() => handleSort("featured")}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
               </Badge>
             )}
           </div>
@@ -217,21 +268,6 @@ export const ProductFilter: React.FC = () => {
           </Button>
         </div>
       )}
-    </div>
-  );
-};
-
-// Badge component for active filters
-const Badge: React.FC<{
-  children: React.ReactNode;
-  onClear: () => void;
-}> = ({ children, onClear }) => {
-  return (
-    <div className="flex items-center gap-1 bg-muted text-sm rounded-full px-3 py-1">
-      {children}
-      <button onClick={onClear} className="ml-1">
-        <X className="h-3 w-3" />
-      </button>
     </div>
   );
 };
