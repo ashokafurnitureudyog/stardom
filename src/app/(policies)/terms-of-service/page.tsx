@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
 import { Button } from "@/components/ui/button";
 import { Link } from "next-view-transitions";
-import { ScrollText, FileCheck, BookOpen, Scale } from "lucide-react";
+import {
+  ScrollText,
+  FileCheck,
+  BookOpen,
+  Scale,
+  ArrowRight,
+} from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 
 const termsSections = [
@@ -63,6 +69,37 @@ const TermsOfServicePage = () => {
   const [activeSection, setActiveSection] = useState<string>(
     termsSections[0]?.id || "",
   );
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  // Handle scroll position for visual effects
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Determine active section based on scroll position
+  useEffect(() => {
+    const handleActiveSection = () => {
+      const sections = termsSections.map((sec) => sec.id);
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom >= 200) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleActiveSection);
+    return () => window.removeEventListener("scroll", handleActiveSection);
+  }, []);
 
   const scrollToSection = (sectionId: string): void => {
     document.getElementById(sectionId)?.scrollIntoView({
@@ -75,83 +112,130 @@ const TermsOfServicePage = () => {
   return (
     <BaseLayout className="overflow-x-hidden lg:overflow-auto">
       <div className="min-h-screen bg-background font-sans">
-        {/* Hero Section */}
-        <Section className="pt-24 pb-12">
-          <div className="text-center max-w-3xl mx-auto">
+        {/* Hero Section with subtle gradient background */}
+        <Section className="relative pt-32 pb-16 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+          <motion.div
+            className="text-center max-w-2xl mx-auto relative z-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
             <SectionTitle>
               Terms of{" "}
               <span className="font-serif italic text-primary">Service</span>
             </SectionTitle>
-            <p className="text-muted-foreground text-lg mx-auto mb-10">
+            <p className="text-muted-foreground text-lg md:text-xl font-light mx-auto mb-8 max-w-xl">
               Some simple terms about using our website. Our site is for
               informational purposes only to showcase our furniture designs.
             </p>
-          </div>
-        </Section>
-
-        {/* Last Updated Notice */}
-        <Section className="py-4">
-          <div className="max-w-6xl mx-auto">
-            <p className="text-muted-foreground text-sm italic">
-              Last Updated: {new Date().toLocaleDateString()}
-            </p>
-          </div>
+            <div className="h-px w-24 bg-primary/30 mx-auto mt-10" />
+          </motion.div>
         </Section>
 
         {/* Main Content */}
-        <Section className="py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 max-w-6xl mx-auto">
+        <Section className="py-16 md:py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 max-w-6xl mx-auto">
             {/* Navigation Sidebar */}
             <div className="lg:col-span-1">
-              <div className="sticky top-32 space-y-8">
-                <h3 className="text-lg font-medium mb-4 text-foreground/80">
-                  Sections
-                </h3>
-                <nav className="space-y-1">
-                  {termsSections.map((section, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => scrollToSection(section.id)}
-                      className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
-                        activeSection === section.id
-                          ? "bg-primary/10 text-primary font-medium"
-                          : "text-muted-foreground hover:bg-primary/5"
-                      }`}
-                    >
-                      {section.icon}
-                      {section.title}
-                    </button>
-                  ))}
-                </nav>
+              <div
+                className={`transition-all duration-300 ${scrollPosition > 150 ? "sticky top-32" : ""}`}
+              >
+                <div className="space-y-8">
+                  <h3 className="text-base font-medium mb-4 text-primary/80 uppercase tracking-wider">
+                    Policy Sections
+                  </h3>
+                  <nav className="space-y-2">
+                    {termsSections.map((section, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => scrollToSection(section.id)}
+                        className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
+                          activeSection === section.id
+                            ? "bg-primary/10 text-primary font-medium"
+                            : "text-muted-foreground hover:bg-primary/5"
+                        }`}
+                      >
+                        <span className="text-primary/80">{section.icon}</span>
+                        <span>{section.title}</span>
+                        {activeSection === section.id && (
+                          <motion.div
+                            className="ml-auto"
+                            initial={{ opacity: 0, x: -5 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <ArrowRight className="h-4 w-4 text-primary" />
+                          </motion.div>
+                        )}
+                      </button>
+                    ))}
+                  </nav>
+
+                  <div className="pt-8 mt-8 border-t border-input/20">
+                    <h3 className="text-base font-medium mb-6 text-primary/80 uppercase tracking-wider">
+                      Related Policies
+                    </h3>
+                    <div className="space-y-3">
+                      <Button
+                        className="w-full justify-start text-muted-foreground border-input/20 hover:border-primary/30 hover:text-foreground"
+                        variant="outline"
+                        asChild
+                      >
+                        <Link href="/privacy-policy">Privacy Policy</Link>
+                      </Button>
+                      <Button
+                        className="w-full justify-start text-muted-foreground border-input/20 hover:border-primary/30 hover:text-foreground"
+                        variant="outline"
+                        asChild
+                      >
+                        <Link href="/cookie-policy">Cookie Policy</Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Terms of Service Content */}
-            <div className="lg:col-span-3 space-y-16">
-              <div className="mb-12">
-                <p className="text-muted-foreground leading-relaxed">
-                  These simple terms explain how you can use our website. Our
-                  site is primarily for showcasing our furniture designs and
-                  providing information about our brand.
-                </p>
-              </div>
+            <div className="lg:col-span-4 space-y-24">
+              <motion.div
+                className="mb-12"
+                variants={fadeInUpVariants}
+                initial="hidden"
+                animate="visible"
+                viewport={{ once: true }}
+              >
+                <div className="px-6 py-8 bg-primary/5 rounded-xl border border-primary/10">
+                  <p className="text-lg font-light leading-relaxed">
+                    These simple terms explain how you can use our website. Our
+                    site is primarily for showcasing our furniture designs and
+                    providing information about our brand.
+                  </p>
+                </div>
+              </motion.div>
 
               {termsSections.map((section, idx) => (
                 <motion.div
                   key={idx}
                   id={section.id}
                   variants={fadeInUpVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
                   className="scroll-mt-32"
                 >
-                  <div className="flex items-center gap-3 mb-8">
-                    <h2 className="text-2xl lg:text-3xl font-light font-serif flex items-center gap-3">
-                      {section.icon}
+                  <div className="flex items-center gap-4 mb-10">
+                    <div className="flex items-center justify-center p-3 rounded-full bg-primary/10">
+                      <span className="text-primary">{section.icon}</span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-light flex items-center gap-3">
                       {section.title}
                     </h2>
-                    <div className="h-px flex-grow bg-primary/20" />
+                    <div className="h-px flex-grow bg-primary/10" />
                   </div>
 
-                  <div className="prose prose-slate max-w-none prose-headings:font-medium prose-headings:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground/90">
+                  <div className="prose prose-slate max-w-none prose-headings:font-medium prose-headings:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground/90 pl-1">
                     <div
                       dangerouslySetInnerHTML={{ __html: section.content }}
                     />
@@ -162,23 +246,20 @@ const TermsOfServicePage = () => {
           </div>
         </Section>
 
-        {/* Contact CTA */}
-        <Section className="bg-card">
-          <div className="text-center max-w-3xl mx-auto">
-            <SectionTitle>
-              Questions About Our{" "}
-              <span className="font-serif italic text-primary">Furniture?</span>
-            </SectionTitle>
-            <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
-              We&apos;d love to hear from you and discuss how our furniture can
-              transform your space.
-            </p>
-            <Button
-              className="min-w-[200px] h-14 text-lg tracking-wide"
-              asChild
-            >
-              <Link href="/contact">Contact Us</Link>
-            </Button>
+        {/* Policy footer */}
+        <Section className="py-12 bg-primary/5">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <p className="text-muted-foreground text-center md:text-left">
+                Last updated: March 2025
+              </p>
+              <Button
+                variant="outline"
+                className="border-primary/20 hover:border-primary/50"
+              >
+                <Link href="/contact">Contact Us With Questions</Link>
+              </Button>
+            </div>
           </div>
         </Section>
       </div>
