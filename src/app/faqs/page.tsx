@@ -232,7 +232,7 @@ const FAQPage: React.FC = () => {
               our customer service as you do in our furniture.
             </p>
             <Button
-              className="bg-primary hover:bg-primary/90 text-white px-8 py-6 h-auto rounded-full"
+              className="min-w-[240px] h-14 text-lg tracking-wide"
               asChild
             >
               <Link href="/contact">Contact Our Team</Link>

@@ -54,6 +54,16 @@ export interface FAQCategory {
   title: string;
   faqs: FAQ[];
 }
+export interface ShippingInfo {
+  title: string;
+  details: string;
+}
+
+export interface ShippingCategory {
+  title: string;
+  icon: React.ReactNode;
+  info: ShippingInfo[];
+}
 
 export interface SocialLink {
   icon: LucideIcon;
