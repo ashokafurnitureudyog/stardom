@@ -69,7 +69,25 @@ export interface SocialLink {
   icon: LucideIcon;
   url: string;
 }
+export interface ReturnInfo {
+  title: string;
+  details: string;
+}
 
+export interface ReturnCategory {
+  title: string;
+  icon: React.ReactNode;
+  info: ReturnInfo[];
+}
+export interface CookieInfo {
+  title: string;
+  details: string;
+}
+export interface CookieCategory {
+  title: string;
+  icon: React.ReactNode;
+  info: CookieInfo[];
+}
 export interface FormData {
   name: string;
   email: string;
