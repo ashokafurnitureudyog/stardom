@@ -35,7 +35,7 @@ const Footer = () => {
   ];
 
   const supportLinks = [
-    { name: "Contact Us", href: "/contact-us" },
+    { name: "Contact Us", href: "/contact" },
     { name: "FAQs", href: "/faqs" },
     { name: "Shipping Info", href: "/shipping-info" },
   ];

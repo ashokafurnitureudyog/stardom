@@ -50,6 +50,11 @@ export interface FAQ {
   answer: string;
 }
 
+export interface FAQCategory {
+  title: string;
+  faqs: FAQ[];
+}
+
 export interface SocialLink {
   icon: LucideIcon;
   url: string;
