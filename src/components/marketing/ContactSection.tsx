@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,77 @@ import { motion } from "framer-motion";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 
 const ContactSection = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [formStatus, setFormStatus] = useState({
+    isSubmitting: false,
+    isSuccess: false,
+    isError: false,
+    message: "",
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleChange = (e: { target: { name: any; value: any } }) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    setFormStatus({
+      isSubmitting: true,
+      isSuccess: false,
+      isError: false,
+      message: "",
+    });
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const data = await response.json();
+
+      setFormStatus({
+        isSubmitting: false,
+        isSuccess: true,
+        isError: false,
+        message: "Thank you! We will contact you shortly.",
+      });
+
+      // Reset form fields after successful submission
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Error sending contact form:", error);
+      setFormStatus({
+        isSubmitting: false,
+        isSuccess: false,
+        isError: true,
+        message: "Failed to send message. Please try again.",
+      });
+    }
+  };
+
   return (
     <div className="w-full bg-background py-32 md:py-40 px-8 md:px-16 font-sans relative overflow-hidden">
       {/* Decorative Elements */}
@@ -111,26 +182,22 @@ const ContactSection = () => {
             variants={fadeInUpVariants}
             className="relative"
           >
-            <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-8 border border-primary/5">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">
-                    First Name
-                  </label>
-                  <Input
-                    placeholder="Enter first name"
-                    className="bg-background/50 border-primary/10 text-foreground placeholder:text-muted-foreground/50 h-12 transition-all duration-300 focus:border-primary/30"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">
-                    Last Name
-                  </label>
-                  <Input
-                    placeholder="Enter last name"
-                    className="bg-background/50 border-primary/10 text-foreground placeholder:text-muted-foreground/50 h-12 transition-all duration-300 focus:border-primary/30"
-                  />
-                </div>
+            <form
+              onSubmit={handleSubmit}
+              className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-8 border border-primary/5"
+            >
+              <div className="space-y-3">
+                <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">
+                  Full Name
+                </label>
+                <Input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  required
+                  className="bg-background/50 border-primary/10 text-foreground placeholder:text-muted-foreground/50 h-12 transition-all duration-300 focus:border-primary/30"
+                />
               </div>
 
               <div className="space-y-3">
@@ -139,7 +206,11 @@ const ContactSection = () => {
                 </label>
                 <Input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="Enter your email"
+                  required
                   className="bg-background/50 border-primary/10 text-foreground placeholder:text-muted-foreground/50 h-12 transition-all duration-300 focus:border-primary/30"
                 />
               </div>
@@ -149,18 +220,40 @@ const ContactSection = () => {
                   Message
                 </label>
                 <Textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Your message"
+                  required
                   className="bg-background/50 border-primary/10 text-foreground placeholder:text-muted-foreground/50 min-h-[160px] transition-all duration-300 focus:border-primary/30"
                 />
               </div>
 
-              <Button className="w-full bg-primary/90 hover:bg-primary text-background font-medium h-14 text-lg tracking-wide group">
-                Schedule Consultation
+              {formStatus.isSuccess && (
+                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg text-green-600">
+                  {formStatus.message}
+                </div>
+              )}
+
+              {formStatus.isError && (
+                <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-600">
+                  {formStatus.message}
+                </div>
+              )}
+
+              <Button
+                type="submit"
+                disabled={formStatus.isSubmitting}
+                className="w-full bg-primary/90 hover:bg-primary text-background font-medium h-14 text-lg tracking-wide group"
+              >
+                {formStatus.isSubmitting
+                  ? "Sending..."
+                  : "Schedule Consultation"}
                 <span className="ml-3 group-hover:translate-x-1.5 transition-transform duration-300">
                   →
                 </span>
               </Button>
-            </div>
+            </form>
           </motion.div>
         </div>
       </div>
