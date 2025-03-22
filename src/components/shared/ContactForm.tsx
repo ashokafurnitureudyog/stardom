@@ -35,8 +35,7 @@ interface SubmitContactFormProps {
   data: ContactFormValues;
 }
 
-// Separated API call function for better maintainability
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// API call function to submit the contact form data
 async function submitContactForm({
   data,
 }: SubmitContactFormProps): Promise<void> {
@@ -70,15 +69,11 @@ export default function ContactForm() {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
 
     try {
-      // For development, uncomment this and comment out the actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // await submitContactForm({ data });
+      await submitContactForm({ data });
 
       toast({
         title: "Message Submitted",

@@ -75,9 +75,9 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
         <Section className="pt-24 pb-32">
           <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
             <div className="flex items-center text-sm text-muted-foreground mb-12">
-              <span>Home</span>
+              <span>Products</span>
               <span className="mx-3">/</span>
-              <span>{currentProduct.category}</span>
+              <span className="capitalize">{currentProduct.category}</span>
               <span className="mx-3">/</span>
               <span className="text-foreground">{currentProduct.name}</span>
             </div>

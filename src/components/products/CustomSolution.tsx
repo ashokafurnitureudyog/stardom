@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import { Link } from "next-view-transitions";
 
 export const CustomSolutionsSection: React.FC = () => {
   return (
@@ -20,14 +21,16 @@ export const CustomSolutionsSection: React.FC = () => {
           specific requirements. From design to installation, we&apos;ll work
           with you to create the perfect furniture for your space.
         </p>
-        <button className="inline-flex items-center px-8 py-3 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 group font-light">
-          <div>
-            Request Custom Solution
-            <span className="ml-3 group-hover:translate-x-1.5 transition-transform duration-300">
-              →
-            </span>
-          </div>
-        </button>
+        <Link href="/contact">
+          <button className="inline-flex items-center px-8 py-3 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 group font-light">
+            <div>
+              Request Custom Solution
+              <span className="ml-3 group-hover:translate-x-1.5 transition-transform duration-300">
+                →
+              </span>
+            </div>
+          </button>
+        </Link>
       </div>
     </motion.div>
   );

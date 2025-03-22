@@ -174,11 +174,6 @@ export const ProductImages = ({
         </div>
       </Carousel>
 
-      {/* Image counter */}
-      <div className="absolute bottom-4 right-4 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-        {activeIndex + 1} / {images.length}
-      </div>
-
       {/* Thumbnail navigation */}
       {images.length > 1 && (
         <motion.div

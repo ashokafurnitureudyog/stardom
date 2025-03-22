@@ -44,9 +44,7 @@ const CertificationsSection: React.FC = () => {
                 "transform-gpu blur-[1px] transition-all duration-300 ease-out hover:blur-none",
               )}
             >
-              <figcaption className="text-sm font-medium dark:text-white">
-                {f.name}
-              </figcaption>
+              <figcaption className="text-sm font-medium">{f.name}</figcaption>
               <blockquote className="mt-2 text-xs">{f.body}</blockquote>
             </figure>
           ))}
@@ -102,7 +100,7 @@ const CertificationsSection: React.FC = () => {
         <BentoCard
           key={idx}
           {...cert}
-          className={`${cert.className} group overflow-hidden border border-neutral-200 shadow-lg hover:shadow-xl transition-all duration-500`}
+          className={`${cert.className} group overflow-hidden  shadow-lg hover:shadow-xl transition-all duration-500`}
         />
       ))}
     </BentoGrid>
