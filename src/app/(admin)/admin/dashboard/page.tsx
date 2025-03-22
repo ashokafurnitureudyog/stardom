@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   LayoutGrid,
   Box,
@@ -16,6 +16,9 @@ import {
   Edit2,
   Trash2,
   Upload,
+  LogOut,
+  User,
+  Settings,
 } from "lucide-react";
 import {
   Card,
@@ -66,6 +69,9 @@ interface Product {
 }
 
 import { LucideIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getLoggedInUser } from "@/lib/server/appwrite";
+import { signOutUser } from "@/lib/controllers/AuthControllers";
 
 interface SidebarItem {
   id: string;
@@ -75,6 +81,33 @@ interface SidebarItem {
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("products");
+  const [user, setUser] = useState<{ name: string } | null>(null);
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getLoggedInUser();
+      if (!user) {
+        router.push("/auth");
+      } else {
+        setUser(user);
+      }
+    };
+
+    fetchUser();
+  }, [router]);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   const sidebarItems: SidebarItem[] = [
     { id: "products", icon: Package, label: "Products" },
@@ -149,17 +182,29 @@ const AdminDashboard = () => {
                 <Button variant="ghost" className="flex items-center gap-2">
                   <Avatar className="w-8 h-8">
                     <AvatarImage src="/api/placeholder/32/32" />
-                    <AvatarFallback>AD</AvatarFallback>
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                   </Avatar>
+                  <span>{user.name}</span>{" "}
+                  {/* Display user's name next to the avatar */}
                   <ChevronDown className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Sign out</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <User className="w-4 h-4 mr-2" /> {/* Icon for Profile */}
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings className="w-4 h-4 mr-2" />{" "}
+                  {/* Icon for Settings */}
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" /> {/* Icon for Sign Out */}
+                  Sign Out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

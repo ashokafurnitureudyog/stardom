@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// src/app/(admin)/(auth)/auth/page.tsx
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,22 +10,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Lock, Loader2, AlertTriangle } from "lucide-react";
+import { loginUser } from "@/lib/controllers/AuthControllers";
 
 const AdminLoginPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
 
-    // Simulate API call - replace with actual auth logic
-    setTimeout(() => {
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const result = await loginUser(formData);
+
+      if (result.success) {
+        router.push("/admin/dashboard");
+      } else {
+        setError(result.error || "Invalid email or password");
+      }
+    } catch (error) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
       setIsLoading(false);
-      router.push("/admin/dashboard");
-    }, 1500);
+    }
   };
 
   return (
@@ -83,6 +96,7 @@ const AdminLoginPage = () => {
               <div className="relative">
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="Enter your admin email"
                   className="pl-10"
@@ -99,6 +113,7 @@ const AdminLoginPage = () => {
               <div className="relative">
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="Enter your password"
                   className="pl-10"
