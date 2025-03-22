@@ -1,5 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { JSDOM } from "jsdom";
+import DOMPurify from "dompurify";
+
+// Initialize DOMPurify with jsdom
+const window = new JSDOM("").window;
+const purify = DOMPurify(window);
+
+const rateLimits = new Map<string, { count: number; timestamp: number }>();
+
+// Configure rate limiting
+const RATE_LIMIT_MAX = 30; // Maximum requests per time window
+const RATE_LIMIT_WINDOW = 3600 * 1000; // Time window in milliseconds (1 hour)
+
+// Clean up stale rate limit entries periodically
+const cleanupInterval = 3600 * 1000; // 1 hour
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, data] of rateLimits.entries()) {
+    if (now - data.timestamp > RATE_LIMIT_WINDOW) {
+      rateLimits.delete(key);
+    }
+  }
+}, cleanupInterval);
 
 const transporter = nodemailer.createTransport({
   // @ts-expect-error idk why this is throwing an error
@@ -19,6 +42,28 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(request: NextRequest) {
   try {
+    // Get client IP for rate limiting
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+
+    // Check rate limit
+    const now = Date.now();
+    const rateLimit = rateLimits.get(ip) || { count: 0, timestamp: now };
+
+    // Reset counter if the time window has passed
+    if (now - rateLimit.timestamp > RATE_LIMIT_WINDOW) {
+      rateLimit.count = 0;
+      rateLimit.timestamp = now;
+    }
+
+    // Check if rate limit is exceeded
+    if (rateLimit.count >= RATE_LIMIT_MAX) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Please try again later." },
+        { status: 429 },
+      );
+    }
+
+    // Parse request body
     const {
       name = "",
       email = "",
@@ -26,6 +71,30 @@ export async function POST(request: NextRequest) {
       subject = "No Subject",
       message = "",
     } = await request.json();
+
+    // Validate inputs
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      return NextResponse.json(
+        { error: "Name, email, and message are required" },
+        { status: 400 },
+      );
+    }
+
+    // Sanitize inputs
+    const sanitizedName = purify.sanitize(name);
+    const sanitizedEmail = purify.sanitize(email);
+    const sanitizedPhone = purify.sanitize(phone);
+    const sanitizedSubject = purify.sanitize(subject);
+    const sanitizedMessage = purify.sanitize(message);
+
+    // Simple email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(sanitizedEmail)) {
+      return NextResponse.json(
+        { error: "Please provide a valid email address" },
+        { status: 400 },
+      );
+    }
 
     // Get current date in a nice format
     const currentDate = new Date().toLocaleDateString("en-US", {
@@ -221,37 +290,37 @@ export async function POST(request: NextRequest) {
               <div class="card">
                 <div class="field">
                   <div class="label">From</div>
-                  <div class="value">${name}</div>
+                  <div class="value">${sanitizedName}</div>
                 </div>
                 
                 <div class="field">
                   <div class="label">Email Address</div>
-                  <div class="value">${email}</div>
+                  <div class="value">${sanitizedEmail}</div>
                 </div>
                 
                 <div class="field">
                   <div class="label">Phone Number</div>
-                  <div class="value">${phone}</div>
+                  <div class="value">${sanitizedPhone}</div>
                 </div>
                 
                 <div class="field">
                   <div class="label">Subject</div>
-                  <div class="value">${subject}</div>
+                  <div class="value">${sanitizedSubject}</div>
                 </div>
               </div>
               
               <div class="field">
                 <div class="label">Their Message</div>
-                <div class="message-box">${message.replace(/\n/g, "<br>")}</div>
+                <div class="message-box">${sanitizedMessage.replace(/\n/g, "<br>")}</div>
               </div>
               
               <div class="cta">
-                <a href="mailto:${email}" class="cta-button">Reply Now</a>
+                <a href="mailto:${sanitizedEmail}" class="cta-button">Reply Now</a>
               </div>
               
               <div class="signature">
                 This is an automated email from your <span class="highlight">Stardom</span> website.<br>
-                Received on ${new Date().toLocaleString()} from IP: ${request.headers.get("x-forwarded-for") || "Unknown"}
+                Received on ${new Date().toLocaleString()} from IP: ${ip}
               </div>
             </div>
             
@@ -267,13 +336,17 @@ export async function POST(request: NextRequest) {
     const mailOptions: nodemailer.SendMailOptions = {
       from: `"Stardom Digital" <${process.env.MAIL_USER}>`,
       to: process.env.MY_MAIL,
-      replyTo: email,
+      replyTo: sanitizedEmail,
       priority: "high",
-      subject: `✨ New Client Inquiry: ${subject}`,
+      subject: `✨ New Client Inquiry: ${sanitizedSubject}`,
       html: htmlTemplate,
     };
 
     await transporter.sendMail(mailOptions);
+
+    // Increment rate limit counter
+    rateLimit.count += 1;
+    rateLimits.set(ip, rateLimit);
 
     return NextResponse.json(
       { success: true, message: "Email sent successfully" },
