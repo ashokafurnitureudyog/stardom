@@ -34,7 +34,6 @@ const ImagePanel: React.FC<{ src: string; index: number }> = ({
     transition={{ duration: 0.8, delay: index * 0.2 }}
     className="relative overflow-hidden rounded-lg"
   >
-    <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40 group-hover:opacity-0 transition-opacity duration-500" />
     <img
       src={src}
       alt="Legacy showcase"

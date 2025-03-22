@@ -3,6 +3,7 @@ import React from "react";
 import { FancyTestimonialsSlider } from "../ui/testimonialslider";
 import { motion } from "framer-motion";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import { Link } from "next-view-transitions";
 
 const TestimonialsSection = () => {
   const testimonials = [
@@ -83,6 +84,26 @@ const TestimonialsSection = () => {
             </div>
           ))}
         </div> */}
+        <motion.div
+          className="text-center mt-16 pt-12 border-t border-primary/10"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUpVariants}
+        >
+          <h3 className="text-2xl md:text-3xl font-light text-foreground font-serif mb-4">
+            Want to get featured too?
+          </h3>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Contact us with your title, review and we&apos;ll respond within a
+            week.
+          </p>
+          <Link href="/contact">
+            <button className="mt-6 px-8 py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors">
+              Share Your Experience
+            </button>
+          </Link>
+        </motion.div>
       </div>
     </div>
   );

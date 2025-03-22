@@ -7,7 +7,6 @@ import {
   Mail,
   Phone,
   ArrowUp,
-  Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
@@ -193,7 +192,7 @@ const Footer = () => {
               </div>
 
               {/* Developer Signature */}
-              <div className="border-t border-primary/5 mt-8">
+              {/* <div className="border-t border-primary/5 mt-8">
                 <div className="py-6 flex justify-center items-center gap-2 group">
                   <span className="text-muted-foreground/40 text-sm font-light tracking-wide">
                     Crafted with
@@ -211,7 +210,7 @@ const Footer = () => {
                     Abhishek
                   </Link>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

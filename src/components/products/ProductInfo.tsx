@@ -40,7 +40,7 @@ export const ProductInfo = ({
     >
       <div className="mb-6">
         <span className="text-sm text-primary font-medium tracking-wide uppercase">
-          {product.collection}
+          {product.collection} Collection
         </span>
       </div>
 

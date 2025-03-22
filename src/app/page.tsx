@@ -5,7 +5,6 @@ import HeroSection from "@/components/marketing/Hero";
 import LegacySection from "@/components/marketing/Legacy";
 import PortfolioSection from "@/components/marketing/PortfolioSection";
 import CraftsmanshipSection from "@/components/marketing/Process";
-import SignatureCollection from "@/components/marketing/SignatureCollection";
 import TestimonialsSection from "@/components/marketing/Testimonials";
 import React from "react";
 
@@ -15,7 +14,7 @@ const Home = () => {
       <HeroSection />
       <FeaturedProducts />
       <LegacySection />
-      <SignatureCollection />
+      {/* <SignatureCollection /> */}
       <CraftsmanshipSection />
       <PortfolioSection />
       <TestimonialsSection />

@@ -2,11 +2,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileStack, Pencil, Check, ArrowRightIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FileStack, Pencil, Check } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { Link } from "next-view-transitions";
-// TODO Fix the scattered implementation of motion.div in the codebase
 const CraftsmanshipSection = () => {
   const processes = [
     {
@@ -123,25 +120,6 @@ const CraftsmanshipSection = () => {
               </div>
             </div>
           ))}
-        </motion.div>
-
-        <motion.div
-          className="text-center mt-20"
-          variants={fadeInUpVariants}
-          transition={{ delay: 0.8 }}
-        >
-          <Button
-            variant="link"
-            className="text-lg text-primary/90 hover:text-primary group font-light tracking-wide"
-            asChild
-          >
-            <Link href="/heritage">
-              <div className="flex items-center">
-                Discover Our Craftsmanship Process
-                <ArrowRightIcon className="ml-2 w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" />
-              </div>
-            </Link>
-          </Button>
         </motion.div>
       </motion.div>
     </div>
