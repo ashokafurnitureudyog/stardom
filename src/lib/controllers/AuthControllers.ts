@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/lib/actions/auth.ts
 "use server";
 import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
 import { cookies } from "next/headers";
@@ -20,12 +19,10 @@ export async function loginUser(formData: FormData) {
       secure: true,
     });
 
-    // Return a plain object indicating success
     return { success: true };
   } catch (error: any) {
     console.error("Login failed:", error);
 
-    // Return a plain object indicating failure
     return {
       success: false,
       error: error.message || "Invalid email or password",
@@ -38,19 +35,14 @@ export async function signOutUser() {
     const { account } = await createSessionClient();
     await account.deleteSession("current");
 
-    // Delete the session cookie by setting it to expire immediately
-    (
-      await // Delete the session cookie by setting it to expire immediately
-      cookies()
-    ).set("my-custom-session", "", {
+    (await cookies()).set("my-custom-session", "", {
       path: "/",
-      expires: new Date(0), // Expire the cookie immediately
+      expires: new Date(0),
     });
   } catch (error) {
     console.error("Sign out failed:", error);
     throw new Error("Failed to sign out");
   }
 
-  // Redirect after successful sign-out
   redirect("/auth");
 }

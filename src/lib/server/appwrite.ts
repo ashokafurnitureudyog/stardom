@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// src/lib/server/appwrite.ts
 "use server";
 import { Client, Account, ID } from "node-appwrite";
 import { cookies } from "next/headers";
@@ -36,8 +35,6 @@ export async function createAdminClient() {
   };
 }
 
-// src/lib/server/appwrite.ts
-// src/lib/server/appwrite.ts
 export async function getLoggedInUser(): Promise<{ name: string } | null> {
   try {
     const { account } = await createSessionClient();

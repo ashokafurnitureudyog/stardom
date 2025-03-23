@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// src/app/(admin)/(auth)/auth/page.tsx
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
