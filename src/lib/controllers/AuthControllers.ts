@@ -12,7 +12,7 @@ export async function loginUser(formData: FormData) {
     const { account } = await createAdminClient();
     const session = await account.createEmailPasswordSession(email, password);
 
-    (await cookies()).set("my-custom-session", session.secret, {
+    (await cookies()).set("admin-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
@@ -35,7 +35,7 @@ export async function signOutUser() {
     const { account } = await createSessionClient();
     await account.deleteSession("current");
 
-    (await cookies()).set("my-custom-session", "", {
+    (await cookies()).set("admin-session", "", {
       path: "/",
       expires: new Date(0),
     });

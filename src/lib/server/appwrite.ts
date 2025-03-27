@@ -8,7 +8,7 @@ export async function createSessionClient() {
     .setEndpoint(process.env.APPWRITE_ENDPOINT!)
     .setProject(process.env.APPWRITE_PROJECT!);
 
-  const session = (await cookies()).get("my-custom-session");
+  const session = (await cookies()).get("admin-session");
   if (!session || !session.value) {
     throw new Error("No session");
   }
