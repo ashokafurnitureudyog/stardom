@@ -1,12 +1,18 @@
+// middleware.ts
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { getLoggedInUser } from "@/lib/server/appwrite";
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  return NextResponse.redirect(new URL("/", request.url));
+export async function middleware(request: Request) {
+  const user = await getLoggedInUser();
+
+  if (!user && request.url.includes("/admin")) {
+    return NextResponse.redirect(new URL("/auth", request.url));
+  }
+
+  return NextResponse.next();
 }
-
 // See "Matching Paths" below to learn more
+// src/middleware.ts
 export const config = {
-  matcher: "/about/:path*",
+  matcher: "/admin/:path*",
 };
