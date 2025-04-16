@@ -9,32 +9,37 @@ const TestimonialsSection = () => {
   const testimonials = [
     {
       name: "Rajesh Kumar",
-      role: "Chief Architect, Infinity Designs",
+      title: "Director of Operations, Indus Global Solutions",
+      location: "Gurugram",
+      context: "Corporate Headquarters Renovation",
+      purchaseDate: "January 2025",
+      verified: true,
       quote:
-        "Stardom's meticulous craftsmanship and innovative designs have completely transformed our corporate headquarters. Their furniture perfectly balances aesthetics with functionality.",
-      img: "https://avatar.iran.liara.run/public",
+        "After expanding our IT services team to 200+ employees, we needed premium office furniture that reflected our company's growth. Stardom delivered beyond expectations. The Monarch Executive desk series and ergonomic chairs have not only improved our team's productivity but also impressed our international clients during video conferences. The craftsmanship speaks volumes about attention to detail.",
+      img: "https://avatar.iran.liara.run/public/boy?username=rajesh",
     },
     {
       name: "Priya Sharma",
-      role: "Director, Global Spaces Ltd",
+      title: "Founder & Creative Director, DesignCraft Studios",
+      location: "Mumbai",
+      context: "Design Studio Workspace",
+      purchaseDate: "November 2024",
+      verified: true,
       quote:
-        "The quality and elegance of Stardom's furniture collection has elevated our office ambiance. Their team's professional approach and attention to detail is commendable.",
-      img: "https://avatar.iran.liara.run/public",
+        "In our creative industry, workspace aesthetics matter tremendously. We chose Stardom's Aria Collection for our 3000 sq ft studio after reviewing multiple premium vendors. The height-adjustable workstations have genuinely improved our team's work quality, and clients who visit our office inevitably ask about our furniture. The investment has already paid for itself in client impressions alone.",
+      img: "https://avatar.iran.liara.run/public/girl?username=priya",
     },
     {
       name: "Amit Verma",
-      role: "Principal Designer, Ethereal Interiors",
+      title: "CEO, Pinnacle Financial Consultants",
+      location: "Bangalore",
+      context: "Executive Boardroom & Client Meeting Spaces",
+      purchaseDate: "March 2025",
+      verified: true,
       quote:
-        "As an interior designer, I've worked with many furniture brands, but Stardom's commitment to excellence and contemporary designs sets them apart in the industry.",
-      img: "https://avatar.iran.liara.run/public",
+        "When we renovated our 15th-floor office in the financial district, we needed furniture that conveyed trust and stability to our high-net-worth clients. Stardom's Diplomat Conference Set and Heritage Collection cabinets have transformed our client meetings. The solid wood craftsmanship and premium upholstery communicate our attention to detail before we even begin discussions.",
+      img: "https://avatar.iran.liara.run/public/boy?username=amit",
     },
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const stats = [
-    { value: "98%", label: "Client Satisfaction", icon: "★" },
-    { value: "250+", label: "Projects Completed", icon: "✦" },
-    { value: "15+", label: "Design Awards", icon: "✧" },
   ];
 
   return (
@@ -63,7 +68,7 @@ const TestimonialsSection = () => {
             </h2>
 
             <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-              Discover why discerning corporations trust Stardom for their
+              Discover why discerning organizations trust Stardom for their
               premium office furniture needs.
             </p>
           </div>
@@ -71,19 +76,6 @@ const TestimonialsSection = () => {
 
         <FancyTestimonialsSlider testimonials={testimonials} />
 
-        {/* <div className="grid grid-cols-3 gap-8 pt-12 border-t border-primary/10">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center space-y-3">
-              <span className="text-primary/40 text-2xl">{stat.icon}</span>
-              <h4 className="text-4xl md:text-5xl font-extralight text-foreground font-serif">
-                {stat.value}
-              </h4>
-              <p className="text-sm text-primary/80 uppercase tracking-wider">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div> */}
         <motion.div
           className="text-center mt-16 pt-12 border-t border-primary/10"
           initial="hidden"

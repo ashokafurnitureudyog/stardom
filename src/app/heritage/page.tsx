@@ -22,20 +22,28 @@ const timelineData = [
     title: "1996",
     content: (
       <div>
-        <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Started as Ashoka Furniture Udyog, serving local Chandigarh market
+        <h3 className="text-xl font-bold mb-3 text-neutral-900 dark:text-white">
+          Founded as Ashoka Furniture Udyog
+        </h3>
+        <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
+          Started serving the local Chandigarh market with quality handcrafted
+          furniture.
         </p>
         <div className="grid grid-cols-2 gap-4">
-          <img
-            src="https://images.unsplash.com/photo-1655569614970-67d5579f1c60"
-            alt="Furniture workshop"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
-          <img
-            src="https://images.unsplash.com/photo-1629646526507-84ea50bb16e5"
-            alt="Local showroom"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1965&q=80"
+              alt="Traditional woodworking workshop"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1580480055273-228ff5388ef8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+              alt="Traditional furniture craftsmanship"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
         </div>
       </div>
     ),
@@ -44,21 +52,28 @@ const timelineData = [
     title: "2005",
     content: (
       <div>
-        <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        <h3 className="text-xl font-bold mb-3 text-neutral-900 dark:text-white">
+          Regional Expansion
+        </h3>
+        <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
           Expanded operations across Northern India including Delhi NCR, Punjab,
-          Haryana, Himachal Pradesh and Uttar Pradesh
+          Haryana, Himachal Pradesh and Uttar Pradesh.
         </p>
         <div className="grid grid-cols-2 gap-4">
-          <img
-            src="https://images.unsplash.com/photo-1605649487212-47bdab064df7"
-            alt="Regional expansion"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
-          <img
-            src="https://images.unsplash.com/photo-1496372412473-e8548ffd82bc"
-            alt="New showroom"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+              alt="Modern furniture showroom"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1916&q=80"
+              alt="Designer office furniture"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
         </div>
       </div>
     ),
@@ -67,15 +82,28 @@ const timelineData = [
     title: "2012",
     content: (
       <div>
-        <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Expanded into international markets and global partnerships
+        <h3 className="text-xl font-bold mb-3 text-neutral-900 dark:text-white">
+          Global Partnerships
+        </h3>
+        <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
+          Expanded into international markets with global partners and
+          suppliers.
         </p>
-        <div>
-          <img
-            src="https://images.unsplash.com/photo-1536731578915-ab4e400a6395"
-            alt="Local showroom"
-            className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80"
+              alt="International furniture exhibition"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+              alt="Global logistics and shipping"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
         </div>
       </div>
     ),
@@ -84,11 +112,30 @@ const timelineData = [
     title: "2016",
     content: (
       <div>
-        <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        <h3 className="text-xl font-bold mb-3 text-neutral-900 dark:text-white">
+          Premium Brand Launch
+        </h3>
+        <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
           Launched Stardom as a premium furniture brand under Ashoka Furniture
-          Udyog
+          Udyog.
         </p>
-        <div className="flex items-center justify-center w-full mx-auto">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1567016432779-094069958ea5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80"
+              alt="Premium living room furniture"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1538688423619-a81d3f23454b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+              alt="Luxury brand furniture"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-center w-full mx-auto mt-6">
           <LogoRevealCard
             imageUrl="/images/logo.png"
             revealText="stardom.co.in"
@@ -101,9 +148,29 @@ const timelineData = [
     title: "2025",
     content: (
       <div>
-        <p className="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-          Launched comprehensive digital product showcase platform
+        <h3 className="text-xl font-bold mb-3 text-neutral-900 dark:text-white">
+          Digital Transformation
+        </h3>
+        <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
+          Launched comprehensive digital product showcase platform with
+          interactive features.
         </p>
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1618220179428-22790b461013?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2027&q=80"
+              alt="Digital furniture shopping experience"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+          <div className="overflow-hidden rounded-lg">
+            <img
+              src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
+              alt="Online furniture catalog"
+              className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+        </div>
         <Terminal>
           <TypingAnimation>&gt; stardom.init --digital-catalog</TypingAnimation>
 

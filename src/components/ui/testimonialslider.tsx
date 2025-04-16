@@ -1,16 +1,23 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import { Transition } from "@headlessui/react";
 import { cn } from "@/lib/utils";
-import { QuoteIcon } from "lucide-react";
+import {
+  QuoteIcon,
+  MapPinIcon,
+  CalendarIcon,
+  CheckCircleIcon,
+} from "lucide-react";
 
 interface Testimonial {
   img: string;
   quote: string;
   name: string;
-  role: string;
+  location?: string;
+  context?: string;
+  purchaseDate?: string;
+  verified?: boolean;
 }
 
 export function FancyTestimonialsSlider({
@@ -62,7 +69,7 @@ export function FancyTestimonialsSlider({
                 leaveTo="opacity-0 rotate-[60deg]"
                 beforeEnter={() => heightFix()}
               >
-                <Image
+                <img
                   className="relative left-1/2 top-11 -translate-x-1/2 rounded-full border border-primary/10 p-1"
                   src={testimonial.img}
                   width={56}
@@ -103,9 +110,42 @@ export function FancyTestimonialsSlider({
                   <p className="text-foreground font-medium">
                     {testimonial.name}
                   </p>
-                  <p className="text-sm text-primary/80 uppercase tracking-wider">
-                    {testimonial.role}
-                  </p>
+
+                  {/* Client Details - Replaces Role */}
+                  <div className="flex items-center justify-center gap-3 text-sm text-primary/80">
+                    {testimonial.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPinIcon className="h-3 w-3" />
+                        {testimonial.location}
+                      </span>
+                    )}
+
+                    {testimonial.context && (
+                      <span className="hidden sm:inline-block">•</span>
+                    )}
+
+                    {testimonial.context && <span>{testimonial.context}</span>}
+
+                    {testimonial.purchaseDate && (
+                      <span className="hidden sm:inline-block">•</span>
+                    )}
+
+                    {testimonial.purchaseDate && (
+                      <span className="flex items-center gap-1">
+                        <CalendarIcon className="h-3 w-3" />
+                        {testimonial.purchaseDate}
+                      </span>
+                    )}
+                  </div>
+
+                  {testimonial.verified && (
+                    <div className="flex justify-center mt-1">
+                      <span className="inline-flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-full text-xs text-primary/90">
+                        <CheckCircleIcon className="h-3 w-3" />
+                        Verified Client
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </Transition>
