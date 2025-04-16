@@ -72,7 +72,7 @@ export const mockProducts: Product[] = [
     category: "reception",
     collection: "signature",
     images: [
-      "https://images.unsplash.com/photo-1560264641-1b5238e5de5b?q=80&w=1000", // Modern reception desk
+      "https://images.unsplash.com/photo-1660557989695-14fac79c086d", // Modern reception desk
       "https://images.unsplash.com/photo-1498409785966-ab341407de6e?q=80&w=1000", // Detail of stone/wood accents
       "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000", // Reception area with desk
     ],

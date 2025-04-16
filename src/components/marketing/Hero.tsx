@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { AnimatedTextProps, MediaItem } from "@/types/MediaTypes";
@@ -29,59 +29,91 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   </motion.div>
 );
 
-const BackgroundMedia: React.FC<{ item: MediaItem; isActive: boolean }> = ({
-  item,
-  isActive,
-}) => {
+const BackgroundMedia: React.FC<{
+  item: MediaItem;
+  isActive: boolean;
+  isNext: boolean;
+}> = ({ item, isActive, isNext }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const mediaRef = useRef<HTMLDivElement>(null);
+
+  // Only load the media when it's active or about to be active
+  useEffect(() => {
+    if (isActive || isNext) {
+      setIsLoaded(true);
+    }
+  }, [isActive, isNext]);
+
   const className = `absolute inset-0 w-full h-full transition-all duration-1000 ${
     isActive ? "opacity-100 scale-100" : "opacity-0 scale-105"
   }`;
 
-  if (item.type === "video") {
+  if (item.type === "video" && isLoaded) {
     return (
-      <div className={className}>
+      <div className={className} ref={mediaRef}>
         <video
           autoPlay
           muted
           loop
           playsInline
           className="object-cover w-full h-full"
+          preload="metadata"
+          poster={item.poster || ""}
+          onLoadedData={() => {
+            if (isActive) {
+              // If this is the active slide, play the video
+              const videoElement = mediaRef.current?.querySelector("video");
+              if (videoElement) {
+                videoElement
+                  .play()
+                  .catch((e) => console.error("Video play failed:", e));
+              }
+            }
+          }}
         >
+          {item.webmSrc && <source src={item.webmSrc} type="video/webm" />}
           <source src={item.src} type="video/mp4" />
         </video>
       </div>
     );
   }
 
-  return (
-    <div className={className}>
-      <img
-        src={item.src}
-        alt={item.alt || ""}
-        className="object-cover w-full h-full"
-      />
-    </div>
-  );
+  if (item.type === "image" && isLoaded) {
+    return (
+      <div className={className} ref={mediaRef}>
+        <img
+          src={item.src}
+          alt={item.alt || ""}
+          className="object-cover w-full h-full"
+          loading={isActive ? "eager" : "lazy"}
+        />
+      </div>
+    );
+  }
+
+  return <div className={className} ref={mediaRef} />;
 };
 
 const BackgroundSlideshow: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [, setIsTransitioning] = useState(false);
 
+  const getNextIndex = (index: number) => (index + 1) % HERO_MEDIA_ITEMS.length;
+
   useEffect(() => {
-    const slideTimer = setInterval(() => {
+    const slideTimer = setTimeout(() => {
       setIsTransitioning(true);
 
       const transitionTimer = setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % HERO_MEDIA_ITEMS.length);
+        setCurrentIndex(getNextIndex);
         setIsTransitioning(false);
       }, HERO_TRANSITION_DURATION);
 
       return () => clearTimeout(transitionTimer);
     }, HERO_SLIDE_DURATION);
 
-    return () => clearInterval(slideTimer);
-  }, []);
+    return () => clearTimeout(slideTimer);
+  }, [currentIndex]);
 
   return (
     <div className="absolute inset-0 w-full h-full">
@@ -90,6 +122,7 @@ const BackgroundSlideshow: React.FC = () => {
           key={item.src}
           item={item}
           isActive={index === currentIndex}
+          isNext={index === getNextIndex(currentIndex)}
         />
       ))}
       <div
@@ -101,13 +134,26 @@ const BackgroundSlideshow: React.FC = () => {
 };
 
 const HeroSection: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const buttonBaseClass = useMemo(
     () => "min-w-[240px] h-14 text-lg tracking-wide",
     [],
   );
 
+  useEffect(() => {
+    // Set loading to false once critical content is loaded
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden font-sans">
+      {isLoading && (
+        <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
+          <span className="text-white">Loading...</span>
+        </div>
+      )}
+
       <BackgroundSlideshow />
 
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 px-6">

@@ -20,6 +20,7 @@ export const productService = {
     const products = await productService.getProducts();
     return [...new Set(products.map((p) => p.collection))];
   },
+
   getProductById: async (id: string): Promise<Product | undefined> => {
     const products = await productService.getProducts();
     return products.find((p) => p.id === id);
@@ -32,6 +33,26 @@ export const productService = {
     return products.filter(
       (p) => p.category === product.category && p.id !== product.id,
     );
+  },
+
+  // Get featured products (since no featured flag exists)
+  getFeaturedProducts: async (): Promise<Product[]> => {
+    const products = await productService.getProducts();
+    const categories = [...new Set(products.map((p) => p.category))];
+
+    // Strategy: Get one product from each category to showcase variety
+    // (up to 4 categories for a balanced display)
+    const featuredProducts: Product[] = [];
+
+    // Get the first product from each category
+    for (const category of categories.slice(0, 4)) {
+      const categoryProduct = products.find((p) => p.category === category);
+      if (categoryProduct) {
+        featuredProducts.push(categoryProduct);
+      }
+    }
+
+    return featuredProducts;
   },
 
   // Filter and sort products
