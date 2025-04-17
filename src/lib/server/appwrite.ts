@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
-import { Client, Account, ID } from "node-appwrite";
+import { Client, Account, ID, Databases } from "node-appwrite";
 import { cookies } from "next/headers";
 
 export async function createSessionClient() {
@@ -35,11 +35,16 @@ export async function createAdminClient() {
   };
 }
 
-export async function getLoggedInUser(): Promise<{ name: string } | null> {
+export async function getLoggedInUser() {
   try {
     const { account } = await createSessionClient();
     const user = await account.get();
-    return user as { name: string };
+    return {
+      name: user.name,
+      email: user.email,
+      $createdAt: user.$createdAt,
+      $updatedAt: user.$updatedAt,
+    };
   } catch (error) {
     console.error("Failed to fetch user:", error);
     return null;
