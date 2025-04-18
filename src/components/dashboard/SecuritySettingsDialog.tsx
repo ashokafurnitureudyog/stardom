@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useFormState } from "react-dom";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { changePassword } from "@/lib/controllers/AuthControllers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { Eye, EyeOff, CheckCircle2, Lock } from "lucide-react";
 
-const initialState = {
-  success: false,
-  error: "",
-  message: "",
-};
+interface FormData {
+  currentPassword: string;
+  newPassword: string;
+}
 
 interface UserDetails {
   name: string;
@@ -33,21 +33,40 @@ export const SecuritySettingsDialog = ({
   user: UserDetails;
   onClose: () => void;
 }) => {
-  const [state, formAction] = useFormState(changePassword, initialState);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<FormData>();
+
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (state.success) {
-      setShowSuccess(true);
-      const timer = setTimeout(() => {
-        onClose();
-        setShowSuccess(false);
-      }, 2000);
-      return () => clearTimeout(timer);
+  const onSubmit = async (data: FormData) => {
+    try {
+      const formData = new FormData();
+      formData.append("currentPassword", data.currentPassword);
+      formData.append("newPassword", data.newPassword);
+
+      const result = await changePassword(null, formData);
+
+      if (result.success) {
+        setShowSuccess(true);
+        reset();
+        setTimeout(() => {
+          onClose();
+          setShowSuccess(false);
+        }, 2000);
+      } else {
+        setError(result.error || "Password update failed");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred");
     }
-  }, [state.success, onClose]);
+  };
 
   const SuccessToast = () => (
     <div className="fixed bottom-6 right-6 animate-in slide-in-from-right-8 z-[1000]">
@@ -103,15 +122,14 @@ export const SecuritySettingsDialog = ({
           </div>
 
           {/* Password Update Section */}
-          <form action={formAction} className="space-y-6 pt-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-4">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>Current Password</Label>
                 <div className="relative">
                   <Input
-                    name="currentPassword"
+                    {...register("currentPassword", { required: true })}
                     type={showCurrentPassword ? "text" : "password"}
-                    required
                   />
                   <Button
                     type="button"
@@ -127,16 +145,22 @@ export const SecuritySettingsDialog = ({
                     )}
                   </Button>
                 </div>
+                {errors.currentPassword && (
+                  <p className="text-sm text-destructive">
+                    This field is required
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label>New Password</Label>
                 <div className="relative">
                   <Input
-                    name="newPassword"
+                    {...register("newPassword", {
+                      required: true,
+                      minLength: 8,
+                    })}
                     type={showNewPassword ? "text" : "password"}
-                    required
-                    minLength={8}
                   />
                   <Button
                     type="button"
@@ -148,18 +172,23 @@ export const SecuritySettingsDialog = ({
                     {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </Button>
                 </div>
+                {errors.newPassword && (
+                  <p className="text-sm text-destructive">
+                    Password must be at least 8 characters
+                  </p>
+                )}
               </div>
             </div>
 
-            {state?.error && (
-              <p className="text-sm text-destructive">{state.error}</p>
-            )}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
             <div className="flex justify-end gap-4">
               <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">Update Password</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Updating..." : "Update Password"}
+              </Button>
             </div>
           </form>
         </DialogContent>

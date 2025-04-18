@@ -68,9 +68,26 @@ export async function changePassword(
     return { success: true, message: "Password updated successfully" };
   } catch (error) {
     const appwriteError = error as AppwriteException;
+
+    if (appwriteError.code === 401) {
+      return {
+        success: false,
+        error: "Current password is incorrect",
+      };
+    }
+
+    if (appwriteError.type === "user_invalid_token") {
+      return {
+        success: false,
+        error: "Session expired - please log in again",
+      };
+    }
+
     return {
       success: false,
-      error: appwriteError.message || "Password update failed",
+      error:
+        appwriteError.message ||
+        "Password update failed. Please check requirements:",
     };
   }
 }
