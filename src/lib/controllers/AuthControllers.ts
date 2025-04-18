@@ -3,6 +3,13 @@
 import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { AppwriteException } from "node-appwrite";
+
+export type PasswordState = {
+  success: boolean;
+  message?: string;
+  error?: string;
+};
 
 export async function loginUser(formData: FormData) {
   const email = formData.get("email") as string;
@@ -45,4 +52,25 @@ export async function signOutUser() {
   }
 
   redirect("/auth");
+}
+
+export async function changePassword(
+  prevState: PasswordState | null,
+  formData: FormData,
+): Promise<PasswordState> {
+  try {
+    const currentPassword = formData.get("currentPassword") as string;
+    const newPassword = formData.get("newPassword") as string;
+
+    const { account } = await createSessionClient();
+    await account.updatePassword(newPassword, currentPassword);
+
+    return { success: true, message: "Password updated successfully" };
+  } catch (error) {
+    const appwriteError = error as AppwriteException;
+    return {
+      success: false,
+      error: appwriteError.message || "Password update failed",
+    };
+  }
 }
