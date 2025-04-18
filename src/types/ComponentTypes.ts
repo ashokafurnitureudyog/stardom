@@ -1,6 +1,5 @@
 import { LucideIcon } from "lucide-react";
 import { MediaItem } from "./MediaTypes";
-import { ReactNode } from "react";
 
 export interface CarouselProps {
   images: string[];
@@ -192,9 +191,6 @@ export interface TestingTool {
 }
 
 export interface Product {
-  image: string | undefined;
-  price: ReactNode;
-  stock: number;
   id: string;
   name: string;
   description: string;
