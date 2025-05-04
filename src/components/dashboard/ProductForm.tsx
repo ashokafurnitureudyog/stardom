@@ -1,188 +1,223 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { ImagesSection } from "./form-sections/images-section";
+import { FeaturesSection } from "./form-sections/features-section";
+import { ColorsSection } from "./form-sections/colors-section";
+import type { Product } from "@/types/ComponentTypes";
 
-export const ProductForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [collection, setCollection] = useState("");
-  const [features, setFeatures] = useState<string[]>([]);
-  const [colors, setColors] = useState<string[]>([]);
+interface ProductFormProps {
+  onSuccess: () => void;
+  initialData?: Product;
+  isEditing?: boolean;
+}
+
+export const ProductForm = ({
+  onSuccess,
+  initialData,
+  isEditing = false,
+}: ProductFormProps) => {
+  // Form state
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(
+    initialData?.description || "",
+  );
+  const [category, setCategory] = useState(initialData?.category || "");
+  const [collection, setCollection] = useState(
+    initialData?.product_collection || "",
+  );
+  const [features, setFeatures] = useState<string[]>(
+    initialData?.features || [],
+  );
+  const [colors, setColors] = useState<string[]>(initialData?.colors || []);
+
+  // Image handling
   const [files, setFiles] = useState<File[]>([]);
-  const [currentFeature, setCurrentFeature] = useState("");
-  const [currentColor, setCurrentColor] = useState("");
-  const [products, setProducts] = useState<any[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>(
+    initialData?.images || [],
+  );
+  const [newImageUrl, setNewImageUrl] = useState("");
 
-  // Fetch products on mount
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  // UI states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("/api/products");
-      const data = await res.json();
-      setProducts(data);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    }
-  };
-
-  const handleAddFeature = () => {
-    if (currentFeature.trim() && !features.includes(currentFeature.trim())) {
-      setFeatures([...features, currentFeature.trim()]);
-      setCurrentFeature("");
-    }
-  };
-
-  const handleAddColor = () => {
-    if (currentColor.trim() && !colors.includes(currentColor.trim())) {
-      setColors([...colors, currentColor.trim()]);
-      setCurrentColor("");
+  // Handlers
+  const handleAddImageUrl = () => {
+    if (newImageUrl.trim() && !imageUrls.includes(newImageUrl.trim())) {
+      setImageUrls([...imageUrls, newImageUrl.trim()]);
+      setNewImageUrl("");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("category", category);
-    formData.append("collection", collection);
-    formData.append("features", JSON.stringify(features));
-    formData.append("colors", JSON.stringify(colors));
-    files.forEach((file) => formData.append("files", file));
+    setIsSubmitting(true);
+    setErrorMessage("");
 
     try {
+      const formData = new FormData();
+
+      // Basic product details
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("collection", collection);
+      formData.append("features", JSON.stringify(features));
+      formData.append("colors", JSON.stringify(colors));
+
+      // Important: Make sure we're sending all imageUrls
+      formData.append("imageUrls", JSON.stringify(imageUrls));
+
+      // If editing, include product ID
+      if (isEditing && initialData) {
+        formData.append("id", initialData.id || initialData.$id || "");
+      }
+
+      // Add files
+      files.forEach((file) => formData.append("files", file));
+
       const response = await fetch("/api/protected/products", {
-        method: "POST",
+        method: isEditing ? "PUT" : "POST",
         body: formData,
-        credentials: "include", // Add this line
+        credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Failed to add product");
+      if (!response.ok) {
+        const text = await response.text();
+        let error = "An error occurred";
+        try {
+          if (text) {
+            const data = JSON.parse(text);
+            error = data.error || error;
+          }
+        } catch {
+          error = `Server error: ${response.status}`;
+        }
+        throw new Error(error);
+      }
 
-      // Refresh product list and reset form
-      await fetchProducts();
-      setName("");
-      setDescription("");
-      setCategory("");
-      setCollection("");
-      setFeatures([]);
-      setColors([]);
-      setFiles([]);
       onSuccess();
-    } catch (error) {
-      console.error("Submission error:", error);
-      alert("Failed to add product. Please check the console.");
+    } catch (error: any) {
+      setErrorMessage(error.message || "Failed to save product");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-card rounded-lg">
-      <div className="space-y-4">
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Product Name"
-          required
-        />
-        <Input
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Description"
-          required
-        />
-        <Input
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          placeholder="Category"
-          required
-        />
-        <Input
-          value={collection}
-          onChange={(e) => setCollection(e.target.value)}
-          placeholder="Collection"
-          required
-        />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-semibold mb-4">Add New Product</h2>
+        <Separator className="mb-6" />
 
-        <div className="space-y-2">
-          <div className="flex gap-2">
+        {errorMessage && (
+          <div className="bg-destructive/10 text-destructive p-3 mb-4 rounded border border-destructive">
+            {errorMessage}
+          </div>
+        )}
+
+        {/* Basic Information */}
+        <div className="space-y-5">
+          <div>
+            <label htmlFor="name" className="text-sm font-medium block mb-1">
+              Product Name
+            </label>
             <Input
-              value={currentFeature}
-              onChange={(e) => setCurrentFeature(e.target.value)}
-              placeholder="Add feature"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter product name"
+              required
             />
-            <Button type="button" onClick={handleAddFeature}>
-              Add Feature
-            </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {features.map((feature) => (
-              <Badge key={feature} variant="secondary">
-                {feature}
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFeatures(features.filter((f) => f !== feature))
-                  }
-                  className="ml-2 hover:text-destructive"
-                >
-                  ×
-                </button>
-              </Badge>
-            ))}
-          </div>
-        </div>
 
-        <div className="space-y-2">
-          <div className="flex gap-2">
-            <Input
-              value={currentColor}
-              onChange={(e) => setCurrentColor(e.target.value)}
-              placeholder="Add color"
+          <div>
+            <label
+              htmlFor="description"
+              className="text-sm font-medium block mb-1"
+            >
+              Description
+            </label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter product description"
+              className="resize-none min-h-[100px]"
+              required
             />
-            <Button type="button" onClick={handleAddColor}>
-              Add Color
-            </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {colors.map((color) => (
-              <Badge key={color} variant="secondary">
-                {color}
-                <button
-                  type="button"
-                  onClick={() => setColors(colors.filter((c) => c !== color))}
-                  className="ml-2 hover:text-destructive"
-                >
-                  ×
-                </button>
-              </Badge>
-            ))}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="category"
+                className="text-sm font-medium block mb-1"
+              >
+                Category
+              </label>
+              <Input
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Category"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="collection"
+                className="text-sm font-medium block mb-1"
+              >
+                Collection
+              </label>
+              <Input
+                id="collection"
+                value={collection}
+                onChange={(e) => setCollection(e.target.value)}
+                placeholder="Collection"
+                required
+              />
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Product Images</label>
-          <Input
-            type="file"
-            multiple
-            onChange={(e) => setFiles(Array.from(e.target.files || []))}
-          />
-          {files.length > 0 && (
-            <p className="text-sm text-muted-foreground">
-              {files.length} file(s) selected
-            </p>
-          )}
-        </div>
+        <Separator className="my-6" />
 
-        <Button type="submit" className="w-full">
-          Add Product
+        {/* Features */}
+        <FeaturesSection features={features} setFeatures={setFeatures} />
+
+        <Separator className="my-6" />
+
+        {/* Colors */}
+        <ColorsSection colors={colors} setColors={setColors} />
+
+        <Separator className="my-6" />
+
+        {/* Product Images */}
+        <ImagesSection
+          files={files}
+          setFiles={setFiles}
+          imageUrls={imageUrls}
+          setImageUrls={setImageUrls}
+          newImageUrl={newImageUrl}
+          setNewImageUrl={setNewImageUrl}
+          handleAddImageUrl={handleAddImageUrl}
+        />
+
+        <Separator className="my-6" />
+
+        <Button
+          type="submit"
+          className="w-full py-6 text-base"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : "Add Product"}
         </Button>
       </div>
     </form>

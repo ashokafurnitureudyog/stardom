@@ -1,70 +1,170 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ProductCard } from "./ProductCard";
 import { AddProductDialog } from "./AddProductDialog";
 import type { Product } from "@/types/ComponentTypes";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Search, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const ProductsSection = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
 
-  const fetchProducts = async () => {
+  // Filtered products
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.category || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      (product.product_collection || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()),
+  );
+
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products", {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch products");
+
       const data = await res.json();
       setProducts(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch products:", error);
+      setError(error.message || "Failed to load products");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleDelete = async (productId: string, imageUrls: string[]) => {
     try {
-      await fetch("/api/protected/products", {
+      // Optimistically update UI
+      setProducts((prevProducts) =>
+        prevProducts.filter(
+          (product) => product.id !== productId && product.$id !== productId,
+        ),
+      );
+
+      const response = await fetch("/api/protected/products", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, imageUrls }),
+        credentials: "include",
       });
-      fetchProducts();
+
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      // If successful, product is already removed from state
     } catch (error) {
       console.error("Delete failed:", error);
+      // If deletion fails, refresh the product list
+      fetchProducts();
     }
   };
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-light mb-2">Product Management</h2>
+          <h2 className="text-3xl font-semibold mb-2">Product Management</h2>
           <p className="text-muted-foreground">
             {products.length} products in catalog
           </p>
         </div>
-        <AddProductDialog onSuccess={fetchProducts} />
+
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search products..."
+              className="pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="flex gap-2 w-full sm:w-auto justify-center">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={fetchProducts}
+            >
+              <RefreshCw size={16} /> Refresh
+            </Button>
+
+            <AddProductDialog onSuccess={fetchProducts} />
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {loading
-          ? [1, 2, 3].map((item) => (
-              <div
-                key={item}
-                className="h-64 bg-secondary/30 rounded-lg animate-pulse"
-              />
-            ))
-          : products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onDelete={handleDelete}
-              />
-            ))}
-      </div>
+      <Separator className="my-6" />
+
+      {error && (
+        <div className="bg-destructive/10 text-destructive p-4 mb-6 rounded border border-destructive">
+          <p>{error}</p>
+          <Button variant="outline" className="mt-2" onClick={fetchProducts}>
+            Try Again
+          </Button>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+            <div
+              key={item}
+              className="aspect-[4/5] bg-muted rounded-lg animate-pulse"
+            />
+          ))}
+        </div>
+      ) : filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id || product.$id}
+              product={product}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 bg-muted/30 rounded-lg">
+          {searchQuery ? (
+            <>
+              <h3 className="text-xl font-medium mb-2">No Products Found</h3>
+              <p className="text-muted-foreground">
+                No products match your search query
+              </p>
+            </>
+          ) : (
+            <>
+              <h3 className="text-xl font-medium mb-2">No Products Yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Get started by adding your first product
+              </p>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -57,7 +57,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               variant="secondary"
               className="bg-background/80 hover:bg-background/90"
             >
-              {collection.charAt(0).toUpperCase() + collection.slice(1)}
+              {collection
+                ? collection.charAt(0).toUpperCase() + collection.slice(1)
+                : "Uncategorized"}
             </Badge>
           </div>
         </div>

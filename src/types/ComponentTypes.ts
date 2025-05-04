@@ -192,13 +192,17 @@ export interface TestingTool {
 
 export interface Product {
   id: string;
+  $id?: string;
   name: string;
   description: string;
   category: string;
-  collection: string;
+  product_collection: string;
+  collection?: string; // fallback to be removed in future
   images: string[];
   features: string[];
   colors: string[];
+  $createdAt?: string;
+  $updatedAt?: string;
 }
 
 export type FilterType = "category" | "collection";

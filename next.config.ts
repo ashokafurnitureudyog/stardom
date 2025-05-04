@@ -6,6 +6,14 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "**", // Allow all domains
+      },
+      {
+        protocol: "http",
+        hostname: "**", // Allow all domains
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
         port: "",
         search: "",
@@ -15,6 +23,10 @@ const nextConfig: NextConfig = {
         hostname: "avatar.iran.liara.run",
         port: "",
         search: "",
+      },
+      {
+        protocol: "https",
+        hostname: "cloud.appwrite.io",
       },
     ],
   },

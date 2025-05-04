@@ -14,7 +14,7 @@ export const WhatsAppIcon = () => (
 
 interface ProductInfoProps {
   product: {
-    collection: string;
+    collection?: string;
     name: string;
     description: string;
     features: string[];
