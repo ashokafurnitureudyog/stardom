@@ -6,14 +6,38 @@ import { AddProductDialog } from "./AddProductDialog";
 import type { Product } from "@/types/ComponentTypes";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { Search, RefreshCw } from "lucide-react";
+import { Search, RefreshCw, PackageOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const ProductsSection = () => {
+  const [featuredProductIds, setFeaturedProductIds] = useState<Set<string>>(
+    new Set(),
+  );
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
+
+  const fetchFeaturedIds = useCallback(async () => {
+    try {
+      const res = await fetch("/api/featured", {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      });
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      const ids = new Set<string>(
+        data.map((product: any) =>
+          (product.id || product.$id || "").toString(),
+        ),
+      );
+      setFeaturedProductIds(ids);
+    } catch (error) {
+      console.error("Failed to fetch featured products:", error);
+    }
+  }, []);
 
   // Filtered products
   const filteredProducts = products.filter(
@@ -79,7 +103,8 @@ export const ProductsSection = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+    fetchFeaturedIds();
+  }, [fetchProducts, fetchFeaturedIds]);
 
   return (
     <div>
@@ -105,7 +130,8 @@ export const ProductsSection = () => {
           <div className="flex gap-2 w-full sm:w-auto justify-center">
             <Button
               variant="outline"
-              className="flex items-center gap-2"
+              size="default"
+              className="flex items-center gap-2 h-10"
               onClick={fetchProducts}
             >
               <RefreshCw size={16} /> Refresh
@@ -119,9 +145,13 @@ export const ProductsSection = () => {
       <Separator className="my-6" />
 
       {error && (
-        <div className="bg-destructive/10 text-destructive p-4 mb-6 rounded border border-destructive">
+        <div className="bg-red-500/10 text-red-400 p-4 mb-6 rounded border border-red-900/50">
           <p>{error}</p>
-          <Button variant="outline" className="mt-2" onClick={fetchProducts}>
+          <Button
+            variant="outline"
+            className="mt-2 bg-transparent border-[#3C3120] text-[#A28B55] hover:bg-neutral-800 hover:border-[#A28B55]"
+            onClick={fetchProducts}
+          >
             Try Again
           </Button>
         </div>
@@ -132,7 +162,7 @@ export const ProductsSection = () => {
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
             <div
               key={item}
-              className="aspect-[4/5] bg-muted rounded-lg animate-pulse"
+              className="aspect-[4/5] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
             />
           ))}
         </div>
@@ -143,24 +173,35 @@ export const ProductsSection = () => {
               key={product.id || product.$id}
               product={product}
               onDelete={handleDelete}
+              isFeatured={featuredProductIds.has(
+                product.id || product.$id || "",
+              )}
             />
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-muted/30 rounded-lg">
+        <div className="text-center py-20 bg-black/40 border border-[#3C3120] rounded-md">
+          <PackageOpen className="mx-auto h-12 w-12 text-[#A28B55] opacity-70 mb-4" />
           {searchQuery ? (
             <>
-              <h3 className="text-xl font-medium mb-2">No Products Found</h3>
-              <p className="text-muted-foreground">
+              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
+                No Products Found
+              </h3>
+              <p className="text-neutral-500 mb-6">
                 No products match your search query
               </p>
             </>
           ) : (
             <>
-              <h3 className="text-xl font-medium mb-2">No Products Yet</h3>
-              <p className="text-muted-foreground mb-4">
+              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
+                No Products Yet
+              </h3>
+              <p className="text-neutral-500 mb-6">
                 Get started by adding your first product
               </p>
+              <div className="flex justify-center">
+                <AddProductDialog onSuccess={fetchProducts} />
+              </div>
             </>
           )}
         </div>

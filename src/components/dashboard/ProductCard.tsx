@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -13,129 +13,117 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash, Eye } from "lucide-react";
+import { Trash, Eye, Star } from "lucide-react";
 import type { Product } from "@/types/ComponentTypes";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ProductDetails } from "./product-details";
-import { ImageCarousel } from "@/components/ui/image-carousel";
 
 export const ProductCard = ({
   product,
   onDelete,
+  isFeatured = false,
 }: {
   product: Product;
   onDelete: (id: string, images: string[]) => void;
+  isFeatured?: boolean;
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const productId = product.id || product.$id || "";
 
   const handleDeleteClick = async () => {
     setIsDeleting(true);
-    await onDelete(product.id || product.$id || "", product.images || []);
+    await onDelete(productId, product.images || []);
     setIsDeleting(false);
+    setDeleteDialogOpen(false);
   };
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md group">
+    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
+      {/* Featured badge - refined premium styling */}
+      {isFeatured && (
+        <div className="absolute top-2 left-2 z-10">
+          <Badge className="bg-black/80 backdrop-blur-sm border border-[#A28B55] text-[#A28B55] flex gap-1.5 items-center px-3 py-1 shadow-[0_0_10px_rgba(0,0,0,0.3)]">
+            <Star size={12} className="fill-[#A28B55] text-[#A28B55]" />
+            <span className="font-medium tracking-wide">Featured</span>
+          </Badge>
+        </div>
+      )}
+
+      {/* Delete button - top right corner, only visible on hover */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <button className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
+            <Trash size={20} className="text-[#A28B55]" />
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="bg-neutral-900 border border-[#3C3120]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-[#A28B55]">
+              Delete Product
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-neutral-400">
+              Are you sure you want to delete &quot;{product.name}&quot;? This
+              action cannot be undone and will permanently remove all associated
+              images.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-transparent border-[#3C3120] text-[#3C3120] hover:bg-neutral-800 hover:text-[#A28B55] hover:border-[#A28B55]">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteClick}
+              disabled={isDeleting}
+              className="bg-[#3C3120] hover:bg-[#A28B55] text-neutral-200 transform hover:scale-105 transition-all duration-300"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Image container with View Details on hover */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <div className="cursor-pointer relative">
-            <div className="relative">
-              <ImageCarousel
-                images={product.images}
-                aspectRatio="square"
-                fill={true}
-                showControls={false}
-                indicators="dots"
-                className="group-hover:blur-[1px] transition-all"
+          <div
+            className="relative w-full cursor-pointer"
+            style={{ height: "280px" }}
+          >
+            {product.images && product.images[0] ? (
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="absolute opacity-85 inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="gap-1.5 px-4 py-5 font-medium"
-                >
-                  <Eye size={18} />
-                  View Details
-                </Button>
+            ) : (
+              <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center">
+                <span className="text-neutral-600">No image</span>
+              </div>
+            )}
+
+            {/* Hover overlay for View Details - exactly like featured cards */}
+            <div className="absolute inset-0 bg-black/90 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+              <div className="flex items-center justify-center text-[#A28B55] transform scale-100 hover:scale-110 transition-all duration-300">
+                <Eye size={25} className="mr-2 text-[#A28B55]" />
+                <span className="text-sm font-medium">View Details</span>
               </div>
             </div>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-lg mb-1 truncate">
-                {product.name}
-              </h3>
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                {product.description}
-              </p>
-
-              <div className="flex flex-wrap gap-1.5">
-                {product.category && (
-                  <Badge
-                    variant="outline"
-                    className="text-xs bg-primary/10 text-primary px-2 py-0.5"
-                  >
-                    {product.category}
-                  </Badge>
-                )}
-
-                {product.product_collection ? (
-                  <Badge
-                    variant="outline"
-                    className="text-xs bg-gray-500/20 text-gray-400 px-2 py-0.5 border-gray-200 font-medium"
-                  >
-                    {product.product_collection}
-                  </Badge>
-                ) : (
-                  <Badge
-                    variant="outline"
-                    className="text-xs bg-destructive/10 text-destructive px-2 py-0.5"
-                  >
-                    No Collection
-                  </Badge>
-                )}
-              </div>
-            </CardContent>
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[900px] p-0 overflow-hidden">
+        <DialogContent className="w-[95vw] sm:max-w-[950px] h-[90vh] p-0 border-[#3C3120] bg-neutral-900">
           <ProductDetails product={product} />
         </DialogContent>
       </Dialog>
 
-      <CardFooter className="p-4 pt-0 flex justify-end gap-2">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="destructive"
-              size="sm"
-              className="flex items-center gap-1"
-              disabled={isDeleting}
-            >
-              <Trash size={14} /> {isDeleting ? "Deleting..." : "Delete"}
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete Product</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to delete &quot;{product.name}&quot;? This
-                action cannot be undone and will permanently remove all
-                associated images.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDeleteClick}
-                disabled={isDeleting}
-              >
-                {isDeleting ? "Deleting..." : "Delete"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </CardFooter>
-    </Card>
+      {/* Product info - simplified to match featured cards */}
+      <div className="p-4">
+        <h3 className="font-medium text-[#A28B55] truncate">{product.name}</h3>
+        <p className="text-xs text-neutral-500 line-clamp-2 mt-1">
+          {product.description}
+        </p>
+      </div>
+    </div>
   );
 };

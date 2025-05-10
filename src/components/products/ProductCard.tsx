@@ -16,7 +16,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { id, name, description, images, collection } = product;
+  const { id, name, description, images, product_collection } = product;
   const [imgError, setImgError] = useState(false);
 
   return (
@@ -57,8 +57,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               variant="secondary"
               className="bg-background/80 hover:bg-background/90"
             >
-              {collection
-                ? collection.charAt(0).toUpperCase() + collection.slice(1)
+              {product_collection
+                ? product_collection.charAt(0).toUpperCase() +
+                  product_collection.slice(1)
                 : "Uncategorized"}
             </Badge>
           </div>

@@ -11,11 +11,11 @@ export const AddProductDialog = ({ onSuccess }: { onSuccess: () => void }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="lg" className="flex items-center gap-2">
-          <PlusCircle size={18} /> Add New Product
+        <Button size="default" className="flex items-center gap-2 h-10">
+          <PlusCircle size={16} /> Add New Product
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6 bg-[#171410] border-[#352b1c]">
         <ProductForm
           onSuccess={() => {
             onSuccess();

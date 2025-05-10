@@ -27,6 +27,7 @@ export function ColorsSection({ colors, setColors }: ColorsSectionProps) {
           value={currentColor}
           onChange={(e) => setCurrentColor(e.target.value)}
           placeholder="Add color (e.g., Red, Blue, #FF5733)"
+          className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();

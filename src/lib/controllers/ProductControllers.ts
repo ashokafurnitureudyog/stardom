@@ -133,6 +133,12 @@ export const deleteProduct = async (
   if (imageUrls && imageUrls.length > 0) {
     for (const url of imageUrls) {
       try {
+        await database.deleteDocument(
+          process.env.APPWRITE_DATABASE_ID!,
+          process.env.APPWRITE_FEATURED_COLLECTION_ID!, // Featured collection name
+          productId,
+        );
+
         // Only try to delete from storage if it's an Appwrite URL
         if (url.includes("appwrite.io") && url.includes("/files/")) {
           const fileId = url.split("/files/")[1]?.split("/view")[0];

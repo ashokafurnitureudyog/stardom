@@ -52,17 +52,23 @@ export function ImagesSection({
       <h3 className="text-lg font-medium">Product Images</h3>
 
       <Tabs defaultValue="upload" className="w-full">
-        <TabsList className="grid grid-cols-2 mb-4">
-          <TabsTrigger value="upload" className="flex items-center gap-2">
+        <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
+          <TabsTrigger
+            value="upload"
+            className="flex items-center justify-center gap-2 data-[state=active]:bg-[#A28B55] data-[state=active]:text-neutral-900 data-[state=active]:shadow-md data-[state=inactive]:bg-[#3C3120] data-[state=inactive]:text-neutral-200 py-1 transition-all duration-200"
+          >
             <Upload size={16} /> Upload Images
           </TabsTrigger>
-          <TabsTrigger value="url" className="flex items-center gap-2">
+          <TabsTrigger
+            value="url"
+            className="flex items-center justify-center gap-2 data-[state=active]:bg-[#A28B55] data-[state=active]:text-neutral-900 data-[state=active]:shadow-md data-[state=inactive]:bg-[#3C3120] data-[state=inactive]:text-neutral-200 py-1 transition-all duration-200"
+          >
             <Link size={16} /> Add Image URLs
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="upload" className="space-y-4">
-          <div className="border-2 border-dashed border-muted-foreground/20 rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+          <div className="border-2 border-dashed border-[#3C3120]/50 rounded-lg p-6 text-center hover:border-[#A28B55]/70 transition-colors">
             <Input
               type="file"
               multiple
@@ -93,7 +99,7 @@ export function ImagesSection({
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {Array.from(files).map((file, index) => (
                   <div key={index} className="group relative">
-                    <div className="aspect-square bg-muted rounded-md overflow-hidden">
+                    <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
                       <Image
                         src={URL.createObjectURL(file)}
                         alt={file.name}
@@ -140,7 +146,7 @@ export function ImagesSection({
             <Button
               type="button"
               onClick={handleAddImageUrl}
-              className="shrink-0 whitespace-nowrap"
+              className="shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
             >
               Add URL
             </Button>
@@ -154,7 +160,7 @@ export function ImagesSection({
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {imageUrls.map((url, index) => (
                   <div key={index} className="group relative">
-                    <div className="aspect-square bg-muted rounded-md overflow-hidden">
+                    <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
                       <Image
                         src={url}
                         alt={`Product image ${index + 1}`}

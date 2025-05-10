@@ -197,7 +197,6 @@ export interface Product {
   description: string;
   category: string;
   product_collection: string;
-  collection?: string; // fallback to be removed in future
   images: string[];
   features: string[];
   colors: string[];

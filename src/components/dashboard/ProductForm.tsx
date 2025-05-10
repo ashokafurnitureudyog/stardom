@@ -133,6 +133,7 @@ export const ProductForm = ({
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter product name"
               required
+              className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
             />
           </div>
 
@@ -148,7 +149,7 @@ export const ProductForm = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter product description"
-              className="resize-none min-h-[100px]"
+              className="resize-none min-h-[100px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
               required
             />
           </div>
@@ -167,6 +168,7 @@ export const ProductForm = ({
                 onChange={(e) => setCategory(e.target.value)}
                 placeholder="Category"
                 required
+                className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
               />
             </div>
             <div>
@@ -182,6 +184,7 @@ export const ProductForm = ({
                 onChange={(e) => setCollection(e.target.value)}
                 placeholder="Collection"
                 required
+                className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
               />
             </div>
           </div>
@@ -189,13 +192,14 @@ export const ProductForm = ({
 
         <Separator className="my-6" />
 
-        {/* Features */}
-        <FeaturesSection features={features} setFeatures={setFeatures} />
+        {/* Features and Colors side by side */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Features */}
+          <FeaturesSection features={features} setFeatures={setFeatures} />
 
-        <Separator className="my-6" />
-
-        {/* Colors */}
-        <ColorsSection colors={colors} setColors={setColors} />
+          {/* Colors */}
+          <ColorsSection colors={colors} setColors={setColors} />
+        </div>
 
         <Separator className="my-6" />
 
