@@ -30,12 +30,12 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 h-full w-full overflow-auto md:overflow-hidden bg-neutral-900">
       {/* Image section with strict height constraints */}
-      <div className="w-full h-[45vh] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] flex flex-col">
-        {/* Image container with strict height limits */}
-        <div className="flex-1 p-4 flex items-center justify-center bg-black/30 min-h-0">
+      <div className="w-full h-[45vh] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
+        {/* Image container with adjusted height to account for nav */}
+        <div className="absolute inset-0 bottom-14 p-4 flex items-center justify-center bg-black/30 overflow-hidden">
           <div className="w-[90%] h-[90%] relative rounded-md overflow-hidden">
             {product.images && product.images.length > 0 ? (
-              <div className="w-full h-full flex items-center justify-center bg-black/20">
+              <div className="w-full h-full flex items-center justify-center">
                 <img
                   src={product.images[currentImageIndex]}
                   alt={`${product.name} - Image ${currentImageIndex + 1}`}
@@ -50,10 +50,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </div>
         </div>
 
-        {/* Navigation section with fixed height */}
+        {/* Navigation section fixed at bottom */}
         {totalImages > 1 && (
-          <div className="h-14 flex-shrink-0 bg-black/40 border-t border-[#3C3120] flex items-center justify-center px-6">
+          <div className="absolute bottom-0 left-0 right-0 h-14 bg-black/40 border-t border-[#3C3120] flex items-center justify-center px-6">
             <div className="flex items-center justify-between w-full max-w-xs">
+              {/* Navigation content (unchanged) */}
               {/* Left arrow */}
               <button
                 onClick={prevImage}
