@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { TopBar } from "@/components/dashboard/TopBar";
 import { ProductsSection } from "@/components/dashboard/ProductsSection";
 import { FeaturedSection } from "@/components/dashboard/FeaturedSection";
+import { TestimonialsSection } from "@/components/dashboard/TestimonialsSection";
 import { getLoggedInUser } from "@/lib/server/appwrite";
 
 export default function AdminDashboard() {
@@ -41,6 +42,7 @@ export default function AdminDashboard() {
           <div className="max-w-6xl mx-auto">
             {activeSection === "products" && <ProductsSection />}
             {activeSection === "featured" && <FeaturedSection />}
+            {activeSection === "testimonials" && <TestimonialsSection />}
           </div>
         </main>
       </div>

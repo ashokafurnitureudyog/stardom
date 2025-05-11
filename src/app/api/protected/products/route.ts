@@ -5,7 +5,6 @@ import {
   updateProduct,
   deleteProduct,
 } from "@/lib/controllers/ProductControllers";
-import { createAdminClient } from "@/lib/server/appwrite";
 
 export async function POST(req: Request) {
   try {
@@ -106,22 +105,6 @@ export async function DELETE(req: Request) {
     console.log("With image URLs:", imageUrls);
 
     await deleteProduct(productId, Array.isArray(imageUrls) ? imageUrls : []);
-    try {
-      // Try to delete from featured collection (if exists)
-      const adminClient = await createAdminClient();
-      await adminClient.database.deleteDocument(
-        process.env.APPWRITE_DATABASE_ID!,
-        "featured", // Featured collection name
-        productId,
-      );
-      console.log("Product also removed from featured collection");
-    } catch (error) {
-      // Ignore error if product is not in featured collection
-      console.log(
-        "Product was not in featured collection, or other error:",
-        error,
-      );
-    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

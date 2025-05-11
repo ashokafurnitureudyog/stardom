@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 import { ID, Permission, Role } from "node-appwrite";
 import { createAdminClient } from "@/lib/server/appwrite";
@@ -120,7 +121,7 @@ export const updateProduct = async (
   );
 };
 
-// Delete Product function remains unchanged
+// Fixed delete product function
 export const deleteProduct = async (
   productId: string,
   imageUrls: string[] = [],
@@ -130,15 +131,10 @@ export const deleteProduct = async (
   // Image deletion logic - only delete from storage if it's an Appwrite URL
   const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
+  // Delete images from storage
   if (imageUrls && imageUrls.length > 0) {
     for (const url of imageUrls) {
       try {
-        await database.deleteDocument(
-          process.env.APPWRITE_DATABASE_ID!,
-          process.env.APPWRITE_FEATURED_COLLECTION_ID!, // Featured collection name
-          productId,
-        );
-
         // Only try to delete from storage if it's an Appwrite URL
         if (url.includes("appwrite.io") && url.includes("/files/")) {
           const fileId = url.split("/files/")[1]?.split("/view")[0];
@@ -151,13 +147,30 @@ export const deleteProduct = async (
           console.log("Skipping storage deletion for external URL:", url);
         }
       } catch (error) {
-        console.error("Failed to delete image:", error);
+        console.error("Failed to delete image from storage:", error);
         // Continue with other deletions even if one fails
       }
     }
   }
 
-  // Delete the document
+  // Try to delete from featured collection if it exists
+  // This should happen ONCE per product, not for each image
+  try {
+    if (process.env.APPWRITE_FEATURED_COLLECTION_ID) {
+      await database.deleteDocument(
+        process.env.APPWRITE_DATABASE_ID!,
+        process.env.APPWRITE_FEATURED_COLLECTION_ID,
+        productId,
+      );
+      console.log("Product removed from featured collection");
+    }
+  } catch (error) {
+    console.log(
+      "Product was not in featured collection or featured collection doesn't exist",
+    );
+  }
+
+  // Delete the product document
   return database.deleteDocument(
     process.env.APPWRITE_DATABASE_ID!,
     process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,

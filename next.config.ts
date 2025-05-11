@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
         port: "",
         search: "",
       },
+      { protocol: "https", hostname: "example.com" },
       {
         protocol: "https",
         hostname: "avatar.iran.liara.run",
