@@ -7,6 +7,7 @@ import { ProductsSection } from "@/components/dashboard/ProductsSection";
 import { FeaturedSection } from "@/components/dashboard/FeaturedSection";
 import { TestimonialsSection } from "@/components/dashboard/TestimonialsSection";
 import { getLoggedInUser } from "@/lib/server/appwrite";
+import { PortfolioSection } from "@/components/dashboard/PortfolioSection";
 
 export default function AdminDashboard() {
   const [activeSection, setActiveSection] = useState("products");
@@ -43,6 +44,7 @@ export default function AdminDashboard() {
             {activeSection === "products" && <ProductsSection />}
             {activeSection === "featured" && <FeaturedSection />}
             {activeSection === "testimonials" && <TestimonialsSection />}
+            {activeSection === "portfolio" && <PortfolioSection />}
           </div>
         </main>
       </div>
