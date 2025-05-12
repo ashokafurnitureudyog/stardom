@@ -355,7 +355,7 @@ export const PortfolioForm = ({
             Thumbnail Image
           </h3>
 
-          <Tabs defaultValue="url" className="w-full">
+          <Tabs defaultValue="upload" className="w-full">
             <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
               <TabsTrigger
                 value="upload"

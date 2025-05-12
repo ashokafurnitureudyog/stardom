@@ -154,22 +154,22 @@ export const PortfolioCard = ({
           {project.description}
         </p>
 
-        <div className="flex flex-wrap gap-2">
-          {project.tags.slice(0, 3).map((tag, index) => (
+        <div className="flex flex-nowrap overflow-hidden gap-2">
+          {project.tags.slice(0, 2).map((tag, index) => (
             <Badge
               key={index}
               variant="outline"
-              className="text-xs bg-neutral-800/50 text-[#A28B55] border-[#3C3120]/70 hover:border-[#A28B55]"
+              className="text-xs bg-neutral-800/50 text-[#A28B55] border-[#3C3120]/70 hover:border-[#A28B55] whitespace-nowrap max-w-[45%] overflow-hidden text-ellipsis"
             >
-              {tag}
+              <span className="truncate">{tag}</span>
             </Badge>
           ))}
-          {project.tags.length > 3 && (
+          {project.tags.length > 2 && (
             <Badge
               variant="outline"
-              className="text-xs bg-neutral-800/30 text-neutral-500 border-neutral-700/50"
+              className="text-xs bg-neutral-800/30 text-neutral-500 border-neutral-700/50 whitespace-nowrap flex-shrink-0"
             >
-              +{project.tags.length - 3} more
+              +{project.tags.length - 2} more
             </Badge>
           )}
         </div>
