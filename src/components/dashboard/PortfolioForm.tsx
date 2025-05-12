@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
@@ -182,7 +183,7 @@ export const PortfolioForm = ({
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter project title"
+              placeholder="E.g., Modern Office Renovation for TechCorp"
               required
               className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
             />
@@ -196,7 +197,7 @@ export const PortfolioForm = ({
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Brief project description"
+              placeholder="Brief summary of the project (100-150 words recommended)"
               className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
               required
             />
@@ -213,7 +214,7 @@ export const PortfolioForm = ({
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
-                placeholder="Add tags (e.g. Residential, Interior, etc.)"
+                placeholder="Add tags (e.g. Residential, Interior, Office Space etc.)"
                 className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
               />
               <Button
@@ -262,7 +263,7 @@ export const PortfolioForm = ({
               id="challenge"
               value={challenge}
               onChange={(e) => setChallenge(e.target.value)}
-              placeholder="What challenge did this project address?"
+              placeholder="Describe the specific challenges faced (space constraints, timeline, budget, etc."
               className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
             />
           </div>
@@ -275,7 +276,7 @@ export const PortfolioForm = ({
               id="solution"
               value={solution}
               onChange={(e) => setSolution(e.target.value)}
-              placeholder="How did you solve the challenge?"
+              placeholder="How did you address the challenges?"
               className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
             />
           </div>
@@ -288,7 +289,7 @@ export const PortfolioForm = ({
               id="impact"
               value={impact}
               onChange={(e) => setImpact(e.target.value)}
-              placeholder="What was the outcome or impact of this project?"
+              placeholder="Describe measurable outcomes (e.g., 30% more efficient space usage, increased foot traffic)?"
               className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
             />
           </div>
@@ -324,7 +325,7 @@ export const PortfolioForm = ({
                 id="testimonial_author"
                 value={testimonialAuthor}
                 onChange={(e) => setTestimonialAuthor(e.target.value)}
-                placeholder="Client's name"
+                placeholder="E.g., John Smith"
                 className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
               />
             </div>
@@ -339,7 +340,7 @@ export const PortfolioForm = ({
                 id="testimonial_position"
                 value={testimonialPosition}
                 onChange={(e) => setTestimonialPosition(e.target.value)}
-                placeholder="Client's title or position"
+                placeholder="E.g., CEO, TechCorp Inc."
                 className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
               />
             </div>
@@ -433,7 +434,7 @@ export const PortfolioForm = ({
                 <Input
                   value={thumbnailUrl}
                   onChange={(e) => setThumbnailUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="Enter URL for main project image"
                 />
               </div>
 
