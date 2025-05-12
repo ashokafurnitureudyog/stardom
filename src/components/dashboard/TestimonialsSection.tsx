@@ -153,7 +153,7 @@ export const TestimonialsSection = () => {
           {[1, 2, 3, 4, 5, 6].map((item) => (
             <div
               key={item}
-              className="aspect-[3/4] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
+              className="h-[260px] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
             />
           ))}
         </div>

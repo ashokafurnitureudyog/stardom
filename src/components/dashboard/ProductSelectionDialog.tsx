@@ -248,7 +248,7 @@ export const ProductSelectionDialog = ({
                       <h3 className="font-medium text-[#A28B55] truncate">
                         {product.name}
                       </h3>
-                      <p className="text-xs text-neutral-500 line-clamp-2 mt-1">
+                      <p className="text-xs text-neutral-500 truncate mt-1">
                         {product.description}
                       </p>
                     </div>

@@ -126,9 +126,9 @@ function ProductContent({ product }: { product: Product }) {
     <>
       {/* Product Title and Categories */}
       <div>
-        <h2 className="text-2xl font-semibold text-[#A28B55]">
+        <p className="text-2xl font-semibold text-[#A28B55] pr-2">
           {product.name}
-        </h2>
+        </p>
         <div className="mt-3 space-y-2">
           {product.category && (
             <div className="flex items-center">

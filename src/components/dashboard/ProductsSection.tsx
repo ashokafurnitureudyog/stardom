@@ -131,7 +131,7 @@ export const ProductsSection = () => {
             <Button
               variant="outline"
               size="default"
-              className="flex items-center gap-2 h-10"
+              className="flex items-center gap-2 h-10 hover:bg-secondary"
               onClick={fetchProducts}
             >
               <RefreshCw size={16} /> Refresh

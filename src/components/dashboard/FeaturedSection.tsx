@@ -156,7 +156,7 @@ export const FeaturedSection = () => {
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:bg-secondary"
             onClick={() => {
               fetchFeaturedProducts();
               fetchAllProducts();
