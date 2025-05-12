@@ -29,15 +29,15 @@ export async function POST(request: NextRequest) {
     const thumbnail = formData.get("thumbnail") as string;
     const gallery = JSON.parse((formData.get("gallery") as string) || "[]");
 
-    // Extract testimonial data (as separate fields now)
     const testimonial_quote = formData.get("testimonial_quote") as string;
     const testimonial_author = formData.get("testimonial_author") as string;
     const testimonial_position = formData.get("testimonial_position") as string;
 
-    // Extract files
     const files = formData
       .getAll("files")
       .filter((item) => item instanceof File) as File[];
+
+    const thumbnailFile = formData.get("thumbnailFile") as File | null;
 
     const projectData = {
       title,
@@ -53,7 +53,11 @@ export async function POST(request: NextRequest) {
       testimonial_position,
     };
 
-    const result = await createPortfolioProject(projectData, files);
+    const result = await createPortfolioProject(
+      projectData,
+      files,
+      thumbnailFile || undefined,
+    );
 
     if (!result.success) {
       return NextResponse.json({ message: result.error }, { status: 500 });

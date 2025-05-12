@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useRef } from "react";
@@ -141,7 +142,6 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
       const purchaseDate = `${selectedMonth} ${selectedYear}`;
       formData.set("purchaseDate", purchaseDate);
 
-      // Set BOTH fields that the controller might check
       formData.set("img", finalImageUrl); // This is the one it ultimately uses
       formData.set("imageUrl", finalImageUrl); // This is what it checks in the middle
       formData.set("imageSource", imageTab); // This tells it which tab was selected

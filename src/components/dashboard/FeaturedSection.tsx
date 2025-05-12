@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Plus, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
-import { ProductDetails } from "./product-details";
-import { FeaturedProductCard } from "./FeaturedProductCard";
-import { ProductSelectionDialog } from "./ProductSelectionDialog";
+import { ProductDetails } from "./view-details";
+import { FeaturedProductCard } from "./featured/FeaturedProductCard";
+import { ProductSelectionDialog } from "./featured/ProductSelectionDialog";
 
 export const FeaturedSection = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);

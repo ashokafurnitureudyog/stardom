@@ -53,7 +53,7 @@ export async function createTestimonial(formData: FormData) {
         purchaseDate,
         verified: true,
         quote,
-        img, // Use exactly what was provided in the img field
+        img,
       },
     );
 

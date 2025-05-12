@@ -19,9 +19,13 @@ import { useToast } from "@/hooks/use-toast";
 export const EditSocialLinksDialog = ({
   initialData,
   onSuccess,
+  triggerClass,
+  triggerContent,
 }: {
   initialData: Array<{ platform: string; url: string; id?: string }>;
   onSuccess: () => void;
+  triggerClass?: string;
+  triggerContent?: React.ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

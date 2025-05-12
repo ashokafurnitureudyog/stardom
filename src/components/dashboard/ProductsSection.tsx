@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { ProductCard } from "./ProductCard";
-import { AddProductDialog } from "./AddProductDialog";
+import { ProductCard } from "./products/ProductCard";
+import { AddProductDialog } from "./products/AddProductDialog";
 import type { Product } from "@/types/ComponentTypes";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";

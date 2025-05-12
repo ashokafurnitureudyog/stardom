@@ -5,8 +5,8 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Search, RefreshCw, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AddPortfolioDialog } from "./AddPortfolioDialog";
-import { PortfolioCard } from "./PortfolioCard";
+import { AddPortfolioDialog } from "./portfolio/AddPortfolioDialog";
+import { PortfolioCard } from "./portfolio/PortfolioCard";
 
 // Using the structure defined in ComponentTypes.ts
 type PortfolioProjectType = {

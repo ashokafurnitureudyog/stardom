@@ -16,7 +16,7 @@ import {
 import { Trash, Eye, Star } from "lucide-react";
 import type { Product } from "@/types/ComponentTypes";
 import { Badge } from "@/components/ui/badge";
-import { ProductDetails } from "./product-details";
+import { ProductDetails } from "../view-details";
 
 export const ProductCard = ({
   product,

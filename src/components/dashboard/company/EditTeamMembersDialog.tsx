@@ -27,9 +27,13 @@ import { cn } from "@/lib/utils";
 export const EditTeamMembersDialog = ({
   initialData,
   onSuccess,
+  triggerClass,
+  triggerContent,
 }: {
   initialData: TeamMember[];
   onSuccess: () => void;
+  triggerClass?: string;
+  triggerContent?: React.ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -6,9 +6,8 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Search, RefreshCw, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AddTestimonialDialog } from "./AddTestimonialDialog";
-import { TestimonialCard } from "./TestimonialCard ";
-// Using the same structure as in Testimonials.tsx
+import { AddTestimonialDialog } from "./testimonials/AddTestimonialDialog";
+import { TestimonialCard } from "./testimonials/TestimonialCard ";
 type TestimonialType = {
   id?: string;
   $id?: string;
@@ -63,7 +62,6 @@ export const TestimonialsSection = () => {
 
   const handleDelete = async (testimonialId: string, imageUrl: string) => {
     try {
-      // Optimistically update UI
       setTestimonials((prevTestimonials) =>
         prevTestimonials.filter(
           (testimonial) =>
@@ -122,7 +120,7 @@ export const TestimonialsSection = () => {
             <Button
               variant="outline"
               size="default"
-              className="flex items-center gap-2 h-10"
+              className="flex items-center gap-2 h-10 hover:bg-secondary"
               onClick={fetchTestimonials}
             >
               <RefreshCw size={16} /> Refresh

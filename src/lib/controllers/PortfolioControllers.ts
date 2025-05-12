@@ -28,49 +28,51 @@ export async function getPortfolioProjects() {
   }
 }
 
-export async function createPortfolioProject(projectData: any, files?: File[]) {
+export async function createPortfolioProject(
+  projectData: any,
+  files?: File[],
+  thumbnailFile?: File,
+) {
   try {
     const { database, storage } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
+    const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
-    // Upload thumbnail and gallery images
+    let thumbnail = projectData.thumbnail || "";
+
+    if (thumbnailFile) {
+      try {
+        const fileId = ID.unique();
+        await storage.createFile(bucketId, fileId, thumbnailFile, [
+          Permission.read(Role.any()),
+        ]);
+
+        thumbnail = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
+      } catch (error) {
+        console.error("Thumbnail upload error:", error);
+      }
+    }
+
     const uploadedUrls = [];
     if (files && files.length > 0) {
       for (const file of files) {
         try {
           const fileId = ID.unique();
-          await storage.createFile(
-            process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!, // Use the same bucket as products
-            fileId,
-            file,
-            [Permission.read(Role.any())],
-          );
+          await storage.createFile(bucketId, fileId, file, [
+            Permission.read(Role.any()),
+          ]);
           uploadedUrls.push(
-            `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`,
+            `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`,
           );
         } catch (error) {
-          console.error("File upload error:", error);
+          console.error("Gallery file upload error:", error);
         }
       }
     }
 
-    // Prepare thumbnail and gallery
-    let thumbnail = projectData.thumbnail;
-    const gallery = [...projectData.gallery];
+    const gallery = [...projectData.gallery, ...uploadedUrls];
 
-    // If we have uploaded files, assign first one as thumbnail if none provided
-    if (uploadedUrls.length > 0) {
-      if (!thumbnail) {
-        thumbnail = uploadedUrls[0];
-        // Remove this URL from uploadedUrls to avoid duplication
-        uploadedUrls.shift();
-      }
-      // Add remaining uploaded files to gallery
-      gallery.push(...uploadedUrls);
-    }
-
-    // Create project document with flat testimonial structure
     const project = await database.createDocument(
       databaseId,
       collectionId,
@@ -90,7 +92,6 @@ export async function createPortfolioProject(projectData: any, files?: File[]) {
       },
     );
 
-    // Add the testimonial object for the response
     const responseProject = {
       ...project,
       testimonial: {
@@ -120,7 +121,6 @@ export async function deletePortfolioProject(
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
     const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
-    // Delete images from storage
     if (imageUrls && imageUrls.length > 0) {
       for (const url of imageUrls) {
         try {

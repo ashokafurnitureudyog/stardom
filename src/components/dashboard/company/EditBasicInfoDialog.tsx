@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { CompanyInfo } from "@/types/ComponentTypes";
@@ -10,13 +10,23 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 
+interface EditBasicInfoDialogProps {
+  initialData: CompanyInfo | null;
+  onSuccess: () => Promise<void>;
+  triggerClass?: string;
+  triggerContent?: ReactNode;
+  className?: string;
+  triggerRef?: string;
+}
+
 export const EditBasicInfoDialog = ({
   initialData,
   onSuccess,
-}: {
-  initialData: CompanyInfo | null;
-  onSuccess: () => void;
-}) => {
+  triggerClass = "",
+  triggerContent,
+  className = "",
+  triggerRef = "",
+}: EditBasicInfoDialogProps) => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationError, setValidationError] = useState("");

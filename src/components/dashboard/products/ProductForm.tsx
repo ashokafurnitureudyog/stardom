@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { ImagesSection } from "./form-sections/images-section";
-import { FeaturesSection } from "./form-sections/features-section";
-import { ColorsSection } from "./form-sections/colors-section";
+import { ImagesSection } from "./images-section";
+import { FeaturesSection } from "./features-section";
+import { ColorsSection } from "./colors-section";
 import type { Product } from "@/types/ComponentTypes";
 
 interface ProductFormProps {
