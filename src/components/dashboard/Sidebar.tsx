@@ -1,5 +1,12 @@
 "use client";
-import { Package, Star, MessageSquare, Image, Building2 } from "lucide-react";
+import {
+  Package,
+  Star,
+  MessageSquare,
+  Image,
+  Building2,
+  Film,
+} from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
 interface SidebarItem {
@@ -21,6 +28,7 @@ export const Sidebar = ({
     { id: "testimonials", icon: MessageSquare, label: "Testimonials" },
     { id: "portfolio", icon: Image, label: "Portfolio" },
     { id: "company", icon: Building2, label: "Company Info" },
+    { id: "files", icon: Film, label: "Hero Files" },
   ];
 
   return (

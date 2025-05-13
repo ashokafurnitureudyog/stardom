@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
-import { BuildingIcon, Loader2, RefreshCw, Trash, Plus } from "lucide-react";
+import { Building2, Loader2, RefreshCw, Trash, Plus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -248,7 +248,7 @@ export const CompanyInfoSection = () => {
         </div>
       ) : (
         <div className="text-center py-20 bg-black/40 border border-[#3C3120] rounded-md">
-          <BuildingIcon className="mx-auto h-16 w-16 text-[#A28B55]/30 mb-4" />
+          <Building2 className="mx-auto h-16 w-16 text-[#A28B55]/30 mb-4" />
           <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
             No Company Information Yet
           </h3>

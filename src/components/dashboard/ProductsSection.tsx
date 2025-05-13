@@ -110,7 +110,9 @@ export const ProductsSection = () => {
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-semibold mb-2">Product Management</h2>
+          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
+            Product Management
+          </h2>
           <p className="text-muted-foreground">
             {products.length} products in catalog
           </p>

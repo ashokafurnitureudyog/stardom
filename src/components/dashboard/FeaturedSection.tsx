@@ -147,7 +147,9 @@ export const FeaturedSection = () => {
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-semibold mb-2">Featured Products</h2>
+          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
+            Featured Products
+          </h2>
           <p className="text-muted-foreground">
             Display up to 4 products on the homepage featured section
           </p>
@@ -156,7 +158,8 @@ export const FeaturedSection = () => {
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
-            className="flex items-center gap-2 hover:bg-secondary"
+            size="default"
+            className="flex items-center gap-2 h-10 hover:bg-secondary"
             onClick={() => {
               fetchFeaturedProducts();
               fetchAllProducts();
@@ -168,7 +171,7 @@ export const FeaturedSection = () => {
           <Dialog>
             <DialogTrigger asChild>
               <Button
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 h-10"
                 disabled={featuredProducts.length >= 4}
                 onClick={(e) => {
                   if (featuredProducts.length >= 4) {
