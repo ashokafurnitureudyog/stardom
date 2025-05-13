@@ -28,8 +28,6 @@ export function ImagesSection({
     const fileList = e.target.files;
 
     if (fileList && fileList.length > 0) {
-      console.log(`${fileList.length} files selected`);
-
       // Create a copy of the files to avoid potential issues with the FileList object
       const newFiles = Array.from(fileList);
 

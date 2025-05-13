@@ -74,10 +74,6 @@ export async function PUT(req: Request) {
       images: JSON.parse((formData.get("imageUrls") as string) || "[]"),
     };
 
-    // Log data being sent to the update function
-    console.log("Updating product ID:", productId);
-    console.log("Update data:", JSON.stringify(productData, null, 2));
-
     const result = await updateProduct(productId, productData, files);
     return NextResponse.json(result || { success: true, id: productId });
   } catch (error: any) {
@@ -100,9 +96,6 @@ export async function DELETE(req: Request) {
         { status: 400 },
       );
     }
-
-    console.log("Deleting product:", productId);
-    console.log("With image URLs:", imageUrls);
 
     await deleteProduct(productId, Array.isArray(imageUrls) ? imageUrls : []);
 

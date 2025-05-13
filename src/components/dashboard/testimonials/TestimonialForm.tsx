@@ -146,10 +146,6 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
       formData.set("imageUrl", finalImageUrl); // This is what it checks in the middle
       formData.set("imageSource", imageTab); // This tells it which tab was selected
 
-      // Debug what we're sending
-      console.log("Submitting with URL:", finalImageUrl);
-      console.log("Using source:", imageTab);
-
       const response = await fetch("/api/protected/testimonials", {
         method: "POST",
         body: formData,

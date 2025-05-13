@@ -97,14 +97,6 @@ export const updateProduct = async (
     }
   }
 
-  // Update with product_collection instead of collection
-  console.log("Updating product ID:", productId);
-  console.log("With data:", {
-    ...productData,
-    product_collection: productData.collection, // Note the renamed field
-    images: [...productData.images, ...uploadedUrls],
-  });
-
   return database.updateDocument(
     process.env.APPWRITE_DATABASE_ID!,
     process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,

@@ -19,9 +19,6 @@ export async function POST(request: NextRequest) {
     // Parse FormData instead of JSON
     const formData = await request.formData();
 
-    // Log for debugging
-    console.log("Received testimonial img:", formData.get("img"));
-
     const result = await createTestimonial(formData);
 
     if (!result.success) {
