@@ -1,17 +1,7 @@
 "use client";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { NotificationDropdown } from "./NotificationDropdown";
-import { LogOut, Settings } from "lucide-react";
-import { signOutUser } from "@/lib/controllers/AuthControllers";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
+import { Menu } from "lucide-react";
 
 const SecuritySettingsDialog = dynamic(
   () =>
@@ -23,6 +13,7 @@ const SecuritySettingsDialog = dynamic(
 
 export const TopBar = ({
   user,
+  toggleSidebar,
 }: {
   user: {
     name: string;
@@ -30,67 +21,40 @@ export const TopBar = ({
     $createdAt: string;
     $updatedAt: string;
   };
+  toggleSidebar: () => void;
 }) => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const showPasswordForm = searchParams.get("showPasswordForm") === "true";
-
-  const handlePasswordChange = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set("showPasswordForm", "true");
-    router.replace(`?${params.toString()}`, { scroll: false });
-  };
 
   const handleCloseForm = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("showPasswordForm");
-    router.replace(`?${params.toString()}`, { scroll: false });
+    window.history.replaceState(null, "", `?${params.toString()}`);
   };
 
   return (
     <>
-      <header className="h-16 border-b bg-card px-8 flex items-center justify-between">
-        <div className="flex-1" />
-        <div className="flex items-center gap-4">
-          <NotificationDropdown />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex items-center gap-2 hover:bg-[#171410] text-neutral-200"
-              >
-                <Avatar className="w-8 h-8">
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <span>{user.name}</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="w-56 bg-black border border-[#352b1c] text-neutral-200 shadow-[0_0_20px_rgba(0,0,0,0.8),0_0_6px_rgba(162,139,85,0.3)]"
-              align="end"
-            >
-              <div className="px-2 py-1.5 text-sm font-medium border-b border-[#352b1c]">
-                <p className="truncate text-[#A28B55]">{user.name}</p>
-                <p className="text-xs text-neutral-400">Administrator</p>
-              </div>
+      <header className="h-16 border-b border-[#3C3120] bg-black flex items-center sticky top-0 z-30 w-full">
+        <div className="w-full flex items-center justify-between px-4 md:justify-center">
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden text-[#A28B55] hover:text-white transition-colors"
+            aria-label="Toggle sidebar"
+          >
+            <Menu size={24} />
+          </button>
 
-              <DropdownMenuItem
-                onClick={handlePasswordChange}
-                className="focus:bg-[#171410]/80 hover:bg-[#171410]/80 focus:text-[#A28B55]"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </DropdownMenuItem>
+          <div className="flex items-center gap-3">
+            <span className="text-xl tracking-wide font-light text-white">
+              STARDOM
+            </span>
+            <span className="text-xl font-light text-[#A28B55]">
+              Content Management
+            </span>
+          </div>
 
-              <DropdownMenuItem
-                onClick={signOutUser}
-                className="focus:bg-[#171410]/80 hover:bg-[#171410]/80 focus:text-[#A28B55]"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Empty div for flex spacing on mobile */}
+          <div className="w-6 md:hidden"></div>
         </div>
       </header>
 
