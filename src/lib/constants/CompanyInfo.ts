@@ -10,7 +10,7 @@ export const BasicCompanyInfo: CompanyInfo = {
     city: "Chandigarh",
     Country: "India",
     zip: "160002",
-    coordinates: [30.696056, 76.785417],
+    coordinates: [30.696056, 30.696056],
   },
   hours: {
     weekday: "10:00 AM - 6:30 PM",
