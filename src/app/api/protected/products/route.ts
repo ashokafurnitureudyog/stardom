@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   addProduct,
   updateProduct,
   deleteProduct,
 } from "@/lib/controllers/ProductControllers";
+import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
 
-export async function POST(req: Request) {
-  try {
-    const formData = await req.formData();
+export async function POST(request: NextRequest) {
+  return apiHandler(request, async (req) => {
+    const formData = await parseRequestFormData(req);
 
     // Extract files
     const files = formData
@@ -34,20 +34,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = await addProduct(productData, files);
-    return NextResponse.json(result);
-  } catch (error: any) {
-    console.error("Error adding product:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to add product" },
-      { status: 500 },
-    );
-  }
+    return await addProduct(productData, files);
+  });
 }
 
-export async function PUT(req: Request) {
-  try {
-    const formData = await req.formData();
+export async function PUT(request: NextRequest) {
+  return apiHandler(request, async (req) => {
+    const formData = await parseRequestFormData(req);
 
     // Get product ID
     const productId = formData.get("id") as string;
@@ -75,18 +68,12 @@ export async function PUT(req: Request) {
     };
 
     const result = await updateProduct(productId, productData, files);
-    return NextResponse.json(result || { success: true, id: productId });
-  } catch (error: any) {
-    console.error("Error updating product:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to update product" },
-      { status: 500 },
-    );
-  }
+    return result || { success: true, id: productId };
+  });
 }
 
-export async function DELETE(req: Request) {
-  try {
+export async function DELETE(request: NextRequest) {
+  return apiHandler(request, async (req) => {
     const data = await req.json();
     const { productId, imageUrls } = data;
 
@@ -99,13 +86,6 @@ export async function DELETE(req: Request) {
 
     await deleteProduct(productId, Array.isArray(imageUrls) ? imageUrls : []);
 
-    return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error("Error deleting product:", error);
-
-    return NextResponse.json(
-      { error: error.message || "Failed to delete product" },
-      { status: 500 },
-    );
-  }
+    return { success: true };
+  });
 }

@@ -2,7 +2,7 @@ import { PortfolioProject } from "@/types/ComponentTypes";
 
 export const PortfolioProjects: PortfolioProject[] = [
   {
-    id: 1,
+    id: "1",
     title: "Chitkara University Academic Block",
     tags: ["Educational", "Architecture", "Interior Design"],
     thumbnail: "https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3",
@@ -27,7 +27,7 @@ export const PortfolioProjects: PortfolioProject[] = [
     ],
   },
   {
-    id: 2,
+    id: "2",
     title: "JLPL Commercial Complex",
     tags: ["Commercial", "Architecture", "Mixed Use"],
     thumbnail: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab",
@@ -52,7 +52,7 @@ export const PortfolioProjects: PortfolioProject[] = [
     ],
   },
   {
-    id: 3,
+    id: "3",
     title: "Chandigarh University Student Center",
     tags: ["Educational", "Interior Design", "Recreational"],
     thumbnail: "https://images.unsplash.com/photo-1522071820081-009f0129c71c",

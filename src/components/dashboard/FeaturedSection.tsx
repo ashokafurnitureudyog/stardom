@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState } from "react";
 import { Product } from "@/types/ComponentTypes";
@@ -45,9 +44,13 @@ export const FeaturedSection = () => {
 
       const data = await res.json();
       setFeaturedProducts(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch featured products:", error);
-      setError(error.message || "Failed to load featured products");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to load featured products",
+      );
     } finally {
       setLoading(false);
     }
@@ -64,7 +67,7 @@ export const FeaturedSection = () => {
 
       const data = await res.json();
       setAllProducts(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch products:", error);
     }
   };
@@ -95,8 +98,12 @@ export const FeaturedSection = () => {
 
       await fetchFeaturedProducts();
       setAddDialogOpen(false);
-    } catch (error: any) {
-      setError(error.message || "Failed to add to featured products");
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to add to featured products",
+      );
     }
   };
 
@@ -125,8 +132,12 @@ export const FeaturedSection = () => {
 
       setError("Product removed from featured section");
       setTimeout(() => setError(""), 3000); // Clear after 3 seconds
-    } catch (error: any) {
-      setError(error.message || "Failed to remove from featured products");
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to remove from featured products",
+      );
       // Revert optimistic update on error
       await fetchFeaturedProducts();
     }

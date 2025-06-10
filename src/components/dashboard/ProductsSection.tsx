@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { ProductCard } from "./products/ProductCard";
@@ -16,25 +15,24 @@ export const ProductsSection = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
 
   const fetchFeaturedIds = useCallback(async () => {
     try {
       const res = await fetch("/api/featured", {
         cache: "no-store",
-        next: { revalidate: 0 },
       });
 
       if (!res.ok) return;
 
       const data = await res.json();
       const ids = new Set<string>(
-        data.map((product: any) =>
+        data.map((product: Product) =>
           (product.id || product.$id || "").toString(),
         ),
       );
       setFeaturedProductIds(ids);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to fetch featured products:", error);
     }
   }, []);
@@ -58,16 +56,17 @@ export const ProductsSection = () => {
     try {
       const res = await fetch("/api/products", {
         cache: "no-store",
-        next: { revalidate: 0 },
       });
 
       if (!res.ok) throw new Error("Failed to fetch products");
 
       const data = await res.json();
       setProducts(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch products:", error);
-      setError(error.message || "Failed to load products");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to load products";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -94,7 +93,7 @@ export const ProductsSection = () => {
       }
 
       // If successful, product is already removed from state
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Delete failed:", error);
       // If deletion fails, refresh the product list
       fetchProducts();
@@ -170,9 +169,9 @@ export const ProductsSection = () => {
         </div>
       ) : filteredProducts.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
+          {filteredProducts.map((product, index) => (
             <ProductCard
-              key={product.id || product.$id}
+              key={product.id || product.$id || `${product.name}-${index}`}
               product={product}
               onDelete={handleDelete}
               isFeatured={featuredProductIds.has(

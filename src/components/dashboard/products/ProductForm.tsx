@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -102,8 +101,10 @@ export const ProductForm = ({
       }
 
       onSuccess();
-    } catch (error: any) {
-      setErrorMessage(error.message || "Failed to save product");
+    } catch (error: unknown) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to save product",
+      );
     } finally {
       setIsSubmitting(false);
     }

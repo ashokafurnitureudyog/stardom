@@ -1,5 +1,5 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Menu } from "lucide-react";
 
@@ -24,12 +24,13 @@ export const TopBar = ({
   toggleSidebar: () => void;
 }) => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const showPasswordForm = searchParams.get("showPasswordForm") === "true";
 
   const handleCloseForm = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("showPasswordForm");
-    window.history.replaceState(null, "", `?${params.toString()}`);
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   return (

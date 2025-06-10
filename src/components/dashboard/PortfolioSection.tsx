@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -7,33 +6,20 @@ import { Search, RefreshCw, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddPortfolioDialog } from "./portfolio/AddPortfolioDialog";
 import { PortfolioCard } from "./portfolio/PortfolioCard";
+import { PortfolioProject } from "@/types/ComponentTypes";
 
-// Using the structure defined in ComponentTypes.ts
-type PortfolioProjectType = {
-  id?: string;
+// Just add the database fields without changing the base type
+interface DatabasePortfolioProject extends PortfolioProject {
   $id?: string;
-  title: string;
-  tags: string[];
-  thumbnail: string;
-  description: string;
-  challenge: string;
-  solution: string;
-  impact: string;
-  testimonial: {
-    quote: string;
-    author: string;
-    position: string;
-  };
-  gallery: string[];
   $createdAt?: string;
   $updatedAt?: string;
-};
+}
 
 export const PortfolioSection = () => {
-  const [projects, setProjects] = useState<PortfolioProjectType[]>([]);
+  const [projects, setProjects] = useState<DatabasePortfolioProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
 
   // Filtered projects
   const filteredProjects = projects.filter(
@@ -54,16 +40,19 @@ export const PortfolioSection = () => {
     try {
       const res = await fetch("/api/portfolio", {
         cache: "no-store",
-        next: { revalidate: 0 },
       });
 
       if (!res.ok) throw new Error("Failed to fetch portfolio projects");
 
       const data = await res.json();
       setProjects(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch portfolio projects:", error);
-      setError(error.message || "Failed to load portfolio projects");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to load portfolio projects";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -104,7 +93,7 @@ export const PortfolioSection = () => {
       }
 
       // If successful, project is already removed from state
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Delete failed:", error);
       // If deletion fails, refresh the project list
       fetchProjects();
@@ -179,9 +168,9 @@ export const PortfolioSection = () => {
         </div>
       ) : filteredProjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => (
+          {filteredProjects.map((project, index) => (
             <PortfolioCard
-              key={project.id || project.$id || project.title}
+              key={project.id || project.$id || `${project.title}-${index}`}
               project={project}
               onDelete={handleDelete}
             />

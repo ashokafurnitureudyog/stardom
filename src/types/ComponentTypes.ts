@@ -96,7 +96,7 @@ export interface FormData {
   message: string;
 }
 export interface PortfolioProject {
-  id: number;
+  id: string; // mismatch with the returns
   title: string;
   tags: string[];
   thumbnail: string;
@@ -219,4 +219,18 @@ export interface ProductState {
   setSearchQuery: (query: string) => void;
   setSortOption: (option: SortOption) => void;
   resetFilters: () => void;
+}
+export interface ClientTestimonial {
+  id?: string;
+  $id?: string;
+  name: string;
+  title: string;
+  location: string;
+  context: string;
+  purchaseDate: string;
+  verified: boolean;
+  quote: string;
+  img: string;
+  $createdAt?: string;
+  $updatedAt?: string;
 }

@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -122,10 +122,12 @@ export const PortfolioCard = ({
             style={{ height: "200px" }}
           >
             {project.thumbnail ? (
-              <img
+              <Image
                 src={project.thumbnail}
                 alt={project.title}
-                className="absolute opacity-85 inset-0 w-full h-full object-cover"
+                fill
+                unoptimized
+                className="opacity-85 object-cover"
               />
             ) : (
               <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center">

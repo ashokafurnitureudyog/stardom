@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react/no-unescaped-entities */
 import { Product } from "@/types/ComponentTypes";
 import {
   AlertDialog,
@@ -13,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { X, Eye } from "lucide-react";
-
+import Image from "next/image";
 interface FeaturedProductCardProps {
   product: Product;
   onRemove: (productId: string) => Promise<void>;
@@ -32,10 +30,12 @@ export const FeaturedProductCard = ({
       {/* Image container with fixed dimensions */}
       <div className="relative w-full" style={{ height: "280px" }}>
         {product.images && product.images[0] ? (
-          <img
+          <Image
             src={product.images[0]}
             alt={product.name}
-            className="absolute opacity-85 inset-0 w-full h-full object-cover"
+            fill
+            unoptimized
+            className="object-cover opacity-85"
           />
         ) : (
           <div className="absolute inset-0 bg-neutral-900 flex items-center justify-center">
@@ -57,8 +57,8 @@ export const FeaturedProductCard = ({
                   Remove from Featured
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-neutral-400">
-                  Are you sure you want to remove "{product.name}" from featured
-                  products?
+                  Are you sure you want to remove &quot;{product.name}&quot;
+                  from featured products?
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

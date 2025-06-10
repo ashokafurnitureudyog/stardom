@@ -1,48 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import { getLoggedInUser } from "@/lib/server/appwrite";
 import {
-  getHeroMedia,
   addHeroMediaUrl,
   uploadHeroMedia,
   deleteHeroMedia,
 } from "@/lib/controllers/HeroMediaController";
-
-export async function GET() {
-  try {
-    // Verify user is logged in
-    const user = await getLoggedInUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const result = await getHeroMedia();
-
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
-    }
-
-    return NextResponse.json(result);
-  } catch (error: any) {
-    console.error("Error fetching hero media:", error);
-    return NextResponse.json(
-      { error: error.message || "An unknown error occurred" },
-      { status: 500 },
-    );
-  }
-}
+import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
 
 export async function POST(request: NextRequest) {
-  try {
-    // Verify user is logged in
-    const user = await getLoggedInUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const formData = await request.formData();
+  return apiHandler(request, async (req) => {
+    const formData = await parseRequestFormData(req);
     const method = formData.get("method")?.toString();
 
     let result;
@@ -89,31 +55,18 @@ export async function POST(request: NextRequest) {
     }
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+      throw new Error(result.error);
     }
 
-    return NextResponse.json(result);
-  } catch (error: any) {
-    console.error("Error adding hero media:", error);
-    return NextResponse.json(
-      { error: error.message || "An unknown error occurred" },
-      { status: 500 },
-    );
-  }
+    return result;
+  });
 }
 
 export async function DELETE(request: NextRequest) {
-  try {
-    // Verify user is logged in
-    const user = await getLoggedInUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+  return apiHandler(request, async (req) => {
     // Get the ID from the URL params
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
 
     if (!id) {
       return NextResponse.json({ error: "No ID provided" }, { status: 400 });
@@ -122,18 +75,12 @@ export async function DELETE(request: NextRequest) {
     const result = await deleteHeroMedia(id);
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+      throw new Error(result.error);
     }
 
-    return NextResponse.json({
+    return {
       success: true,
       message: "Hero media deleted successfully",
-    });
-  } catch (error: any) {
-    console.error("Error deleting hero media:", error);
-    return NextResponse.json(
-      { error: error.message || "An unknown error occurred" },
-      { status: 500 },
-    );
-  }
+    };
+  });
 }

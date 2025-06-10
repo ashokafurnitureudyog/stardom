@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/server/appwrite";
 
@@ -23,11 +22,10 @@ export async function GET() {
     });
 
     return NextResponse.json(mappedProducts);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to fetch products:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to fetch products" },
-      { status: 500 },
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch products";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

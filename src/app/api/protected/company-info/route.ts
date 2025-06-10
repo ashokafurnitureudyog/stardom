@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import { getLoggedInUser } from "@/lib/server/appwrite";
 import {
   getCompanyInfo,
   updateCompanyInfo,
@@ -9,42 +7,23 @@ import {
   uploadTeamImage,
   deleteCompanyInfo,
 } from "@/lib/controllers/CompanyInfoController";
+import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
 
-export async function GET() {
-  try {
-    // Verify user is logged in
-    const user = await getLoggedInUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+export async function GET(request: NextRequest) {
+  return apiHandler(request, async () => {
     const result = await getCompanyInfo();
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+      throw new Error(result.error);
     }
 
-    return NextResponse.json(result);
-  } catch (error: any) {
-    console.error("Error fetching company info:", error);
-    return NextResponse.json(
-      { error: error.message || "An unknown error occurred" },
-      { status: 500 },
-    );
-  }
+    return result;
+  });
 }
 
 export async function POST(request: NextRequest) {
-  try {
-    // Verify user is logged in
-    const user = await getLoggedInUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const formData = await request.formData();
+  return apiHandler(request, async (req) => {
+    const formData = await parseRequestFormData(req);
     const section = formData.get("section")?.toString();
 
     let result;
@@ -108,43 +87,24 @@ export async function POST(request: NextRequest) {
     }
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+      throw new Error(result.error);
     }
 
-    return NextResponse.json(result);
-  } catch (error: any) {
-    console.error("Error updating company info:", error);
-    return NextResponse.json(
-      { error: error.message || "An unknown error occurred" },
-      { status: 500 },
-    );
-  }
+    return result;
+  });
 }
 
 export async function DELETE() {
-  try {
-    // Verify user is logged in
-    const user = await getLoggedInUser();
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
+  return apiHandler({} as NextRequest, async () => {
     const result = await deleteCompanyInfo();
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+      throw new Error(result.error);
     }
 
-    return NextResponse.json({
+    return {
       success: true,
       message: "Company information deleted successfully",
-    });
-  } catch (error: any) {
-    console.error("Error deleting company info:", error);
-    return NextResponse.json(
-      { error: error.message || "An unknown error occurred" },
-      { status: 500 },
-    );
-  }
+    };
+  });
 }

@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   addToFeatured,
   removeFromFeatured,
   getFeaturedProducts,
 } from "@/lib/controllers/FeaturedControllers";
+import { apiHandler, parseRequestJson } from "@/lib/utils/api-utils";
 
-export async function POST(req: Request) {
-  try {
-    const data = await req.json();
+export async function POST(request: NextRequest) {
+  return apiHandler(request, async (req) => {
+    const data = await parseRequestJson<{ productId: string }>(req);
     const { productId } = data;
 
     if (!productId) {
@@ -18,20 +18,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = await addToFeatured(productId);
-    return NextResponse.json(result);
-  } catch (error: any) {
-    console.error("Error adding product to featured:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to add product to featured" },
-      { status: 500 },
-    );
-  }
+    return await addToFeatured(productId);
+  });
 }
 
-export async function DELETE(req: Request) {
-  try {
-    const data = await req.json();
+export async function DELETE(request: NextRequest) {
+  return apiHandler(request, async (req) => {
+    const data = await parseRequestJson<{ productId: string }>(req);
     const { productId } = data;
 
     if (!productId) {
@@ -42,27 +35,14 @@ export async function DELETE(req: Request) {
     }
 
     await removeFromFeatured(productId);
-    return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error("Error removing product from featured:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to remove product from featured" },
-      { status: 500 },
-    );
-  }
+    return { success: true };
+  });
 }
 
 // This isn't strictly necessary as we have the /api/featured GET endpoint
 // but including for completeness
 export async function GET() {
-  try {
-    const featured = await getFeaturedProducts();
-    return NextResponse.json(featured);
-  } catch (error: any) {
-    console.error("Error fetching featured products:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to fetch featured products" },
-      { status: 500 },
-    );
-  }
+  return apiHandler({} as NextRequest, async () => {
+    return await getFeaturedProducts();
+  });
 }

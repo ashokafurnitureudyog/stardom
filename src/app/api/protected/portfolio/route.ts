@@ -1,23 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
-import { createSessionClient } from "@/lib/server/appwrite";
 import {
   createPortfolioProject,
   deletePortfolioProject,
 } from "@/lib/controllers/PortfolioControllers";
+import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
 
 export async function POST(request: NextRequest) {
-  try {
-    // Verify session and permissions
-    try {
-      await createSessionClient();
-    } catch (error) {
-      return NextResponse.json({ message: "Not authorized" }, { status: 401 });
-    }
-
-    // Parse FormData
-    const formData = await request.formData();
+  return apiHandler(request, async (req) => {
+    const formData = await parseRequestFormData(req);
 
     // Extract project data
     const title = formData.get("title") as string;
@@ -63,26 +53,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: result.error }, { status: 500 });
     }
 
-    return NextResponse.json(result.data, { status: 201 });
-  } catch (error: any) {
-    console.error("Failed to create portfolio project:", error);
-    return NextResponse.json(
-      { message: error.message || "Failed to create portfolio project" },
-      { status: 500 },
-    );
-  }
+    return result.data;
+  });
 }
 
 export async function DELETE(request: NextRequest) {
-  try {
-    // Verify session and permissions
-    try {
-      await createSessionClient();
-    } catch (error) {
-      return NextResponse.json({ message: "Not authorized" }, { status: 401 });
-    }
-
-    const { projectId, imageUrls } = await request.json();
+  return apiHandler(request, async (req) => {
+    const { projectId, imageUrls } = await req.json();
 
     if (!projectId) {
       return NextResponse.json(
@@ -97,18 +74,9 @@ export async function DELETE(request: NextRequest) {
     );
 
     if (!result.success) {
-      return NextResponse.json({ message: result.error }, { status: 500 });
+      throw new Error(result.error);
     }
 
-    return NextResponse.json(
-      { message: "Portfolio project deleted successfully" },
-      { status: 200 },
-    );
-  } catch (error: any) {
-    console.error("Failed to delete portfolio project:", error);
-    return NextResponse.json(
-      { message: error.message || "Failed to delete portfolio project" },
-      { status: 500 },
-    );
-  }
+    return { message: "Portfolio project deleted successfully" };
+  });
 }

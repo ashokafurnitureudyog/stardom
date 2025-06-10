@@ -111,3 +111,7 @@ body {
   scrollbar-color: #3c3120 #111111;
   scrollbar-width: thin;
 }
+
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -8,26 +6,13 @@ import { Search, RefreshCw, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddTestimonialDialog } from "./testimonials/AddTestimonialDialog";
 import { TestimonialCard } from "./testimonials/TestimonialCard ";
-type TestimonialType = {
-  id?: string;
-  $id?: string;
-  name: string;
-  title: string;
-  location: string;
-  context: string;
-  purchaseDate: string;
-  verified: boolean;
-  quote: string;
-  img: string;
-  $createdAt?: string;
-  $updatedAt?: string;
-};
+import { ClientTestimonial } from "@/types/ComponentTypes";
 
 export const TestimonialsSection = () => {
-  const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
+  const [testimonials, setTestimonials] = useState<ClientTestimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
 
   // Filtered testimonials
   const filteredTestimonials = testimonials.filter(
@@ -45,22 +30,23 @@ export const TestimonialsSection = () => {
     try {
       const res = await fetch("/api/testimonials", {
         cache: "no-store",
-        next: { revalidate: 0 },
       });
 
       if (!res.ok) throw new Error("Failed to fetch testimonials");
 
       const data = await res.json();
       setTestimonials(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch testimonials:", error);
-      setError(error.message || "Failed to load testimonials");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to load testimonials";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const handleDelete = async (testimonialId: string, imageUrl: string) => {
+  const handleDelete = async (testimonialId: string) => {
     try {
       setTestimonials((prevTestimonials) =>
         prevTestimonials.filter(
@@ -82,7 +68,7 @@ export const TestimonialsSection = () => {
       }
 
       // If successful, testimonial is already removed from state
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Delete failed:", error);
       // If deletion fails, refresh the testimonial list
       fetchTestimonials();
@@ -157,9 +143,13 @@ export const TestimonialsSection = () => {
         </div>
       ) : filteredTestimonials.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTestimonials.map((testimonial) => (
+          {filteredTestimonials.map((testimonial, index) => (
             <TestimonialCard
-              key={testimonial.id || testimonial.$id || testimonial.name}
+              key={
+                testimonial.id ||
+                testimonial.$id ||
+                `${testimonial.name}-${index}`
+              }
               testimonial={testimonial}
               onDelete={handleDelete}
             />

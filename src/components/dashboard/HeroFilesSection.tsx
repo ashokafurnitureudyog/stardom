@@ -1,6 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
@@ -9,18 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import { MediaItem } from "@/types/MediaTypes";
 import { HeroMediaCard } from "./hero-media/HeroMediaCard";
 import { AddHeroMediaDialog } from "./hero-media/AddHeroMediaDialog";
-import { RefreshCw, Trash, Film, Loader2 } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { RefreshCw, Film, Loader2 } from "lucide-react";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 
 type MediaItemWithId = MediaItem & { id: string };
 
@@ -34,7 +21,7 @@ export const HeroFilesSection = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/protected/hero-media", {
+      const res = await fetch("/api/hero-media", {
         cache: "no-store",
         next: { revalidate: 0 },
       });
@@ -48,9 +35,11 @@ export const HeroFilesSection = () => {
       }
 
       setData(result.mediaItems || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch hero media:", error);
-      setError(error.message || "Failed to load hero media");
+      setError(
+        error instanceof Error ? error.message : "Failed to load hero media",
+      );
     } finally {
       setLoading(false);
     }
@@ -80,42 +69,13 @@ export const HeroFilesSection = () => {
       });
 
       fetchHeroMedia();
-    } catch (error: any) {
-      setError(error.message || "Failed to delete media item");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete media item";
+      setError(errorMessage);
       toast({
         title: "Error",
-        description: error.message || "Failed to delete media item",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteAll = async () => {
-    try {
-      setLoading(true);
-
-      // Delete each item sequentially
-      for (const item of data) {
-        await fetch(`/api/protected/hero-media?id=${item.id}`, {
-          method: "DELETE",
-          credentials: "include",
-        });
-      }
-
-      toast({
-        title: "All Media Deleted",
-        description: "All hero media has been deleted successfully.",
-        variant: "default",
-      });
-
-      fetchHeroMedia();
-    } catch (error: any) {
-      setError(error.message || "Failed to delete all media");
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete all media",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

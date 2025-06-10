@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
-import { Building2, Loader2, RefreshCw, Trash, Plus } from "lucide-react";
+import { Building2, RefreshCw, Trash, Plus } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,9 +47,13 @@ export const CompanyInfoSection = () => {
 
       const data = await res.json();
       setData(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch company information:", error);
-      setError(error.message || "Failed to load company information");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to load company information",
+      );
     } finally {
       setLoading(false);
     }
@@ -75,8 +77,12 @@ export const CompanyInfoSection = () => {
       }
 
       fetchCompanyInfo();
-    } catch (error: any) {
-      setError(error.message || "Failed to delete company information");
+    } catch (error: unknown) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to delete company information",
+      );
     } finally {
       setLoading(false);
     }
@@ -267,79 +273,6 @@ export const CompanyInfoSection = () => {
           </div>
         </div>
       )}
-
-      <style jsx global>{`
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-          width: 6px;
-          height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-          background-color: #3c3120;
-          border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-          background-color: #a28b55;
-        }
-
-        /* Dialog overlay styling */
-        [data-radix-popper-content-wrapper] {
-          z-index: 50 !important;
-        }
-
-        .DialogOverlay {
-          background-color: rgba(0, 0, 0, 0.5);
-          position: fixed;
-          inset: 0;
-          animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-          backdrop-filter: blur(4px);
-        }
-
-        /* Dialog content styling */
-        .DialogContent {
-          background-color: #171410;
-          border-radius: 6px;
-          box-shadow:
-            0px 10px 38px -10px rgba(22, 23, 24, 0.35),
-            0px 10px 20px -15px rgba(22, 23, 24, 0.2);
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 90vw;
-          max-width: 450px;
-          max-height: 85vh;
-          padding: 25px;
-          animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
-          border: 1px solid #352b1c;
-        }
-
-        @keyframes overlayShow {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes contentShow {
-          from {
-            opacity: 0;
-            transform: translate(-50%, -48%) scale(0.96);
-          }
-          to {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-          }
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,7 +1,15 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditSocialLinksDialog } from "./EditSocialLinksDialog";
-import { Link2, PenSquare } from "lucide-react";
+import {
+  Link2,
+  PenSquare,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Youtube,
+} from "lucide-react";
+import { RiTwitterXFill } from "@remixicon/react";
 
 interface SocialLinksCardProps {
   socialLinks: Array<{ platform: string; url: string; id?: string }>;
@@ -16,47 +24,18 @@ export const SocialLinksCard = ({
   const getSocialIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case "facebook":
-        return (
-          <div className="h-5 w-5 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            f
-          </div>
-        );
+        return <Facebook className="h-5 w-5 text-blue-600" />;
       case "instagram":
-        return (
-          <div className="h-5 w-5 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-full"></div>
-        );
-      case "twitter":
-        return (
-          <div className="h-5 w-5 bg-blue-400 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            X
-          </div>
-        );
+        return <Instagram className="h-5 w-5 text-pink-500" />;
+      case "x":
+      case "twitter": // Keep for backward compatibility
+        return <RiTwitterXFill className="h-5 w-5" />;
       case "linkedin":
-        return (
-          <div className="h-5 w-5 bg-blue-700 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            in
-          </div>
-        );
+        return <Linkedin className="h-5 w-5 text-blue-700" />;
       case "youtube":
-        return (
-          <div className="h-5 w-5 bg-red-600 rounded-full flex items-center justify-center text-white text-xs">
-            ▶
-          </div>
-        );
-      case "tiktok":
-        return (
-          <div className="h-5 w-5 bg-black rounded-full flex items-center justify-center text-white text-xs">
-            ♫
-          </div>
-        );
-      case "pinterest":
-        return (
-          <div className="h-5 w-5 bg-red-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            P
-          </div>
-        );
+        return <Youtube className="h-5 w-5 text-red-600" />;
       default:
-        return <div className="h-5 w-5 bg-gray-600 rounded-full"></div>;
+        return <Link2 className="h-5 w-5 text-gray-600" />;
     }
   };
 
@@ -146,27 +125,6 @@ export const SocialLinksCard = ({
           )}
         </CardContent>
       </Card>
-
-      <style jsx global>{`
-        /* Show scrollbar when needed, but style it */
-        ::-webkit-scrollbar {
-          width: 6px;
-          height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-          background-color: #3c3120;
-          border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-          background-color: #a28b55;
-        }
-      `}</style>
     </div>
   );
 };

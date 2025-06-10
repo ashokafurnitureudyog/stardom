@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/server/appwrite";
 
@@ -8,7 +7,7 @@ export async function GET() {
   try {
     const featured = await adminClient.database.listDocuments(
       process.env.APPWRITE_DATABASE_ID!,
-      process.env.APPWRITE_FEATURED_COLLECTION_ID!, // Use env var instead of hardcoded "featured"
+      process.env.APPWRITE_FEATURED_COLLECTION_ID!,
     );
 
     // Map the products to ensure they're in the expected format
@@ -21,11 +20,12 @@ export async function GET() {
     });
 
     return NextResponse.json(mappedProducts);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to fetch featured products:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to fetch featured products" },
-      { status: 500 },
-    );
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to fetch featured products";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

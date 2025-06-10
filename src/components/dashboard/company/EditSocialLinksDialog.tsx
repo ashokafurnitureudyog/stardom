@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -19,8 +18,6 @@ import { useToast } from "@/hooks/use-toast";
 export const EditSocialLinksDialog = ({
   initialData,
   onSuccess,
-  triggerClass,
-  triggerContent,
 }: {
   initialData: Array<{ platform: string; url: string; id?: string }>;
   onSuccess: () => void;
@@ -39,10 +36,8 @@ export const EditSocialLinksDialog = ({
     { value: "facebook", label: "Facebook" },
     { value: "instagram", label: "Instagram" },
     { value: "linkedin", label: "LinkedIn" },
-    { value: "twitter", label: "Twitter" },
+    { value: "x", label: "X" },
     { value: "youtube", label: "YouTube" },
-    { value: "tiktok", label: "TikTok" },
-    { value: "pinterest", label: "Pinterest" },
   ];
 
   const handleAddLink = () => {
@@ -102,7 +97,8 @@ export const EditSocialLinksDialog = ({
 
       onSuccess();
       setOpen(false);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Failed to update social links:", error);
       toast({
         variant: "destructive",
         title: "Error",
