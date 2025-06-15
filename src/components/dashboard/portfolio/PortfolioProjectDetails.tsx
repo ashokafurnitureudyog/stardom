@@ -4,26 +4,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeft, ChevronRight, MessageSquare, Quote } from "lucide-react";
-
-interface PortfolioProjectType {
-  id?: string;
-  $id?: string;
-  title: string;
-  tags: string[];
-  thumbnail: string;
-  description: string;
-  challenge: string;
-  solution: string;
-  impact: string;
-  testimonial: {
-    quote: string;
-    author: string;
-    position: string;
-  };
-  gallery: string[];
-  $createdAt?: string;
-  $updatedAt?: string;
-}
+import { PortfolioProjectType } from "./portfolio/types";
 
 interface PortfolioProjectDetailsProps {
   project: PortfolioProjectType;

@@ -1,21 +1,19 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ImagesSection } from "../products/images-section";
-import { X, AlertCircle, Check, Loader2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Link, ImagePlus } from "lucide-react";
-import Image from "next/image";
+import { AlertCircle, Check, Loader2 } from "lucide-react";
+import { ImagesSection } from "./ImagesSection";
+import { ProjectDetailsSection } from "./ProjectDetailsSection";
+import { ChallengeSection } from "./ChallengeSection";
+import { TestimonialSection } from "./TestimonialSection";
+import { ThumbnailUploader } from "./ThumbnailUploader";
+import { useToast } from "@/hooks/use-toast";
+import { PortfolioFormData } from "./portfolio/types";
+
 interface PortfolioFormProps {
   onSuccess: () => void;
-  initialData?: any;
+  initialData?: PortfolioFormData;
   isEditing?: boolean;
 }
 
@@ -24,6 +22,8 @@ export const PortfolioForm = ({
   initialData,
   isEditing = false,
 }: PortfolioFormProps) => {
+  const { toast } = useToast();
+
   // Project details
   const [title, setTitle] = useState(initialData?.title || "");
   const [description, setDescription] = useState(
@@ -32,14 +32,12 @@ export const PortfolioForm = ({
   const [challenge, setChallenge] = useState(initialData?.challenge || "");
   const [solution, setSolution] = useState(initialData?.solution || "");
   const [impact, setImpact] = useState(initialData?.impact || "");
-  // Add this with your other state variables
   const [thumbnailFile, setThumbnailFile] = useState<File | undefined>(
     undefined,
   );
 
   // Tags
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
-  const [tagInput, setTagInput] = useState("");
 
   // Testimonial
   const [testimonialQuote, setTestimonialQuote] = useState(
@@ -68,25 +66,17 @@ export const PortfolioForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Tag management
-  const addTag = () => {
-    const trimmedTag = tagInput.trim();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
-      setTags([...tags, trimmedTag]);
-      setTagInput("");
-    }
-  };
+  // Refs for cleanup
+  const thumbnailObjectUrlRef = useRef<string | null>(null);
 
-  const removeTag = (index: number) => {
-    setTags(tags.filter((_, i) => i !== index));
-  };
-
-  const handleTagKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTag();
-    }
-  };
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      if (thumbnailObjectUrlRef.current) {
+        URL.revokeObjectURL(thumbnailObjectUrlRef.current);
+      }
+    };
+  }, []);
 
   // Image URL handling
   const handleAddImageUrl = () => {
@@ -104,8 +94,18 @@ export const PortfolioForm = ({
 
     try {
       // Validate required fields
-      if (!title || !description || !thumbnailUrl) {
-        throw new Error("Title, description and thumbnail image are required");
+      if (!title || !description) {
+        throw new Error("Title and description are required");
+      }
+
+      // Validate thumbnail
+      if (!thumbnailFile && !thumbnailUrl) {
+        throw new Error("A thumbnail image is required");
+      }
+
+      // Validate thumbnail URL length if it's from an external URL
+      if (!thumbnailFile && thumbnailUrl && thumbnailUrl.length > 512) {
+        throw new Error("Thumbnail URL is too long (maximum 512 characters)");
       }
 
       // Create FormData object
@@ -119,9 +119,20 @@ export const PortfolioForm = ({
       formData.append("impact", impact);
       formData.append("tags", JSON.stringify(tags));
 
-      // Thumbnail and gallery
-      formData.append("thumbnail", thumbnailUrl);
-      formData.append("gallery", JSON.stringify(galleryUrls));
+      // Thumbnail handling - Don't add to formData if it's a blob URL
+      // The backend will handle the thumbnailFile separately
+      if (thumbnailUrl && !thumbnailUrl.startsWith("blob:")) {
+        formData.append("thumbnail", thumbnailUrl.substring(0, 512)); // Ensure within 512 char limit
+      } else {
+        // If no external URL, send an empty string - the backend will replace with the uploaded file's URL
+        formData.append("thumbnail", "");
+      }
+
+      // Gallery URLs - Filter out any blob URLs
+      const validGalleryUrls = galleryUrls
+        .filter((url) => !url.startsWith("blob:"))
+        .map((url) => url.substring(0, 512)); // Ensure within 512 char limit
+      formData.append("gallery", JSON.stringify(validGalleryUrls));
 
       // Testimonial - use flat structure for Appwrite
       formData.append("testimonial_quote", testimonialQuote);
@@ -135,9 +146,12 @@ export const PortfolioForm = ({
 
       // Add files
       files.forEach((file) => formData.append("files", file));
+
+      // Handle thumbnail file separately
       if (thumbnailFile) {
         formData.append("thumbnailFile", thumbnailFile);
       }
+
       // Send request
       const response = await fetch("/api/protected/portfolio", {
         method: "POST",
@@ -145,16 +159,65 @@ export const PortfolioForm = ({
         credentials: "include",
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.message || "Failed to save portfolio project");
       }
 
+      toast({
+        title: "Success",
+        description: isEditing
+          ? "Portfolio project updated successfully"
+          : "Portfolio project created successfully",
+      });
+
       onSuccess();
-    } catch (error: any) {
-      setErrorMessage(error.message || "Failed to save portfolio project");
+    } catch (error: Error | unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to save portfolio project";
+      console.error("Portfolio submission error:", error);
+      setErrorMessage(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleThumbnailChange = (file?: File, url?: string) => {
+    // Clean up previous object URL if it exists
+    if (thumbnailObjectUrlRef.current) {
+      URL.revokeObjectURL(thumbnailObjectUrlRef.current);
+      thumbnailObjectUrlRef.current = null;
+    }
+
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      thumbnailObjectUrlRef.current = objectUrl;
+      setThumbnailUrl(objectUrl);
+      setThumbnailFile(file);
+    } else if (url) {
+      // When setting a URL, make sure it's not longer than 512 chars
+      if (url.length > 512) {
+        toast({
+          title: "URL too long",
+          description:
+            "The image URL exceeds the maximum allowed length of 512 characters",
+          variant: "destructive",
+        });
+        return;
+      }
+      setThumbnailUrl(url);
+      setThumbnailFile(undefined);
+    } else {
+      setThumbnailUrl("");
+      setThumbnailFile(undefined);
     }
   };
 
@@ -174,290 +237,47 @@ export const PortfolioForm = ({
         )}
 
         {/* Basic Project Information */}
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="title" className="text-neutral-400">
-              Project Title
-            </Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="E.g., Modern Office Renovation for TechCorp"
-              required
-              className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="description" className="text-neutral-400">
-              Description
-            </Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Brief summary of the project (100-150 words recommended)"
-              className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-              required
-            />
-          </div>
-
-          {/* Tags */}
-          <div>
-            <Label htmlFor="tags" className="text-neutral-400">
-              Tags
-            </Label>
-            <div className="flex items-center gap-2 mb-2">
-              <Input
-                id="tags"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleTagKeyDown}
-                placeholder="Add tags (e.g. Residential, Interior, Office Space etc.)"
-                className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-              />
-              <Button
-                type="button"
-                onClick={addTag}
-                className="shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
-              >
-                Add Tag
-              </Button>
-            </div>
-            {tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {tags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    className="bg-neutral-800 hover:bg-neutral-800 text-[#A28B55] gap-1.5"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => removeTag(index)}
-                      className="ml-1 hover:text-red-400 transition-colors"
-                    >
-                      <X size={14} />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        <ProjectDetailsSection
+          title={title}
+          setTitle={setTitle}
+          description={description}
+          setDescription={setDescription}
+          tags={tags}
+          setTags={setTags}
+        />
 
         <Separator className="my-6" />
 
         {/* Project Details */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#A28B55]">
-            Project Details
-          </h3>
-
-          <div>
-            <Label htmlFor="challenge" className="text-neutral-400">
-              Challenge
-            </Label>
-            <Textarea
-              id="challenge"
-              value={challenge}
-              onChange={(e) => setChallenge(e.target.value)}
-              placeholder="Describe the specific challenges faced (space constraints, timeline, budget, etc."
-              className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="solution" className="text-neutral-400">
-              Solution
-            </Label>
-            <Textarea
-              id="solution"
-              value={solution}
-              onChange={(e) => setSolution(e.target.value)}
-              placeholder="How did you address the challenges?"
-              className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="impact" className="text-neutral-400">
-              Impact
-            </Label>
-            <Textarea
-              id="impact"
-              value={impact}
-              onChange={(e) => setImpact(e.target.value)}
-              placeholder="Describe measurable outcomes (e.g., 30% more efficient space usage, increased foot traffic)?"
-              className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-            />
-          </div>
-        </div>
+        <ChallengeSection
+          challenge={challenge}
+          setChallenge={setChallenge}
+          solution={solution}
+          setSolution={setSolution}
+          impact={impact}
+          setImpact={setImpact}
+        />
 
         <Separator className="my-6" />
 
         {/* Testimonial */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#A28B55]">
-            Client Testimonial
-          </h3>
-
-          <div>
-            <Label htmlFor="testimonial_quote" className="text-neutral-400">
-              Quote
-            </Label>
-            <Textarea
-              id="testimonial_quote"
-              value={testimonialQuote}
-              onChange={(e) => setTestimonialQuote(e.target.value)}
-              placeholder="What did the client say about this project?"
-              className="resize-none min-h-[80px] bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="testimonial_author" className="text-neutral-400">
-                Author Name
-              </Label>
-              <Input
-                id="testimonial_author"
-                value={testimonialAuthor}
-                onChange={(e) => setTestimonialAuthor(e.target.value)}
-                placeholder="E.g., John Smith"
-                className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="testimonial_position"
-                className="text-neutral-400"
-              >
-                Position/Title
-              </Label>
-              <Input
-                id="testimonial_position"
-                value={testimonialPosition}
-                onChange={(e) => setTestimonialPosition(e.target.value)}
-                placeholder="E.g., CEO, TechCorp Inc."
-                className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-              />
-            </div>
-          </div>
-        </div>
+        <TestimonialSection
+          testimonialQuote={testimonialQuote}
+          setTestimonialQuote={setTestimonialQuote}
+          testimonialAuthor={testimonialAuthor}
+          setTestimonialAuthor={setTestimonialAuthor}
+          testimonialPosition={testimonialPosition}
+          setTestimonialPosition={setTestimonialPosition}
+        />
 
         <Separator className="my-6" />
 
         {/* Thumbnail Image */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-[#A28B55]">
-            Thumbnail Image
-          </h3>
-
-          <Tabs defaultValue="upload" className="w-full">
-            <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
-              <TabsTrigger
-                value="upload"
-                className="flex items-center justify-center gap-2 data-[state=active]:bg-[#A28B55] data-[state=active]:text-neutral-900 data-[state=active]:shadow-md data-[state=inactive]:bg-[#3C3120] data-[state=inactive]:text-neutral-200 py-1 transition-all duration-200"
-              >
-                <Upload size={16} /> Upload Image
-              </TabsTrigger>
-              <TabsTrigger
-                value="url"
-                className="flex items-center justify-center gap-2 data-[state=active]:bg-[#A28B55] data-[state=active]:text-neutral-900 data-[state=active]:shadow-md data-[state=inactive]:bg-[#3C3120] data-[state=inactive]:text-neutral-200 py-1 transition-all duration-200"
-              >
-                <Link size={16} /> Image URL
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="upload" className="space-y-4">
-              <div className="border-2 border-dashed border-[#3C3120]/50 rounded-lg p-6 text-center hover:border-[#A28B55]/70 transition-colors">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      // Store the file for upload
-                      setThumbnailFile(e.target.files[0]);
-                      // Create a preview URL
-                      setThumbnailUrl(URL.createObjectURL(e.target.files[0]));
-                    }
-                  }}
-                  className="hidden"
-                  id="thumbnail-upload"
-                />
-                <label
-                  htmlFor="thumbnail-upload"
-                  className="cursor-pointer flex flex-col items-center justify-center"
-                >
-                  <div className="rounded-full bg-primary/10 p-3 mb-3">
-                    <ImagePlus className="h-6 w-6 text-primary" />
-                  </div>
-                  <p className="text-base font-medium">
-                    Click to upload thumbnail
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-                    Support for JPG, PNG, WEBP or GIF (Max 10MB)
-                  </p>
-                </label>
-              </div>
-
-              {thumbnailFile && (
-                <div className="mt-6">
-                  <div className="aspect-square w-40 mx-auto relative">
-                    <Image
-                      src={URL.createObjectURL(thumbnailFile)}
-                      alt="Thumbnail preview"
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute -top-2 -right-2 h-6 w-6 shadow-md"
-                      onClick={() => {
-                        setThumbnailFile(undefined);
-                        setThumbnailUrl("");
-                      }}
-                    >
-                      <X size={12} />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="url" className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  value={thumbnailUrl}
-                  onChange={(e) => setThumbnailUrl(e.target.value)}
-                  placeholder="Enter URL for main project image"
-                />
-              </div>
-
-              {thumbnailUrl && !thumbnailFile && (
-                <div className="mt-4 border border-[#3C3120] rounded-md p-4 bg-neutral-950/30">
-                  <div className="relative aspect-square w-40 h-40 rounded-md overflow-hidden mx-auto">
-                    <img
-                      src={thumbnailUrl}
-                      alt="Thumbnail preview"
-                      className="object-cover w-full h-full"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.src =
-                          "https://via.placeholder.com/150?text=Error";
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </div>
+        <ThumbnailUploader
+          thumbnailUrl={thumbnailUrl}
+          thumbnailFile={thumbnailFile}
+          onChange={handleThumbnailChange}
+        />
 
         <Separator className="my-6" />
 
