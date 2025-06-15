@@ -63,24 +63,51 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
-  return apiHandler(request, async (req) => {
+  try {
     // Get the ID from the URL params
-    const url = new URL(req.url);
+    const url = new URL(request.url);
     const id = url.searchParams.get("id");
 
-    if (!id) {
-      return NextResponse.json({ error: "No ID provided" }, { status: 400 });
+    if (!id || id === "undefined" || id === "null") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Valid ID is required for deletion",
+        },
+        { status: 400 },
+      );
     }
 
     const result = await deleteHeroMedia(id);
 
     if (!result.success) {
-      throw new Error(result.error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: result.error || "Failed to delete media item",
+        },
+        { status: 400 },
+      );
     }
 
-    return {
-      success: true,
-      message: "Hero media deleted successfully",
-    };
-  });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Hero media deleted successfully",
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error(
+      "Error deleting hero media:",
+      error instanceof Error ? error.message : "Unknown error",
+    );
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Server error occurred while processing deletion request",
+      },
+      { status: 500 },
+    );
+  }
 }

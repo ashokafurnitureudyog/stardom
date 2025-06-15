@@ -30,7 +30,9 @@ export const HeroMediaCard = ({ item, onDelete }: HeroMediaCardProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Update this function in HeroMediaCard.tsx
   const handleDeleteClick = async () => {
+    console.log("Attempting to delete media with ID:", item.id);
     setIsDeleting(true);
     await onDelete(item.id);
     setIsDeleting(false);

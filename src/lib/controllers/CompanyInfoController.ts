@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { ID, Permission, Role } from "node-appwrite";
 import { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
@@ -82,11 +81,12 @@ export async function getCompanyInfo() {
       socialLinks,
       teamMembers,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to fetch company info:", error);
     return {
       success: false,
-      error: error.message || "Failed to fetch company info",
+      error:
+        error instanceof Error ? error.message : "Failed to fetch company info",
       companyInfo: null,
       socialLinks: [],
       teamMembers: [],
@@ -139,11 +139,14 @@ export async function updateCompanyInfo(data: CompanyInfo) {
       success: true,
       message: "Company info updated successfully",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to update company info:", error);
     return {
       success: false,
-      error: error.message || "Failed to update company info",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to update company info",
     };
   }
 }
@@ -209,11 +212,14 @@ export async function updateSocialLinks(
       success: true,
       message: "Social links updated successfully",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to update social links:", error);
     return {
       success: false,
-      error: error.message || "Failed to update social links",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to update social links",
     };
   }
 }
@@ -282,11 +288,14 @@ export async function updateTeamMembers(members: TeamMember[]) {
       success: true,
       message: "Team members updated successfully",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to update team members:", error);
     return {
       success: false,
-      error: error.message || "Failed to update team members",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to update team members",
     };
   }
 }
@@ -311,12 +320,12 @@ export async function uploadTeamImage(file: File) {
       url: imageUrl,
       message: "Image uploaded successfully",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to upload image:", error);
     return {
       success: false,
       url: null,
-      error: error.message || "Failed to upload image",
+      error: error instanceof Error ? error.message : "Failed to upload image",
     };
   }
 }
@@ -402,11 +411,14 @@ export async function deleteCompanyInfo() {
       success: true,
       message: "All company information deleted successfully",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to delete company info:", error);
     return {
       success: false,
-      error: error.message || "Failed to delete company information",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to delete company information",
     };
   }
 }

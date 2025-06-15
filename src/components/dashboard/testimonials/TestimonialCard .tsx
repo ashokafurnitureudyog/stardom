@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,24 +12,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Card } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-type TestimonialType = {
-  id?: string;
-  $id?: string;
-  name: string;
-  title: string;
-  location: string;
-  context: string;
-  purchaseDate: string;
-  quote: string;
-  img: string;
-};
+import type { ClientTestimonial } from "@/types/ComponentTypes";
 
 interface TestimonialCardProps {
-  testimonial: TestimonialType;
+  testimonial: ClientTestimonial;
   onDelete: (id: string, imageUrl: string) => Promise<void>;
   isLoading?: boolean;
 }
@@ -92,16 +79,17 @@ export const TestimonialCard = ({
           <div className="flex items-center gap-3">
             <div className="relative h-12 w-12 overflow-hidden rounded-full border border-[#3C3120] group-hover:border-[#A28B55] transition-colors duration-300 bg-black/20 shadow-[0_0_8px_rgba(0,0,0,0.3)]">
               {testimonial.img && !imgError ? (
-                <img
+                <Image
                   src={testimonial.img}
                   alt={testimonial.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.onerror = null;
-                    target.src = `https://avatar.iran.liara.run/public/${(testimonial.name.length % 100) + 1}`;
+                  fill
+                  unoptimized
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  onError={() => {
                     setImgError(true);
                   }}
+                  sizes="48px"
+                  // 48px because h-12 w-12 = 3rem = 48px
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#3C3120]/50 text-[#A28B55] text-lg font-medium">

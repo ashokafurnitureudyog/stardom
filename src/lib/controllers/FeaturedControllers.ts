@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 import { createAdminClient } from "@/lib/server/appwrite";
-import { Query } from "node-appwrite";
+import { AppwriteException, Query } from "node-appwrite";
 
 // Get a product by ID
 async function getProductById(productId: string) {
@@ -47,7 +46,10 @@ async function isProductFeatured(productId: string) {
     );
     return true;
   } catch (error) {
-    return false;
+    if (error instanceof AppwriteException && error.code === 404) {
+      return false;
+    }
+    throw error;
   }
 }
 

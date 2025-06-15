@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { ID, Permission, Role } from "node-appwrite";
 import { createAdminClient } from "@/lib/server/appwrite";
@@ -8,6 +6,14 @@ import { MediaItem } from "@/types/MediaTypes";
 const COLLECTION_ID = process.env.APPWRITE_HERO_MEDIA_COLLECTION_ID as string;
 const DATABASE_ID = process.env.APPWRITE_DATABASE_ID as string;
 const BUCKET_ID = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID as string;
+const MAX_FILE_SIZE_MB = 50; // 50MB max file size
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+];
+const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm"];
 
 interface HeroMediaResult {
   success: boolean;
@@ -16,42 +22,44 @@ interface HeroMediaResult {
   error?: string;
 }
 
-/**
- * Fetch all hero media items (for admin dashboard)
- */
+function mapToMediaItem(
+  doc: Record<string, unknown>,
+): MediaItem & { id?: string } {
+  return {
+    type: doc.type as "image" | "video",
+    src: doc.src as string,
+    alt: (doc.alt as string) || undefined,
+    poster: (doc.poster as string) || undefined,
+    preload: (doc.preload as boolean) || undefined,
+    webmSrc: (doc.webmSrc as string) || undefined,
+    lowResSrc: (doc.lowResSrc as string) || undefined,
+    id: doc.$id as string,
+  };
+}
+
 export async function getHeroMedia(): Promise<HeroMediaResult> {
   try {
     const { database } = await createAdminClient();
 
     const response = await database.listDocuments(DATABASE_ID, COLLECTION_ID);
 
-    const mediaItems = response.documents.map((doc) => ({
-      type: doc.type as "image" | "video",
-      src: doc.src,
-      alt: doc.alt || undefined,
-      poster: doc.poster || undefined,
-      preload: doc.preload || undefined,
-      webmSrc: doc.webmSrc || undefined,
-      lowResSrc: doc.lowResSrc || undefined,
-      id: doc.$id, // Adding ID for management operations
-    }));
+    const mediaItems = response.documents.map(mapToMediaItem);
 
     return {
       success: true,
       mediaItems,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching hero media:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch hero media";
     return {
       success: false,
-      error: error.message || "Failed to fetch hero media",
+      error: errorMessage,
     };
   }
 }
 
-/**
- * Add hero media via URL
- */
 export async function addHeroMediaUrl(
   media: Partial<MediaItem>,
 ): Promise<HeroMediaResult> {
@@ -62,6 +70,16 @@ export async function addHeroMediaUrl(
       return {
         success: false,
         error: "Media type and source are required",
+      };
+    }
+
+    // Basic URL validation
+    try {
+      new URL(media.src);
+    } catch {
+      return {
+        success: false,
+        error: "Invalid URL format",
       };
     }
 
@@ -82,35 +100,50 @@ export async function addHeroMediaUrl(
 
     return {
       success: true,
-      mediaItem: {
-        type: newMedia.type,
-        src: newMedia.src,
-        alt: newMedia.alt || undefined,
-        poster: newMedia.poster || undefined,
-        preload: newMedia.preload || undefined,
-        webmSrc: newMedia.webmSrc || undefined,
-        lowResSrc: newMedia.lowResSrc || undefined,
-        id: newMedia.$id,
-      },
+      mediaItem: mapToMediaItem(newMedia),
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error adding hero media via URL:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to add hero media";
     return {
       success: false,
-      error: error.message || "Failed to add hero media",
+      error: errorMessage,
     };
   }
 }
 
-/**
- * Upload and add hero media file
- */
+function validateFile(file: File, type: "image" | "video"): string | null {
+  // Check file size
+  if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+    return `File size exceeds maximum allowed size of ${MAX_FILE_SIZE_MB}MB`;
+  }
+
+  // Check file type
+  const allowedTypes =
+    type === "image" ? ALLOWED_IMAGE_TYPES : ALLOWED_VIDEO_TYPES;
+  if (!allowedTypes.includes(file.type)) {
+    return `File type not allowed. Supported types: ${allowedTypes.join(", ")}`;
+  }
+
+  return null;
+}
+
 export async function uploadHeroMedia(
   file: File,
   type: "image" | "video",
   alt?: string,
 ): Promise<HeroMediaResult> {
   try {
+    // Validate file
+    const validationError = validateFile(file, type);
+    if (validationError) {
+      return {
+        success: false,
+        error: validationError,
+      };
+    }
+
     const { database, storage } = await createAdminClient();
 
     // Generate a unique ID for the file
@@ -142,92 +175,104 @@ export async function uploadHeroMedia(
 
     return {
       success: true,
-      mediaItem: {
-        type: newMedia.type,
-        src: newMedia.src,
-        alt: newMedia.alt || undefined,
-        id: newMedia.$id,
-      },
+      mediaItem: mapToMediaItem(newMedia),
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error uploading hero media:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to upload hero media";
     return {
       success: false,
-      error: error.message || "Failed to upload hero media",
+      error: errorMessage,
     };
   }
 }
 
-/**
- * Delete hero media item
- */
 export async function deleteHeroMedia(id: string): Promise<HeroMediaResult> {
   try {
-    const { database, storage } = await createAdminClient();
-
-    // Get the media item to check if it's an uploaded file
-    const media = await database.getDocument(DATABASE_ID, COLLECTION_ID, id);
-
-    // If it's an uploaded file (not an external URL), delete from storage
-    if (
-      media.src &&
-      media.src.includes(`/storage/buckets/${BUCKET_ID}/files/`)
-    ) {
-      // Extract file ID from URL
-      const fileId = media.src.split("/files/")[1]?.split("/view")[0];
-
-      if (fileId) {
-        try {
-          await storage.deleteFile(BUCKET_ID, fileId);
-        } catch (e) {
-          console.warn("File not found in storage, continuing deletion");
-        }
-      }
+    if (!id || id === "undefined") {
+      return {
+        success: false,
+        error: "Valid media ID is required for deletion",
+      };
     }
 
-    // Delete document
-    await database.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+    const { database, storage } = await createAdminClient();
 
-    return {
-      success: true,
-    };
-  } catch (error: any) {
-    console.error("Error deleting hero media:", error);
+    try {
+      // Get the media item to check if it's an uploaded file
+      const media = await database.getDocument(DATABASE_ID, COLLECTION_ID, id);
+
+      // If it's an uploaded file (not an external URL), delete from storage
+      if (
+        media.src &&
+        media.src.includes(`/storage/buckets/${BUCKET_ID}/files/`)
+      ) {
+        // Extract file ID from URL
+        const fileId = media.src.split("/files/")[1]?.split("/view")[0];
+
+        if (fileId) {
+          try {
+            await storage.deleteFile(BUCKET_ID, fileId);
+          } catch (storageError) {
+            console.warn(
+              `File not found in storage (fileId: ${fileId}): ${
+                storageError instanceof Error
+                  ? storageError.message
+                  : "Unknown error"
+              }`,
+            );
+          }
+        }
+      }
+
+      // Delete document
+      await database.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+
+      return {
+        success: true,
+      };
+    } catch (docError) {
+      const errorMessage =
+        docError instanceof Error ? docError.message : "Unknown error occurred";
+
+      return {
+        success: false,
+        error: `Could not find or delete media item with ID: ${id}. Reason: ${errorMessage}`,
+      };
+    }
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to delete hero media";
     return {
       success: false,
-      error: error.message || "Failed to delete hero media",
+      error: errorMessage,
     };
   }
 }
 
-/**
- * Public API to get hero media (without login)
- */
 export async function getPublicHeroMedia(): Promise<HeroMediaResult> {
   try {
     const { database } = await createAdminClient();
 
     const response = await database.listDocuments(DATABASE_ID, COLLECTION_ID);
 
-    const mediaItems = response.documents.map((doc) => ({
-      type: doc.type as "image" | "video",
-      src: doc.src,
-      alt: doc.alt || undefined,
-      poster: doc.poster || undefined,
-      preload: doc.preload || undefined,
-      webmSrc: doc.webmSrc || undefined,
-      lowResSrc: doc.lowResSrc || undefined,
-    }));
+    const mediaItems = response.documents.map((doc) => {
+      const item = mapToMediaItem(doc);
+      return item;
+    });
 
     return {
       success: true,
       mediaItems,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching public hero media:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch hero media";
     return {
       success: false,
-      error: error.message || "Failed to fetch hero media",
+      error: errorMessage,
     };
   }
 }

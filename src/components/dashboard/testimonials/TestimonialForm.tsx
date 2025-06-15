@@ -1,7 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +16,11 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  TESTIMONIAL_MONTHS,
+  TESTIMONIAL_AVATAR_NUMBERS,
+  MAX_TESTIMONIAL_IMAGE_URL_LENGTH,
+} from "@/lib/constants/TestimonialConstants";
 
 interface TestimonialFormProps {
   onSuccess: () => void;
@@ -29,7 +33,9 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
   const [imageUrlError, setImageUrlError] = useState<string>("");
   const [imageTab, setImageTab] = useState<string>("avatar");
   const [username, setUsername] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState<string>("January");
+  const [selectedMonth, setSelectedMonth] = useState<string>(
+    TESTIMONIAL_MONTHS[0],
+  );
   const [selectedYear, setSelectedYear] = useState<string>(
     new Date().getFullYear().toString(),
   );
@@ -37,17 +43,15 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
   const [showMonths, setShowMonths] = useState(false);
   const [yearError, setYearError] = useState("");
 
-  const MAX_URL_LENGTH = 1000;
   const avatarsContainerRef = useRef<HTMLDivElement>(null);
 
   const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setImageUrl(value);
 
-    // Validate URL length
-    if (value.length > MAX_URL_LENGTH) {
+    if (value.length > MAX_TESTIMONIAL_IMAGE_URL_LENGTH) {
       setImageUrlError(
-        `URL must be less than ${MAX_URL_LENGTH} characters (currently ${value.length}).`,
+        `URL must be less than ${MAX_TESTIMONIAL_IMAGE_URL_LENGTH} characters (currently ${value.length}).`,
       );
     } else {
       setImageUrlError("");
@@ -80,42 +84,15 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
     }
   };
 
-  // Months array
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  // Generate avatar numbers 1 to 100
-  const avatarNumbers = Array.from({ length: 100 }, (_, i) => i + 1);
-
-  const getAvatarUrl = (avatarNumber: number): string => {
-    // Generate a simple, clean URL string with no special encoding
-    return `https://avatar.iran.liara.run/public/${avatarNumber}`;
-  };
+  const getAvatarUrl = (avatarNumber: number): string =>
+    `https://avatar.iran.liara.run/public/${avatarNumber}`;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (yearError) {
-      return;
-    }
-
+    if (yearError) return;
     setError("");
 
-    // Prepare the image URL based on the selected tab
     let finalImageUrl = "";
-
     if (imageTab === "url") {
       finalImageUrl = imageUrl.trim();
       if (!finalImageUrl) {
@@ -126,9 +103,9 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
       finalImageUrl = getAvatarUrl(selectedAvatar);
     }
 
-    if (finalImageUrl.length > MAX_URL_LENGTH) {
+    if (finalImageUrl.length > MAX_TESTIMONIAL_IMAGE_URL_LENGTH) {
       setError(
-        `Image URL exceeds maximum allowed length of ${MAX_URL_LENGTH} characters.`,
+        `Image URL exceeds maximum allowed length of ${MAX_TESTIMONIAL_IMAGE_URL_LENGTH} characters.`,
       );
       return;
     }
@@ -137,14 +114,11 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
 
     try {
       const formData = new FormData(e.currentTarget);
-
-      // Format the date
       const purchaseDate = `${selectedMonth} ${selectedYear}`;
       formData.set("purchaseDate", purchaseDate);
-
-      formData.set("img", finalImageUrl); // This is the one it ultimately uses
-      formData.set("imageUrl", finalImageUrl); // This is what it checks in the middle
-      formData.set("imageSource", imageTab); // This tells it which tab was selected
+      formData.set("img", finalImageUrl);
+      formData.set("imageUrl", finalImageUrl);
+      formData.set("imageSource", imageTab);
 
       const response = await fetch("/api/protected/testimonials", {
         method: "POST",
@@ -158,9 +132,11 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
       }
 
       onSuccess();
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       console.error("Failed to submit testimonial:", error);
-      setError(error.message || "An unexpected error occurred");
+      setError(
+        error instanceof Error ? error.message : "An unexpected error occurred",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -255,7 +231,7 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
                 {showMonths && (
                   <div className="absolute z-50 mt-1 w-full bg-[#171410] border border-[#3C3120] rounded-md shadow-lg p-2">
                     <div className="grid grid-cols-4 gap-1">
-                      {months.map((month) => (
+                      {TESTIMONIAL_MONTHS.map((month) => (
                         <div
                           key={month}
                           onClick={() => {
@@ -351,12 +327,8 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
               <div
                 ref={avatarsContainerRef}
                 className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-40 overflow-y-auto py-2 px-1 border border-[#3C3120] rounded-md"
-                style={{
-                  scrollbarWidth: "thin",
-                  scrollbarColor: "#3C3120 transparent",
-                }}
               >
-                {avatarNumbers.map((num) => (
+                {TESTIMONIAL_AVATAR_NUMBERS.map((num) => (
                   <div
                     key={num}
                     onClick={() => setSelectedAvatar(num)}
@@ -368,15 +340,13 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
                     )}
                   >
                     <div className="aspect-square w-full relative overflow-hidden rounded-full">
-                      <img
+                      <Image
                         src={getAvatarUrl(num)}
                         alt={`Avatar ${num}`}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.onerror = null;
-                          target.src = "https://avatar.iran.liara.run/public";
-                        }}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                        sizes="100vw"
                       />
                     </div>
                   </div>
@@ -412,16 +382,13 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
                 {imageUrl && !imageUrlError && (
                   <div className="mt-4 border border-[#3C3120] rounded-md p-4 bg-neutral-950/30">
                     <div className="relative aspect-square w-16 h-16 rounded-full overflow-hidden mx-auto">
-                      <img
+                      <Image
                         src={imageUrl}
                         alt="Preview"
+                        fill
+                        unoptimized
                         className="object-cover w-full h-full"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.onerror = null;
-                          target.src =
-                            "https://via.placeholder.com/150?text=Error";
-                        }}
+                        sizes="64px"
                       />
                     </div>
                   </div>
@@ -460,25 +427,6 @@ export const TestimonialForm = ({ onSuccess }: TestimonialFormProps) => {
           )}
         </Button>
       </div>
-
-      <style jsx global>{`
-        ::-webkit-scrollbar {
-          width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-          background-color: #3c3120;
-          border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-          background-color: #a28b55;
-        }
-      `}</style>
     </form>
   );
 };

@@ -30,6 +30,12 @@ export const HeroFilesSection = () => {
 
       const result = await res.json();
 
+      // Add these debug logs
+      console.log("Hero media API response:", result);
+      if (result.mediaItems && result.mediaItems.length > 0) {
+        console.log("First item:", result.mediaItems[0]);
+      }
+
       if (!result.success) {
         throw new Error(result.error || "Failed to fetch hero media");
       }
@@ -53,13 +59,22 @@ export const HeroFilesSection = () => {
     try {
       setLoading(true);
 
-      const response = await fetch(`/api/protected/hero-media?id=${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      if (!id || id === "undefined" || id === "null") {
+        throw new Error("Invalid media ID");
+      }
 
-      if (!response.ok) {
-        throw new Error("Failed to delete media item");
+      const response = await fetch(
+        `/api/protected/hero-media?id=${encodeURIComponent(id)}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to delete media item");
       }
 
       toast({
