@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,25 @@ export function ImagesSection({
   setNewImageUrl,
   handleAddImageUrl,
 }: ImagesSectionProps) {
+  // This will ensure we have URLs for all files immediately for rendering
+  // Using useMemo to only recalculate when files change
+  const fileUrls = useMemo(() => {
+    // Create a mapping of files to their Object URLs
+    return files.map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+    }));
+  }, [files]);
+
+  // Clean up object URLs when component unmounts or files change
+  useEffect(() => {
+    return () => {
+      fileUrls.forEach(({ url }) => {
+        URL.revokeObjectURL(url);
+      });
+    };
+  }, [fileUrls]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log("File input change detected");
     const fileList = e.target.files;
@@ -89,17 +109,17 @@ export function ImagesSection({
             </label>
           </div>
 
-          {files.length > 0 && (
+          {files.length > 0 && fileUrls.length > 0 && (
             <div className="mt-6">
               <h4 className="text-sm font-medium mb-3">
                 Selected Files ({files.length})
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {Array.from(files).map((file, index) => (
+                {fileUrls.map(({ file, url }, index) => (
                   <div key={index} className="group relative">
                     <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
                       <Image
-                        src={URL.createObjectURL(file)}
+                        src={url}
                         alt={file.name}
                         fill
                         className="object-cover"
@@ -110,9 +130,9 @@ export function ImagesSection({
                       variant="destructive"
                       size="icon"
                       className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                      onClick={() =>
-                        setFiles(files.filter((_, i) => i !== index))
-                      }
+                      onClick={() => {
+                        setFiles(files.filter((_, i) => i !== index));
+                      }}
                     >
                       <X size={12} />
                     </Button>

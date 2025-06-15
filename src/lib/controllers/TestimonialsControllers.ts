@@ -1,9 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { createAdminClient } from "@/lib/server/appwrite";
 import { ID } from "node-appwrite";
 
-export async function getTestimonials() {
+interface TestimonialResponse {
+  success: boolean;
+  data?: unknown;
+  error?: string;
+}
+
+export async function getTestimonials(): Promise<TestimonialResponse> {
   try {
     const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
@@ -11,14 +16,18 @@ export async function getTestimonials() {
 
     const response = await database.listDocuments(databaseId, collectionId);
     return { success: true, data: response.documents };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Failed to fetch testimonials:", error);
-    return { success: false, error: "Failed to fetch testimonials" };
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch testimonials";
+    return { success: false, error: errorMessage };
   }
 }
 
 // Modify just this function in the controller file
-export async function createTestimonial(formData: FormData) {
+export async function createTestimonial(
+  formData: FormData,
+): Promise<TestimonialResponse> {
   try {
     const { database } = await createAdminClient();
 
@@ -58,16 +67,17 @@ export async function createTestimonial(formData: FormData) {
     );
 
     return { success: true, data: testimonial };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to create testimonial:", error);
-    return {
-      success: false,
-      error: error.message || "Failed to create testimonial",
-    };
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to create testimonial";
+    return { success: false, error: errorMessage };
   }
 }
 
-export async function deleteTestimonial(testimonialId: string) {
+export async function deleteTestimonial(
+  testimonialId: string,
+): Promise<TestimonialResponse> {
   try {
     const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
@@ -81,11 +91,10 @@ export async function deleteTestimonial(testimonialId: string) {
     await database.deleteDocument(databaseId, collectionId, testimonialId);
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to delete testimonial:", error);
-    return {
-      success: false,
-      error: error.message || "Failed to delete testimonial",
-    };
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to delete testimonial";
+    return { success: false, error: errorMessage };
   }
 }

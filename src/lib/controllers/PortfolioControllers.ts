@@ -1,9 +1,60 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { ID, Permission, Role } from "node-appwrite";
 import { createAdminClient } from "@/lib/server/appwrite";
+import { PortfolioProject } from "@/types/ComponentTypes";
 
-export async function getPortfolioProjects() {
+// Define interface for portfolio responses
+interface PortfolioResponse {
+  success: boolean;
+  data?: PortfolioProject | PortfolioProject[] | Record<string, unknown>;
+  error?: string;
+}
+
+// Define interface for database document response
+interface PortfolioDocument {
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  $permissions: string[];
+  $databaseId: string;
+  $collectionId: string;
+  title: string;
+  tags: string[];
+  thumbnail: string;
+  description: string;
+  challenge: string;
+  solution: string;
+  impact: string;
+  testimonial_quote: string;
+  testimonial_author: string;
+  testimonial_position: string;
+  gallery: string[];
+  [key: string]: unknown;
+}
+
+/**
+ * Maps database document to PortfolioProject type
+ */
+function mapToPortfolioProject(doc: PortfolioDocument): PortfolioProject {
+  return {
+    id: doc.$id,
+    title: doc.title,
+    tags: doc.tags,
+    thumbnail: doc.thumbnail,
+    description: doc.description,
+    challenge: doc.challenge,
+    solution: doc.solution,
+    impact: doc.impact,
+    testimonial: {
+      quote: doc.testimonial_quote || "",
+      author: doc.testimonial_author || "",
+      position: doc.testimonial_position || "",
+    },
+    gallery: doc.gallery,
+  };
+}
+
+export async function getPortfolioProjects(): Promise<PortfolioResponse> {
   try {
     const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
@@ -11,28 +62,42 @@ export async function getPortfolioProjects() {
 
     const response = await database.listDocuments(databaseId, collectionId);
 
-    // Transform the documents to include the testimonial object structure
-    const transformedProjects = response.documents.map((doc) => ({
-      ...doc,
-      testimonial: {
-        quote: doc.testimonial_quote || "",
-        author: doc.testimonial_author || "",
-        position: doc.testimonial_position || "",
-      },
-    }));
+    // Map the documents to our PortfolioProject type
+    const projects = response.documents.map((doc) =>
+      mapToPortfolioProject(doc as PortfolioDocument),
+    );
 
-    return { success: true, data: transformedProjects };
-  } catch (error) {
+    return { success: true, data: projects };
+  } catch (error: unknown) {
     console.error("Failed to fetch portfolio projects:", error);
-    return { success: false, error: "Failed to fetch portfolio projects" };
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to fetch portfolio projects";
+    return { success: false, error: errorMessage };
   }
 }
 
+// Project data input interface - what's accepted by the function
+interface ProjectInput {
+  title: string;
+  tags: string[];
+  thumbnail?: string;
+  description: string;
+  challenge: string;
+  solution: string;
+  impact: string;
+  testimonial_quote?: string;
+  testimonial_author?: string;
+  testimonial_position?: string;
+  gallery: string[];
+}
+
 export async function createPortfolioProject(
-  projectData: any,
+  projectData: ProjectInput,
   files?: File[],
   thumbnailFile?: File,
-) {
+): Promise<PortfolioResponse> {
   try {
     const { database, storage } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
@@ -49,12 +114,15 @@ export async function createPortfolioProject(
         ]);
 
         thumbnail = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
-      } catch (error) {
-        console.error("Thumbnail upload error:", error);
+      } catch (uploadError: unknown) {
+        console.error(
+          "Thumbnail upload error:",
+          uploadError instanceof Error ? uploadError.message : "Unknown error",
+        );
       }
     }
 
-    const uploadedUrls = [];
+    const uploadedUrls: string[] = [];
     if (files && files.length > 0) {
       for (const file of files) {
         try {
@@ -65,15 +133,18 @@ export async function createPortfolioProject(
           uploadedUrls.push(
             `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`,
           );
-        } catch (error) {
-          console.error("Gallery file upload error:", error);
+        } catch (fileError: unknown) {
+          console.error(
+            "Gallery file upload error:",
+            fileError instanceof Error ? fileError.message : "Unknown error",
+          );
         }
       }
     }
 
     const gallery = [...projectData.gallery, ...uploadedUrls];
 
-    const project = await database.createDocument(
+    const dbDocument = await database.createDocument(
       databaseId,
       collectionId,
       ID.unique(),
@@ -85,36 +156,33 @@ export async function createPortfolioProject(
         challenge: projectData.challenge,
         solution: projectData.solution,
         impact: projectData.impact,
-        testimonial_quote: projectData.testimonial_quote,
-        testimonial_author: projectData.testimonial_author,
-        testimonial_position: projectData.testimonial_position,
+        testimonial_quote: projectData.testimonial_quote || "",
+        testimonial_author: projectData.testimonial_author || "",
+        testimonial_position: projectData.testimonial_position || "",
         gallery: gallery,
       },
     );
 
-    const responseProject = {
-      ...project,
-      testimonial: {
-        quote: project.testimonial_quote || "",
-        author: project.testimonial_author || "",
-        position: project.testimonial_position || "",
-      },
-    };
+    // Map to our PortfolioProject type
+    const project = mapToPortfolioProject(
+      dbDocument as unknown as PortfolioDocument,
+    );
 
-    return { success: true, data: responseProject };
-  } catch (error: any) {
+    return { success: true, data: project };
+  } catch (error: unknown) {
     console.error("Failed to create portfolio project:", error);
-    return {
-      success: false,
-      error: error.message || "Failed to create portfolio project",
-    };
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to create portfolio project";
+    return { success: false, error: errorMessage };
   }
 }
 
 export async function deletePortfolioProject(
   projectId: string,
   imageUrls: string[] = [],
-) {
+): Promise<PortfolioResponse> {
   try {
     const { database, storage } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
@@ -132,8 +200,13 @@ export async function deletePortfolioProject(
               await storage.deleteFile(bucketId, fileId);
             }
           }
-        } catch (error) {
-          console.error("Failed to delete image from storage:", error);
+        } catch (deleteError: unknown) {
+          console.error(
+            "Failed to delete image from storage:",
+            deleteError instanceof Error
+              ? deleteError.message
+              : "Unknown error",
+          );
           // Continue with other deletions even if one fails
         }
       }
@@ -143,11 +216,12 @@ export async function deletePortfolioProject(
     await database.deleteDocument(databaseId, collectionId, projectId);
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to delete portfolio project:", error);
-    return {
-      success: false,
-      error: error.message || "Failed to delete portfolio project",
-    };
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Failed to delete portfolio project";
+    return { success: false, error: errorMessage };
   }
 }
