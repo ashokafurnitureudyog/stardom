@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { getCompanyInfo } from "@/lib/controllers/CompanyInfoController";
 import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import { RiTwitterXFill } from "@remixicon/react";
 
 // Map platform names to icons
-const platformIcons: Record<string, any> = {
+const platformIcons: Record<string, React.ComponentType> = {
   facebook: Facebook,
   instagram: Instagram,
   linkedin: Linkedin,
@@ -34,8 +33,10 @@ export async function GET() {
       socialLinks: socialLinksWithIcons,
       teamMembers: result.teamMembers,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching company info:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
