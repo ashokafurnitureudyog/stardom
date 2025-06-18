@@ -18,7 +18,15 @@ export const productService = {
   // Get unique collections from products
   getCollections: async (): Promise<string[]> => {
     const products = await productService.getProducts();
-    return [...new Set(products.map((p) => p.collection))];
+    return [
+      ...new Set(
+        products
+          .map((p) => p.product_collection)
+          .filter(
+            (collection): collection is string => collection !== undefined,
+          ),
+      ),
+    ];
   },
 
   getProductById: async (id: string): Promise<Product | undefined> => {
@@ -67,7 +75,7 @@ export const productService = {
     const filtered = products.filter((product) => {
       const categoryMatch = category === "all" || product.category === category;
       const collectionMatch =
-        collection === "all" || product.collection === collection;
+        collection === "all" || product.product_collection === collection;
 
       // Search query matching
       const searchMatch =
@@ -75,7 +83,9 @@ export const productService = {
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.collection.toLowerCase().includes(searchQuery.toLowerCase());
+        product.product_collection
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
 
       return categoryMatch && collectionMatch && searchMatch;
     });

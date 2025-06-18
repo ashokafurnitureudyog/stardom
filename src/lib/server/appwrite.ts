@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
-import { Client, Account, ID, Databases } from "node-appwrite";
+import { Client, Account, ID, Databases, Storage } from "node-appwrite";
 import { cookies } from "next/headers";
 
 export async function createSessionClient() {
@@ -19,6 +19,12 @@ export async function createSessionClient() {
     get account() {
       return new Account(client);
     },
+    get database() {
+      return new Databases(client);
+    },
+    get storage() {
+      return new Storage(client);
+    },
   };
 }
 
@@ -32,6 +38,12 @@ export async function createAdminClient() {
     get account() {
       return new Account(client);
     },
+    get database() {
+      return new Databases(client);
+    },
+    get storage() {
+      return new Storage(client);
+    },
   };
 }
 
@@ -40,6 +52,7 @@ export async function getLoggedInUser() {
     const { account } = await createSessionClient();
     const user = await account.get();
     return {
+      $id: user.$id,
       name: user.name,
       email: user.email,
       $createdAt: user.$createdAt,

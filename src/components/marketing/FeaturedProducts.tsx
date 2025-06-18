@@ -80,7 +80,7 @@ export function FeaturedProducts() {
       Icon,
       name: product.name,
       description: shortDescription,
-      detail: product.collection, // Show collection as detail
+      detail: product.product_collection, // Show collection as detail
       href: `/products/${product.id}`,
       cta: "View Details",
       className,
