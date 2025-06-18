@@ -70,3 +70,48 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: slide-in 0.3s ease-out forwards;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111111;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3c3120;
+  border-radius: 4px;
+  border: 2px solid #111111;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a28b55;
+}
+
+/* Firefox */
+* {
+  scrollbar-color: #3c3120 #111111;
+  scrollbar-width: thin;
+}
+
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}
