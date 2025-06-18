@@ -38,23 +38,6 @@ const facilitiesData: FacilityData[] = [
     ),
   },
   {
-    category: "Storage",
-    title: "Climate-Controlled Warehousing",
-    src: "https://images.unsplash.com/photo-1565610222536-ef125c59da2e",
-    highlight: "50,000 sq. ft. of optimized storage space.",
-    description:
-      "Temperature and humidity-controlled environment ensures materials and finished products maintain their quality. Advanced inventory management system tracks every item in real-time.",
-    content: (
-      <FacilityContent
-        facility={{
-          highlight: "Perfect preservation, efficient logistics.",
-          description:
-            "Our warehousing facility maintains optimal conditions for wood, fabrics, and finished products. The automated inventory system enables quick access and efficient distribution.",
-        }}
-      />
-    ),
-  },
-  {
     category: "Craftsmanship",
     title: "Specialized Workshop Units",
     src: "/images/Workshop/workshop-1.jpg",

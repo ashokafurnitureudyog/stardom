@@ -24,7 +24,7 @@ interface MapSectionProps {
 }
 
 // Default coordinates (fallback)
-const DEFAULT_COORDINATES: Coordinates = [30.7046, 76.8014];
+const DEFAULT_COORDINATES: Coordinates = [30.6960369, 76.7828628];
 const DEFAULT_ZOOM = 16;
 
 const DefaultIcon = L.icon({

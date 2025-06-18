@@ -11,7 +11,7 @@ const PortfolioSection = () => {
       title: "Chitkara Group",
       description: "Complete office furniture and ergonomic solutions",
       image:
-        "https://media.licdn.com/dms/image/v2/C4D0BAQFhoSxToxhXuQ/company-logo_200_200/company-logo_200_200/0/1659503334979?e=1745452800&v=beta&t=BhuUJ_GfsSRu8I2AhU7AGGToOGAbP4NF0L7-00LnA_Q",
+        "https://logowik.com/content/uploads/images/chitkara-university9168.jpg",
     },
     {
       title: "Chandigarh University",
