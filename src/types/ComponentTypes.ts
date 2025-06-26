@@ -95,6 +95,13 @@ export interface FormData {
   subject: string;
   message: string;
 }
+export interface User {
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  name: string;
+  email: string;
+}
 export interface PortfolioProject {
   id: string; // mismatch with the returns
   title: string;
