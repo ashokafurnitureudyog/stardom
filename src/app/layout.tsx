@@ -370,13 +370,15 @@ const organizationSchema = {
       areaServed: "IN",
     },
   ],
-  // sameAs: [
-  //   "https://www.facebook.com/stardomfurniture",
-  //   "https://www.instagram.com/stardomfurniture",
-  //   "https://www.linkedin.com/company/stardom-furniture",
-  //   "https://twitter.com/StardomFurniture",
-  //   "https://www.youtube.com/c/StardomFurniture"
-  // ],
+  sameAs: [
+    "https://www.google.com/maps/place/Ashoka+Furniture+Udyog/@30.6960369,76.7828628,17z/data=!3m1!4b1!4m6!3m5!1s0x390feda785d2ec5f:0xae4e2ecf7db5390c!8m2!3d30.6960369!4d76.7854377!16s%2Fg%2F1thnm4_5?entry=tts&g_ep=EgoyMDI1MDYyOS4wIPu8ASoASAFQAw%3D%3D&skid=c96c94f7-6be5-4b12-8571-4ee02dbfb934",
+    "https://maps.app.goo.gl/n7AmiaKCTun3gRRd8",
+    "https://www.justdial.com/Chandigarh/Ashok-Furniture-Udyog-Industrial-Area/0172PX172-X172-200111222950-E2K3_BZDET",
+    "https://www.indiamart.com/ashoka-furniture-udyog/",
+    "https://www.tradeindia.com/ashoka-furniture-udyog-4025983/",
+    "https://www.instagram.com/stardomfurniture/",
+    "https://www.facebook.com/uniquefurniture304/",
+  ],
   hasOfferCatalog: {
     "@type": "OfferCatalog",
     name: "Stardom Office Furniture Catalog by Ashoka Furniture Udyog",
