@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
+import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import {
   BackgroundMediaProps,
   PortfolioHeroProps,
 } from "@/types/ComponentTypes";
 import AnimatedText from "../shared/HeroAnimatedText";
+import { useCompanyData } from "@/hooks/useCompanyData";
 
 const BackgroundMedia = ({ item, isActive }: BackgroundMediaProps) => {
   const className = `absolute inset-0 w-full h-full transition-all duration-1000 ${
@@ -59,6 +60,10 @@ export const PortfolioHero = ({
   transitionDuration = 1000,
   overlayOpacity = 70,
 }: PortfolioHeroProps) => {
+  const { companyInfo } = useCompanyData();
+  const established =
+    companyInfo?.established || fallbackCompanyInfo.established;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -112,7 +117,7 @@ export const PortfolioHero = ({
         <div className="text-center lg:text-left">
           <AnimatedText className="mb-4" delay={0}>
             <span className="text-primary font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary/30 rounded px-4 py-2">
-              Since {BasicCompanyInfo.established}
+              Since {established}
             </span>
           </AnimatedText>
 

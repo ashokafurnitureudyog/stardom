@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { mockProducts } from "@/lib/constants/Products";
+import { createAdminClient } from "@/lib/server/appwrite";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://stardom.co.in";
@@ -24,20 +24,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1 : 0.8,
   }));
 
-  // Get products data
-  // For static rendering at build time with mock data:
-  const products = mockProducts;
+  // Get products data directly from database
+  let productRoutes: MetadataRoute.Sitemap = [];
 
-  // For dynamic data in production, you would use:
-  // const products = await productService.getProducts();
+  try {
+    // Access database directly - this avoids the API call during build
+    const { database } = await createAdminClient();
+    const databaseId = process.env.APPWRITE_DATABASE_ID!;
+    const collectionId = process.env.APPWRITE_PRODUCTS_COLLECTION_ID!;
 
-  // Add dynamic product routes
-  const productRoutes = products.map((product) => ({
-    url: `${baseUrl}/products/${product.id}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.7, // Slightly lower priority than main pages
-  }));
+    const response = await database.listDocuments(databaseId, collectionId);
+
+    // Add dynamic product routes
+    productRoutes = response.documents.map((doc) => ({
+      url: `${baseUrl}/products/${doc.$id}`,
+      lastModified: new Date(doc.$updatedAt || doc.$createdAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.7, // Slightly lower priority than main pages
+    }));
+  } catch (error) {
+    console.error("Error generating product sitemap routes:", error);
+    // Continue with empty productRoutes array if there's an error
+  }
 
   return [...routes, ...productRoutes];
 }

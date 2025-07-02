@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "next-view-transitions";
-import { Product } from "@/types/ComponentTypes";
-import { productService } from "@/lib/mock/mockAPI";
+import { useProducts } from "@/hooks/useProducts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Define better icons matching your actual product categories
 const categoryIcons: Record<string, LucideIcon> = {
@@ -39,24 +39,33 @@ const getIconForCategory = (category: string) => {
   return categoryIcons[category.toLowerCase()] || LampDeskIcon;
 };
 
+// Skeleton loader component for bento cards
+const BentoCardSkeleton = ({ className }: { className: string }) => (
+  <div
+    className={`${className} group overflow-hidden border border-neutral-200 shadow-lg bg-background relative rounded-xl`}
+  >
+    <div className="absolute inset-0">
+      <Skeleton className="w-full h-full" />
+    </div>
+    <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-between">
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-8 rounded-md" /> {/* Icon */}
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-3/4" /> {/* Title */}
+          <Skeleton className="h-4 w-full" /> {/* Description line 1 */}
+          <Skeleton className="h-4 w-2/3" /> {/* Description line 2 */}
+        </div>
+      </div>
+      <div className="pt-4 mt-4">
+        <Skeleton className="h-5 w-24" /> {/* Detail text */}
+      </div>
+    </div>
+  </div>
+);
+
 export function FeaturedProducts() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const products = await productService.getFeaturedProducts();
-        setFeaturedProducts(products);
-      } catch (error) {
-        console.error("Error fetching featured products:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, []);
+  // Use the hook to get featured products
+  const { featuredProducts, isFeaturedLoading } = useProducts();
 
   // Transform product data into bento grid format
   const bentoCells = featuredProducts.map((product, index) => {
@@ -87,12 +96,16 @@ export function FeaturedProducts() {
       background: (
         <div className="absolute inset-0 w-full h-full">
           <img
-            src={product.images[0]}
+            src={
+              product.images && product.images.length > 0
+                ? product.images[0]
+                : `https://placehold.co/600x400?text=${encodeURIComponent(product.name)}`
+            }
             alt={product.name}
             className="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
           />
           {/* Darker overlay for better text contrast */}
-          <div className="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/50 transition-all duration-500" />
+          <div className="absolute inset-0 dark:bg-neutral-900/60 dark:group-hover:bg-neutral-900/50 transition-all duration-500" />
         </div>
       ),
     };
@@ -178,6 +191,14 @@ export function FeaturedProducts() {
     },
   ];
 
+  // Define skeleton layout matching the actual content
+  const skeletonLayout = [
+    { className: "col-span-3 lg:col-span-2" },
+    { className: "col-span-3 lg:col-span-1" },
+    { className: "col-span-3 lg:col-span-1" },
+    { className: "col-span-3 lg:col-span-2" },
+  ];
+
   // Use the fetched products if available, otherwise use fallback data
   const features = bentoCells.length > 0 ? bentoCells : fallbackFeatures;
 
@@ -209,12 +230,12 @@ export function FeaturedProducts() {
           </div>
         </motion.div>
 
-        {loading ? (
-          <div className="w-full flex justify-center items-center py-12">
-            <div className="animate-pulse text-primary">
-              Loading featured products...
-            </div>
-          </div>
+        {isFeaturedLoading ? (
+          <BentoGrid className="max-w-7xl mx-auto">
+            {skeletonLayout.map((item, idx) => (
+              <BentoCardSkeleton key={idx} className={item.className} />
+            ))}
+          </BentoGrid>
         ) : (
           <BentoGrid className="max-w-7xl mx-auto">
             {features.map((feature, idx) => (

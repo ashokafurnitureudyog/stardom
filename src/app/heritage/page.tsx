@@ -1,3 +1,4 @@
+"use client";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
@@ -14,7 +15,8 @@ import {
   TypingAnimation,
 } from "@/components/ui/terminal";
 import { Timeline } from "@/components/ui/timeline";
-import { teamMembers } from "@/lib/constants/CompanyInfo";
+import { useCompanyData } from "@/hooks/useCompanyData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 //Will not shift to constants as it integrates react components
 const timelineData = [
@@ -216,6 +218,9 @@ const timelineData = [
 ];
 
 const HeritagePage: React.FC = () => {
+  // Fetch company data using our hook
+  const { teamMembers, isLoading } = useCompanyData();
+
   return (
     <BaseLayout className="overflow-x-hidden lg:overflow-auto">
       <div className="min-h-screen bg-background font-sans">
@@ -257,7 +262,15 @@ const HeritagePage: React.FC = () => {
           <SectionTitle>
             Our <span className="font-serif italic text-primary">Team</span>
           </SectionTitle>
-          <TeamSection members={teamMembers} />
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-[400px] w-full rounded-lg" />
+              ))}
+            </div>
+          ) : (
+            <TeamSection members={teamMembers || []} />
+          )}
         </Section>
       </div>
     </BaseLayout>
