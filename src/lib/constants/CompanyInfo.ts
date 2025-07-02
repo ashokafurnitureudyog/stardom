@@ -23,9 +23,9 @@ export const BasicCompanyInfo: CompanyInfo = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { icon: Facebook, url: "https://facebook.com/stardom" },
-  { icon: Instagram, url: "https://instagram.com/stardom" },
-  { icon: Linkedin, url: "https://linkedin.com/company/stardom" },
+  { icon: Facebook, url: "https://facebook.com" },
+  { icon: Instagram, url: "https://instagram.com" },
+  { icon: Linkedin, url: "https://linkedin.com/company" },
 ];
 
 export const teamMembers: TeamMember[] = [

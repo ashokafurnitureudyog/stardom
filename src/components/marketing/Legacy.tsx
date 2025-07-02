@@ -5,8 +5,9 @@ import NumberTicker from "../ui/number-ticker";
 import { motion } from "framer-motion";
 import { StatisticProps } from "@/types/ComponentTypes";
 import { ArrowRightIcon } from "lucide-react";
-import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
+import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import { Link } from "next-view-transitions";
+import { useCompanyData } from "@/hooks/useCompanyData";
 
 const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
   <motion.div whileHover={{ scale: 1.02 }} className="relative group">
@@ -43,6 +44,10 @@ const ImagePanel: React.FC<{ src: string; index: number }> = ({
 );
 
 const LegacySection: React.FC = () => {
+  const { companyInfo } = useCompanyData();
+  const established =
+    companyInfo?.established || fallbackCompanyInfo.established;
+
   const images: string[] = [
     "https://images.unsplash.com/photo-1728633826211-4e04854e344e",
     "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
@@ -77,9 +82,7 @@ const LegacySection: React.FC = () => {
                   Elegance
                 </span>
                 <div className="text-4xl lg:text-5xl mt-4 flex items-center gap-4">
-                  <span className="font-light">
-                    Since {BasicCompanyInfo.established}
-                  </span>
+                  <span className="font-light">Since {established}</span>
                 </div>
               </h2>
 

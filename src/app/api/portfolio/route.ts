@@ -12,6 +12,7 @@ export async function GET() {
     // Transform the documents to include the testimonial object
     const transformedProjects = response.documents.map((doc) => ({
       ...doc,
+      id: doc.$id,
       testimonial: {
         quote: doc.testimonial_quote || "",
         author: doc.testimonial_author || "",
