@@ -15,14 +15,8 @@ export interface ProductSchemaProps {
   description: string;
   /** Array of product image URLs */
   images: string[];
-  /** Product price with currency symbol (optional) */
-  price?: string;
   /** Product category name (optional) */
   category?: string;
-  /** Product SKU/stock keeping unit (optional) */
-  sku?: string;
-  /** Whether the product is in stock (defaults to true if not specified) */
-  inStock?: boolean;
 }
 
 /**

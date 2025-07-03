@@ -6,30 +6,50 @@ import {
 } from "@/lib/seo/dynamic-schemas";
 import { getProductById } from "@/lib/server/server-products";
 import ProductDisplay from "./ProductDisplay";
+import { Product } from "@/types/ComponentTypes";
+import { JSX } from "react";
 
+/**
+ * Props for the ProductPage component
+ *
+ * @interface ProductPageProps
+ */
 interface ProductPageProps {
-  params: Promise<{ id: string }>;
+  /** Route parameters from Next.js dynamic routing */
+  params: {
+    /** Product ID from the URL path */
+    id: string;
+  };
 }
 
-// Generate dynamic metadata for this product page
+/**
+ * Generates metadata for the product detail page
+ *
+ * This function is called by Next.js during server rendering to generate
+ * dynamic metadata based on the product being viewed.
+ *
+ * @param {ProductPageProps} props - Component props with route params
+ * @returns {Promise<Metadata>} Dynamic metadata for the page
+ */
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
-  // Await the params object first
-  const resolvedParams = await params;
-
-  // Then use the id property
-  const product = await getProductById(resolvedParams.id);
+  const { id } = params;
+  const product = await getProductById(id);
 
   if (!product) {
     return {
       title: "Product Not Found | Stardom Office Furniture",
       description: "The requested product could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   return generateProductMetadata({
-    id: resolvedParams.id,
+    id,
     name: product.name,
     description:
       product.description ||
@@ -39,45 +59,67 @@ export async function generateMetadata({
   });
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  // Await the params object first
-  const resolvedParams = await params;
+/**
+ * Creates breadcrumb path for the current product
+ *
+ * @param {Product | undefined} product - Product data
+ * @param {string} productId - Product ID from URL
+ * @returns {Array<{name: string, url: string}>} Array of breadcrumb items
+ */
+function createBreadcrumbPath(product: Product | undefined, productId: string) {
+  const categorySlug =
+    product?.category?.toLowerCase().replace(/\s+/g, "-") || "category";
 
-  // Then use the id property for data fetching
-  const product = await getProductById(resolvedParams.id);
+  return [
+    { name: "Home", url: "https://stardom.co.in" },
+    { name: "Products", url: "https://stardom.co.in/products" },
+    {
+      name: product?.category || "Category",
+      url: `https://stardom.co.in/products/category/${categorySlug}`,
+    },
+    {
+      name: product?.name || "Product",
+      url: `https://stardom.co.in/products/${productId}`,
+    },
+  ];
+}
 
-  // Generate product schema
+/**
+ * Product detail page component
+ *
+ * Server component that renders a product detail page with SEO enhancements,
+ * structured data, and client-side interactivity via ProductDisplay
+ *
+ * @param {ProductPageProps} props - Component props
+ * @returns {Promise<JSX.Element>} Rendered product page
+ */
+export default async function ProductPage({
+  params,
+}: ProductPageProps): Promise<JSX.Element> {
+  const { id } = params;
+  const product = await getProductById(id);
+
+  // Generate structured data for search engines
   const productSchema = product
     ? generateProductSchema({
-        id: resolvedParams.id,
+        id,
         name: product.name,
         description:
           product.description ||
           `Premium ${product.name} by Stardom Office Furniture`,
         images: product.images || [],
         category: product.category,
-        sku: `STD-${resolvedParams.id.toUpperCase()}`,
-        inStock: true,
       })
     : null;
 
   // Generate breadcrumb schema
-  const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Home", url: "https://stardom.co.in" },
-    { name: "Products", url: "https://stardom.co.in/products" },
-    {
-      name: product?.category || "Category",
-      url: `https://stardom.co.in/products/category/${product?.category?.toLowerCase().replace(/\s+/g, "-")}`,
-    },
-    {
-      name: product?.name || "Product",
-      url: `https://stardom.co.in/products/${resolvedParams.id}`,
-    },
-  ]);
+  const breadcrumbSchema = generateBreadcrumbSchema(
+    createBreadcrumbPath(product, id),
+  );
 
   return (
     <>
-      {/* Add structured data for SEO */}
+      {/* Structured data for SEO */}
       {productSchema && (
         <script
           type="application/ld+json"
@@ -93,8 +135,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
         }}
       />
 
-      {/* Pass ID to the client component */}
-      <ProductDisplay id={resolvedParams.id} initialProduct={product} />
+      {/* Product display component with initial server data */}
+      <ProductDisplay id={id} initialProduct={product} />
     </>
   );
 }
