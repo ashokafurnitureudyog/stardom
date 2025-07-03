@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getLoggedInUser } from "@/lib/server/appwrite";
 import type { NextRequest } from "next/server";
 import { User } from "./types/ComponentTypes";
-
+//TODO: Do API Key authentication in all API routes to prevent unauthorized access
 // Constants for better maintainability
 const ROUTES = {
   AUTH: "/auth",

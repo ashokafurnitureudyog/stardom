@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ReactNode } from "react";
 import NavbarComponent from "./NavbarComponent";
 import Footer from "./Footer";

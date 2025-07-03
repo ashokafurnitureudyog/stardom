@@ -66,7 +66,7 @@ export interface ShippingCategory {
 }
 
 export interface SocialLink {
-  icon: LucideIcon;
+  platform: string;
   url: string;
 }
 export interface ReturnInfo {

@@ -15,7 +15,7 @@ import {
   ChevronUp,
   AlertCircle,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import {
   TESTIMONIAL_MONTHS,
   TESTIMONIAL_AVATAR_NUMBERS,
