@@ -8,9 +8,29 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Phone } from "lucide-react";
+import {
+  Phone,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Youtube,
+  LucideProps,
+} from "lucide-react";
+import { RiTwitterXFill } from "@remixicon/react";
 import { cn } from "@/lib/utils/utils";
 import { FAQ, SocialLink } from "@/types/ComponentTypes";
+
+type IconComponent = React.ComponentType<LucideProps>;
+
+// Map platform names to icon components
+const platformIcons: Record<string, IconComponent> = {
+  facebook: Facebook,
+  instagram: Instagram,
+  linkedin: Linkedin,
+  twitter: RiTwitterXFill as unknown as IconComponent,
+  x: RiTwitterXFill as unknown as IconComponent,
+  youtube: Youtube,
+};
 
 // Animation constants
 const ANIMATIONS = {
@@ -63,21 +83,29 @@ const SocialLinks = ({ socialLinks }: { socialLinks: SocialLink[] }) => (
       Connect with <span className="font-serif italic text-primary">Us</span>
     </h2>
     <div className="flex gap-4">
-      {socialLinks.map((social, index) => (
-        <motion.a
-          key={index}
-          href={social.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-12 h-12 flex items-center justify-center rounded-full border border-input bg-background hover:border-primary hover:text-primary hover:scale-110 hover:shadow-lg transition-all duration-300"
-          whileHover={{ y: -2 }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: index * 0.1 }}
-        >
-          <social.icon className="w-5 h-5" aria-hidden="true" />
-        </motion.a>
-      ))}
+      {socialLinks.map((social, index) => {
+        // Get the icon component based on platform name
+        const IconComponent =
+          platformIcons[social.platform?.toLowerCase()] || null;
+
+        return (
+          <motion.a
+            key={index}
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-12 h-12 flex items-center justify-center rounded-full border border-input bg-background hover:border-primary hover:text-primary hover:scale-110 hover:shadow-lg transition-all duration-300"
+            whileHover={{ y: -2 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            {IconComponent && (
+              <IconComponent className="w-5 h-5" aria-hidden="true" />
+            )}
+          </motion.a>
+        );
+      })}
     </div>
   </motion.div>
 );

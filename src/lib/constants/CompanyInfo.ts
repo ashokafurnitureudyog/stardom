@@ -1,6 +1,4 @@
 import { CompanyInfo, SocialLink, TeamMember } from "@/types/ComponentTypes";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
-
 export const BasicCompanyInfo: CompanyInfo = {
   name: "Stardom",
   parentCompany: "Ashoka Furniture Udyog",
@@ -23,9 +21,18 @@ export const BasicCompanyInfo: CompanyInfo = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { icon: Facebook, url: "https://facebook.com" },
-  { icon: Instagram, url: "https://instagram.com" },
-  { icon: Linkedin, url: "https://linkedin.com/company" },
+  {
+    platform: "facebook",
+    url: "https://www.facebook.com/stardomcorporation",
+  },
+  {
+    platform: "instagram",
+    url: "https://www.instagram.com/stardomcorporation",
+  },
+  {
+    platform: "linkedin",
+    url: "https://www.linkedin.com/company/stardomcorporation",
+  },
 ];
 
 export const teamMembers: TeamMember[] = [
