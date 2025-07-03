@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { useProducts } from "@/hooks/useProducts";
@@ -10,46 +11,70 @@ import { ProductImages } from "@/components/products/ProductDetailsImageCarousel
 import { ProductInfo } from "@/components/products/ProductInfo";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { FloatingWhatsAppButton } from "@/components/products/FloatingWhatsappButton";
+import { Product } from "@/types/ComponentTypes";
 
-// Client component that receives the ID as a prop
+// Client component that receives the ID and initialProduct as props
 interface ProductDisplayProps {
   id: string;
+  initialProduct?: Product;
 }
 
-const ProductDisplay = ({ id }: ProductDisplayProps) => {
+const ProductDisplay = ({ id, initialProduct }: ProductDisplayProps) => {
   const pathname = usePathname();
-  // Use the hook to fetch product data
+  const queryClient = useQueryClient();
+
+  // Set initialProduct in React Query cache if provided
+  useEffect(() => {
+    if (initialProduct) {
+      queryClient.setQueryData(["product", id], initialProduct);
+    }
+  }, [initialProduct, id, queryClient]);
+
+  // Use the existing hook to fetch product data
   const { individualProductQuery, similarProductQuery } = useProducts(id);
 
-  // Initialize with empty string, will update when data is available
-  const [selectedColor, setSelectedColor] = useState("");
+  // Initialize selected color from initialProduct or wait for data to load
+  const [selectedColor, setSelectedColor] = useState<string>("");
+
+  // Update selectedColor when product data becomes available
+  useEffect(() => {
+    const currentProduct = initialProduct || individualProductQuery.data;
+    if (currentProduct?.colors?.length && selectedColor === "") {
+      setSelectedColor(currentProduct.colors[0]);
+    }
+  }, [initialProduct, individualProductQuery.data, selectedColor]);
 
   // State to track the current image index
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  // Loading state
-  if (individualProductQuery.isLoading) {
+  // Reset image index when product changes
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [id]);
+
+  // Determine the current product - prioritize initialProduct to avoid hydration issues
+  const currentProduct = initialProduct || individualProductQuery.data;
+
+  // Loading state - only show if we don't have initialProduct
+  if (!currentProduct && individualProductQuery.isLoading) {
     return <ProductDetailsSkeleton />;
   }
 
-  // Error state
-  if (individualProductQuery.isError || !individualProductQuery.data) {
+  // Error state - only show if we don't have initialProduct
+  if (
+    !currentProduct &&
+    (individualProductQuery.isError || !individualProductQuery.data)
+  ) {
     return <ProductNotFound />;
   }
 
-  // Get the current product from the query
-  const currentProduct = individualProductQuery.data;
+  // We shouldn't reach here without a product, but just in case
+  if (!currentProduct) {
+    return <ProductNotFound />;
+  }
+
   // Get related products from the similar products query
   const relatedProducts = similarProductQuery.data || [];
-
-  // Set selected color if it's empty and we have product data
-  if (
-    selectedColor === "" &&
-    currentProduct.colors &&
-    currentProduct.colors.length > 0
-  ) {
-    setSelectedColor(currentProduct.colors[0]);
-  }
 
   // WhatsApp inquiry function
   const handleWhatsAppInquiry = () => {
@@ -58,7 +83,9 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
 
     // Create the message with product details and URL
     const message = encodeURIComponent(
-      `Hello, I'm interested in the ${currentProduct.name} in ${selectedColor} finish. Can you provide more information?\n\nProduct Link: ${currentUrl}`,
+      `Hello, I'm interested in the ${currentProduct.name} ${
+        selectedColor ? `in ${selectedColor} finish` : ""
+      }. Can you provide more information?\n\nProduct Link: ${currentUrl}`,
     );
 
     // Make sure to include country code with the phone number
@@ -74,18 +101,17 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
         {/* Hero Section */}
         <Section className="pt-24 pb-32">
           <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
-            <div className="flex items-center text-sm text-muted-foreground mb-12">
+            <div className="flex flex-wrap items-center text-sm text-muted-foreground mb-12">
               <span>Products</span>
               <span className="mx-3">/</span>
               <span className="capitalize">{currentProduct.category}</span>
               <span className="mx-3">/</span>
               <span className="text-foreground">{currentProduct.name}</span>
             </div>
-            {/* TODO: Improve this diplay ui */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-20 ">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
               {/* Product Image Carousel */}
               <ProductImages
-                images={currentProduct.images}
+                images={currentProduct.images || []}
                 productName={currentProduct.name}
                 activeImageIndex={activeImageIndex}
                 setActiveImageIndex={setActiveImageIndex}
@@ -104,7 +130,9 @@ const ProductDisplay = ({ id }: ProductDisplayProps) => {
 
         {/* Related Products Section */}
         <RelatedProducts
-          isLoading={similarProductQuery.isLoading}
+          isLoading={
+            similarProductQuery.isLoading && relatedProducts.length === 0
+          }
           relatedProducts={relatedProducts}
         />
 
