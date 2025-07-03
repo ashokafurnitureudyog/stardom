@@ -7,30 +7,18 @@ import {
 import { getProductById } from "@/lib/server/server-products";
 import ProductDisplay from "./ProductDisplay";
 import { Product } from "@/types/ComponentTypes";
-import { JSX } from "react";
 
-// Use Next.js types for page parameters
-type PageParams = {
-  id: string;
-};
-
-// Use Next.js specific props type pattern
-type Props = {
-  params: PageParams;
-  searchParams: Record<string, string | string[] | undefined>;
-};
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
 /**
  * Generates metadata for the product detail page
- *
- * This function is called by Next.js during server rendering to generate
- * dynamic metadata based on the product being viewed.
- *
- * @param {Props} props - Component props with route params
- * @returns {Promise<Metadata>} Dynamic metadata for the page
  */
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = params;
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { id } = await params;
   const product = await getProductById(id);
 
   if (!product) {
@@ -57,10 +45,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 /**
  * Creates breadcrumb path for the current product
- *
- * @param {Product | undefined} product - Product data
- * @param {string} productId - Product ID from URL
- * @returns {Array<{name: string, url: string}>} Array of breadcrumb items
  */
 function createBreadcrumbPath(product: Product | undefined, productId: string) {
   const categorySlug =
@@ -82,17 +66,9 @@ function createBreadcrumbPath(product: Product | undefined, productId: string) {
 
 /**
  * Product detail page component
- *
- * Server component that renders a product detail page with SEO enhancements,
- * structured data, and client-side interactivity via ProductDisplay
- *
- * @param {Props} props - Component props
- * @returns {Promise<JSX.Element>} Rendered product page
  */
-export default async function ProductPage({
-  params,
-}: Props): Promise<JSX.Element> {
-  const { id } = params;
+export default async function ProductPage({ params }: PageProps) {
+  const { id } = await params;
   const product = await getProductById(id);
 
   // Generate structured data for search engines
