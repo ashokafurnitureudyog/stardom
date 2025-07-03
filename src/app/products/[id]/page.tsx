@@ -9,18 +9,16 @@ import ProductDisplay from "./ProductDisplay";
 import { Product } from "@/types/ComponentTypes";
 import { JSX } from "react";
 
-/**
- * Props for the ProductPage component
- *
- * @interface ProductPageProps
- */
-interface ProductPageProps {
-  /** Route parameters from Next.js dynamic routing */
-  params: {
-    /** Product ID from the URL path */
-    id: string;
-  };
-}
+// Use Next.js types for page parameters
+type PageParams = {
+  id: string;
+};
+
+// Use Next.js specific props type pattern
+type Props = {
+  params: PageParams;
+  searchParams: Record<string, string | string[] | undefined>;
+};
 
 /**
  * Generates metadata for the product detail page
@@ -28,12 +26,10 @@ interface ProductPageProps {
  * This function is called by Next.js during server rendering to generate
  * dynamic metadata based on the product being viewed.
  *
- * @param {ProductPageProps} props - Component props with route params
+ * @param {Props} props - Component props with route params
  * @returns {Promise<Metadata>} Dynamic metadata for the page
  */
-export async function generateMetadata({
-  params,
-}: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = params;
   const product = await getProductById(id);
 
@@ -90,12 +86,12 @@ function createBreadcrumbPath(product: Product | undefined, productId: string) {
  * Server component that renders a product detail page with SEO enhancements,
  * structured data, and client-side interactivity via ProductDisplay
  *
- * @param {ProductPageProps} props - Component props
+ * @param {Props} props - Component props
  * @returns {Promise<JSX.Element>} Rendered product page
  */
 export default async function ProductPage({
   params,
-}: ProductPageProps): Promise<JSX.Element> {
+}: Props): Promise<JSX.Element> {
   const { id } = params;
   const product = await getProductById(id);
 
