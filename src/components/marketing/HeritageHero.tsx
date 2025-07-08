@@ -1,9 +1,14 @@
 "use client";
 
-import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
+import { useCompanyData } from "@/hooks/useCompanyData";
+import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import AnimatedText from "../shared/HeroAnimatedText";
 
 export const HeritageHero = () => {
+  const { companyInfo } = useCompanyData();
+  const established =
+    companyInfo?.established || fallbackCompanyInfo.established;
+
   return (
     <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
       {/* Background Section */}
@@ -25,7 +30,7 @@ export const HeritageHero = () => {
         <div className="text-center lg:text-left">
           <AnimatedText className="mb-4" delay={0}>
             <span className="font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary rounded px-4 py-2">
-              Since {BasicCompanyInfo.established}
+              Since {established}
             </span>
           </AnimatedText>
 

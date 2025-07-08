@@ -7,14 +7,24 @@ import {
   Mail,
   Phone,
   ArrowUp,
+  Youtube,
+  LucideProps,
 } from "lucide-react";
+import { RiTwitterXFill } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { Link } from "next-view-transitions";
+import { useCompanyData } from "@/hooks/useCompanyData";
+import {
+  BasicCompanyInfo as fallbackCompanyInfo,
+  socialLinks as fallbackSocialLinks,
+} from "@/lib/constants/CompanyInfo";
+import Image from "next/image";
 
 const Footer = () => {
   const { theme, resolvedTheme } = useTheme();
   const [logoSrc, setLogoSrc] = useState("/images/logo.png");
+  const { companyInfo, socialLinks, isLoading } = useCompanyData();
 
   useEffect(() => {
     const currentTheme = resolvedTheme || theme;
@@ -25,6 +35,16 @@ const Footer = () => {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Map platform names to icon components with proper typing
+  const platformIcons: Record<string, React.ComponentType<LucideProps>> = {
+    facebook: Facebook,
+    instagram: Instagram,
+    linkedin: Linkedin,
+    twitter: RiTwitterXFill as unknown as React.ComponentType<LucideProps>,
+    x: RiTwitterXFill as unknown as React.ComponentType<LucideProps>,
+    youtube: Youtube,
   };
 
   const quickLinks = [
@@ -59,10 +79,12 @@ const Footer = () => {
             <div className="md:col-span-4 space-y-8">
               <div className="flex h-16 items-center">
                 <Link href="/">
-                  <img
+                  <Image
                     src={logoSrc}
                     alt="Stardom Logo"
-                    className="w-40 transform hover:scale-105 transition-transform duration-300"
+                    width={160}
+                    height={40}
+                    className="transform hover:scale-105 transition-transform duration-300"
                   />
                 </Link>
               </div>
@@ -71,19 +93,24 @@ const Footer = () => {
                 Furniture Udyog. Crafting elegance and functionality since 1996.
               </p>
               <div className="flex gap-6">
-                {[
-                  { Icon: Facebook, href: "#facebook" },
-                  { Icon: Instagram, href: "#instagram" },
-                  { Icon: Linkedin, href: "#linkedin" },
-                ].map(({ Icon, href }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="text-primary/60 hover:text-primary transition-colors duration-300"
-                  >
-                    <Icon className="h-5 w-5" />
-                  </Link>
-                ))}
+                {(socialLinks || fallbackSocialLinks).map((social, index) => {
+                  // Get the icon component based on platform name
+                  const IconComponent = social.platform?.toLowerCase()
+                    ? platformIcons[social.platform.toLowerCase()]
+                    : undefined;
+
+                  return IconComponent ? (
+                    <Link
+                      key={index}
+                      href={social.url}
+                      className="text-primary/60 hover:text-primary transition-colors duration-300"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <IconComponent className="h-5 w-5" />
+                    </Link>
+                  ) : null;
+                })}
               </div>
             </div>
 
@@ -132,9 +159,22 @@ const Footer = () => {
                     Icon: MapPin,
                     content: (
                       <p className="text-muted-foreground/80 leading-relaxed">
-                        Plot No. 304, Industrial Area Phase 2
-                        <br />
-                        Chandigarh, India 160002
+                        {isLoading ? (
+                          "Loading address..."
+                        ) : (
+                          <>
+                            {companyInfo?.address.street ||
+                              fallbackCompanyInfo.address.street}
+                            <br />
+                            {companyInfo?.address.city ||
+                              fallbackCompanyInfo.address.city}
+                            ,{" "}
+                            {companyInfo?.address.Country ||
+                              fallbackCompanyInfo.address.Country}{" "}
+                            {companyInfo?.address.zip ||
+                              fallbackCompanyInfo.address.zip}
+                          </>
+                        )}
                       </p>
                     ),
                   },
@@ -142,10 +182,10 @@ const Footer = () => {
                     Icon: Mail,
                     content: (
                       <Link
-                        href="mailto:hello@stardom.co.in"
+                        href={`mailto:${companyInfo?.email || fallbackCompanyInfo.email}`}
                         className="text-muted-foreground/80 hover:text-primary transition-colors duration-300"
                       >
-                        hello@stardom.co.in
+                        {companyInfo?.email || fallbackCompanyInfo.email}
                       </Link>
                     ),
                   },
@@ -153,10 +193,10 @@ const Footer = () => {
                     Icon: Phone,
                     content: (
                       <Link
-                        href="tel:+916284673783"
+                        href={`tel:${companyInfo?.phone || fallbackCompanyInfo.phone}`}
                         className="text-muted-foreground/80 hover:text-primary transition-colors duration-300"
                       >
-                        +91 62846 73783
+                        {companyInfo?.phone || fallbackCompanyInfo.phone}
                       </Link>
                     ),
                   },
@@ -190,27 +230,6 @@ const Footer = () => {
                   ))}
                 </div>
               </div>
-
-              {/* Developer Signature */}
-              {/* <div className="border-t border-primary/5 mt-8">
-                <div className="py-6 flex justify-center items-center gap-2 group">
-                  <span className="text-muted-foreground/40 text-sm font-light tracking-wide">
-                    Crafted with
-                  </span>
-                  <Heart className="h-3 w-3 text-primary/40 group-hover:text-primary/60 transition-colors duration-300 group-hover:scale-110 transform" />
-                  <span className="text-muted-foreground/40 text-sm font-light tracking-wide">
-                    by
-                  </span>
-                  <Link
-                    href="https://abhisheksharma.tech"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-serif italic text-muted-foreground/60 hover:text-primary/80 transition-all duration-300 text-sm group-hover:tracking-wide"
-                  >
-                    Abhishek
-                  </Link>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>

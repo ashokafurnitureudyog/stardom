@@ -4,43 +4,11 @@ import { FancyTestimonialsSlider } from "../ui/testimonialslider";
 import { motion } from "framer-motion";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { Link } from "next-view-transitions";
+import { useTestimonials } from "@/hooks/useTestimonials";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const TestimonialsSection = () => {
-  const testimonials = [
-    {
-      name: "Rajesh Kumar",
-      title: "Director of Operations, Indus Global Solutions",
-      location: "Gurugram",
-      context: "Corporate Headquarters Renovation",
-      purchaseDate: "January 2025",
-      verified: true,
-      quote:
-        "After expanding our IT services team to 200+ employees, we needed premium office furniture that reflected our company's growth. Stardom delivered beyond expectations. The Monarch Executive desk series and ergonomic chairs have not only improved our team's productivity but also impressed our international clients during video conferences. The craftsmanship speaks volumes about attention to detail.",
-      img: "https://avatar.iran.liara.run/public/boy?username=rajesh",
-    },
-    {
-      name: "Priya Sharma",
-      title: "Founder & Creative Director, DesignCraft Studios",
-      location: "Mumbai",
-      context: "Design Studio Workspace",
-      purchaseDate: "November 2024",
-      verified: true,
-      quote:
-        "In our creative industry, workspace aesthetics matter tremendously. We chose Stardom's Aria Collection for our 3000 sq ft studio after reviewing multiple premium vendors. The height-adjustable workstations have genuinely improved our team's work quality, and clients who visit our office inevitably ask about our furniture. The investment has already paid for itself in client impressions alone.",
-      img: "https://avatar.iran.liara.run/public/girl?username=priya",
-    },
-    {
-      name: "Amit Verma",
-      title: "CEO, Pinnacle Financial Consultants",
-      location: "Bangalore",
-      context: "Executive Boardroom & Client Meeting Spaces",
-      purchaseDate: "March 2025",
-      verified: true,
-      quote:
-        "When we renovated our 15th-floor office in the financial district, we needed furniture that conveyed trust and stability to our high-net-worth clients. Stardom's Diplomat Conference Set and Heritage Collection cabinets have transformed our client meetings. The solid wood craftsmanship and premium upholstery communicate our attention to detail before we even begin discussions.",
-      img: "https://avatar.iran.liara.run/public/boy?username=amit",
-    },
-  ];
+  const { testimonials, isLoading } = useTestimonials({ limit: 6 });
 
   return (
     <div className="w-full bg-background py-20 md:py-32 px-8 md:px-16 font-sans relative">
@@ -50,6 +18,7 @@ const TestimonialsSection = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
           variants={fadeInUpVariants}
         >
           <div className="text-center">
@@ -74,7 +43,19 @@ const TestimonialsSection = () => {
           </div>
         </motion.div>
 
-        <FancyTestimonialsSlider testimonials={testimonials} />
+        {isLoading ? (
+          <div className="w-full py-12">
+            <div className="flex flex-col items-center justify-center space-y-6">
+              <Skeleton className="h-40 w-4/5 max-w-3xl rounded-lg" />
+              <div className="flex flex-col items-center space-y-2">
+                <Skeleton className="h-6 w-40 rounded-full" />
+                <Skeleton className="h-4 w-60 rounded-full" />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <FancyTestimonialsSlider testimonials={testimonials} />
+        )}
 
         <motion.div
           className="text-center mt-16 pt-12 border-t border-primary/10"

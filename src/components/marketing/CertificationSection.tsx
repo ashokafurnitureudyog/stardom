@@ -1,6 +1,6 @@
 import { GlobeIcon, PenToolIcon, ShieldCheckIcon } from "lucide-react";
 import { Marquee } from "../ui/marquee";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { BentoCard, BentoGrid } from "../ui/bento-grid";
 import { FlickeringGrid } from "../ui/flickering-grid";
 import { Ripple } from "../ui/ripple";

@@ -4,27 +4,14 @@ import { Card } from "@/components/ui/card";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { motion } from "framer-motion";
 import { Link } from "next-view-transitions";
+import { usePortfolioProjects } from "@/hooks/usePortfolioProjects";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PortfolioSection = () => {
-  const projects = [
-    {
-      title: "Chitkara Group",
-      description: "Complete office furniture and ergonomic solutions",
-      image:
-        "https://media.licdn.com/dms/image/v2/C4D0BAQFhoSxToxhXuQ/company-logo_200_200/company-logo_200_200/0/1659503334979?e=1745452800&v=beta&t=BhuUJ_GfsSRu8I2AhU7AGGToOGAbP4NF0L7-00LnA_Q",
-    },
-    {
-      title: "Chandigarh University",
-      description: "Educational spaces and collaborative environments",
-      image: "https://i.ytimg.com/vi/tHhXkJdechQ/maxresdefault.jpg",
-    },
-    {
-      title: "JLPL Group",
-      description: "Modern workspaces with premium amenities",
-      image:
-        "https://media.licdn.com/dms/image/v2/C4D0BAQEGPR18kzoxcw/company-logo_200_200/company-logo_200_200/0/1677217667273/jantahousing_logo?e=2147483647&v=beta&t=hBV4K6wqGujl49VuW0P5jYZ4iw0V2z5vbizFT9LLTS8",
-    },
-  ];
+  // Use the custom hook to fetch projects with a limit of 3
+  const { data: projects, isLoading } = usePortfolioProjects({
+    limit: 3,
+  });
 
   return (
     <div className="w-full bg-background py-20 md:py-32 font-sans">
@@ -61,35 +48,59 @@ const PortfolioSection = () => {
           </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-24">
-          {projects.map((project, index) => (
-            <div key={index} className="group relative">
-              {/* Glow effect container */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
+        {isLoading ? (
+          <div className="grid md:grid-cols-3 gap-8 mb-24">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="group relative h-full">
+                <Card className="relative overflow-hidden bg-background/95 border border-primary/10 h-full">
+                  <Skeleton className="aspect-[4/3] w-full" />
+                  <div className="p-6 space-y-2">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                </Card>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-8 mb-24">
+            {projects &&
+              projects.map((project, index) => (
+                <div
+                  key={project.id || index}
+                  className="group relative h-full"
+                >
+                  {/* Glow effect container */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
 
-              {/* Inner glow effect */}
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
+                  {/* Inner glow effect */}
+                  <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
-              <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500">
-                <div className="aspect-[4/3] w-full relative">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                  />
+                  <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 flex flex-col h-full">
+                    <div className="aspect-[4/3] w-full flex-shrink-0">
+                      <img
+                        src={project.thumbnail || ""}
+                        alt={project.title}
+                        className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://placehold.co/600x400?text=No+Image";
+                        }}
+                      />
+                    </div>
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-xl font-light text-foreground line-clamp-1 mb-2">
+                        {project.title}
+                      </h3>
+                      <p className="text-muted-foreground/80 line-clamp-3">
+                        {project.description || "No description available"}
+                      </p>
+                    </div>
+                  </Card>
                 </div>
-                <div className="p-6 space-y-2">
-                  <h3 className="text-xl font-light text-foreground">
-                    {project.title}
-                  </h3>
-                  <p className="text-muted-foreground/80">
-                    {project.description}
-                  </p>
-                </div>
-              </Card>
-            </div>
-          ))}
-        </div>
+              ))}
+          </div>
+        )}
 
         <div className="text-center mt-16">
           <button className="inline-flex items-center px-8 py-3 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 group font-light">

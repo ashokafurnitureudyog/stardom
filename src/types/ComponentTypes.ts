@@ -66,7 +66,7 @@ export interface ShippingCategory {
 }
 
 export interface SocialLink {
-  icon: LucideIcon;
+  platform: string;
   url: string;
 }
 export interface ReturnInfo {
@@ -94,6 +94,13 @@ export interface FormData {
   phone: string;
   subject: string;
   message: string;
+}
+export interface User {
+  $id: string;
+  $createdAt: string;
+  $updatedAt: string;
+  name: string;
+  email: string;
 }
 export interface PortfolioProject {
   id: string; // mismatch with the returns

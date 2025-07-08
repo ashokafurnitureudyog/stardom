@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { AnimatedTextProps, MediaItem } from "@/types/MediaTypes";
 import {
-  HERO_MEDIA_ITEMS,
   HERO_SLIDE_DURATION,
   HERO_TRANSITION_DURATION,
 } from "@/lib/constants/MediaConstants";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { BasicCompanyInfo } from "@/lib/constants/CompanyInfo";
 import { Link } from "next-view-transitions";
+import { useCompanyData } from "@/hooks/useCompanyData";
+import { useQuery } from "@tanstack/react-query";
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
   children,
@@ -94,13 +94,17 @@ const BackgroundMedia: React.FC<{
   return <div className={className} ref={mediaRef} />;
 };
 
-const BackgroundSlideshow: React.FC = () => {
+const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
+  mediaItems,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [, setIsTransitioning] = useState(false);
 
-  const getNextIndex = (index: number) => (index + 1) % HERO_MEDIA_ITEMS.length;
+  const getNextIndex = (index: number) => (index + 1) % mediaItems.length;
 
   useEffect(() => {
+    if (mediaItems.length === 0) return;
+
     const slideTimer = setTimeout(() => {
       setIsTransitioning(true);
 
@@ -113,13 +117,17 @@ const BackgroundSlideshow: React.FC = () => {
     }, HERO_SLIDE_DURATION);
 
     return () => clearTimeout(slideTimer);
-  }, [currentIndex]);
+  }, [currentIndex, mediaItems]);
+
+  if (mediaItems.length === 0) {
+    return <div className="absolute inset-0 bg-black/80"></div>;
+  }
 
   return (
     <div className="absolute inset-0 w-full h-full">
-      {HERO_MEDIA_ITEMS.map((item, index) => (
+      {mediaItems.map((item, index) => (
         <BackgroundMedia
-          key={item.src}
+          key={`${item.src}-${index}`}
           item={item}
           isActive={index === currentIndex}
           isNext={index === getNextIndex(currentIndex)}
@@ -134,17 +142,33 @@ const BackgroundSlideshow: React.FC = () => {
 };
 
 const HeroSection: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const buttonBaseClass = useMemo(
     () => "min-w-[240px] h-14 text-lg tracking-wide",
     [],
   );
 
-  useEffect(() => {
-    // Set loading to false once critical content is loaded
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
+  // Fetch company data using our hook
+  const { companyInfo, isLoading: isCompanyLoading } = useCompanyData();
+
+  // Fetch hero media using React Query
+  const {
+    data: heroMediaData,
+    isLoading: isMediaLoading,
+    error: mediaError,
+  } = useQuery({
+    queryKey: ["hero-media"],
+    queryFn: async () => {
+      const response = await fetch("/api/hero-media");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch hero media");
+      }
+      return response.json();
+    },
+  });
+
+  const isLoading = isCompanyLoading || isMediaLoading;
+  const mediaItems = heroMediaData?.mediaItems || [];
 
   return (
     <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden font-sans">
@@ -154,25 +178,38 @@ const HeroSection: React.FC = () => {
         </div>
       )}
 
-      <BackgroundSlideshow />
+      {mediaError && (
+        <div className="absolute inset-0 z-40 bg-black/90 flex items-center justify-center">
+          <div className="text-center p-8 max-w-md">
+            <p className="text-red-400 text-xl mb-4">Failed to load media</p>
+            <p className="text-white/70">
+              {mediaError instanceof Error
+                ? mediaError.message
+                : "An unknown error occurred"}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <BackgroundSlideshow mediaItems={mediaItems} />
 
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 px-6">
         {/* Brand Column */}
         <div className="text-center lg:text-left">
           <AnimatedText className="mb-4">
             <span className="text-primary font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary/30 rounded px-4 py-2">
-              Since {BasicCompanyInfo.established}
+              {companyInfo ? `Since ${companyInfo.established}` : "Established"}
             </span>
           </AnimatedText>
 
           <AnimatedText delay={0.2}>
             <h1 className="text-6xl lg:text-7xl tracking-tight mb-4 font-extralight">
-              STARDOM
+              {companyInfo?.name?.toUpperCase() || "STARDOM"}
             </h1>
             <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
             <span className="text-xl text-white/80 font-serif italic">by</span>
             <p className="text-2xl text-white/90 font-serif mt-2">
-              Ashoka Furniture Udyog
+              {companyInfo?.parentCompany || "Ashoka Furniture Udyog"}
             </p>
           </AnimatedText>
 

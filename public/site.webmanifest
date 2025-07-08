@@ -1,0 +1,48 @@
+{
+  "name": "Stardom - Premium Office Furniture",
+  "short_name": "Stardom",
+  "description": "Premium office furniture manufacturer - executive chairs, desks, and corporate solutions",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDF8F3",
+  "theme_color": "#A67C5A",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en-IN",
+  "categories": ["business", "furniture", "shopping"],
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "platform": "wide",
+      "label": "Stardom Homepage on Desktop"
+    },
+    {
+      "src": "/screenshots/mobile.jpg",
+      "sizes": "640x1136",
+      "type": "image/jpeg",
+      "platform": "narrow",
+      "label": "Stardom Homepage on Mobile"
+    }
+  ]
+}

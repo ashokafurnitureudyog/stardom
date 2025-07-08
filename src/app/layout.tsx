@@ -1,122 +1,108 @@
-import type { Metadata } from "next";
+import { viewport, metadata } from "@/lib/seo/metadata";
+import { SchemaMarkup } from "@/lib/seo/schemas";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
+import { JSX } from "react";
 
+/**
+ * Font configuration for Playfair Display
+ * Used for headings and display text
+ */
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
+  display: "swap",
+  preload: true,
 });
 
+/**
+ * Font configuration for Montserrat
+ * Used for body text and general content
+ */
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
+  preload: true,
 });
 
+/**
+ * Font configuration for Geist Sans
+ * Used as the primary sans-serif font
+ */
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
+/**
+ * Font configuration for Geist Mono
+ * Used for code blocks and monospace content
+ */
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://stardom.co.in"),
-  title: "Stardom | Premium Office Furniture Manufacturers",
-  description:
-    "Premium office furniture manufacturers in Chandigarh. Explore our range of executive chairs, desks & office solutions. Formerly known as Ashoka Furniture Udyog, delivering pan-India.",
-  keywords: [
-    "office furniture",
-    "premium office furniture",
-    "executive chairs",
-    "office desks",
-    "Ashoka Furniture Udyog",
-    "office furniture Chandigarh",
-    "premium furniture manufacturer",
-    "Stardom furniture",
-    "corporate furniture solutions",
-  ],
-  openGraph: {
-    type: "website",
-    title: "Stardom | Premium Office Furniture Manufacturers",
-    description:
-      "Transform your workspace with premium office furniture. From executive chairs to customized desks, discover quality craftsmanship by Stardom (formerly Ashoka Furniture Udyog).",
-    images: [
-      {
-        url: "/images/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Stardom Premium Office Furniture Collection",
-      },
-    ],
-    locale: "en_IN",
-    siteName: "Stardom",
-  },
-  alternates: {
-    canonical: "https://stardom.co.in",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  // verification: {
-  //   google: 'add-your-google-verification-id',
-  // },
-};
+// Export metadata and viewport from the imported files
+export { metadata, viewport };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Stardom",
-  alternateName: "Ashoka Furniture Udyog",
-  description:
-    "Premium office furniture manufacturers specializing in executive chairs, desks, and complete office solutions.",
-  url: "https://stardom.co.in",
-  logo: "https://www.stardom.co.in/_next/image?url=%2Fimages%2Flogo.png&w=128&q=75",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Chandigarh",
-    addressCountry: "IN",
-  },
-  areaServed: {
-    "@type": "Country",
-    name: "India",
-  },
-  sameAs: [], // Add your social media URLs when available
-};
+/**
+ * Interface for RootLayout props
+ */
+interface RootLayoutProps {
+  /** The child components to render within the layout */
+  children: React.ReactNode;
+}
+
+/**
+ * Root layout component that wraps the entire application
+ * Handles font loading, metadata, and global providers
+ *
+ * @param {RootLayoutProps} props - Component props
+ * @param {React.ReactNode} props.children - Child components to render
+ * @returns {JSX.Element} The rendered layout component
+ */
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<RootLayoutProps>): JSX.Element {
+  // Combine all font variables for use in the body className
+  const fontVariables = [
+    geistSans.variable,
+    geistMono.variable,
+    playfairDisplay.variable,
+    montserrat.variable,
+  ].join(" ");
+
   return (
     <html lang="en" className="scrollbar-hide overflow-x-hidden">
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+        {/* Performance optimizations for external resources */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+
+        {/* DNS prefetching for faster resource loading */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
+
+        {/* Structured data for SEO */}
+        <SchemaMarkup />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}
-      >
+      <body className={`${fontVariables} antialiased`}>
         <ViewTransitions>
           <Providers>
             {children}

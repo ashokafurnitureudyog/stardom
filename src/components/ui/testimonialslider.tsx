@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Transition } from "@headlessui/react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import {
   QuoteIcon,
   MapPinIcon,
