@@ -13,7 +13,7 @@ export const ProductsHero = () => {
     <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
       <div className="absolute inset-0 w-full h-full">
         <img
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c"
+          src="/images/headers/product_header.jpg"
           alt="Products Hero"
           className="absolute inset-0 w-full h-full object-cover"
         />
