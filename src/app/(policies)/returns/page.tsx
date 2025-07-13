@@ -17,7 +17,7 @@ import { FileText, AlertCircle, Truck } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { ReturnCategory } from "@/types/ComponentTypes";
 
-export const returnsCategories: ReturnCategory[] = [
+const returnsCategories: ReturnCategory[] = [
   {
     title: "Return Eligibility",
     icon: <FileText className="h-5 w-5" />,
