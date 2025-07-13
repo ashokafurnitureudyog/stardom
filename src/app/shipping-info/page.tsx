@@ -17,7 +17,7 @@ import { Clock, CreditCard, Shield } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { ShippingCategory } from "@/types/ComponentTypes";
 
-export const shippingCategories: ShippingCategory[] = [
+const shippingCategories: ShippingCategory[] = [
   {
     title: "Shipping Times",
     icon: <Clock className="h-5 w-5" />,
