@@ -1,0 +1,2 @@
+export const HERO_SLIDE_DURATION = 8000;
+export const HERO_TRANSITION_DURATION = 1000;
