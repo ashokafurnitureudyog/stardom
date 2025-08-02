@@ -18,11 +18,6 @@ const playfairDisplay = Playfair_Display({
   display: "swap",
   preload: true,
 });
-const poppins = Poppins({
-  subsets: ['latin'],
-  variable: '--font-poppins',
-  weight: "100"
-});
 
 /**
  * Font configuration for Montserrat
