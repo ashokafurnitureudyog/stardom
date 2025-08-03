@@ -98,3 +98,77 @@ export async function deleteTestimonial(
     return { success: false, error: errorMessage };
   }
 }
+
+export async function updateTestimonial(
+  formData: FormData,
+): Promise<TestimonialResponse> {
+  try {
+    const { database } = await createAdminClient();
+
+    // Get the ID of the testimonial to update
+    const id = formData.get("id") as string;
+    if (!id) {
+      throw new Error("Testimonial ID is required for update");
+    }
+
+    // Get basic fields
+    const name = formData.get("name") as string;
+    const title = formData.get("title") as string;
+    const location = formData.get("location") as string;
+    const context = formData.get("context") as string;
+    const purchaseDate = formData.get("purchaseDate") as string;
+    const quote = formData.get("quote") as string;
+
+    // Get image URL
+    let img = formData.get("img") as string;
+    const imageRemoved = formData.get("imageRemoved") === "true";
+
+    // If image was explicitly removed, set img to empty string
+    if (imageRemoved) {
+      img = "";
+    }
+
+    // Database details
+    const databaseId = process.env.APPWRITE_DATABASE_ID!;
+    const collectionId = process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID!;
+
+    if (!databaseId || !collectionId) {
+      throw new Error("Database or collection ID not configured");
+    }
+
+    console.log("Updating testimonial:", id);
+    console.log("New data:", {
+      name,
+      title,
+      location,
+      context,
+      purchaseDate,
+      quote,
+      img,
+    });
+
+    // Update testimonial document
+    const testimonial = await database.updateDocument(
+      databaseId,
+      collectionId,
+      id,
+      {
+        name,
+        title,
+        location,
+        context,
+        purchaseDate,
+        verified: true,
+        quote,
+        img,
+      },
+    );
+
+    return { success: true, data: testimonial };
+  } catch (error: unknown) {
+    console.error("Failed to update testimonial:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to update testimonial";
+    return { success: false, error: errorMessage };
+  }
+}

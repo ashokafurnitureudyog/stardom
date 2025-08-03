@@ -1,27 +1,29 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Search, RefreshCw, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddTestimonialDialog } from "./testimonials/AddTestimonialDialog";
 import { TestimonialCard } from "./testimonials/TestimonialCard ";
-import { ClientTestimonial } from "@/types/ComponentTypes";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
+import { useToast } from "@/hooks/use-toast";
 
 export const TestimonialsSection = () => {
   const [testimonials, setTestimonials] = useState<ClientTestimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
+  const { toast } = useToast();
 
-  // Filtered testimonials
+  // Filter testimonials based on search query
   const filteredTestimonials = testimonials.filter(
     (testimonial) =>
       testimonial.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       testimonial.quote.toLowerCase().includes(searchQuery.toLowerCase()) ||
       testimonial.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      testimonial.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      testimonial.context.toLowerCase().includes(searchQuery.toLowerCase()),
+      testimonial.context.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      testimonial.location.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const fetchTestimonials = useCallback(async () => {
@@ -36,30 +38,31 @@ export const TestimonialsSection = () => {
 
       const data = await res.json();
       setTestimonials(data);
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Failed to fetch testimonials:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to load testimonials";
-      setError(errorMessage);
+      setError(
+        error instanceof Error ? error.message : "Failed to load testimonials",
+      );
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const handleDelete = async (testimonialId: string) => {
+  useEffect(() => {
+    fetchTestimonials();
+  }, [fetchTestimonials]);
+
+  const handleDelete = async (id: string, imageUrl: string) => {
     try {
-      setTestimonials((prevTestimonials) =>
-        prevTestimonials.filter(
-          (testimonial) =>
-            testimonial.id !== testimonialId &&
-            testimonial.$id !== testimonialId,
-        ),
+      // Optimistically update UI
+      setTestimonials((prev) =>
+        prev.filter((t) => t.id !== id && t.$id !== id),
       );
 
       const response = await fetch("/api/protected/testimonials", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ testimonialId }),
+        body: JSON.stringify({ id, imageUrl }),
         credentials: "include",
       });
 
@@ -67,27 +70,34 @@ export const TestimonialsSection = () => {
         throw new Error("Failed to delete testimonial");
       }
 
-      // If successful, testimonial is already removed from state
-    } catch (error: unknown) {
+      toast({
+        title: "Success",
+        description: "Testimonial deleted successfully",
+      });
+    } catch (error) {
       console.error("Delete failed:", error);
-      // If deletion fails, refresh the testimonial list
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete testimonial",
+        variant: "destructive",
+      });
+      // If deletion fails, refresh the list
       fetchTestimonials();
     }
   };
-
-  useEffect(() => {
-    fetchTestimonials();
-  }, [fetchTestimonials]);
 
   return (
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
           <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-            Testimonial Management
+            Client Testimonials
           </h2>
           <p className="text-muted-foreground">
-            {testimonials.length} client testimonials
+            {testimonials.length} testimonials
           </p>
         </div>
 
@@ -135,23 +145,22 @@ export const TestimonialsSection = () => {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((item) => (
-            <div
+            <TestimonialCard
               key={item}
-              className="h-[260px] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
+              testimonial={{} as ClientTestimonial}
+              onDelete={() => Promise.resolve()}
+              isLoading={true}
             />
           ))}
         </div>
       ) : filteredTestimonials.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTestimonials.map((testimonial, index) => (
+          {filteredTestimonials.map((testimonial) => (
             <TestimonialCard
-              key={
-                testimonial.id ||
-                testimonial.$id ||
-                `${testimonial.name}-${index}`
-              }
+              key={testimonial.id || testimonial.$id}
               testimonial={testimonial}
               onDelete={handleDelete}
+              onEdit={fetchTestimonials}
             />
           ))}
         </div>
