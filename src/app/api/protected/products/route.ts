@@ -65,7 +65,18 @@ export async function PUT(request: NextRequest) {
       features: JSON.parse((formData.get("features") as string) || "[]"),
       colors: JSON.parse((formData.get("colors") as string) || "[]"),
       images: JSON.parse((formData.get("imageUrls") as string) || "[]"),
+      removedImages: formData.has("removedImages")
+        ? JSON.parse(formData.get("removedImages") as string)
+        : [],
     };
+
+    // Verify required fields
+    if (!productData.name || !productData.description) {
+      return NextResponse.json(
+        { error: "Name and description are required" },
+        { status: 400 },
+      );
+    }
 
     const result = await updateProduct(productId, productData, files);
     return result || { success: true, id: productId };

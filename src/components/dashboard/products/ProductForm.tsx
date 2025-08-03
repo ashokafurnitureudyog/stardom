@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +8,7 @@ import { ImagesSection } from "./images-section";
 import { FeaturesSection } from "./features-section";
 import { ColorsSection } from "./colors-section";
 import type { Product } from "@/types/ComponentTypes";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductFormProps {
   onSuccess: () => void;
@@ -39,11 +40,22 @@ export const ProductForm = ({
   const [imageUrls, setImageUrls] = useState<string[]>(
     initialData?.images || [],
   );
+  const [initialImageUrls, setInitialImageUrls] = useState<string[]>(
+    initialData?.images || [],
+  );
   const [newImageUrl, setNewImageUrl] = useState("");
 
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { toast } = useToast();
+
+  // Track initial image URLs for comparison during updates
+  useEffect(() => {
+    if (initialData?.images) {
+      setInitialImageUrls([...initialData.images]);
+    }
+  }, [initialData]);
 
   // Handlers
   const handleAddImageUrl = () => {
@@ -69,12 +81,21 @@ export const ProductForm = ({
       formData.append("features", JSON.stringify(features));
       formData.append("colors", JSON.stringify(colors));
 
-      // Important: Make sure we're sending all imageUrls
+      // Current image URLs
       formData.append("imageUrls", JSON.stringify(imageUrls));
 
-      // If editing, include product ID
+      // If editing, include product ID and track removed images
       if (isEditing && initialData) {
-        formData.append("id", initialData.id || initialData.$id || "");
+        const productId = initialData.id || initialData.$id || "";
+        formData.append("id", productId);
+
+        // Track removed images for future reference (not deleting them yet)
+        const removedImages = initialImageUrls.filter(
+          (url) => !imageUrls.includes(url),
+        );
+        if (removedImages.length > 0) {
+          formData.append("removedImages", JSON.stringify(removedImages));
+        }
       }
 
       // Add files
@@ -105,6 +126,13 @@ export const ProductForm = ({
       setErrorMessage(
         error instanceof Error ? error.message : "Failed to save product",
       );
+
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to save product",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -113,7 +141,9 @@ export const ProductForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Add New Product</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          {isEditing ? "Edit Product" : "Add New Product"}
+        </h2>
         <Separator className="mb-6" />
 
         {errorMessage && (
@@ -213,6 +243,7 @@ export const ProductForm = ({
           newImageUrl={newImageUrl}
           setNewImageUrl={setNewImageUrl}
           handleAddImageUrl={handleAddImageUrl}
+          isEditing={isEditing} // Pass the isEditing prop here
         />
 
         <Separator className="my-6" />
@@ -222,7 +253,13 @@ export const ProductForm = ({
           className="w-full py-6 text-base"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Saving..." : "Add Product"}
+          {isSubmitting
+            ? isEditing
+              ? "Updating..."
+              : "Saving..."
+            : isEditing
+              ? "Update Product"
+              : "Add Product"}
         </Button>
       </div>
     </form>
