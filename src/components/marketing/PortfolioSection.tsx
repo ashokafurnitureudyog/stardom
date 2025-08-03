@@ -52,9 +52,11 @@ const PortfolioSection = () => {
           <div className="grid md:grid-cols-3 gap-8 mb-24">
             {[1, 2, 3].map((i) => (
               <div key={i} className="group relative h-full">
-                <Card className="relative overflow-hidden bg-background/95 border border-primary/10 h-full">
-                  <Skeleton className="aspect-[4/3] w-full" />
-                  <div className="p-6 space-y-2">
+                <Card className="relative overflow-hidden bg-background/95 border border-primary/10 h-full flex flex-col">
+                  <div className="aspect-[4/3] w-full">
+                    <Skeleton className="w-full h-full" />
+                  </div>
+                  <div className="p-6 space-y-2 flex-grow">
                     <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-4 w-full" />
                   </div>
@@ -77,18 +79,20 @@ const PortfolioSection = () => {
                   <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
                   <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 flex flex-col h-full">
-                    <div className="aspect-[4/3] w-full flex-shrink-0">
-                      <img
-                        src={project.thumbnail || ""}
-                        alt={project.title}
-                        className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "https://placehold.co/600x400?text=No+Image";
-                        }}
-                      />
+                    <div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden">
+                      <div className="w-full h-full">
+                        <img
+                          src={project.thumbnail || ""}
+                          alt={project.title}
+                          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "https://placehold.co/600x400?text=No+Image";
+                          }}
+                        />
+                      </div>
                     </div>
-                    <div className="p-6 flex flex-col flex-grow">
+                    <div className="p-6 flex flex-col flex-grow min-h-[150px]">
                       <h3 className="text-xl font-light text-foreground line-clamp-1 mb-2">
                         {project.title}
                       </h3>
