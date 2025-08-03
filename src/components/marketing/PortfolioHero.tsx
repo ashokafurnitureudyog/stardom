@@ -52,7 +52,12 @@ export const PortfolioHero = ({
     },
     {
       type: "video",
-      src: "/videos/chitkara_audi_2.webm",
+      src: "/videos/alphait_1.webm",
+      alt: "Portfolio Hero",
+    },
+    {
+      type: "video",
+      src: "/videos/alphait_2.webm",
       alt: "Portfolio Hero",
     },
   ],

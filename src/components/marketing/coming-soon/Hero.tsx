@@ -18,7 +18,7 @@ const HeroSection = () => {
             transition={{ duration: 1 }}
             className="space-y-6 sm:space-y-8"
           >
-            <h1 className="text-4xl sm:text-7xl md:text-9xl font-serif text-white tracking-[0.15em] sm:tracking-[0.2em] leading-tight">
+            <h1 className="text-4xl sm:text-7xl md:text-9xl font-thin text-white tracking-[0.15em] sm:tracking-[0.2em] leading-tight">
               STARDOM
             </h1>
 

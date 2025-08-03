@@ -13,14 +13,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Link } from "next-view-transitions";
-import {
-  RotateCcw,
-  FileText,
-  AlertCircle,
-  Truck,
-  Calendar,
-  Phone,
-} from "lucide-react";
+import { FileText, AlertCircle, Truck } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { ReturnCategory } from "@/types/ComponentTypes";
 
@@ -30,50 +23,14 @@ const returnsCategories: ReturnCategory[] = [
     icon: <FileText className="h-5 w-5" />,
     info: [
       {
-        title: "Standard Returns",
+        title: "Manufacturing Defects Only",
         details:
-          "Items must be in original condition, unused, and with all original packaging and documentation. Returns must be initiated within 7 days of delivery for standard items.",
+          "We only accept returns for items with genuine manufacturing defects that cannot be repaired. If a defect is identified and deemed irreparable, we will replace the item at no additional cost.",
       },
       {
-        title: "Custom Orders",
+        title: "Return Assistance",
         details:
-          "Custom-made furniture items with client-specified dimensions, materials, or finishes are not eligible for return unless there's a manufacturing defect.",
-      },
-      {
-        title: "Display & Clearance Items",
-        details:
-          "Items marked as 'display', 'as-is', or 'clearance' at the time of purchase cannot be returned unless specifically agreed upon in writing before purchase.",
-      },
-      {
-        title: "Project Orders",
-        details:
-          "For large project orders (more than 10 items), special return terms may apply as specified in your purchase agreement or contract.",
-      },
-    ],
-  },
-  {
-    title: "Return Process",
-    icon: <RotateCcw className="h-5 w-5" />,
-    info: [
-      {
-        title: "Initiating a Return",
-        details:
-          "To initiate a return, contact our customer service team within 7 days of delivery. A return authorization number (RAN) must be issued before any item can be returned.",
-      },
-      {
-        title: "Documentation Required",
-        details:
-          "All returns require original purchase documentation, including invoice number and GST details. Please have these ready when contacting our customer service team.",
-      },
-      {
-        title: "Inspection Process",
-        details:
-          "Our team will schedule an inspection of the items to be returned. This may involve a visit to your location or requesting photographs of the items in question.",
-      },
-      {
-        title: "Return Approval",
-        details:
-          "Once approved, you will receive return instructions and shipping labels if applicable. Unauthorized returns will not be accepted.",
+          "To request a return due to a manufacturing defect, please contact our customer support team. They will guide you through the verification and return process.",
       },
     ],
   },
@@ -84,22 +41,22 @@ const returnsCategories: ReturnCategory[] = [
       {
         title: "Manufacturing Defects",
         details:
-          "Items with manufacturing defects are eligible for return, replacement, or repair within 30 days of delivery. Defects must be documented and reported immediately upon discovery.",
+          "Items with verifiable manufacturing defects are eligible for free repair or, if not repairable, replacement. Defects must be documented and reported as soon as they are discovered.",
       },
       {
         title: "Damage During Shipping",
         details:
-          "Damage that occurs during shipping must be noted on the delivery receipt and reported to our customer service team within 48 hours of delivery.",
+          "If your item is damaged during transit, please report it within 48 hours of delivery. We'll arrange repair or replacement as applicable.",
       },
       {
         title: "Warranty Claims",
         details:
-          "Different furniture categories carry different warranty periods. Office chairs (1 year), desks and tables (2 years), storage solutions (3 years), and custom executive furniture (5 years).",
+          "All products are covered under a 1-year warranty for structural and mechanical defects. Our team will assess whether the defect qualifies for repair or replacement.",
       },
       {
         title: "Repair Services",
         details:
-          "For minor defects, we offer repair services which may be conducted at your location depending on the nature of the issue and your location in India.",
+          "Where possible, our service team will attempt to repair defective products before considering replacement. Repairs may be done on-site or off-site based on your location.",
       },
     ],
   },
@@ -108,76 +65,19 @@ const returnsCategories: ReturnCategory[] = [
     icon: <Truck className="h-5 w-5" />,
     info: [
       {
-        title: "Shipping Arrangements",
+        title: "Shipping for Defective Returns",
         details:
-          "For approved returns, our logistics team will coordinate pickup from your location. Please ensure items are properly packed in their original packaging if available.",
+          "If a manufacturing defect is confirmed, we will arrange pickup and cover return shipping costs. This also applies to any replacement shipments.",
       },
       {
-        title: "Return Shipping Costs",
+        title: "Pickup Coordination",
         details:
-          "For returns due to customer preference or ordering error, the customer is responsible for return shipping costs. For defective or incorrectly shipped items, we cover the shipping costs.",
+          "Our logistics team will coordinate a pickup time for the defective item and ensure the replacement (if required) is delivered promptly.",
       },
       {
-        title: "Pickup Scheduling",
+        title: "Packaging Requirements",
         details:
-          "Our team will coordinate with you to schedule a convenient pickup time during business hours (Mon-Fri, 10 AM to 6 PM).",
-      },
-      {
-        title: "Preparing Items for Return",
-        details:
-          "All items must be disassembled (if they were delivered assembled), properly packaged, and ready for pickup at the scheduled time. Additional charges may apply if our team needs to disassemble or package items.",
-      },
-    ],
-  },
-  {
-    title: "Refunds & Credits",
-    icon: <Calendar className="h-5 w-5" />,
-    info: [
-      {
-        title: "Refund Processing",
-        details:
-          "Refunds are processed within 10-15 business days after the returned items have been received and inspected at our warehouse. For B2B clients, credits may be applied to future purchases.",
-      },
-      {
-        title: "Restocking Fees",
-        details:
-          "A restocking fee of 20% may apply to returns due to customer preference. This fee is waived for defective items or if we shipped incorrect items.",
-      },
-      {
-        title: "Credit Memos",
-        details:
-          "Business clients with ongoing accounts may opt for credit memos instead of refunds, which can be applied to future purchases within 12 months.",
-      },
-      {
-        title: "GST Adjustments",
-        details:
-          "Refunds include appropriate GST adjustments. A credit note with revised GST will be issued for all returns processed.",
-      },
-    ],
-  },
-  {
-    title: "Special Considerations",
-    icon: <Phone className="h-5 w-5" />,
-    info: [
-      {
-        title: "Long-term Business Partners",
-        details:
-          "For established business relationships, we offer more flexible return policies. Please contact your account manager to discuss specific arrangements.",
-      },
-      {
-        title: "Volume Purchases",
-        details:
-          "For bulk orders exceeding ₹10 lakhs, special return terms may be negotiated before purchase. These terms will be documented in your purchase agreement.",
-      },
-      {
-        title: "Seasonal Variations",
-        details:
-          "Return processing times may be longer during peak business seasons (March-April, September-October) due to higher volume. Please plan accordingly.",
-      },
-      {
-        title: "Project Cancellations",
-        details:
-          "For project cancellations involving multiple furniture items, please contact our B2B sales team directly to discuss the specific situation and possible solutions.",
+          "Please ensure the item is packaged securely for pickup. If packaging is unavailable, inform our team in advance so alternate arrangements can be made.",
       },
     ],
   },

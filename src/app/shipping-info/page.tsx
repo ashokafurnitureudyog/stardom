@@ -13,46 +13,15 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Link } from "next-view-transitions";
-import { Truck, Clock, Globe, CreditCard, Shield } from "lucide-react";
+import { Clock, CreditCard, Shield } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { ShippingCategory } from "@/types/ComponentTypes";
 
 const shippingCategories: ShippingCategory[] = [
   {
-    title: "Delivery Options",
-    icon: <Truck className="h-5 w-5" />,
-    info: [
-      {
-        title: "Standard Shipping",
-        details:
-          "Delivery within 5-7 business days. Free on orders over ₹15,000, otherwise ₹999.",
-      },
-      {
-        title: "Express Shipping",
-        details:
-          "Delivery within 3-4 business days. ₹1,999 for all eligible orders.",
-      },
-      {
-        title: "Premium Delivery",
-        details:
-          "Delivery within 1-2 business days with white glove service, including assembly and packaging removal. ₹4,999 for all eligible items.",
-      },
-      {
-        title: "Furniture Delivery",
-        details:
-          "Special handling for large furniture items. Includes scheduled delivery window and optional assembly. Pricing varies by item and location.",
-      },
-    ],
-  },
-  {
     title: "Shipping Times",
     icon: <Clock className="h-5 w-5" />,
     info: [
-      {
-        title: "Processing Time",
-        details:
-          "Orders are typically processed within 2-3 business days. Custom furniture may require 3-6 weeks of production time before shipping.",
-      },
       {
         title: "Delivery Process",
         details:
@@ -66,33 +35,7 @@ const shippingCategories: ShippingCategory[] = [
       {
         title: "Delays and Seasonal Factors",
         details:
-          "Monsoon season, festivals, or other factors may affect delivery times. We'll notify you of any significant delays.",
-      },
-    ],
-  },
-  {
-    title: "Regional Shipping",
-    icon: <Globe className="h-5 w-5" />,
-    info: [
-      {
-        title: "Regions Served",
-        details:
-          "We currently ship to all major cities and towns across India. Service availability may vary in remote areas.",
-      },
-      {
-        title: "Metro City Delivery",
-        details:
-          "Delhi NCR, Mumbai, Bangalore, Chennai, Hyderabad, Kolkata, and Pune deliveries are prioritized with faster shipping times.",
-      },
-      {
-        title: "Tier 2 & 3 Cities",
-        details:
-          "We serve most tier 2 and tier 3 cities with standard delivery timeframes. Additional delivery charges may apply for remote locations.",
-      },
-      {
-        title: "Non-Serviceable Areas",
-        details:
-          "Some remote areas may not be serviceable due to logistical constraints. Our team will inform you if your location falls in this category.",
+          "Delivery times depend on your location. Monsoon season, festivals, or other factors may cause delays. We’ll notify you of any significant changes.",
       },
     ],
   },
@@ -127,19 +70,14 @@ const shippingCategories: ShippingCategory[] = [
     icon: <CreditCard className="h-5 w-5" />,
     info: [
       {
-        title: "B2B Payment Terms",
-        details:
-          "We offer flexible payment terms for business clients including net 30, 60, and 90 days based on credit approval and relationship status.",
-      },
-      {
         title: "Payment Methods",
         details:
-          "We accept bank transfers, cheques, and demand drafts. Please contact our sales team to discuss the best payment option for your business.",
+          "We accept payments via Cheque, NEFT, UPI, and Cash. For specific instructions, please contact our team before making a transaction.",
       },
       {
         title: "Volume Discounts",
         details:
-          "Bulk orders qualify for special pricing and shipping discounts. Contact our B2B sales team for customized quotes.",
+          "Bulk orders qualify for special pricing and shipping discounts. Contact our sales team for customized quotes.",
       },
       {
         title: "Advance Payment",
