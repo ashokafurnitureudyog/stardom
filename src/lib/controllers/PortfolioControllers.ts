@@ -2,6 +2,7 @@
 import { ID, Permission, Role } from "node-appwrite";
 import { createAdminClient } from "@/lib/server/appwrite";
 import { PortfolioProject } from "@/types/ComponentTypes";
+import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
 
 // Define interface for portfolio responses
 interface PortfolioResponse {
@@ -184,32 +185,14 @@ export async function deletePortfolioProject(
   imageUrls: string[] = [],
 ): Promise<PortfolioResponse> {
   try {
-    const { database, storage } = await createAdminClient();
+    const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
     const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
     if (imageUrls && imageUrls.length > 0) {
-      for (const url of imageUrls) {
-        try {
-          // Only try to delete from storage if it's an Appwrite URL
-          if (url.includes("appwrite.io") && url.includes("/files/")) {
-            const fileId = url.split("/files/")[1]?.split("/view")[0];
-            if (fileId) {
-              console.log("Deleting file from storage:", fileId);
-              await storage.deleteFile(bucketId, fileId);
-            }
-          }
-        } catch (deleteError: unknown) {
-          console.error(
-            "Failed to delete image from storage:",
-            deleteError instanceof Error
-              ? deleteError.message
-              : "Unknown error",
-          );
-          // Continue with other deletions even if one fails
-        }
-      }
+      // Use our centralized deletion utility
+      await deleteFilesFromStorage(imageUrls, bucketId);
     }
 
     // Delete the project document
@@ -225,6 +208,7 @@ export async function deletePortfolioProject(
     return { success: false, error: errorMessage };
   }
 }
+
 export async function updatePortfolioProject(
   projectId: string,
   projectData: ProjectInput,
@@ -239,56 +223,56 @@ export async function updatePortfolioProject(
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
     const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
-    // Get existing document first to properly handle images
-    try {
-      const existingDoc = await database.getDocument(
-        databaseId,
-        collectionId,
-        projectId,
-      );
-      console.log("Existing document:", existingDoc);
-    } catch (err) {
-      console.error("Error fetching existing document:", err);
+    // Get existing document
+    const existingDoc = await database.getDocument(
+      databaseId,
+      collectionId,
+      projectId,
+    );
+
+    // Handle removing gallery images from storage
+    if (removedGalleryUrls && removedGalleryUrls.length > 0) {
+      const result = await deleteFilesFromStorage(removedGalleryUrls, bucketId);
+      if (result.errors.length > 0) {
+        console.error("Errors during gallery cleanup:", result.errors);
+      }
     }
 
-    // Log incoming data for debugging
-    console.log("Updating project:", projectId);
-    console.log("Thumbnail removed:", thumbnailRemoved);
-    console.log("Removed gallery URLs:", removedGalleryUrls);
-    console.log("New gallery from form:", projectData.gallery);
-
     let thumbnail = projectData.thumbnail || "";
+    const oldThumbnail = existingDoc.thumbnail || "";
 
     // Handle thumbnail
     if (thumbnailRemoved) {
-      console.log("Clearing thumbnail as it was explicitly removed");
-      // Clear thumbnail if explicitly removed
+      // Delete old thumbnail from storage if it's an Appwrite URL
+      if (oldThumbnail) {
+        await deleteFilesFromStorage([oldThumbnail], bucketId);
+      }
       thumbnail = "";
     } else if (thumbnailFile) {
-      // Upload new thumbnail if provided
+      // Upload new thumbnail and delete old one if it exists
       try {
-        console.log("Uploading new thumbnail file");
         const fileId = ID.unique();
         await storage.createFile(bucketId, fileId, thumbnailFile, [
           Permission.read(Role.any()),
         ]);
 
         thumbnail = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
-        console.log("New thumbnail URL:", thumbnail);
+
+        // If there was an old thumbnail that's being replaced, delete it
+        if (oldThumbnail && oldThumbnail !== thumbnail) {
+          await deleteFilesFromStorage([oldThumbnail], bucketId);
+        }
       } catch (uploadError: unknown) {
         console.error(
           "Thumbnail upload error:",
           uploadError instanceof Error ? uploadError.message : "Unknown error",
         );
       }
-    } else if (thumbnail) {
-      console.log("Using existing thumbnail URL:", thumbnail);
     }
 
     // Upload new gallery images if any
     const uploadedUrls: string[] = [];
     if (files && files.length > 0) {
-      console.log(`Uploading ${files.length} new gallery images`);
       for (const file of files) {
         try {
           const fileId = ID.unique();
@@ -297,7 +281,6 @@ export async function updatePortfolioProject(
           ]);
           const newUrl = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
           uploadedUrls.push(newUrl);
-          console.log("Uploaded new gallery image:", newUrl);
         } catch (fileError: unknown) {
           console.error(
             "Gallery file upload error:",
@@ -307,27 +290,8 @@ export async function updatePortfolioProject(
       }
     }
 
-    // Handle gallery - filter out any removed URLs
-    console.log("Processing gallery images");
-    console.log("- Current gallery from form:", projectData.gallery);
-    console.log("- Newly uploaded URLs:", uploadedUrls);
-    console.log("- URLs to remove:", removedGalleryUrls);
-
-    // Start with the current gallery plus any newly uploaded images
-    let gallery = [...projectData.gallery, ...uploadedUrls];
-
-    // Remove any URLs that were explicitly removed
-    if (removedGalleryUrls && removedGalleryUrls.length > 0) {
-      gallery = gallery.filter((url) => {
-        const shouldKeep = !removedGalleryUrls.includes(url);
-        if (!shouldKeep) {
-          console.log("Removing gallery URL:", url);
-        }
-        return shouldKeep;
-      });
-    }
-
-    console.log("Final gallery URLs for update:", gallery);
+    // Handle gallery - add newly uploaded images to current gallery
+    const gallery = [...projectData.gallery, ...uploadedUrls];
 
     // Create the update payload
     const updatePayload = {
@@ -344,8 +308,6 @@ export async function updatePortfolioProject(
       gallery: gallery,
     };
 
-    console.log("Update payload:", updatePayload);
-
     // Update the document
     const dbDocument = await database.updateDocument(
       databaseId,
@@ -353,8 +315,6 @@ export async function updatePortfolioProject(
       projectId,
       updatePayload,
     );
-
-    console.log("Document updated successfully");
 
     // Map to our PortfolioProject type
     const project = mapToPortfolioProject(

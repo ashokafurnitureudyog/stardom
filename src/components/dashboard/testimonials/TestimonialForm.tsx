@@ -198,11 +198,6 @@ export const TestimonialForm = ({
       }
     }
 
-    console.log("Submitting with image:", finalImageUrl);
-    console.log("Image tab:", imageTab);
-    console.log("Is image removed:", isImageRemoved);
-    console.log("Selected avatar:", selectedAvatar);
-
     setIsSubmitting(true);
 
     try {

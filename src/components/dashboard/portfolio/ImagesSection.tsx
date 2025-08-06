@@ -32,11 +32,6 @@ export const ImagesSection = ({
   const [activeTab, setActiveTab] = useState<string>("upload");
   const [isImageLoading, setIsImageLoading] = useState(false);
 
-  // Debug: Log image URLs when component mounts or imageUrls changes
-  useEffect(() => {
-    console.log("Gallery imageUrls:", imageUrls);
-  }, [imageUrls]);
-
   // Generate object URLs for file previews using useMemo
   const fileUrls = useMemo(() => {
     return files.map((file) => ({

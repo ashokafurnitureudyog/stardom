@@ -136,17 +136,6 @@ export async function updateTestimonial(
       throw new Error("Database or collection ID not configured");
     }
 
-    console.log("Updating testimonial:", id);
-    console.log("New data:", {
-      name,
-      title,
-      location,
-      context,
-      purchaseDate,
-      quote,
-      img,
-    });
-
     // Update testimonial document
     const testimonial = await database.updateDocument(
       databaseId,

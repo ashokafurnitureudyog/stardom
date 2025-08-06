@@ -30,12 +30,6 @@ export const HeroFilesSection = () => {
 
       const result = await res.json();
 
-      // Add these debug logs
-      console.log("Hero media API response:", result);
-      if (result.mediaItems && result.mediaItems.length > 0) {
-        console.log("First item:", result.mediaItems[0]);
-      }
-
       if (!result.success) {
         throw new Error(result.error || "Failed to fetch hero media");
       }

@@ -32,7 +32,6 @@ export const HeroMediaCard = ({ item, onDelete }: HeroMediaCardProps) => {
 
   // Update this function in HeroMediaCard.tsx
   const handleDeleteClick = async () => {
-    console.log("Attempting to delete media with ID:", item.id);
     setIsDeleting(true);
     await onDelete(item.id);
     setIsDeleting(false);

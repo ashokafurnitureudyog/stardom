@@ -260,7 +260,6 @@ export async function updateTeamMembers(members: TeamMember[]) {
         // Parse file ID from URL
         const fileId = imageUrl.split("/files/")[1]?.split("/view")[0];
         if (fileId) {
-          console.log("Deleting unreferenced team member image:", fileId);
           await storage.deleteFile(bucketId, fileId);
         }
       } catch (error) {
@@ -374,7 +373,6 @@ export async function deleteCompanyInfo() {
           // Parse file ID from URL
           const fileId = doc.image.split("/files/")[1]?.split("/view")[0];
           if (fileId) {
-            console.log("Deleting team member image:", fileId);
             await storage.deleteFile(bucketId, fileId);
           }
         } catch (error) {
