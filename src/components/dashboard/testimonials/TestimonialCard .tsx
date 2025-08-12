@@ -12,23 +12,27 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2 } from "lucide-react";
+import { Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ClientTestimonial } from "@/types/ComponentTypes";
+import { EditTestimonialDialog } from "./EditTestimonialDialog";
 
 interface TestimonialCardProps {
   testimonial: ClientTestimonial;
   onDelete: (id: string, imageUrl: string) => Promise<void>;
+  onEdit?: () => void;
   isLoading?: boolean;
 }
 
 export const TestimonialCard = ({
   testimonial,
   onDelete,
+  onEdit,
   isLoading = false,
 }: TestimonialCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -39,6 +43,12 @@ export const TestimonialCard = ({
       );
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleEditSuccess = () => {
+    if (onEdit) {
+      onEdit();
     }
   };
 
@@ -127,7 +137,19 @@ export const TestimonialCard = ({
             </p>
           </div>
 
-          <div className="mt-auto pt-3 border-t border-[#3C3120]/70 group-hover:border-[#A28B55]/40 transition-colors duration-300 flex justify-end">
+          <div className="mt-auto pt-3 border-t border-[#3C3120]/70 group-hover:border-[#A28B55]/40 transition-colors duration-300 flex justify-end gap-2">
+            {/* Edit Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setEditDialogOpen(true)}
+              className="text-[#A28B55] hover:text-[#E6D5A9] hover:bg-[#A28B55]/10 transition-all duration-300 transform hover:scale-105"
+            >
+              <Edit size={16} className="mr-0 sm:mr-1" />
+              <span className="hidden sm:inline">Edit</span>
+            </Button>
+
+            {/* Delete Button */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
@@ -169,6 +191,14 @@ export const TestimonialCard = ({
           </div>
         </div>
       </div>
+
+      {/* Edit Dialog */}
+      <EditTestimonialDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        testimonial={testimonial}
+        onSuccess={handleEditSuccess}
+      />
     </div>
   );
 };

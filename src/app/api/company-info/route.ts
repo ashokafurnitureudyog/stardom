@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { getCompanyInfo } from "@/lib/controllers/CompanyInfoController";
 
@@ -16,8 +15,10 @@ export async function GET() {
       socialLinks: result.socialLinks, // Make sure these objects have a "platform" property
       teamMembers: result.teamMembers,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching company info:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

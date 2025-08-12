@@ -173,6 +173,7 @@ export const PortfolioSection = () => {
               key={project.id || project.$id || `${project.title}-${index}`}
               project={project}
               onDelete={handleDelete}
+              onEditSuccess={fetchProjects}
             />
           ))}
         </div>

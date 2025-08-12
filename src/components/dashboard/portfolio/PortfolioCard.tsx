@@ -13,24 +13,28 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash, Eye } from "lucide-react";
+import { Trash, Eye, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PortfolioProjectDetails } from "./PortfolioProjectDetails";
 import { PortfolioProjectType } from "./portfolio/types";
+import { EditPortfolioDialog } from "./EditPortfolioDialog";
 
 interface PortfolioCardProps {
   project: PortfolioProjectType;
   onDelete: (id: string, imageUrls: string[]) => Promise<void>;
+  onEditSuccess: () => void;
   isLoading?: boolean;
 }
 
 export const PortfolioCard = ({
   project,
   onDelete,
+  onEditSuccess,
   isLoading = false,
 }: PortfolioCardProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const projectId = project.id || project.$id || "";
 
@@ -61,39 +65,62 @@ export const PortfolioCard = ({
   }
 
   return (
-    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
-      {/* Delete button - top right corner, only visible on hover */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogTrigger asChild>
-          <button className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
-            <Trash size={20} className="text-[#A28B55]" />
-          </button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="bg-neutral-900 border border-[#3C3120]">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#A28B55]">
-              Delete Portfolio Project
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-neutral-400">
-              Are you sure you want to delete &quot;{project.title}&quot;? This
-              action cannot be undone and will permanently remove all associated
-              images.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-transparent border-[#3C3120] text-[#3C3120] hover:bg-neutral-800 hover:text-[#A28B55] hover:border-[#A28B55]">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteClick}
-              disabled={isDeleting}
-              className="bg-[#3C3120] hover:bg-[#A28B55] text-neutral-200 transform hover:scale-105 transition-all duration-300"
+    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10 relative">
+      {/* Action buttons container */}
+      <div className="absolute top-2 right-2 z-20 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+        {/* Edit button */}
+        <button
+          onClick={() => setEditDialogOpen(true)}
+          className="h-8 w-8 p-0 flex items-center justify-center rounded-full bg-neutral-900/80 backdrop-blur-sm transform scale-100 hover:scale-110 border border-[#3C3120] hover:border-[#A28B55]"
+          title="Edit project"
+        >
+          <Edit size={16} className="text-[#A28B55]" />
+        </button>
+
+        {/* Delete button */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogTrigger asChild>
+            <button
+              className="h-8 w-8 p-0 flex items-center justify-center rounded-full bg-neutral-900/80 backdrop-blur-sm transform scale-100 hover:scale-110 border border-[#3C3120] hover:border-[#A28B55]"
+              title="Delete project"
             >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              <Trash size={16} className="text-[#A28B55]" />
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-neutral-900 border border-[#3C3120]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-[#A28B55]">
+                Delete Portfolio Project
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-neutral-400">
+                Are you sure you want to delete &quot;{project.title}&quot;?
+                This action cannot be undone and will permanently remove all
+                associated images.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-transparent border-[#3C3120] text-[#3C3120] hover:bg-neutral-800 hover:text-[#A28B55] hover:border-[#A28B55]">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteClick}
+                disabled={isDeleting}
+                className="bg-[#3C3120] hover:bg-[#A28B55] text-neutral-200 transform hover:scale-105 transition-all duration-300"
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+
+      {/* Edit Dialog */}
+      <EditPortfolioDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        project={project}
+        onSuccess={onEditSuccess}
+      />
 
       {/* Image container with View Details on hover */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
