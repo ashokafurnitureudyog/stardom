@@ -174,6 +174,7 @@ export const ProductsSection = () => {
               key={product.id || product.$id || `${product.name}-${index}`}
               product={product}
               onDelete={handleDelete}
+              onUpdate={fetchProducts}
               isFeatured={featuredProductIds.has(
                 product.id || product.$id || "",
               )}

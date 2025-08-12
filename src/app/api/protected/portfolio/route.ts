@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   createPortfolioProject,
   deletePortfolioProject,
+  updatePortfolioProject,
 } from "@/lib/controllers/PortfolioControllers";
 import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
 
@@ -29,6 +30,18 @@ export async function POST(request: NextRequest) {
 
     const thumbnailFile = formData.get("thumbnailFile") as File | null;
 
+    // Check if this is an update or create
+    const projectId = formData.get("id") as string | null;
+
+    // For updates
+    const thumbnailRemoved = formData.get("thumbnail_removed") === "true";
+    const removedGalleryUrlsStr = formData.get("removed_gallery_urls") as
+      | string
+      | null;
+    const removedGalleryUrls = removedGalleryUrlsStr
+      ? JSON.parse(removedGalleryUrlsStr)
+      : [];
+
     const projectData = {
       title,
       description,
@@ -43,11 +56,26 @@ export async function POST(request: NextRequest) {
       testimonial_position,
     };
 
-    const result = await createPortfolioProject(
-      projectData,
-      files,
-      thumbnailFile || undefined,
-    );
+    let result;
+
+    if (projectId) {
+      // Update existing project
+      result = await updatePortfolioProject(
+        projectId,
+        projectData,
+        files,
+        thumbnailFile || undefined,
+        thumbnailRemoved,
+        removedGalleryUrls,
+      );
+    } else {
+      // Create new project
+      result = await createPortfolioProject(
+        projectData,
+        files,
+        thumbnailFile || undefined,
+      );
+    }
 
     if (!result.success) {
       return NextResponse.json({ message: result.error }, { status: 500 });

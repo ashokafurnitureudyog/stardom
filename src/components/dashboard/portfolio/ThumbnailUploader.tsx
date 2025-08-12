@@ -23,9 +23,6 @@ export const ThumbnailUploader = ({
     thumbnailFile ? "upload" : thumbnailUrl ? "url" : "upload",
   );
   const [isImageLoading, setIsImageLoading] = useState(false);
-  const [showPreview, setShowPreview] = useState(
-    !!thumbnailUrl && !thumbnailFile,
-  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -54,11 +51,12 @@ export const ThumbnailUploader = ({
 
       onChange(file);
       setActiveTab("upload");
-      setShowPreview(false); // Reset URL preview when uploading a file
     }
   };
 
-  const handleUrlChange = (url: string) => {
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+
     // Make sure URL isn't longer than 512 chars
     if (url.length > 512) {
       toast({
@@ -70,13 +68,14 @@ export const ThumbnailUploader = ({
     }
 
     onChange(undefined, url);
-    // Only show the preview when a test is explicitly run
-    setShowPreview(false);
   };
 
   const handleClearImage = () => {
     onChange(undefined, "");
-    setShowPreview(false);
+    toast({
+      title: "Thumbnail removed",
+      description: "The thumbnail image has been removed",
+    });
   };
 
   // Function to handle image load errors
@@ -89,7 +88,6 @@ export const ThumbnailUploader = ({
     });
     // Clear the invalid URL
     onChange(undefined, "");
-    setShowPreview(false);
     setIsImageLoading(false);
   };
 
@@ -131,10 +129,9 @@ export const ThumbnailUploader = ({
       await Promise.race([testPromise, timeoutPromise]);
 
       setIsImageLoading(false);
-      setShowPreview(true);
       toast({
         title: "Image verified",
-        description: "The image has been loaded successfully.",
+        description: "The image URL was verified and added as thumbnail",
       });
     } catch (error: unknown) {
       setIsImageLoading(false);
@@ -146,13 +143,63 @@ export const ThumbnailUploader = ({
             : "The URL does not point to a valid image. Please check the URL or try another one.",
         variant: "destructive",
       });
-      setShowPreview(false);
     }
+  };
+
+  // Render a thumbnail preview if available
+  const renderThumbnailPreview = () => {
+    if (thumbnailFile || thumbnailUrl) {
+      return (
+        <div className="mt-6">
+          <h4 className="text-sm font-medium text-neutral-400 mb-3">
+            Current Thumbnail
+          </h4>
+          <div className="group relative w-40 h-40 mx-auto">
+            <div className="aspect-square rounded-md overflow-hidden border border-[#3C3120] bg-neutral-950/50">
+              {thumbnailFile ? (
+                <Image
+                  src={URL.createObjectURL(thumbnailFile)}
+                  alt="Thumbnail preview"
+                  fill
+                  className="object-cover"
+                />
+              ) : thumbnailUrl ? (
+                <Image
+                  src={thumbnailUrl}
+                  alt="Thumbnail preview"
+                  fill
+                  className="object-cover"
+                  onError={handleImageError}
+                  onLoad={handleImageLoad}
+                  unoptimized // Use unoptimized for external URLs
+                  sizes="160px"
+                />
+              ) : null}
+            </div>
+
+            {/* Delete button */}
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+              onClick={handleClearImage}
+            >
+              <X size={12} />
+            </Button>
+          </div>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-medium text-[#A28B55]">Thumbnail Image</h3>
+
+      {/* Show current thumbnail if available */}
+      {renderThumbnailPreview()}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
@@ -192,35 +239,13 @@ export const ThumbnailUploader = ({
               </p>
             </label>
           </div>
-
-          {thumbnailFile && (
-            <div className="mt-6">
-              <div className="aspect-square w-40 mx-auto relative">
-                <Image
-                  src={thumbnailUrl}
-                  alt="Thumbnail preview"
-                  fill
-                  className="object-cover rounded-md"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute -top-2 -right-2 h-6 w-6 shadow-md"
-                  onClick={handleClearImage}
-                >
-                  <X size={12} />
-                </Button>
-              </div>
-            </div>
-          )}
         </TabsContent>
 
         <TabsContent value="url" className="space-y-4">
           <div className="flex gap-2">
             <Input
               value={thumbnailUrl}
-              onChange={(e) => handleUrlChange(e.target.value)}
+              onChange={handleUrlChange}
               placeholder="Enter URL for main project image"
               className="flex-1"
             />
@@ -228,14 +253,14 @@ export const ThumbnailUploader = ({
               type="button"
               onClick={() => testImageUrl(thumbnailUrl)}
               disabled={isImageLoading || !thumbnailUrl}
-              className="bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80"
+              className="bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 whitespace-nowrap"
             >
               {isImageLoading ? (
                 <>
                   <Loader2 size={16} className="mr-1 animate-spin" /> Testing
                 </>
               ) : (
-                "Add URL"
+                "Verify URL"
               )}
             </Button>
           </div>
@@ -243,23 +268,6 @@ export const ThumbnailUploader = ({
           {thumbnailUrl && thumbnailUrl.length > 512 && (
             <div className="text-red-400 text-sm mt-1">
               URL is too long ({thumbnailUrl.length}/512 characters)
-            </div>
-          )}
-
-          {showPreview && thumbnailUrl && !thumbnailFile && !isImageLoading && (
-            <div className="mt-4 border border-[#3C3120] rounded-md p-4 bg-neutral-950/30">
-              <div className="relative aspect-square w-40 h-40 rounded-md overflow-hidden mx-auto">
-                <Image
-                  src={thumbnailUrl}
-                  alt="Thumbnail preview"
-                  fill
-                  className="object-cover"
-                  onError={handleImageError}
-                  onLoad={handleImageLoad}
-                  unoptimized // Use unoptimized for external URLs
-                  sizes="160px"
-                />
-              </div>
             </div>
           )}
 

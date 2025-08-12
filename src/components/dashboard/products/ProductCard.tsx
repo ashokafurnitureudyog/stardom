@@ -13,18 +13,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash, Eye, Star } from "lucide-react";
+import { Trash, Eye, Star, Pencil } from "lucide-react";
 import type { Product } from "@/types/ComponentTypes";
 import { Badge } from "@/components/ui/badge";
 import { ProductDetails } from "../view-details";
+import { EditProductDialog } from "./EditProductDialog";
 
 export const ProductCard = ({
   product,
   onDelete,
+  onUpdate,
   isFeatured = false,
 }: {
   product: Product;
   onDelete: (id: string, images: string[]) => void;
+  onUpdate?: () => void;
   isFeatured?: boolean;
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -51,38 +54,48 @@ export const ProductCard = ({
         </div>
       )}
 
-      {/* Delete button - top right corner, only visible on hover */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogTrigger asChild>
-          <button className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
-            <Trash size={20} className="text-[#A28B55]" />
+      {/* Action buttons - top right corner, only visible on hover */}
+      <div className="absolute right-2 top-2 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
+        {/* Edit button */}
+        <EditProductDialog product={product} onSuccess={onUpdate}>
+          <button className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
+            <Pencil size={18} className="text-[#A28B55]" />
           </button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="bg-neutral-900 border border-[#3C3120]">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#A28B55]">
-              Delete Product
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-neutral-400">
-              Are you sure you want to delete &quot;{product.name}&quot;? This
-              action cannot be undone and will permanently remove all associated
-              images.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="bg-transparent border-[#3C3120] text-[#3C3120] hover:bg-neutral-800 hover:text-[#A28B55] hover:border-[#A28B55]">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteClick}
-              disabled={isDeleting}
-              className="bg-[#3C3120] hover:bg-[#A28B55] text-neutral-200 transform hover:scale-105 transition-all duration-300"
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        </EditProductDialog>
+
+        {/* Delete button */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogTrigger asChild>
+            <button className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
+              <Trash size={18} className="text-[#A28B55]" />
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-neutral-900 border border-[#3C3120]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-[#A28B55]">
+                Delete Product
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-neutral-400">
+                Are you sure you want to delete &quot;{product.name}&quot;? This
+                action cannot be undone and will permanently remove all
+                associated images.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-transparent border-[#3C3120] text-[#3C3120] hover:bg-neutral-800 hover:text-[#A28B55] hover:border-[#A28B55]">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteClick}
+                disabled={isDeleting}
+                className="bg-[#3C3120] hover:bg-[#A28B55] text-neutral-200 transform hover:scale-105 transition-all duration-300"
+              >
+                {isDeleting ? "Deleting..." : "Delete"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
 
       {/* Image container with View Details on hover */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

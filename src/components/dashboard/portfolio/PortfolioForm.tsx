@@ -62,6 +62,10 @@ export const PortfolioForm = ({
   );
   const [newImageUrl, setNewImageUrl] = useState("");
 
+  // Track removed gallery URLs (only for editing)
+  const [removedGalleryUrls, setRemovedGalleryUrls] = useState<string[]>([]);
+  const [isThumbnailRemoved, setIsThumbnailRemoved] = useState(false);
+
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -86,6 +90,18 @@ export const PortfolioForm = ({
     }
   };
 
+  // Gallery image removal handler
+  const handleRemoveGalleryUrl = (index: number) => {
+    const urlToRemove = galleryUrls[index];
+
+    // If we're editing, track removed URLs
+    if (isEditing && initialData?.gallery?.includes(urlToRemove)) {
+      setRemovedGalleryUrls((prev) => [...prev, urlToRemove]);
+    }
+
+    setGalleryUrls(galleryUrls.filter((_, i) => i !== index));
+  };
+
   // Form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,9 +114,9 @@ export const PortfolioForm = ({
         throw new Error("Title and description are required");
       }
 
-      // Validate thumbnail
-      if (!thumbnailFile && !thumbnailUrl) {
-        throw new Error("A thumbnail image is required");
+      // Validate thumbnail (not required if user removed it)
+      if (!thumbnailFile && !thumbnailUrl && !isThumbnailRemoved) {
+        throw new Error("A thumbnail image is required unless you removed it");
       }
 
       // Validate thumbnail URL length if it's from an external URL
@@ -128,11 +144,24 @@ export const PortfolioForm = ({
         formData.append("thumbnail", "");
       }
 
+      // If editing and thumbnail was explicitly removed
+      if (isEditing && isThumbnailRemoved) {
+        formData.append("thumbnail_removed", "true");
+      }
+
       // Gallery URLs - Filter out any blob URLs
       const validGalleryUrls = galleryUrls
         .filter((url) => !url.startsWith("blob:"))
         .map((url) => url.substring(0, 512)); // Ensure within 512 char limit
       formData.append("gallery", JSON.stringify(validGalleryUrls));
+
+      // If editing, include removed gallery URLs
+      if (isEditing && removedGalleryUrls.length > 0) {
+        formData.append(
+          "removed_gallery_urls",
+          JSON.stringify(removedGalleryUrls),
+        );
+      }
 
       // Testimonial - use flat structure for Appwrite
       formData.append("testimonial_quote", testimonialQuote);
@@ -202,6 +231,7 @@ export const PortfolioForm = ({
       thumbnailObjectUrlRef.current = objectUrl;
       setThumbnailUrl(objectUrl);
       setThumbnailFile(file);
+      setIsThumbnailRemoved(false);
     } else if (url) {
       // When setting a URL, make sure it's not longer than 512 chars
       if (url.length > 512) {
@@ -215,9 +245,15 @@ export const PortfolioForm = ({
       }
       setThumbnailUrl(url);
       setThumbnailFile(undefined);
+      setIsThumbnailRemoved(false);
     } else {
       setThumbnailUrl("");
       setThumbnailFile(undefined);
+
+      // If editing and thumbnail is removed, mark it
+      if (isEditing && initialData?.thumbnail) {
+        setIsThumbnailRemoved(true);
+      }
     }
   };
 
@@ -290,6 +326,7 @@ export const PortfolioForm = ({
           newImageUrl={newImageUrl}
           setNewImageUrl={setNewImageUrl}
           handleAddImageUrl={handleAddImageUrl}
+          onRemoveImageUrl={handleRemoveGalleryUrl}
         />
 
         <Separator className="my-6" />

@@ -14,6 +14,7 @@ interface ImagesSectionProps {
   newImageUrl: string;
   setNewImageUrl: (url: string) => void;
   handleAddImageUrl?: () => void;
+  isEditing?: boolean;
 }
 
 export function ImagesSection({
@@ -199,9 +200,57 @@ export function ImagesSection({
     setImageUrls(imageUrls.filter((_, i) => i !== index));
   };
 
+  // Simplified image removal function - just removes from the array
+  const handleImageRemove = (index: number) => {
+    // Create a new array without the image at the specified index
+    const newUrls = [...imageUrls];
+    newUrls.splice(index, 1);
+    setImageUrls(newUrls);
+
+    toast({
+      title: "Image removed",
+      description: "The image has been removed from the product",
+    });
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h3 className="text-lg font-medium">Product Images</h3>
+
+      {/* Current Images Display - always visible */}
+      {imageUrls.length > 0 && (
+        <div className="mb-6">
+          <h4 className="text-sm font-medium mb-3">
+            Current Images ({imageUrls.length})
+          </h4>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {imageUrls.map((url, index) => (
+              <div key={`img-${index}`} className="group relative">
+                <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={`Product image ${index + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={() => handleImageError(index)}
+                  />
+                </div>
+
+                {/* Delete button */}
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                  onClick={() => handleImageRemove(index)}
+                >
+                  <X size={12} />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
@@ -246,11 +295,11 @@ export function ImagesSection({
           {files.length > 0 && fileUrls.length > 0 && (
             <div className="mt-6">
               <h4 className="text-sm font-medium mb-3">
-                Selected Files ({files.length})
+                New Files ({files.length})
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {fileUrls.map(({ file, url }, index) => (
-                  <div key={index} className="group relative">
+                  <div key={`file-${index}`} className="group relative">
                     <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
                       <Image
                         src={url}
@@ -327,42 +376,6 @@ export function ImagesSection({
           {newImageUrl && newImageUrl.length > 512 && (
             <div className="text-red-400 text-sm mt-1">
               URL is too long ({newImageUrl.length}/512 characters)
-            </div>
-          )}
-
-          {imageUrls.length > 0 && (
-            <div className="mt-6">
-              <h4 className="text-sm font-medium mb-3">
-                Image URLs ({imageUrls.length})
-              </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {imageUrls.map((url, index) => (
-                  <div key={index} className="group relative">
-                    <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
-                      <Image
-                        src={url}
-                        alt={`Product image ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
-                        onError={() => handleImageError(index)}
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                      onClick={() =>
-                        setImageUrls(imageUrls.filter((_, i) => i !== index))
-                      }
-                    >
-                      <X size={12} />
-                    </Button>
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 
