@@ -69,12 +69,12 @@ export const ImagesSection = ({
 
       // Validate file sizes (max 10MB each)
       const largeFiles = newFiles.filter(
-        (file) => file.size > 10 * 1024 * 1024,
+        (file) => file.size > 50 * 1024 * 1024, // 50MB limit
       );
       if (largeFiles.length > 0) {
         toast({
           title: "File too large",
-          description: `${largeFiles.length} image(s) exceed the maximum size of 10MB`,
+          description: `${largeFiles.length} image(s) exceed the maximum size of 50MB`,
           variant: "destructive",
         });
         return;

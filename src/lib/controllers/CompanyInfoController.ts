@@ -1,5 +1,5 @@
 "use server";
-import { ID, Permission, Role } from "node-appwrite";
+import { ID } from "node-appwrite";
 import { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
 import { createAdminClient } from "../server/appwrite";
 
@@ -295,36 +295,6 @@ export async function updateTeamMembers(members: TeamMember[]) {
         error instanceof Error
           ? error.message
           : "Failed to update team members",
-    };
-  }
-}
-
-// Upload team member image
-export async function uploadTeamImage(file: File) {
-  try {
-    const { storage } = await createAdminClient();
-    const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
-
-    // Upload file with public read permission
-    const fileId = ID.unique();
-    await storage.createFile(bucketId, fileId, file, [
-      Permission.read(Role.any()),
-    ]);
-
-    // Construct URL as done in ProductController
-    const imageUrl = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
-
-    return {
-      success: true,
-      url: imageUrl,
-      message: "Image uploaded successfully",
-    };
-  } catch (error: unknown) {
-    console.error("Failed to upload image:", error);
-    return {
-      success: false,
-      url: null,
-      error: error instanceof Error ? error.message : "Failed to upload image",
     };
   }
 }

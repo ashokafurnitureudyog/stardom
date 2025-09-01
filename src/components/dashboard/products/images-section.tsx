@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -71,14 +72,15 @@ export function ImagesSection({
         return;
       }
 
-      // Validate file sizes (max 10MB each)
+      // Validate file sizes (max 50MB each - we're now using direct Appwrite upload)
+      // This is a client-side check for better UX, the actual limit is handled by Appwrite
       const largeFiles = newFiles.filter(
-        (file) => file.size > 10 * 1024 * 1024,
+        (file) => file.size > 50 * 1024 * 1024,
       );
       if (largeFiles.length > 0) {
         toast({
           title: "File too large",
-          description: `${largeFiles.length} file(s) exceed the maximum size of 10MB`,
+          description: `${largeFiles.length} file(s) exceed the maximum size of 50MB`,
           variant: "destructive",
         });
         e.target.value = "";
@@ -287,7 +289,7 @@ export function ImagesSection({
               </div>
               <p className="text-base font-medium">Click to upload images</p>
               <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
-                Support for JPG, PNG, WEBP or GIF (Max 10MB each)
+                Support for JPG, PNG, WEBP or GIF (Up to 50MB each)
               </p>
             </label>
           </div>

@@ -9,6 +9,8 @@ import { FeaturesSection } from "./features-section";
 import { ColorsSection } from "./colors-section";
 import type { Product } from "@/types/ComponentTypes";
 import { useToast } from "@/hooks/use-toast";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { Progress } from "@/components/ui/progress"; // Ensure you have this component
 
 interface ProductFormProps {
   onSuccess: () => void;
@@ -49,6 +51,7 @@ export const ProductForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { toast } = useToast();
+  const { uploadMultipleFiles, uploadStatus } = useFileUpload();
 
   // Track initial image URLs for comparison during updates
   useEffect(() => {
@@ -71,39 +74,53 @@ export const ProductForm = ({
     setErrorMessage("");
 
     try {
-      const formData = new FormData();
-
-      // Basic product details
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("category", category);
-      formData.append("collection", collection);
-      formData.append("features", JSON.stringify(features));
-      formData.append("colors", JSON.stringify(colors));
-
-      // Current image URLs
-      formData.append("imageUrls", JSON.stringify(imageUrls));
-
-      // If editing, include product ID and track removed images
-      if (isEditing && initialData) {
-        const productId = initialData.id || initialData.$id || "";
-        formData.append("id", productId);
-
-        // Track removed images for future reference (not deleting them yet)
-        const removedImages = initialImageUrls.filter(
-          (url) => !imageUrls.includes(url),
+      // 1. First upload any files directly to Appwrite
+      let uploadedUrls: string[] = [];
+      if (files.length > 0) {
+        uploadedUrls = await uploadMultipleFiles(
+          files,
+          process.env.NEXT_PUBLIC_APPWRITE_PRODUCT_IMAGES_BUCKET_ID!,
         );
-        if (removedImages.length > 0) {
-          formData.append("removedImages", JSON.stringify(removedImages));
+
+        if (uploadedUrls.length !== files.length) {
+          throw new Error("Some files failed to upload. Please try again.");
         }
       }
 
-      // Add files
-      files.forEach((file) => formData.append("files", file));
+      // 2. Prepare the data for API request (JSON format)
+      const productData = {
+        name,
+        description,
+        category,
+        collection,
+        features,
+        colors,
+        // Combine existing URLs with newly uploaded ones
+        images: [...imageUrls, ...uploadedUrls],
+      };
 
+      // 3. For editing, track removed images
+      let removedImages: string[] = [];
+      if (isEditing && initialData) {
+        removedImages = initialImageUrls.filter(
+          (url) => !imageUrls.includes(url),
+        );
+      }
+
+      // 4. Send the product data to the API
       const response = await fetch("/api/protected/products", {
         method: isEditing ? "PUT" : "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...productData,
+          id:
+            isEditing && initialData
+              ? initialData.id || initialData.$id
+              : undefined,
+          removedImages: removedImages.length > 0 ? removedImages : undefined,
+        }),
         credentials: "include",
       });
 
@@ -243,17 +260,32 @@ export const ProductForm = ({
           newImageUrl={newImageUrl}
           setNewImageUrl={setNewImageUrl}
           handleAddImageUrl={handleAddImageUrl}
-          isEditing={isEditing} // Pass the isEditing prop here
+          isEditing={isEditing}
         />
+
+        {/* Upload Progress Indicator */}
+        {uploadStatus.uploading && (
+          <div className="mt-4 space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-neutral-400">
+                Uploading files...
+              </span>
+              <span className="text-sm text-neutral-400">
+                {uploadStatus.progress}%
+              </span>
+            </div>
+            <Progress value={uploadStatus.progress} className="h-2" />
+          </div>
+        )}
 
         <Separator className="my-6" />
 
         <Button
           type="submit"
           className="w-full py-6 text-base"
-          disabled={isSubmitting}
+          disabled={isSubmitting || uploadStatus.uploading}
         >
-          {isSubmitting
+          {isSubmitting || uploadStatus.uploading
             ? isEditing
               ? "Updating..."
               : "Saving..."

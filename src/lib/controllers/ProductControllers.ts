@@ -1,5 +1,5 @@
 "use server";
-import { ID, Permission, Role } from "node-appwrite";
+import { ID } from "node-appwrite";
 import { createAdminClient } from "@/lib/server/appwrite";
 import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
 
@@ -22,36 +22,9 @@ interface ProductResponse {
 
 export const addProduct = async (
   productData: ProductInput,
-  files?: File[],
 ): Promise<ProductResponse> => {
   try {
-    const { database, storage } = await createAdminClient();
-
-    // File upload logic
-    const uploadedUrls: string[] = [];
-    if (files && files.length > 0) {
-      for (const file of files) {
-        try {
-          const fileId = ID.unique();
-          await storage.createFile(
-            process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!,
-            fileId,
-            file,
-            [Permission.read(Role.any())],
-          );
-          uploadedUrls.push(
-            `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`,
-          );
-        } catch (uploadError: unknown) {
-          console.error(
-            "File upload error:",
-            uploadError instanceof Error
-              ? uploadError.message
-              : "Unknown error",
-          );
-        }
-      }
-    }
+    const { database } = await createAdminClient();
 
     const result = await database.createDocument(
       process.env.APPWRITE_DATABASE_ID!,
@@ -61,10 +34,10 @@ export const addProduct = async (
         name: productData.name,
         description: productData.description,
         category: productData.category,
-        product_collection: productData.collection, // Changed to product_collection
+        product_collection: productData.collection,
         features: productData.features,
         colors: productData.colors,
-        images: [...productData.images, ...uploadedUrls],
+        images: productData.images,
       },
     );
 
@@ -80,10 +53,9 @@ export const addProduct = async (
 export const updateProduct = async (
   productId: string,
   productData: ProductInput,
-  files?: File[],
 ): Promise<ProductResponse> => {
   try {
-    const { database, storage } = await createAdminClient();
+    const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PRODUCTS_COLLECTION_ID!;
     const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
@@ -95,29 +67,6 @@ export const updateProduct = async (
     if (productData.removedImages && productData.removedImages.length > 0) {
       // Delete the removed images from storage
       await deleteFilesFromStorage(productData.removedImages, bucketId);
-    }
-
-    // Upload new files
-    const uploadedUrls: string[] = [];
-    if (files && files.length > 0) {
-      for (const file of files) {
-        try {
-          const fileId = ID.unique();
-          await storage.createFile(bucketId, fileId, file, [
-            Permission.read(Role.any()),
-          ]);
-          uploadedUrls.push(
-            `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`,
-          );
-        } catch (uploadError: unknown) {
-          console.error(
-            "File upload error:",
-            uploadError instanceof Error
-              ? uploadError.message
-              : "Unknown error",
-          );
-        }
-      }
     }
 
     // Update the document with new image URLs
@@ -132,7 +81,7 @@ export const updateProduct = async (
         product_collection: productData.collection,
         features: productData.features,
         colors: productData.colors,
-        images: [...productData.images, ...uploadedUrls],
+        images: productData.images,
       },
     );
 
@@ -145,7 +94,7 @@ export const updateProduct = async (
   }
 };
 
-// Complete delete product function
+// Keep deleteProduct function as is
 export const deleteProduct = async (
   productId: string,
   imageUrls: string[] = [],

@@ -9,6 +9,8 @@ import { Check, Loader2 } from "lucide-react";
 import { MediaTypeSelector } from "./MediaTypeSelector";
 import { MediaUploadTabs } from "./MediaUploadTabs";
 import { MediaPreview } from "./MediaPreview";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 
 interface HeroMediaFormProps {
   onSuccess: () => void;
@@ -24,6 +26,9 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Use the file upload hook
+  const { uploadFile, uploadStatus } = useFileUpload();
 
   // Use ref to track the current previewUrl for cleanup without causing re-renders
   const previewUrlRef = useRef<string | null>(null);
@@ -71,48 +76,69 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData();
-
-      if (addMethod === "url") {
-        if (!mediaUrl) {
-          toast({
-            title: "Validation Error",
-            description: "Please provide a URL for the media",
-            variant: "destructive",
-          });
-          setIsSubmitting(false);
-          return;
-        }
-
-        formData.append("method", "url");
-        formData.append(
-          "data",
-          JSON.stringify({
-            type: mediaType,
-            src: mediaUrl,
-            alt: mediaAlt,
-          }),
-        );
-      } else {
-        if (!selectedFile) {
-          toast({
-            title: "Validation Error",
-            description: "Please select a file to upload",
-            variant: "destructive",
-          });
-          setIsSubmitting(false);
-          return;
-        }
-
-        formData.append("method", "upload");
-        formData.append("file", selectedFile);
-        formData.append("type", mediaType);
-        if (mediaAlt) formData.append("alt", mediaAlt);
+      // Validate inputs
+      if (addMethod === "url" && !mediaUrl) {
+        toast({
+          title: "Validation Error",
+          description: "Please provide a URL for the media",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
       }
 
+      if (addMethod === "upload" && !selectedFile) {
+        toast({
+          title: "Validation Error",
+          description: "Please select a file to upload",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      let finalMediaUrl = mediaUrl;
+
+      // If upload method, upload the file directly to Appwrite
+      if (addMethod === "upload" && selectedFile) {
+        try {
+          const uploadResult = await uploadFile(
+            selectedFile,
+            process.env.NEXT_PUBLIC_APPWRITE_PRODUCT_IMAGES_BUCKET_ID!,
+          );
+
+          if (!uploadResult) {
+            throw new Error("Failed to upload media file");
+          }
+
+          finalMediaUrl = uploadResult;
+        } catch (error) {
+          throw new Error(
+            `File upload failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          );
+        }
+      }
+
+      // Create the JSON payload
+      const mediaData = {
+        type: mediaType,
+        src: finalMediaUrl,
+        alt: mediaAlt || "",
+        // These fields are optional and can be expanded as needed
+        poster: "",
+        preload: false,
+        webmSrc: "",
+        lowResSrc: "",
+      };
+
+      // Send the JSON data to the API
       const res = await fetch("/api/protected/hero-media", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(mediaData),
+        credentials: "include",
       });
 
       const result = await res.json();
@@ -242,6 +268,21 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
               </div>
             )}
 
+            {/* Upload Progress Indicator */}
+            {uploadStatus.uploading && (
+              <div className="mt-4 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-neutral-400">
+                    Uploading media...
+                  </span>
+                  <span className="text-sm text-neutral-400">
+                    {uploadStatus.progress}%
+                  </span>
+                </div>
+                <Progress value={uploadStatus.progress} className="h-2" />
+              </div>
+            )}
+
             <Separator className="my-6 bg-[#3C3120]" />
 
             {/* Action Buttons */}
@@ -250,7 +291,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
                 type="button"
                 variant="outline"
                 onClick={onCancel}
-                disabled={isSubmitting}
+                disabled={isSubmitting || uploadStatus.uploading}
                 className="bg-transparent border-[#3C3120] text-neutral-300 hover:bg-neutral-900 hover:border-[#A28B55]"
               >
                 Cancel
@@ -259,12 +300,13 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
                 type="submit"
                 disabled={
                   isSubmitting ||
+                  uploadStatus.uploading ||
                   (addMethod === "upload" && !selectedFile) ||
                   (addMethod === "url" && !mediaUrl)
                 }
                 className="bg-[#A28B55] text-neutral-100 hover:bg-[#A28B55]/90"
               >
-                {isSubmitting ? (
+                {isSubmitting || uploadStatus.uploading ? (
                   <>
                     <Loader2 size={16} className="mr-2 animate-spin" />{" "}
                     Saving...

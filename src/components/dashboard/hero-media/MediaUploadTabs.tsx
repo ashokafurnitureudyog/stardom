@@ -185,7 +185,7 @@ export const MediaUploadTabs = ({
               </p>
               <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">
                 {mediaType === "image"
-                  ? "Support for JPG, PNG, WEBP or GIF (Max 10MB)"
+                  ? "Support for JPG, PNG, WEBP or GIF (Max 50MB)" // Updated to 50MB
                   : "Support for MP4, WEBM (Max 50MB)"}
               </p>
               <p className="text-neutral-500 text-sm mt-1">

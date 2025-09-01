@@ -1,25 +1,27 @@
 "use server";
-import { ID, Permission, Role } from "node-appwrite";
+import { ID } from "node-appwrite";
 import { createAdminClient } from "@/lib/server/appwrite";
 import { MediaItem } from "@/types/MediaTypes";
 
 const COLLECTION_ID = process.env.APPWRITE_HERO_MEDIA_COLLECTION_ID as string;
 const DATABASE_ID = process.env.APPWRITE_DATABASE_ID as string;
 const BUCKET_ID = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID as string;
-const MAX_FILE_SIZE_MB = 50; // 50MB max file size
-const ALLOWED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-];
-const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm"];
 
 interface HeroMediaResult {
   success: boolean;
   mediaItems?: MediaItem[];
   mediaItem?: MediaItem & { id?: string };
   error?: string;
+}
+
+interface MediaInput {
+  type: "image" | "video";
+  src: string;
+  alt?: string;
+  poster?: string;
+  preload?: boolean;
+  webmSrc?: string;
+  lowResSrc?: string;
 }
 
 function mapToMediaItem(
@@ -60,8 +62,8 @@ export async function getHeroMedia(): Promise<HeroMediaResult> {
   }
 }
 
-export async function addHeroMediaUrl(
-  media: Partial<MediaItem>,
+export async function addHeroMedia(
+  media: MediaInput,
 ): Promise<HeroMediaResult> {
   try {
     const { database } = await createAdminClient();
@@ -103,84 +105,9 @@ export async function addHeroMediaUrl(
       mediaItem: mapToMediaItem(newMedia),
     };
   } catch (error: unknown) {
-    console.error("Error adding hero media via URL:", error);
+    console.error("Error adding hero media:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to add hero media";
-    return {
-      success: false,
-      error: errorMessage,
-    };
-  }
-}
-
-function validateFile(file: File, type: "image" | "video"): string | null {
-  // Check file size
-  if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-    return `File size exceeds maximum allowed size of ${MAX_FILE_SIZE_MB}MB`;
-  }
-
-  // Check file type
-  const allowedTypes =
-    type === "image" ? ALLOWED_IMAGE_TYPES : ALLOWED_VIDEO_TYPES;
-  if (!allowedTypes.includes(file.type)) {
-    return `File type not allowed. Supported types: ${allowedTypes.join(", ")}`;
-  }
-
-  return null;
-}
-
-export async function uploadHeroMedia(
-  file: File,
-  type: "image" | "video",
-  alt?: string,
-): Promise<HeroMediaResult> {
-  try {
-    // Validate file
-    const validationError = validateFile(file, type);
-    if (validationError) {
-      return {
-        success: false,
-        error: validationError,
-      };
-    }
-
-    const { database, storage } = await createAdminClient();
-
-    // Generate a unique ID for the file
-    const fileId = ID.unique();
-
-    // Upload file to storage
-    await storage.createFile(BUCKET_ID, fileId, file, [
-      Permission.read(Role.any()),
-    ]);
-
-    // Generate the file URL using Appwrite's format
-    const fileUrl = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
-
-    // Create document in database
-    const newMedia = await database.createDocument(
-      DATABASE_ID,
-      COLLECTION_ID,
-      ID.unique(),
-      {
-        type,
-        src: fileUrl,
-        alt: alt || "",
-        poster: "",
-        preload: false,
-        webmSrc: "",
-        lowResSrc: "",
-      },
-    );
-
-    return {
-      success: true,
-      mediaItem: mapToMediaItem(newMedia),
-    };
-  } catch (error: unknown) {
-    console.error("Error uploading hero media:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to upload hero media";
     return {
       success: false,
       error: errorMessage,

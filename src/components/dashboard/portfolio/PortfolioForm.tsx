@@ -10,6 +10,8 @@ import { TestimonialSection } from "./TestimonialSection";
 import { ThumbnailUploader } from "./ThumbnailUploader";
 import { useToast } from "@/hooks/use-toast";
 import { PortfolioFormData } from "./portfolio/types";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 
 interface PortfolioFormProps {
   onSuccess: () => void;
@@ -23,6 +25,7 @@ export const PortfolioForm = ({
   isEditing = false,
 }: PortfolioFormProps) => {
   const { toast } = useToast();
+  const { uploadFile, uploadMultipleFiles, uploadStatus } = useFileUpload(); // Use the existing hook
 
   // Project details
   const [title, setTitle] = useState(initialData?.title || "");
@@ -124,67 +127,79 @@ export const PortfolioForm = ({
         throw new Error("Thumbnail URL is too long (maximum 512 characters)");
       }
 
-      // Create FormData object
-      const formData = new FormData();
+      // Upload files directly to Appwrite first
+      let finalThumbnailUrl = thumbnailUrl;
+      let uploadedGalleryUrls: string[] = [];
 
-      // Basic project details
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("challenge", challenge);
-      formData.append("solution", solution);
-      formData.append("impact", impact);
-      formData.append("tags", JSON.stringify(tags));
-
-      // Thumbnail handling - Don't add to formData if it's a blob URL
-      // The backend will handle the thumbnailFile separately
-      if (thumbnailUrl && !thumbnailUrl.startsWith("blob:")) {
-        formData.append("thumbnail", thumbnailUrl.substring(0, 512)); // Ensure within 512 char limit
-      } else {
-        // If no external URL, send an empty string - the backend will replace with the uploaded file's URL
-        formData.append("thumbnail", "");
-      }
-
-      // If editing and thumbnail was explicitly removed
-      if (isEditing && isThumbnailRemoved) {
-        formData.append("thumbnail_removed", "true");
-      }
-
-      // Gallery URLs - Filter out any blob URLs
-      const validGalleryUrls = galleryUrls
-        .filter((url) => !url.startsWith("blob:"))
-        .map((url) => url.substring(0, 512)); // Ensure within 512 char limit
-      formData.append("gallery", JSON.stringify(validGalleryUrls));
-
-      // If editing, include removed gallery URLs
-      if (isEditing && removedGalleryUrls.length > 0) {
-        formData.append(
-          "removed_gallery_urls",
-          JSON.stringify(removedGalleryUrls),
-        );
-      }
-
-      // Testimonial - use flat structure for Appwrite
-      formData.append("testimonial_quote", testimonialQuote);
-      formData.append("testimonial_author", testimonialAuthor);
-      formData.append("testimonial_position", testimonialPosition);
-
-      // If editing, include project ID
-      if (isEditing && initialData) {
-        formData.append("id", initialData.id || initialData.$id || "");
-      }
-
-      // Add files
-      files.forEach((file) => formData.append("files", file));
-
-      // Handle thumbnail file separately
+      // 1. Upload thumbnail if it's a file
       if (thumbnailFile) {
-        formData.append("thumbnailFile", thumbnailFile);
+        try {
+          const uploadResult = await uploadFile(
+            thumbnailFile,
+            process.env.NEXT_PUBLIC_APPWRITE_PRODUCT_IMAGES_BUCKET_ID!,
+          );
+
+          if (!uploadResult) {
+            throw new Error("Failed to upload thumbnail");
+          }
+
+          finalThumbnailUrl = uploadResult;
+        } catch (error) {
+          throw new Error(
+            `Thumbnail upload failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          );
+        }
       }
 
-      // Send request
+      // 2. Upload gallery images if there are any
+      if (files.length > 0) {
+        try {
+          uploadedGalleryUrls = await uploadMultipleFiles(
+            files,
+            process.env.NEXT_PUBLIC_APPWRITE_PRODUCT_IMAGES_BUCKET_ID!,
+          );
+
+          if (uploadedGalleryUrls.length !== files.length) {
+            throw new Error("Some gallery images failed to upload");
+          }
+        } catch (error) {
+          throw new Error(
+            `Gallery images upload failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          );
+        }
+      }
+
+      // 3. Prepare the data for API request (JSON format)
+      const portfolioData = {
+        title,
+        description,
+        challenge,
+        solution,
+        impact,
+        tags,
+        thumbnail: isThumbnailRemoved ? "" : finalThumbnailUrl,
+        // Combine existing gallery URLs with newly uploaded ones
+        gallery: [...galleryUrls, ...uploadedGalleryUrls],
+        testimonial_quote: testimonialQuote,
+        testimonial_author: testimonialAuthor,
+        testimonial_position: testimonialPosition,
+        // For editing
+        id:
+          isEditing && initialData
+            ? initialData.id || initialData.$id
+            : undefined,
+        thumbnailRemoved: isThumbnailRemoved,
+        removedGalleryUrls:
+          removedGalleryUrls.length > 0 ? removedGalleryUrls : undefined,
+      };
+
+      // 4. Send the data to the API
       const response = await fetch("/api/protected/portfolio", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(portfolioData),
         credentials: "include",
       });
 
@@ -329,6 +344,21 @@ export const PortfolioForm = ({
           onRemoveImageUrl={handleRemoveGalleryUrl}
         />
 
+        {/* Upload Progress Indicator */}
+        {uploadStatus.uploading && (
+          <div className="mt-4 space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-neutral-400">
+                Uploading files...
+              </span>
+              <span className="text-sm text-neutral-400">
+                {uploadStatus.progress}%
+              </span>
+            </div>
+            <Progress value={uploadStatus.progress} className="h-2" />
+          </div>
+        )}
+
         <Separator className="my-6" />
 
         <div className="flex justify-end gap-3">
@@ -336,17 +366,17 @@ export const PortfolioForm = ({
             type="button"
             variant="outline"
             onClick={() => onSuccess()}
-            disabled={isSubmitting}
+            disabled={isSubmitting || uploadStatus.uploading}
             className="bg-transparent border-[#3C3120] text-neutral-300 hover:bg-neutral-900 hover:border-[#A28B55]"
           >
             Cancel
           </Button>
           <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || uploadStatus.uploading}
             className="bg-[#A28B55] text-neutral-100 hover:bg-[#A28B55]/90"
           >
-            {isSubmitting ? (
+            {isSubmitting || uploadStatus.uploading ? (
               <>
                 <Loader2 size={16} className="mr-2 animate-spin" /> Saving...
               </>

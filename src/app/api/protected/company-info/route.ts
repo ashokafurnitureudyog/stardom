@@ -4,10 +4,9 @@ import {
   updateCompanyInfo,
   updateSocialLinks,
   updateTeamMembers,
-  uploadTeamImage,
   deleteCompanyInfo,
 } from "@/lib/controllers/CompanyInfoController";
-import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
+import { apiHandler } from "@/lib/utils/api-utils";
 
 export async function GET(request: NextRequest) {
   return apiHandler(request, async () => {
@@ -23,74 +22,102 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   return apiHandler(request, async (req) => {
-    const formData = await parseRequestFormData(req);
-    const section = formData.get("section")?.toString();
+    // Check content type to determine how to parse the request
+    const contentType = req.headers.get("content-type") || "";
 
-    let result;
+    // If content type is JSON, parse as JSON
+    if (contentType.includes("application/json")) {
+      const data = await req.json();
+      const { section } = data;
 
-    switch (section) {
-      case "basic": {
-        const dataString = formData.get("data")?.toString();
-        if (!dataString) {
+      let result;
+
+      switch (section) {
+        case "basic":
+          result = await updateCompanyInfo(data.companyInfo);
+          break;
+
+        case "social":
+          result = await updateSocialLinks(data.links);
+          break;
+
+        case "team":
+          result = await updateTeamMembers(data.members);
+          break;
+
+        default:
           return NextResponse.json(
-            { error: "No data provided" },
+            { error: "Invalid section" },
             { status: 400 },
           );
-        }
-        const data = JSON.parse(dataString);
-        result = await updateCompanyInfo(data);
-        break;
       }
 
-      case "social": {
-        const dataString = formData.get("data")?.toString();
-        if (!dataString) {
-          return NextResponse.json(
-            { error: "No data provided" },
-            { status: 400 },
-          );
-        }
-        const data = JSON.parse(dataString);
-        result = await updateSocialLinks(data);
-        break;
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
-      case "team": {
-        const dataString = formData.get("data")?.toString();
-        if (!dataString) {
-          return NextResponse.json(
-            { error: "No data provided" },
-            { status: 400 },
-          );
-        }
-        const data = JSON.parse(dataString);
-        result = await updateTeamMembers(data);
-        break;
-      }
-
-      case "image-upload": {
-        const file = formData.get("file") as File;
-
-        if (!file) {
-          return NextResponse.json(
-            { error: "No file provided" },
-            { status: 400 },
-          );
-        }
-
-        result = await uploadTeamImage(file);
-        break;
-      }
-
-      default:
-        return NextResponse.json({ error: "Invalid section" }, { status: 400 });
+      return result;
     }
+    // Otherwise parse as FormData (for backward compatibility)
+    else {
+      const formData = await req.formData();
+      const section = formData.get("section")?.toString();
 
-    if (!result.success) {
-      throw new Error(result.error);
+      let result;
+
+      switch (section) {
+        case "basic": {
+          const dataString = formData.get("data")?.toString();
+          if (!dataString) {
+            return NextResponse.json(
+              { error: "No data provided" },
+              { status: 400 },
+            );
+          }
+          const data = JSON.parse(dataString);
+          result = await updateCompanyInfo(data);
+          break;
+        }
+
+        case "social": {
+          const dataString = formData.get("data")?.toString();
+          if (!dataString) {
+            return NextResponse.json(
+              { error: "No data provided" },
+              { status: 400 },
+            );
+          }
+          const data = JSON.parse(dataString);
+          result = await updateSocialLinks(data);
+          break;
+        }
+
+        case "team": {
+          const dataString = formData.get("data")?.toString();
+          if (!dataString) {
+            return NextResponse.json(
+              { error: "No data provided" },
+              { status: 400 },
+            );
+          }
+          const data = JSON.parse(dataString);
+          result = await updateTeamMembers(data);
+          break;
+        }
+
+        default:
+          return NextResponse.json(
+            { error: "Invalid section" },
+            { status: 400 },
+          );
+      }
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+
+      return result;
     }
-
-    return result;
   });
 }
 

@@ -1,58 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  addHeroMediaUrl,
-  uploadHeroMedia,
+  addHeroMedia,
   deleteHeroMedia,
 } from "@/lib/controllers/HeroMediaController";
-import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
+import { apiHandler } from "@/lib/utils/api-utils";
 
 export async function POST(request: NextRequest) {
   return apiHandler(request, async (req) => {
-    const formData = await parseRequestFormData(req);
-    const method = formData.get("method")?.toString();
+    // Parse JSON data
+    const data = await req.json();
 
-    let result;
-
-    switch (method) {
-      case "url": {
-        const dataString = formData.get("data")?.toString();
-        if (!dataString) {
-          return NextResponse.json(
-            { error: "No data provided" },
-            { status: 400 },
-          );
-        }
-        const data = JSON.parse(dataString);
-        result = await addHeroMediaUrl(data);
-        break;
-      }
-
-      case "upload": {
-        const file = formData.get("file") as File;
-        const type = formData.get("type")?.toString() as "image" | "video";
-        const alt = formData.get("alt")?.toString();
-
-        if (!file) {
-          return NextResponse.json(
-            { error: "No file provided" },
-            { status: 400 },
-          );
-        }
-
-        if (!type) {
-          return NextResponse.json(
-            { error: "Media type is required" },
-            { status: 400 },
-          );
-        }
-
-        result = await uploadHeroMedia(file, type, alt);
-        break;
-      }
-
-      default:
-        return NextResponse.json({ error: "Invalid method" }, { status: 400 });
+    if (!data.type || !data.src) {
+      return NextResponse.json(
+        { error: "Media type and source URL are required" },
+        { status: 400 },
+      );
     }
+
+    const result = await addHeroMedia({
+      type: data.type,
+      src: data.src,
+      alt: data.alt || "",
+      poster: data.poster || "",
+      preload: data.preload || false,
+      webmSrc: data.webmSrc || "",
+      lowResSrc: data.lowResSrc || "",
+    });
 
     if (!result.success) {
       throw new Error(result.error);

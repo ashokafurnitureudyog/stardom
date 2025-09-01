@@ -4,84 +4,68 @@ import {
   deletePortfolioProject,
   updatePortfolioProject,
 } from "@/lib/controllers/PortfolioControllers";
-import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
+import { apiHandler } from "@/lib/utils/api-utils";
 
 export async function POST(request: NextRequest) {
   return apiHandler(request, async (req) => {
-    const formData = await parseRequestFormData(req);
+    // Parse JSON data
+    const projectData = await req.json();
 
-    // Extract project data
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const challenge = formData.get("challenge") as string;
-    const solution = formData.get("solution") as string;
-    const impact = formData.get("impact") as string;
-    const tags = JSON.parse((formData.get("tags") as string) || "[]");
-    const thumbnail = formData.get("thumbnail") as string;
-    const gallery = JSON.parse((formData.get("gallery") as string) || "[]");
-
-    const testimonial_quote = formData.get("testimonial_quote") as string;
-    const testimonial_author = formData.get("testimonial_author") as string;
-    const testimonial_position = formData.get("testimonial_position") as string;
-
-    const files = formData
-      .getAll("files")
-      .filter((item) => item instanceof File) as File[];
-
-    const thumbnailFile = formData.get("thumbnailFile") as File | null;
-
-    // Check if this is an update or create
-    const projectId = formData.get("id") as string | null;
-
-    // For updates
-    const thumbnailRemoved = formData.get("thumbnail_removed") === "true";
-    const removedGalleryUrlsStr = formData.get("removed_gallery_urls") as
-      | string
-      | null;
-    const removedGalleryUrls = removedGalleryUrlsStr
-      ? JSON.parse(removedGalleryUrlsStr)
-      : [];
-
-    const projectData = {
-      title,
-      description,
-      challenge,
-      solution,
-      impact,
-      tags,
-      thumbnail,
-      gallery,
-      testimonial_quote,
-      testimonial_author,
-      testimonial_position,
-    };
-
-    let result;
-
-    if (projectId) {
-      // Update existing project
-      result = await updatePortfolioProject(
-        projectId,
-        projectData,
-        files,
-        thumbnailFile || undefined,
-        thumbnailRemoved,
-        removedGalleryUrls,
+    // Check if this is an update (editing an existing project)
+    if (projectData.id) {
+      // This is an update operation
+      const result = await updatePortfolioProject(
+        projectData.id,
+        {
+          title: projectData.title,
+          description: projectData.description,
+          challenge: projectData.challenge || "",
+          solution: projectData.solution || "",
+          impact: projectData.impact || "",
+          tags: projectData.tags || [],
+          thumbnail: projectData.thumbnail || "",
+          gallery: projectData.gallery || [],
+          testimonial_quote: projectData.testimonial_quote || "",
+          testimonial_author: projectData.testimonial_author || "",
+          testimonial_position: projectData.testimonial_position || "",
+        },
+        undefined, // No files - uploaded directly
+        undefined, // No thumbnail file - uploaded directly
+        projectData.thumbnailRemoved || false,
+        projectData.removedGalleryUrls || [],
       );
+
+      if (!result.success) {
+        return NextResponse.json({ message: result.error }, { status: 500 });
+      }
+
+      return result.data;
     } else {
-      // Create new project
-      result = await createPortfolioProject(
-        projectData,
-        files,
-        thumbnailFile || undefined,
+      // This is a create operation
+      const result = await createPortfolioProject(
+        {
+          title: projectData.title,
+          description: projectData.description,
+          challenge: projectData.challenge || "",
+          solution: projectData.solution || "",
+          impact: projectData.impact || "",
+          tags: projectData.tags || [],
+          thumbnail: projectData.thumbnail || "",
+          gallery: projectData.gallery || [],
+          testimonial_quote: projectData.testimonial_quote || "",
+          testimonial_author: projectData.testimonial_author || "",
+          testimonial_position: projectData.testimonial_position || "",
+        },
+        undefined, // No files - uploaded directly
+        undefined, // No thumbnail file - uploaded directly
       );
-    }
 
-    if (!result.success) {
-      return NextResponse.json({ message: result.error }, { status: 500 });
-    }
+      if (!result.success) {
+        return NextResponse.json({ message: result.error }, { status: 500 });
+      }
 
-    return result.data;
+      return result.data;
+    }
   });
 }
 

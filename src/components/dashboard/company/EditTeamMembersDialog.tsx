@@ -23,6 +23,8 @@ import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils/utils";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 
 export const EditTeamMembersDialog = ({
   initialData,
@@ -37,7 +39,6 @@ export const EditTeamMembersDialog = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uploading, setUploading] = useState<Record<number, boolean>>({});
   const [validationError, setValidationError] = useState("");
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   const [members, setMembers] = useState<TeamMember[]>(
@@ -47,6 +48,12 @@ export const EditTeamMembersDialog = ({
   );
   const [imageTab, setImageTab] = useState<Record<number, string>>({});
   const { toast } = useToast();
+
+  // Use the file upload hook
+  const { uploadFile, uploadStatus } = useFileUpload();
+  const [currentUploadingIndex, setCurrentUploadingIndex] = useState<
+    number | null
+  >(null);
 
   const handleAddMember = () => {
     setMembers([...members, { name: "", role: "", bio: "", image: "" }]);
@@ -84,24 +91,41 @@ export const EditTeamMembersDialog = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setUploading({ ...uploading, [index]: true });
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast({
+        variant: "destructive",
+        title: "Invalid file type",
+        description: "Please select an image file (JPG, PNG, WebP, etc.)",
+      });
+      return;
+    }
+
+    // Validate file size (50MB max)
+    if (file.size > 50 * 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        title: "File too large",
+        description: "Image size should be less than 50MB",
+      });
+      return;
+    }
+
+    setCurrentUploadingIndex(index);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("section", "image-upload");
+      // Upload directly to Appwrite using the hook
+      const imageUrl = await uploadFile(
+        file,
+        process.env.NEXT_PUBLIC_APPWRITE_PRODUCT_IMAGES_BUCKET_ID!,
+      );
 
-      const response = await fetch("/api/protected/company-info", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Error uploading image");
+      if (!imageUrl) {
+        throw new Error("Failed to upload image");
       }
 
-      const data = await response.json();
-      handleMemberChange(index, "image", data.url);
+      // Update member's image URL
+      handleMemberChange(index, "image", imageUrl);
 
       toast({
         title: "Image uploaded",
@@ -112,11 +136,12 @@ export const EditTeamMembersDialog = ({
       toast({
         variant: "destructive",
         title: "Upload failed",
-        description: "Failed to upload image",
+        description:
+          error instanceof Error ? error.message : "Failed to upload image",
         duration: 3000,
       });
     } finally {
-      setUploading({ ...uploading, [index]: false });
+      setCurrentUploadingIndex(null);
     }
   };
 
@@ -145,13 +170,17 @@ export const EditTeamMembersDialog = ({
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData();
-      formData.append("section", "team");
-      formData.append("data", JSON.stringify(members));
-
+      // Send the data as JSON
       const response = await fetch("/api/protected/company-info", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          section: "team",
+          members: members,
+        }),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -184,9 +213,16 @@ export const EditTeamMembersDialog = ({
         <Button
           variant="outline"
           size="sm"
-          className="bg-[#3C3120] text-[#A28B55] hover:bg-[#3C3120]/80 border-[#A28B55]/30 hover:border-[#A28B55] flex items-center gap-2"
+          className={
+            triggerClass ||
+            "bg-[#3C3120] text-[#A28B55] hover:bg-[#3C3120]/80 border-[#A28B55]/30 hover:border-[#A28B55] flex items-center gap-2"
+          }
         >
-          <Edit size={16} /> Edit Team
+          {triggerContent || (
+            <>
+              <Edit size={16} /> Edit Team
+            </>
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6 bg-[#171410] border-[#352b1c]">
@@ -309,15 +345,17 @@ export const EditTeamMembersDialog = ({
                             htmlFor={`file-upload-${index}`}
                             className={cn(
                               "w-full h-24 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-[#3C3120] cursor-pointer hover:border-[#A28B55]",
-                              uploading[index] &&
+                              currentUploadingIndex === index &&
+                                uploadStatus.uploading &&
                                 "opacity-50 pointer-events-none",
                             )}
                           >
-                            {uploading[index] ? (
+                            {currentUploadingIndex === index &&
+                            uploadStatus.uploading ? (
                               <>
                                 <Loader2 className="h-6 w-6 text-[#A28B55] animate-spin mb-1" />
                                 <p className="text-sm text-neutral-400">
-                                  Uploading...
+                                  Uploading... {uploadStatus.progress}%
                                 </p>
                               </>
                             ) : (
@@ -327,7 +365,7 @@ export const EditTeamMembersDialog = ({
                                   Click to upload image
                                 </p>
                                 <p className="text-xs text-neutral-500 mt-1">
-                                  PNG, JPG, WebP up to 2MB
+                                  PNG, JPG, WebP up to 50MB
                                 </p>
                               </>
                             )}
@@ -338,9 +376,21 @@ export const EditTeamMembersDialog = ({
                             type="file"
                             accept="image/png, image/jpeg, image/webp"
                             onChange={(e) => handleFileUpload(index, e)}
-                            disabled={uploading[index]}
+                            disabled={
+                              currentUploadingIndex !== null &&
+                              uploadStatus.uploading
+                            }
                             className="hidden"
                           />
+
+                          {/* Upload Progress */}
+                          {currentUploadingIndex === index &&
+                            uploadStatus.uploading && (
+                              <Progress
+                                value={uploadStatus.progress}
+                                className="h-2 w-full mt-2"
+                              />
+                            )}
                         </div>
                       </div>
                     </TabsContent>
@@ -419,17 +469,17 @@ export const EditTeamMembersDialog = ({
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              disabled={isSubmitting}
+              disabled={isSubmitting || uploadStatus.uploading}
               className="bg-transparent border-[#3C3120] text-neutral-300 hover:bg-neutral-900 hover:border-[#A28B55]"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || uploadStatus.uploading}
               className="bg-[#A28B55] text-neutral-100 hover:bg-[#A28B55]/90"
             >
-              {isSubmitting ? (
+              {isSubmitting || uploadStatus.uploading ? (
                 <>
                   <Loader2 size={16} className="mr-2 animate-spin" /> Saving...
                 </>

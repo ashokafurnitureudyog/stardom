@@ -4,27 +4,12 @@ import {
   updateProduct,
   deleteProduct,
 } from "@/lib/controllers/ProductControllers";
-import { apiHandler, parseRequestFormData } from "@/lib/utils/api-utils";
+import { apiHandler } from "@/lib/utils/api-utils";
 
 export async function POST(request: NextRequest) {
   return apiHandler(request, async (req) => {
-    const formData = await parseRequestFormData(req);
-
-    // Extract files
-    const files = formData
-      .getAll("files")
-      .filter((item) => item instanceof File) as File[];
-
-    // Extract product data
-    const productData = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      category: formData.get("category") as string,
-      collection: formData.get("collection") as string,
-      features: JSON.parse((formData.get("features") as string) || "[]"),
-      colors: JSON.parse((formData.get("colors") as string) || "[]"),
-      images: JSON.parse((formData.get("imageUrls") as string) || "[]"),
-    };
+    // Parse JSON data instead of FormData
+    const productData = await req.json();
 
     // Verify required fields
     if (!productData.name || !productData.description) {
@@ -34,16 +19,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return await addProduct(productData, files);
+    // Adapt the data to the format expected by the controller
+    const formattedData = {
+      name: productData.name,
+      description: productData.description,
+      category: productData.category,
+      collection: productData.collection,
+      features: productData.features || [],
+      colors: productData.colors || [],
+      images: productData.images || [],
+    };
+
+    // Call the controller with no files (files are now uploaded directly)
+    return await addProduct(formattedData);
   });
 }
 
 export async function PUT(request: NextRequest) {
   return apiHandler(request, async (req) => {
-    const formData = await parseRequestFormData(req);
+    // Parse JSON data instead of FormData
+    const productData = await req.json();
 
     // Get product ID
-    const productId = formData.get("id") as string;
+    const productId = productData.id;
     if (!productId) {
       return NextResponse.json(
         { error: "Product ID is required for updates" },
@@ -51,28 +49,6 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Extract files
-    const files = formData
-      .getAll("files")
-      .filter((item) => item instanceof File) as File[];
-
-    // Parse removedImages data
-    const removedImages = formData.has("removedImages")
-      ? JSON.parse(formData.get("removedImages") as string)
-      : [];
-
-    // Extract product data
-    const productData = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      category: formData.get("category") as string,
-      collection: formData.get("collection") as string,
-      features: JSON.parse((formData.get("features") as string) || "[]"),
-      colors: JSON.parse((formData.get("colors") as string) || "[]"),
-      images: JSON.parse((formData.get("imageUrls") as string) || "[]"),
-      removedImages, // Pass removed images to controller
-    };
-
     // Verify required fields
     if (!productData.name || !productData.description) {
       return NextResponse.json(
@@ -81,7 +57,20 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const result = await updateProduct(productId, productData, files);
+    // Adapt the data to the format expected by the controller
+    const formattedData = {
+      name: productData.name,
+      description: productData.description,
+      category: productData.category,
+      collection: productData.collection,
+      features: productData.features || [],
+      colors: productData.colors || [],
+      images: productData.images || [],
+      removedImages: productData.removedImages,
+    };
+
+    // Call the controller with no files (files are now uploaded directly)
+    const result = await updateProduct(productId, formattedData);
     return result || { success: true, id: productId };
   });
 }
