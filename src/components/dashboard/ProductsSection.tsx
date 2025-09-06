@@ -117,8 +117,8 @@ export const ProductsSection = () => {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <div className="relative w-full sm:w-64">
+        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-center gap-4">
+          <div className="relative w-full">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search products..."
@@ -128,14 +128,15 @@ export const ProductsSection = () => {
             />
           </div>
 
-          <div className="flex gap-2 w-full sm:w-auto justify-center">
+          <div className="flex gap-2 w-full sm:w-auto lg:w-auto justify-center">
             <Button
               variant="outline"
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
               onClick={fetchProducts}
             >
-              <RefreshCw size={16} /> Refresh
+              <RefreshCw size={16} />{" "}
+              <span className="hidden lg:inline">Refresh</span>
             </Button>
 
             <AddProductDialog onSuccess={fetchProducts} />

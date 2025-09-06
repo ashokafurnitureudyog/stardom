@@ -42,7 +42,7 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop sidebar - only visible on md screens and up */}
-      <div className="hidden md:block">
+      <div className="hidden md:block w-64 shrink-0">
         <Sidebar
           activeSection={activeSection}
           setActiveSection={setActiveSection}
@@ -66,10 +66,11 @@ export default function AdminDashboard() {
         </SheetContent>
       </Sheet>
 
-      <div className="flex-1 flex flex-col">
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col w-0">
         <TopBar user={user} toggleSidebar={toggleSidebar} />
-        <main className="flex-1 p-4 md:p-8 overflow-auto">
-          <div className="max-w-6xl mx-auto">
+        <main className="flex-1 p-4 md:p-6 overflow-auto">
+          <div className="max-w-full mx-auto">
             {activeSection === "products" && <ProductsSection />}
             {activeSection === "featured" && <FeaturedSection />}
             {activeSection === "testimonials" && <TestimonialsSection />}
