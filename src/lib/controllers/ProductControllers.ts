@@ -20,6 +20,21 @@ interface ProductResponse {
   error?: string;
 }
 
+export const getCachedProducts = async () => {
+  "use cache";
+  const { database } = await createAdminClient();
+  const products = await database.listDocuments(
+    process.env.APPWRITE_DATABASE_ID!,
+    process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+  );
+
+  return products.documents.map((product) => ({
+    ...product,
+    id: product.$id,
+    collection: product.product_collection,
+  }));
+};
+
 export const addProduct = async (
   productData: ProductInput,
 ): Promise<ProductResponse> => {
@@ -42,7 +57,7 @@ export const addProduct = async (
     );
 
     return { success: true, data: result };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Failed to add product:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to add product";
@@ -86,7 +101,7 @@ export const updateProduct = async (
     );
 
     return { success: true, data: result };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Failed to update product:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to update product";
@@ -118,7 +133,7 @@ export const deleteProduct = async (
           productId,
         );
       }
-    } catch (error: unknown) {
+    } catch (error) {
       // Use the error in a logging statement to avoid the unused variable warning
       console.error(
         "Product was not in featured collection or collection doesn't exist:",
@@ -134,7 +149,7 @@ export const deleteProduct = async (
     );
 
     return { success: true, data: result };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Failed to delete product:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to delete product";

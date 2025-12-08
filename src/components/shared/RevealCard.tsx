@@ -25,7 +25,7 @@ export const LogoRevealCard: React.FC<LogoRevealCardProps> = ({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`group relative h-[15rem] w-full rounded-lg border border-black/[0.2] p-4 shadow-card transition-all duration-300 hover:shadow-card-hover dark:border-white/[0.2] ${className}`}
+      className={`group relative h-60 w-full rounded-lg border border-black/20 p-4 shadow-card transition-all duration-300 hover:shadow-card-hover dark:border-white/20 ${className}`}
     >
       <CornerIcon position="top-left" />
       <CornerIcon position="bottom-left" />

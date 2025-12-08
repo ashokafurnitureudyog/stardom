@@ -24,7 +24,7 @@ export const ProductGrid: React.FC = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
             {/* Product image skeleton */}
-            <div className="aspect-[4/3] w-full relative overflow-hidden border-b border-primary/10">
+            <div className="aspect-4/3 w-full relative overflow-hidden border-b border-primary/10">
               <Skeleton className="h-full w-full rounded-none" />
               {/* Badge skeleton */}
               <div className="absolute bottom-2 left-2 z-10">

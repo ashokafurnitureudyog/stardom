@@ -45,7 +45,7 @@ const CollectionPreview = () => {
             A glimpse into the future of luxury furniture. Each piece is a
             masterpiece in waiting.
           </p>
-          <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-gold/50 to-transparent mx-auto mt-12" />
+          <div className="w-32 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent mx-auto mt-12" />
         </motion.div>
 
         {/* Collection Cards */}
@@ -62,7 +62,7 @@ const CollectionPreview = () => {
                 className={`absolute inset-0 bg-gradient-to-b ${collection.gradient} opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-2xl`}
               />
 
-              <div className="relative backdrop-blur-md bg-white/[0.03] rounded-2xl p-10 h-[450px] border border-white/5 overflow-hidden transition-all duration-700 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-white/5">
+              <div className="relative backdrop-blur-md bg-white/3 rounded-2xl p-10 h-[450px] border border-white/5 overflow-hidden transition-all duration-700 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-white/5">
                 {/* Icon */}
                 <collection.icon className="w-10 h-10 text-white/90 mb-8 transition-transform duration-500 group-hover:scale-110" />
 

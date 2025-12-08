@@ -9,8 +9,6 @@ import {
 } from "react-leaflet";
 import { useTheme } from "next-themes";
 import L from "leaflet";
-import icon from "leaflet/dist/images/marker-icon.png";
-import iconShadow from "leaflet/dist/images/marker-shadow.png";
 import "leaflet/dist/leaflet.css";
 import { CompanyInfo } from "@/types/ComponentTypes";
 import { InfoCard } from "../marketing/InfoCard";
@@ -29,15 +27,15 @@ interface MapSectionProps {
 const DEFAULT_COORDINATES: Coordinates = [30.6960369, 76.7828628];
 const DEFAULT_ZOOM = 16;
 
-const DefaultIcon = L.icon({
-  iconUrl: icon.src,
-  shadowUrl: iconShadow.src,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-});
+// Fix default icon paths for Leaflet in Next.js
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 
-L.Marker.prototype.options.icon = DefaultIcon;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
 
 const mapStyle = {
   light: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",

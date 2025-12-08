@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Product } from "@/types/ComponentTypes";
@@ -33,17 +34,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <CarouselContent>
               {images.map((image, index) => (
                 <CarouselItem key={index}>
-                  <div className="p-1">
-                    <img
-                      onError={() => setImgError(true)}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden p-1">
+                    <Image
                       src={
                         imgError
                           ? "https://images.unsplash.com/photo-1610513320995-1ad4bbf25e55"
                           : image
                       }
                       alt={`${name} - image ${index + 1}`}
-                      className="object-cover w-full h-full aspect-[4/3] transition-transform duration-700 group-hover:scale-105"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      onError={() => setImgError(true)}
                     />
                   </div>
                 </CarouselItem>

@@ -1,23 +1,36 @@
-"use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useOptimistic, useTransition, useCallback } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Search, RefreshCw, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddTestimonialDialog } from "./testimonials/AddTestimonialDialog";
-import { TestimonialCard } from "./testimonials/TestimonialCard ";
+import { TestimonialCard } from "./testimonials/TestimonialCard";
 import type { ClientTestimonial } from "@/types/ComponentTypes";
 import { useToast } from "@/hooks/use-toast";
+import { useTestimonials } from "@/hooks/useTestimonials";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const TestimonialsSection = () => {
-  const [testimonials, setTestimonials] = useState<ClientTestimonial[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    testimonials,
+    isLoading: loading,
+    error: queryError,
+    deleteTestimonial,
+  } = useTestimonials();
+
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState("");
   const { toast } = useToast();
 
+  // Optimistic UI state
+  const [optimisticTestimonials, addOptimisticTestimonial] = useOptimistic(
+    testimonials,
+    (state: ClientTestimonial[], deletedId: string) =>
+      state.filter((t) => t.id !== deletedId && t.$id !== deletedId),
+  );
+
   // Filter testimonials based on search query
-  const filteredTestimonials = testimonials.filter(
+  const filteredTestimonials = optimisticTestimonials.filter(
     (testimonial) =>
       testimonial.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       testimonial.quote.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -26,67 +39,39 @@ export const TestimonialsSection = () => {
       testimonial.location.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const fetchTestimonials = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/testimonials", {
-        cache: "no-store",
-      });
+  const [isPending, startTransition] = useTransition();
+  const [inputValue, setInputValue] = useState("");
 
-      if (!res.ok) throw new Error("Failed to fetch testimonials");
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    startTransition(() => {
+      setSearchQuery(e.target.value);
+    });
+  };
 
-      const data = await res.json();
-      setTestimonials(data);
-    } catch (error) {
-      console.error("Failed to fetch testimonials:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to load testimonials",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTestimonials();
-  }, [fetchTestimonials]);
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+  };
 
   const handleDelete = async (id: string, imageUrl: string) => {
-    try {
-      // Optimistically update UI
-      setTestimonials((prev) =>
-        prev.filter((t) => t.id !== id && t.$id !== id),
-      );
-
-      const response = await fetch("/api/protected/testimonials", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, imageUrl }),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete testimonial");
+    startTransition(async () => {
+      addOptimisticTestimonial(id);
+      try {
+        await deleteTestimonial({ id, imageUrl });
+        toast({
+          title: "Success",
+          description: "Testimonial deleted successfully",
+        });
+      } catch (error) {
+        console.error("Delete failed:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete testimonial",
+          variant: "destructive",
+        });
+        // React Query will automatically refetch/revert if mutation fails
       }
-
-      toast({
-        title: "Success",
-        description: "Testimonial deleted successfully",
-      });
-    } catch (error) {
-      console.error("Delete failed:", error);
-      toast({
-        title: "Error",
-        description:
-          error instanceof Error
-            ? error.message
-            : "Failed to delete testimonial",
-        variant: "destructive",
-      });
-      // If deletion fails, refresh the list
-      fetchTestimonials();
-    }
+    });
   };
 
   return (
@@ -101,14 +86,18 @@ export const TestimonialsSection = () => {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-center gap-4">
-          <div className="relative w-full">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="relative w-full sm:w-64">
+            {isPending ? (
+              <div className="absolute left-2.5 top-2.5 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            ) : (
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            )}
             <Input
               placeholder="Search testimonials..."
               className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={inputValue}
+              onChange={handleSearchChange}
             />
           </div>
 
@@ -117,26 +106,30 @@ export const TestimonialsSection = () => {
               variant="outline"
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
-              onClick={fetchTestimonials}
+              onClick={handleRefresh}
             >
               <RefreshCw size={16} />{" "}
               <span className="hidden lg:inline">Refresh</span>
             </Button>
 
-            <AddTestimonialDialog onSuccess={fetchTestimonials} />
+            <AddTestimonialDialog onSuccess={handleRefresh} />
           </div>
         </div>
       </div>
 
       <Separator className="my-6" />
 
-      {error && (
+      {queryError && (
         <div className="bg-red-500/10 text-red-400 p-4 mb-6 rounded border border-red-900/50">
-          <p>{error}</p>
+          <p>
+            {queryError instanceof Error
+              ? queryError.message
+              : "Failed to load testimonials"}
+          </p>
           <Button
             variant="outline"
             className="mt-2 bg-transparent border-[#3C3120] text-[#A28B55] hover:bg-neutral-800 hover:border-[#A28B55]"
-            onClick={fetchTestimonials}
+            onClick={handleRefresh}
           >
             Try Again
           </Button>
@@ -161,7 +154,7 @@ export const TestimonialsSection = () => {
               key={testimonial.id || testimonial.$id}
               testimonial={testimonial}
               onDelete={handleDelete}
-              onEdit={fetchTestimonials}
+              onEdit={handleRefresh}
             />
           ))}
         </div>
@@ -186,7 +179,7 @@ export const TestimonialsSection = () => {
                 Get started by adding your first client testimonial
               </p>
               <div className="flex justify-center">
-                <AddTestimonialDialog onSuccess={fetchTestimonials} />
+                <AddTestimonialDialog onSuccess={handleRefresh} />
               </div>
             </>
           )}

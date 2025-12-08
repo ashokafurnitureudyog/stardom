@@ -1,5 +1,4 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
+import { useState, useOptimistic, useTransition } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Search, RefreshCw, ImageIcon } from "lucide-react";
@@ -7,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { AddPortfolioDialog } from "./portfolio/AddPortfolioDialog";
 import { PortfolioCard } from "./portfolio/PortfolioCard";
 import { PortfolioProject } from "@/types/ComponentTypes";
+import { usePortfolio } from "@/hooks/usePortfolio";
+import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 // Just add the database fields without changing the base type
 interface DatabasePortfolioProject extends PortfolioProject {
@@ -16,13 +18,35 @@ interface DatabasePortfolioProject extends PortfolioProject {
 }
 
 export const PortfolioSection = () => {
-  const [projects, setProjects] = useState<DatabasePortfolioProject[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    projects,
+    isLoading: loading,
+    error: queryError,
+    deleteProject,
+  } = usePortfolio();
+
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState<string>("");
+
+  const [optimisticProjects, addOptimisticProject] = useOptimistic(
+    projects,
+    (state: DatabasePortfolioProject[], deletedId: string) =>
+      state.filter((p) => p.id !== deletedId && p.$id !== deletedId),
+  );
+
+  const [isPending, startTransition] = useTransition();
+  const [inputValue, setInputValue] = useState("");
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    startTransition(() => {
+      setSearchQuery(e.target.value);
+    });
+  };
 
   // Filtered projects
-  const filteredProjects = projects.filter(
+  const filteredProjects = optimisticProjects.filter(
     (project) =>
       project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -34,75 +58,29 @@ export const PortfolioSection = () => {
         .includes(searchQuery.toLowerCase()),
   );
 
-  const fetchProjects = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/portfolio", {
-        cache: "no-store",
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch portfolio projects");
-
-      const data = await res.json();
-      setProjects(data);
-    } catch (error: unknown) {
-      console.error("Failed to fetch portfolio projects:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to load portfolio projects";
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const handleDelete = async (projectId: string, imageUrls: string[]) => {
-    try {
-      // Find the project to get its thumbnail before removing it from state
-      const projectToDelete = projects.find(
-        (p) => p.id === projectId || p.$id === projectId,
-      );
-
-      // Optimistically update UI
-      setProjects((prevProjects) =>
-        prevProjects.filter(
-          (project) => project.id !== projectId && project.$id !== projectId,
-        ),
-      );
-
-      // Only include the thumbnail if we found the project and it has a thumbnail
-      const allImages = [...imageUrls];
-      if (projectToDelete?.thumbnail) {
-        allImages.push(projectToDelete.thumbnail);
-      }
-
-      const response = await fetch("/api/protected/portfolio", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          projectId,
-          imageUrls: allImages,
-        }),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete portfolio project");
-      }
-
-      // If successful, project is already removed from state
-    } catch (error: unknown) {
-      console.error("Delete failed:", error);
-      // If deletion fails, refresh the project list
-      fetchProjects();
-    }
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["portfolio"] });
   };
 
-  useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+  const handleDelete = async (projectId: string, imageUrls: string[]) => {
+    startTransition(async () => {
+      addOptimisticProject(projectId);
+      try {
+        await deleteProject({ projectId, imageUrls });
+        toast({
+          title: "Success",
+          description: "Project deleted successfully",
+        });
+      } catch (error) {
+        console.error("Delete failed:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete portfolio project",
+          variant: "destructive",
+        });
+      }
+    });
+  };
 
   return (
     <div>
@@ -116,14 +94,18 @@ export const PortfolioSection = () => {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-center gap-4">
-          <div className="relative w-full">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="relative w-full sm:w-64">
+            {isPending ? (
+              <div className="absolute left-2.5 top-2.5 h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            ) : (
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            )}
             <Input
               placeholder="Search projects..."
               className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={inputValue}
+              onChange={handleSearchChange}
             />
           </div>
 
@@ -132,26 +114,30 @@ export const PortfolioSection = () => {
               variant="outline"
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
-              onClick={fetchProjects}
+              onClick={handleRefresh}
             >
               <RefreshCw size={16} />{" "}
               <span className="hidden lg:inline">Refresh</span>
             </Button>
 
-            <AddPortfolioDialog onSuccess={fetchProjects} />
+            <AddPortfolioDialog onSuccess={handleRefresh} />
           </div>
         </div>
       </div>
 
       <Separator className="my-6" />
 
-      {error && (
+      {queryError && (
         <div className="bg-red-500/10 text-red-400 p-4 mb-6 rounded border border-red-900/50">
-          <p>{error}</p>
+          <p>
+            {queryError instanceof Error
+              ? queryError.message
+              : "Failed to load portfolio projects"}
+          </p>
           <Button
             variant="outline"
             className="mt-2 bg-transparent border-[#3C3120] text-[#A28B55] hover:bg-neutral-800 hover:border-[#A28B55]"
-            onClick={fetchProjects}
+            onClick={handleRefresh}
           >
             Try Again
           </Button>
@@ -174,7 +160,7 @@ export const PortfolioSection = () => {
               key={project.id || project.$id || `${project.title}-${index}`}
               project={project}
               onDelete={handleDelete}
-              onEditSuccess={fetchProjects}
+              onEditSuccess={handleRefresh}
             />
           ))}
         </div>
@@ -199,7 +185,7 @@ export const PortfolioSection = () => {
                 Get started by adding your first portfolio project
               </p>
               <div className="flex justify-center">
-                <AddPortfolioDialog onSuccess={fetchProjects} />
+                <AddPortfolioDialog onSuccess={handleRefresh} />
               </div>
             </>
           )}

@@ -19,7 +19,7 @@ const CertificationsSection: React.FC = () => {
       background: (
         <Marquee
           pauseOnHover
-          className="absolute top-10 [--duration:20s] [mask-image:linear-gradient(to_top,transparent_40%,#000_100%)]"
+          className="absolute top-10 [--duration:20s] mask-[linear-gradient(to_top,transparent_40%,#000_100%)]"
         >
           {[
             {
@@ -39,8 +39,8 @@ const CertificationsSection: React.FC = () => {
               key={idx}
               className={cn(
                 "relative w-32 cursor-pointer overflow-hidden rounded-xl border p-4",
-                "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
-                "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]",
+                "border-gray-950/10 bg-gray-950/1 hover:bg-gray-950/5",
+                "dark:border-gray-50/10 dark:bg-gray-50/10 dark:hover:bg-gray-50/15",
                 "transform-gpu blur-[1px] transition-all duration-300 ease-out hover:blur-none",
               )}
             >

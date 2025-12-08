@@ -146,18 +146,31 @@ async function handleAdminRoutes(
   }
 }
 
-export async function middleware(request: NextRequest): Promise<NextResponse> {
+export default async function proxy(
+  request: NextRequest,
+): Promise<NextResponse> {
   // Process handlers in sequence
+  let response = NextResponse.next();
+
   const apiResponse = await handleApiProtectedRoutes(request);
-  if (apiResponse) return apiResponse;
+  if (apiResponse) response = apiResponse;
 
   const authResponse = await handleAuthPage(request);
-  if (authResponse) return authResponse;
+  if (authResponse && !apiResponse) response = authResponse;
 
   const adminResponse = await handleAdminRoutes(request);
-  if (adminResponse) return adminResponse;
+  if (adminResponse && !apiResponse && !authResponse) response = adminResponse;
 
-  return NextResponse.next();
+  // Add Security Headers
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()",
+  );
+
+  return response;
 }
 
 // Define which paths this middleware should run on

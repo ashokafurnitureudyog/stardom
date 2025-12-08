@@ -38,7 +38,7 @@ export function ColorsSection({ colors, setColors }: ColorsSectionProps) {
         <Button
           type="button"
           onClick={handleAddColor}
-          className="shrink-0"
+          className="flex-shrink-0"
           size="icon"
         >
           <Plus size={16} />

@@ -39,7 +39,7 @@ const CraftsmanshipSection = () => {
   return (
     <div className="w-full bg-background py-32 md:py-40 font-sans relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(var(--primary-rgb),0.03)_49%,rgba(var(--primary-rgb),0.03)_51%,transparent_52%)] bg-[length:60px_60px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(var(--primary-rgb),0.03)_49%,rgba(var(--primary-rgb),0.03)_51%,transparent_52%)] bg-size-[60px_60px]" />
 
       <motion.div
         className="max-w-7xl mx-auto px-8 md:px-16 relative"

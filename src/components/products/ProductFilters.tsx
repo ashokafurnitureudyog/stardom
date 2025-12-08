@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -56,11 +56,15 @@ export const ProductFilter = () => {
     return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
+  const [isPending, startTransition] = useTransition();
+
   // Handle search with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       if (localSearch !== searchQuery) {
-        handleSearch(localSearch);
+        startTransition(() => {
+          handleSearch(localSearch);
+        });
       }
     }, 300);
     return () => clearTimeout(timer);
@@ -175,7 +179,11 @@ export const ProductFilter = () => {
               className="pl-10 pr-10 h-10"
               aria-label="Search products"
             />
-            <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground pointer-events-none" />
+            {isPending ? (
+              <div className="absolute left-3 top-2.5 h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            ) : (
+              <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground pointer-events-none" />
+            )}
             {localSearch && (
               <Button
                 type="button"

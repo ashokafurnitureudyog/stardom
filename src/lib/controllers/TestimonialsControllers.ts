@@ -16,7 +16,7 @@ export async function getTestimonials(): Promise<TestimonialResponse> {
 
     const response = await database.listDocuments(databaseId, collectionId);
     return { success: true, data: response.documents };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Failed to fetch testimonials:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to fetch testimonials";
@@ -67,7 +67,7 @@ export async function createTestimonial(
     );
 
     return { success: true, data: testimonial };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Failed to create testimonial:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to create testimonial";
@@ -91,7 +91,7 @@ export async function deleteTestimonial(
     await database.deleteDocument(databaseId, collectionId, testimonialId);
 
     return { success: true };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Failed to delete testimonial:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to delete testimonial";
@@ -154,7 +154,7 @@ export async function updateTestimonial(
     );
 
     return { success: true, data: testimonial };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Failed to update testimonial:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to update testimonial";

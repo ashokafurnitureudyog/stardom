@@ -126,7 +126,7 @@ const ContactSection = () => {
           >
             <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
-                <MapPinIcon className="h-10 w-10 text-primary/60 shrink-0" />
+                <MapPinIcon className="h-10 w-10 text-primary/60 flex-shrink-0" />
                 <div>
                   <h3 className="font-serif italic text-xl mb-4 text-foreground">
                     Our Store
@@ -143,7 +143,7 @@ const ContactSection = () => {
 
             <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
-                <MailIcon className="h-10 w-10 text-primary/60 shrink-0" />
+                <MailIcon className="h-10 w-10 text-primary/60 flex-shrink-0" />
                 <div>
                   <h3 className="font-serif italic text-xl mb-4 text-foreground">
                     Support
@@ -157,7 +157,7 @@ const ContactSection = () => {
 
             <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
-                <PhoneIcon className="h-10 w-10 text-primary/60 shrink-0" />
+                <PhoneIcon className="h-10 w-10 text-primary/60 flex-shrink-0" />
                 <div>
                   <h3 className="font-serif italic text-xl mb-4 text-foreground">
                     Personal Consultation

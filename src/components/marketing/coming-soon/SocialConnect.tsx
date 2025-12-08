@@ -16,7 +16,7 @@ const SocialConnect = () => {
           <h2 className="text-5xl md:text-6xl lg:text-7xl text-white font-serif tracking-wider mb-8 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
             Connect With Us
           </h2>
-          <div className="absolute left-1/2 -translate-x-1/2 w-24 h-[1px] bg-gradient-to-r from-transparent via-gold-400 to-transparent"></div>
+          <div className="absolute left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-gold-400 to-transparent"></div>
         </div>
 
         <p className="text-gray-300 mb-16 max-w-2xl mx-auto text-lg leading-relaxed">

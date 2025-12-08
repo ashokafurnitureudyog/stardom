@@ -43,7 +43,7 @@ export function ImageCarousel({
         "relative overflow-hidden bg-muted",
         aspectRatio === "square" && "aspect-square",
         aspectRatio === "video" && "aspect-video",
-        aspectRatio === "wide" && "aspect-[16/9]",
+        aspectRatio === "wide" && "aspect-video",
         className,
       )}
     >

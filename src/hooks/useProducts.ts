@@ -3,7 +3,7 @@
  * @module useProducts
  */
 import { useProductStore } from "@/lib/store/ProductStore";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Product, SortOption } from "@/types/ComponentTypes";
 import { productService } from "@/lib/services/productService";
@@ -58,6 +58,10 @@ interface UseProductsReturn {
   handleSort: (option: SortOption) => void;
   sortOptions: typeof SORT_OPTIONS;
   resetFilters: () => void;
+  deleteProduct: (vars: {
+    productId: string;
+    imageUrls: string[];
+  }) => Promise<void>;
 
   // State
   filters: {
@@ -94,6 +98,8 @@ export const useProducts = (productId?: string): UseProductsReturn => {
     setSortOption,
     resetFilters,
   } = useProductStore();
+
+  const queryClient = useQueryClient();
 
   // Fetch products with proper error handling and caching
   const productsQuery = useQuery({
@@ -174,6 +180,30 @@ export const useProducts = (productId?: string): UseProductsReturn => {
   const handleSearch = (query: string) => setSearchQuery(query);
   const handleSort = (option: SortOption) => setSortOption(option);
 
+  // Delete product mutation
+  const deleteProductMutation = useMutation({
+    mutationFn: async ({
+      productId,
+      imageUrls,
+    }: {
+      productId: string;
+      imageUrls: string[];
+    }) => {
+      const response = await fetch("/api/protected/products", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, imageUrls }),
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete product");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["featuredProducts"] });
+    },
+  });
+
   return {
     // Data
     products: productsQuery.data || [],
@@ -209,6 +239,7 @@ export const useProducts = (productId?: string): UseProductsReturn => {
     handleSort,
     sortOptions: SORT_OPTIONS,
     resetFilters,
+    deleteProduct: deleteProductMutation.mutateAsync,
 
     // State
     filters,

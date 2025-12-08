@@ -1,15 +1,34 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { generateProductMetadata } from "@/lib/seo/page-metadata";
 import {
   generateProductSchema,
   generateBreadcrumbSchema,
 } from "@/lib/seo/dynamic-schemas";
-import { getProductById } from "@/lib/server/server-products";
+import { getProductById, fetchAllProducts } from "@/lib/server/server-products";
 import ProductDisplay from "./ProductDisplay";
 import { Product } from "@/types/ComponentTypes";
+import { ProductDetailsSkeleton } from "@/components/products/ProductDetailsSkeleton";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+}
+
+/**
+ * Generate static params - fetches all product IDs for build-time prerendering
+ * Required by Next.js 16 with cacheComponents enabled
+ */
+export async function generateStaticParams() {
+  try {
+    const products = await fetchAllProducts();
+    return products.map((product) => ({
+      id: product.id,
+    }));
+  } catch (error) {
+    console.error("Error generating static params for products:", error);
+    // Return a fallback to satisfy the cacheComponents requirement
+    return [{ id: "placeholder" }];
+  }
 }
 
 /**
@@ -65,10 +84,9 @@ function createBreadcrumbPath(product: Product | undefined, productId: string) {
 }
 
 /**
- * Product detail page component
+ * Async component that fetches and displays product content
  */
-export default async function ProductPage({ params }: PageProps) {
-  const { id } = await params;
+async function ProductContent({ id }: { id: string }) {
   const product = await getProductById(id);
 
   // Generate structured data for search engines
@@ -110,5 +128,19 @@ export default async function ProductPage({ params }: PageProps) {
       {/* Product display component with initial server data */}
       <ProductDisplay id={id} initialProduct={product} />
     </>
+  );
+}
+
+/**
+ * Product detail page component
+ * Wraps product content in Suspense for Next.js 16 compatibility
+ */
+export default async function ProductPage({ params }: PageProps) {
+  const { id } = await params;
+
+  return (
+    <Suspense fallback={<ProductDetailsSkeleton />}>
+      <ProductContent id={id} />
+    </Suspense>
   );
 }

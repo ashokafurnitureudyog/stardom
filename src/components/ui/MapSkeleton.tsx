@@ -15,7 +15,7 @@ export const MapSkeleton: React.FC<MapSkeletonProps> = ({ height }) => {
         {/* Map pin skeleton */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <Skeleton className="h-8 w-8 rounded-full" />
-          <div className="absolute bottom-0 left-1/2 transform translate-x-[-50%] translate-y-[100%] w-2 h-6 bg-primary/30 rounded" />
+          <div className="absolute bottom-0 left-1/2 transform translate-x-[-50%] translate-y-full w-2 h-6 bg-primary/30 rounded" />
         </div>
 
         {/* Zoom controls skeleton */}
