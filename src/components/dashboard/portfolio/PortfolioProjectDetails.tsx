@@ -36,7 +36,7 @@ export function PortfolioProjectDetails({
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 h-full w-full overflow-auto md:overflow-hidden bg-neutral-900">
       {/* Image section with strict height constraints */}
-      <div className="w-full h-[45vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
+      <div className="w-full h-[45vh] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
         {/* Image container with adjusted height to account for nav */}
         <div className="absolute inset-0 bottom-14 p-4 flex items-center justify-center bg-black/30 overflow-hidden">
           <div className="w-[90%] h-[90%] relative rounded-md overflow-hidden">
@@ -150,7 +150,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
         )}
       </div>
 
-      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Description */}
       <div>
@@ -161,7 +161,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       {/* Challenge */}
       {project.challenge && (
         <>
-          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-2 text-[#A28B55]">
               Challenge
@@ -174,7 +174,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       {/* Solution */}
       {project.solution && (
         <>
-          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-2 text-[#A28B55]">
               Solution
@@ -187,7 +187,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       {/* Impact */}
       {project.impact && (
         <>
-          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-2 text-[#A28B55]">Impact</h3>
             <p className="text-neutral-400">{project.impact}</p>
@@ -198,7 +198,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       {/* Testimonial */}
       {project.testimonial && project.testimonial.quote && (
         <>
-          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-3 text-[#A28B55] flex items-center gap-2">
               <MessageSquare size={18} /> Client Testimonial
@@ -225,7 +225,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
         </>
       )}
 
-      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Project ID */}
       <div className="text-sm text-neutral-500">

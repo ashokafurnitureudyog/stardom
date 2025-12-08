@@ -69,7 +69,7 @@ export const SecuritySettingsDialog = ({
   };
 
   const SuccessToast = () => (
-    <div className="fixed bottom-6 right-6 animate-in slide-in-from-right-8 z-1000">
+    <div className="fixed bottom-6 right-6 animate-in slide-in-from-right-8 z-[1000]">
       <div className="flex items-center gap-3 bg-neutral-900 border border-[#A28B55] text-[#A28B55] px-4 py-3 rounded-xl shadow-[0_0_12px_rgba(162,139,85,0.2)]">
         <CheckCircle2 className="w-5 h-5 text-[#A28B55]" />
         <div>

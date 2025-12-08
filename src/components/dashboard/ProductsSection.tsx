@@ -144,7 +144,7 @@ export const ProductsSection = () => {
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
             <div
               key={item}
-              className="aspect-4/5 bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
+              className="aspect-[4/5] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
             />
           ))}
         </div>

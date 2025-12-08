@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
 import { cookies } from "next/headers";
@@ -27,12 +26,15 @@ export async function loginUser(formData: FormData) {
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Login failed:", error);
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Invalid email or password";
 
     return {
       success: false,
-      error: error.message || "Invalid email or password",
+      error: errorMessage,
     };
   }
 }

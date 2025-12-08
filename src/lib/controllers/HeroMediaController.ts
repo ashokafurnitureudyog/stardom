@@ -51,7 +51,7 @@ export async function getHeroMedia(): Promise<HeroMediaResult> {
       success: true,
       mediaItems,
     };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Error fetching hero media:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to fetch hero media";
@@ -104,7 +104,7 @@ export async function addHeroMedia(
       success: true,
       mediaItem: mapToMediaItem(newMedia),
     };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Error adding hero media:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to add hero media";
@@ -168,7 +168,7 @@ export async function deleteHeroMedia(id: string): Promise<HeroMediaResult> {
         error: `Could not find or delete media item with ID: ${id}. Reason: ${errorMessage}`,
       };
     }
-  } catch (error: unknown) {
+  } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Failed to delete hero media";
     return {
@@ -193,7 +193,7 @@ export async function getPublicHeroMedia(): Promise<HeroMediaResult> {
       success: true,
       mediaItems,
     };
-  } catch (error: unknown) {
+  } catch (error) {
     console.error("Error fetching public hero media:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to fetch hero media";

@@ -234,9 +234,12 @@ export const FeaturedSection = () => {
             {error.includes("failed") ||
             error.includes("Failed") ||
             error.includes("error") ? (
-              <AlertCircle size={18} className="text-red-400 shrink-0" />
+              <AlertCircle size={18} className="text-red-400 flex-shrink-0" />
             ) : (
-              <CheckCircle2 size={18} className="text-green-400 shrink-0" />
+              <CheckCircle2
+                size={18}
+                className="text-green-400 flex-shrink-0"
+              />
             )}
             <div className="space-y-1">
               <p
@@ -270,7 +273,7 @@ export const FeaturedSection = () => {
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
-              className="aspect-4/5 bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
+              className="aspect-[4/5] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
             />
           ))}
         </div>

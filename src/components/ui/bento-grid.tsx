@@ -77,7 +77,7 @@ const BentoCard = ({
         </a>
       </Button>
     </div>
-    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/5 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
+    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
   </div>
 );
 

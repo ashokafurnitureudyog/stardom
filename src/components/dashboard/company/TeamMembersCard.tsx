@@ -57,7 +57,7 @@ export const TeamMembersCard = ({
                   <DialogTrigger asChild>
                     <div className="group/member cursor-pointer bg-black/50 border border-[#3C3120] rounded-md p-3 hover:border-[#A28B55] hover:bg-black/80 transition-all duration-200">
                       <div className="flex gap-3 items-start">
-                        <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-[#3C3120]">
+                        <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 border border-[#3C3120]">
                           <img
                             src={
                               member.image ||

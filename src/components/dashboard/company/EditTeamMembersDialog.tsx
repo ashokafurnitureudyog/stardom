@@ -462,7 +462,7 @@ export const EditTeamMembersDialog = ({
             </div>
           )}
 
-          <Separator className="bg-linear-to-r from-transparent via-[#3C3120] to-transparent" />
+          <Separator className="bg-gradient-to-r from-transparent via-[#3C3120] to-transparent" />
 
           <div className="flex justify-end gap-3">
             <Button

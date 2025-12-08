@@ -177,7 +177,7 @@ const ReturnsInfoPage: React.FC = () => {
                       {category.icon}
                       {category.title}
                     </h2>
-                    <div className="h-px grow bg-primary/20" />
+                    <div className="h-px flex-grow bg-primary/20" />
                   </div>
 
                   <Accordion type="single" collapsible className="w-full">

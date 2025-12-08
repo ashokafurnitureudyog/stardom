@@ -11,7 +11,7 @@ import { useCompanyData } from "@/hooks/useCompanyData";
 
 const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
   <motion.div whileHover={{ scale: 1.02 }} className="relative group">
-    <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-accent/5 rounded-lg transform -rotate-1" />
+    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg transform -rotate-1" />
     <div className="relative p-8 border-l-2 border-primary/30">
       <NumberTicker
         className="text-6xl font-light text-foreground font-serif"

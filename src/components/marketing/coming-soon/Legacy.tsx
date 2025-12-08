@@ -28,7 +28,7 @@ const LegacySection = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl text-white font-serif tracking-wide mb-4">
             Our Legacy of Luxury
           </h2>
-          <div className="w-24 h-px bg-linear-to-r from-transparent via-gray-500 to-transparent mx-auto" />
+          <div className="w-24 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent mx-auto" />
         </motion.div>
 
         {/* Content Grid */}

@@ -28,31 +28,26 @@ function createBuildTimeClient() {
  * @throws Will throw an error if the fetch fails
  */
 export async function fetchAllProducts(): Promise<Product[]> {
-  try {
-    const { database } = createBuildTimeClient();
+  const { database } = createBuildTimeClient();
 
-    const products = await database.listDocuments(
-      process.env.APPWRITE_DATABASE_ID!,
-      process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
-    );
+  const products = await database.listDocuments(
+    process.env.APPWRITE_DATABASE_ID!,
+    process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+  );
 
-    return products.documents.map((product) => ({
-      id: product.$id,
-      $id: product.$id,
-      name: product.name,
-      description: product.description,
-      category: product.category,
-      product_collection: product.product_collection,
-      images: product.images || [],
-      features: product.features || [],
-      colors: product.colors || [],
-      $createdAt: product.$createdAt,
-      $updatedAt: product.$updatedAt,
-    })) as Product[];
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-    throw error; // Re-throw to allow the caller to handle it
-  }
+  return products.documents.map((product) => ({
+    id: product.$id,
+    $id: product.$id,
+    name: product.name,
+    description: product.description,
+    category: product.category,
+    product_collection: product.product_collection,
+    images: product.images || [],
+    features: product.features || [],
+    colors: product.colors || [],
+    $createdAt: product.$createdAt,
+    $updatedAt: product.$updatedAt,
+  })) as Product[];
 }
 
 /**
@@ -83,27 +78,22 @@ export async function getProductById(id: string): Promise<Product | undefined> {
  * @returns {Promise<Product[]>} Array of similar products
  */
 export async function getSimilarProducts(id: string): Promise<Product[]> {
-  try {
-    // Get the reference product
-    const referenceProduct = await getProductById(id);
-    if (!referenceProduct) {
-      console.warn(`Cannot find similar products - product ${id} not found`);
-      return [];
-    }
-
-    // Get all products and filter
-    const allProducts = await fetchAllProducts();
-
-    return allProducts.filter(
-      (product) =>
-        // Same category but not the same product
-        product.category === referenceProduct.category &&
-        product.id !== referenceProduct.id,
-    );
-  } catch (error) {
-    console.error(`Error retrieving similar products for ID ${id}:`, error);
+  // Get the reference product
+  const referenceProduct = await getProductById(id);
+  if (!referenceProduct) {
+    console.warn(`Cannot find similar products - product ${id} not found`);
     return [];
   }
+
+  // Get all products and filter
+  const allProducts = await fetchAllProducts();
+
+  return allProducts.filter(
+    (product) =>
+      // Same category but not the same product
+      product.category === referenceProduct.category &&
+      product.id !== referenceProduct.id,
+  );
 }
 
 /**

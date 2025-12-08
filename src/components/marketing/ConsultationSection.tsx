@@ -71,7 +71,7 @@ const ConsultationSection = () => {
           {/* Right Column - Form */}
           <div className="relative group">
             {/* Glow effect container */}
-            <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-50 transition-all duration-700" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-50 transition-all duration-700" />
 
             <Card className="relative bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500">
               <CardHeader>

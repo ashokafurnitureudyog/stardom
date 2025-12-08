@@ -46,7 +46,7 @@ export const TopBar = ({
             <Menu size={24} />
           </button>
 
-          <div className="flex items-center justify-center grow">
+          <div className="flex items-center justify-center flex-grow">
             <div className="flex items-center gap-4">
               <Image
                 src="/images/logo-dark.png"

@@ -50,7 +50,7 @@ export const TagsInput = ({ tags, setTags }: TagsInputProps) => {
         <Button
           type="button"
           onClick={addTag}
-          className="shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
+          className="flex-shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
         >
           Add Tag
         </Button>

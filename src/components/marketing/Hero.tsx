@@ -134,7 +134,7 @@ const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
         />
       ))}
       <div
-        className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/70"
+        className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"
         aria-hidden="true"
       />
     </div>

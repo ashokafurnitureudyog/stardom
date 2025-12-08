@@ -363,7 +363,7 @@ export function ImagesSection({
               type="button"
               onClick={handleAddUrlClick}
               disabled={isImageLoading || !newImageUrl.trim()}
-              className="shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
+              className="flex-shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
             >
               {isImageLoading ? (
                 <>

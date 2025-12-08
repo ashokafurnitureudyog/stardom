@@ -30,7 +30,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 h-full w-full overflow-auto md:overflow-hidden bg-neutral-900">
       {/* Image section with strict height constraints */}
-      <div className="w-full h-[45vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
+      <div className="w-full h-[45vh] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
         {/* Image container with adjusted height to account for nav */}
         <div className="absolute inset-0 bottom-14 p-4 flex items-center justify-center bg-black/30 overflow-hidden">
           <div className="w-[90%] h-[90%] relative rounded-md overflow-hidden">
@@ -149,7 +149,7 @@ function ProductContent({ product }: { product: Product }) {
         </div>
       </div>
 
-      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Description */}
       <div>
@@ -160,7 +160,7 @@ function ProductContent({ product }: { product: Product }) {
       {/* Features */}
       {product.features && product.features.length > 0 && (
         <>
-          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-3 text-[#A28B55]">
               Features
@@ -183,7 +183,7 @@ function ProductContent({ product }: { product: Product }) {
       {/* Colors */}
       {product.colors && product.colors.length > 0 && (
         <>
-          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-3 text-[#A28B55]">
               Available Colors
@@ -203,7 +203,7 @@ function ProductContent({ product }: { product: Product }) {
         </>
       )}
 
-      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Product ID */}
       <div className="text-sm text-neutral-500">

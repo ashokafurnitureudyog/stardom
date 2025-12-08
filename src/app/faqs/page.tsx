@@ -190,7 +190,7 @@ const FAQPage: React.FC = () => {
                       <h2 className="text-2xl lg:text-3xl font-light font-serif">
                         {category.title}
                       </h2>
-                      <div className="h-px grow bg-primary/20" />
+                      <div className="h-px flex-grow bg-primary/20" />
                     </div>
 
                     <Accordion type="single" collapsible className="w-full">
