@@ -65,7 +65,7 @@ export async function getPortfolioProjects(): Promise<PortfolioResponse> {
 
     // Map the documents to our PortfolioProject type
     const projects = response.documents.map((doc) =>
-      mapToPortfolioProject(doc as PortfolioDocument),
+      mapToPortfolioProject(doc as unknown as PortfolioDocument),
     );
 
     return { success: true, data: projects };

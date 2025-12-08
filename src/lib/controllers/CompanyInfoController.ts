@@ -133,7 +133,21 @@ export async function updateCompanyInfo(data: CompanyInfo) {
       mapsLink: data.mapsLink,
     };
 
-    await database[method](databaseId, collectionId, documentId, documentData);
+    if (existingData.documents.length > 0) {
+      await database.updateDocument(
+        databaseId,
+        collectionId,
+        documentId,
+        documentData,
+      );
+    } else {
+      await database.createDocument(
+        databaseId,
+        collectionId,
+        documentId,
+        documentData,
+      );
+    }
 
     return {
       success: true,

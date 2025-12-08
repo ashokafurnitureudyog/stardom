@@ -8,7 +8,7 @@ import { useTestimonials } from "@/hooks/useTestimonials";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const TestimonialsSection = () => {
-  const { testimonials, isLoading } = useTestimonials({ limit: 6 });
+  const { testimonials, isLoading } = useTestimonials();
 
   return (
     <div className="w-full bg-background py-20 md:py-32 px-8 md:px-16 font-sans relative">

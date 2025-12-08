@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { TopBar } from "@/components/dashboard/TopBar";
@@ -43,11 +43,13 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-background">
       {/* Desktop sidebar - only visible on md screens and up */}
       <div className="hidden md:block">
-        <Sidebar
-          activeSection={activeSection}
-          setActiveSection={setActiveSection}
-          user={user}
-        />
+        <Suspense fallback={<div className="w-64 bg-card border-r h-screen" />}>
+          <Sidebar
+            activeSection={activeSection}
+            setActiveSection={setActiveSection}
+            user={user}
+          />
+        </Suspense>
       </div>
 
       {/* Mobile sidebar as a Sheet - only appears when toggled */}
@@ -56,18 +58,24 @@ export default function AdminDashboard() {
           side="left"
           className="p-0 w-[85%] max-w-[320px] sm:max-w-xs"
         >
-          <Sidebar
-            activeSection={activeSection}
-            setActiveSection={setActiveSection}
-            user={user}
-            isMobile={true}
-            onClose={() => setSidebarOpen(false)}
-          />
+          <Suspense fallback={<div className="w-full h-full bg-card" />}>
+            <Sidebar
+              activeSection={activeSection}
+              setActiveSection={setActiveSection}
+              user={user}
+              isMobile={true}
+              onClose={() => setSidebarOpen(false)}
+            />
+          </Suspense>
         </SheetContent>
       </Sheet>
 
       <div className="flex-1 flex flex-col">
-        <TopBar user={user} toggleSidebar={toggleSidebar} />
+        <Suspense
+          fallback={<div className="h-16 border-b border-[#3C3120] bg-black" />}
+        >
+          <TopBar user={user} toggleSidebar={toggleSidebar} />
+        </Suspense>
         <main className="flex-1 p-4 md:p-8 overflow-auto">
           <div className="max-w-6xl mx-auto">
             {activeSection === "products" && <ProductsSection />}

@@ -24,6 +24,7 @@ import Image from "next/image";
 const Footer = () => {
   const { theme, resolvedTheme } = useTheme();
   const [logoSrc, setLogoSrc] = useState("/images/logo.png");
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
   const { companyInfo, socialLinks, isLoading } = useCompanyData();
 
   useEffect(() => {
@@ -31,6 +32,7 @@ const Footer = () => {
     setLogoSrc(
       currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png",
     );
+    setCurrentYear(new Date().getFullYear());
   }, [theme, resolvedTheme]);
 
   const scrollToTop = () => {
@@ -216,7 +218,7 @@ const Footer = () => {
               {/* Policy Links */}
               <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 <p className="text-muted-foreground/60 text-sm">
-                  © {new Date().getFullYear()} Stardom. All rights reserved.
+                  © {currentYear ?? ""} Stardom. All rights reserved.
                 </p>
                 <div className="flex items-center gap-8">
                   {policyLinks.map((item) => (

@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   /* config options here */
   images: {
     remotePatterns: [
-      // Removed wildcard hostnames to restrict image loading to trusted domains.
       {
         protocol: "https",
         hostname: "images.unsplash.com",
@@ -24,6 +23,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  reactCompiler: true,
+  cacheComponents: true,
 };
 
 export default nextConfig;

@@ -20,6 +20,21 @@ interface ProductResponse {
   error?: string;
 }
 
+export const getCachedProducts = async () => {
+  "use cache";
+  const { database } = await createAdminClient();
+  const products = await database.listDocuments(
+    process.env.APPWRITE_DATABASE_ID!,
+    process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+  );
+
+  return products.documents.map((product) => ({
+    ...product,
+    id: product.$id,
+    collection: product.product_collection,
+  }));
+};
+
 export const addProduct = async (
   productData: ProductInput,
 ): Promise<ProductResponse> => {

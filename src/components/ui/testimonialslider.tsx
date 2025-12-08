@@ -10,21 +10,13 @@ import {
   CheckCircleIcon,
 } from "lucide-react";
 
-interface Testimonial {
-  img: string;
-  quote: string;
-  name: string;
-  location?: string;
-  context?: string;
-  purchaseDate?: string;
-  verified?: boolean;
-}
+import { ClientTestimonial } from "@/types/ComponentTypes";
 
 export function FancyTestimonialsSlider({
   testimonials,
   autorotateTiming = 7000,
 }: {
-  testimonials: Testimonial[];
+  testimonials: ClientTestimonial[];
   autorotateTiming?: number;
 }) {
   const testimonialsRef = useRef<HTMLDivElement>(null);
