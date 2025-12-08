@@ -117,7 +117,7 @@ const CookiePolicyPage: React.FC = () => {
       <div className="min-h-screen bg-background font-sans">
         {/* Hero Section with subtle gradient background */}
         <Section className="relative pt-32 pb-16 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
           <motion.div
             className="text-center max-w-2xl mx-auto relative z-10"
             initial={{ opacity: 0, y: 20 }}
@@ -236,7 +236,7 @@ const CookiePolicyPage: React.FC = () => {
                     <h2 className="text-2xl md:text-3xl font-light flex items-center gap-3">
                       {category.title}
                     </h2>
-                    <div className="h-px flex-grow bg-primary/10" />
+                    <div className="h-px grow bg-primary/10" />
                   </div>
 
                   <Accordion

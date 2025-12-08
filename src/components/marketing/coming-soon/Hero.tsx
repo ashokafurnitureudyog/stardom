@@ -10,7 +10,7 @@ const HeroSection = () => {
 
       <LampContainer>
         <div className="relative z-10 space-y-8 sm:space-y-12">
-          <div className="w-16 sm:w-24 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent mx-auto" />
+          <div className="w-16 sm:w-24 h-px bg-linear-to-r from-transparent via-gray-500 to-transparent mx-auto" />
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -47,9 +47,9 @@ const HeroSection = () => {
 
           {/* Decorative elements */}
           <div className="w-full max-w-xs mx-auto flex items-center gap-3 sm:gap-4 opacity-60">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-500 to-transparent" />
             <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 border border-gray-500 transform rotate-45" />
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-500 to-transparent" />
           </div>
         </div>
       </LampContainer>
@@ -65,7 +65,7 @@ const HeroSection = () => {
           <p className="text-xs sm:text-sm text-gray-500 tracking-widest uppercase">
             Scroll
           </p>
-          <div className="w-px h-12 sm:h-16 bg-gradient-to-b from-gray-500 to-transparent" />
+          <div className="w-px h-12 sm:h-16 bg-linear-to-b from-gray-500 to-transparent" />
         </div>
       </motion.div>
     </div>

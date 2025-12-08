@@ -38,14 +38,14 @@ const CollectionPreview = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <h2 className="text-5xl md:text-6xl lg:text-7xl text-white font-serif tracking-wider mb-8 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+          <h2 className="text-5xl md:text-6xl lg:text-7xl text-white font-serif tracking-wider mb-8 bg-linear-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
             Preview Our Collection
           </h2>
           <p className="text-xl md:text-2xl text-gray-400 font-light max-w-3xl mx-auto leading-relaxed">
             A glimpse into the future of luxury furniture. Each piece is a
             masterpiece in waiting.
           </p>
-          <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-gold/50 to-transparent mx-auto mt-12" />
+          <div className="w-32 h-px bg-linear-to-r from-transparent via-gold/50 to-transparent mx-auto mt-12" />
         </motion.div>
 
         {/* Collection Cards */}
@@ -59,15 +59,15 @@ const CollectionPreview = () => {
               className="group relative"
             >
               <div
-                className={`absolute inset-0 bg-gradient-to-b ${collection.gradient} opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-2xl`}
+                className={`absolute inset-0 bg-linear-to-b ${collection.gradient} opacity-0 group-hover:opacity-100 transition-all duration-700 rounded-2xl`}
               />
 
-              <div className="relative backdrop-blur-md bg-white/[0.03] rounded-2xl p-10 h-[450px] border border-white/5 overflow-hidden transition-all duration-700 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-white/5">
+              <div className="relative backdrop-blur-md bg-white/3 rounded-2xl p-10 h-[450px] border border-white/5 overflow-hidden transition-all duration-700 group-hover:border-white/20 group-hover:shadow-2xl group-hover:shadow-white/5">
                 {/* Icon */}
                 <collection.icon className="w-10 h-10 text-white/90 mb-8 transition-transform duration-500 group-hover:scale-110" />
 
                 {/* Title */}
-                <h3 className="text-3xl text-white font-light tracking-wider mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                <h3 className="text-3xl text-white font-light tracking-wider mb-4 bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   {collection.title}
                 </h3>
 

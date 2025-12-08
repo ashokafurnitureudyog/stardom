@@ -177,7 +177,7 @@ export const PortfolioCard = ({
           {project.tags.length > 2 && (
             <Badge
               variant="outline"
-              className="text-xs bg-neutral-800/30 text-neutral-500 border-neutral-700/50 whitespace-nowrap flex-shrink-0"
+              className="text-xs bg-neutral-800/30 text-neutral-500 border-neutral-700/50 whitespace-nowrap shrink-0"
             >
               +{project.tags.length - 2} more
             </Badge>

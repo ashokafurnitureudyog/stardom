@@ -124,7 +124,7 @@ const ContactSection = () => {
             variants={fadeInUpVariants}
             className="space-y-8"
           >
-            <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
+            <div className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
                 <MapPinIcon className="h-10 w-10 text-primary/60 shrink-0" />
                 <div>
@@ -141,7 +141,7 @@ const ContactSection = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
+            <div className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
                 <MailIcon className="h-10 w-10 text-primary/60 shrink-0" />
                 <div>
@@ -155,7 +155,7 @@ const ContactSection = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
+            <div className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
                 <PhoneIcon className="h-10 w-10 text-primary/60 shrink-0" />
                 <div>
@@ -184,7 +184,7 @@ const ContactSection = () => {
           >
             <form
               onSubmit={handleSubmit}
-              className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-8 border border-primary/5"
+              className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-8 border border-primary/5"
             >
               <div className="space-y-3">
                 <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">

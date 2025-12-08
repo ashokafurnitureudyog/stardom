@@ -53,8 +53,8 @@ export function FancyTestimonialsSlider({
     <div className="mx-auto w-full max-w-4xl text-center">
       {/* Testimonial image */}
       <div className="relative h-32">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[420px] lg:w-[480px] lg:h-[480px] -translate-x-1/2 before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-gradient-to-b before:from-primary/5 before:via-primary/2 before:via-25% before:to-transparent before:to-75%">
-          <div className="h-32 [mask-image:_linear-gradient(0deg,transparent,theme(colors.white)_20%,theme(colors.white))]">
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[420px] lg:w-[480px] lg:h-[480px] -translate-x-1/2 before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-linear-to-b before:from-primary/5 before:via-primary/2 before:via-25% before:to-transparent before:to-75%">
+          <div className="h-32 mask-[linear-gradient(0deg,transparent,var(--color-white)_20%,var(--color-white))]">
             {testimonials.map((testimonial, index) => (
               <Transition
                 as="div"
@@ -62,11 +62,11 @@ export function FancyTestimonialsSlider({
                 show={active === index}
                 className="absolute inset-0 -z-10 h-full"
                 enter="transition ease-[cubic-bezier(0.68,-0.3,0.32,1)] duration-700 order-first"
-                enterFrom="opacity-0 -rotate-[60deg]"
+                enterFrom="opacity-0 -rotate-60"
                 enterTo="opacity-100 rotate-0"
                 leave="transition ease-[cubic-bezier(0.68,-0.3,0.32,1)] duration-700"
                 leaveFrom="opacity-100 rotate-0"
-                leaveTo="opacity-0 rotate-[60deg]"
+                leaveTo="opacity-0 rotate-60"
                 beforeEnter={() => heightFix()}
               >
                 <img

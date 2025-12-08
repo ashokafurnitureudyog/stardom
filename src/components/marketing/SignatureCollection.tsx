@@ -24,16 +24,16 @@ const ProductCard = ({
     <div className="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-primary/20 opacity-0 group-hover:opacity-100 transition-all duration-500" />
 
     <div className="relative overflow-hidden">
-      <div className="aspect-[4/3] w-full">
+      <div className="aspect-4/3 w-full">
         <img
           src={collection.image}
           alt={collection.name}
           className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transform transition-all duration-1000 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 group-hover:opacity-0 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/60 group-hover:opacity-0 transition-opacity duration-500" />
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 p-12 bg-gradient-to-t from-background via-background/95 to-transparent transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+      <div className="absolute bottom-0 left-0 right-0 p-12 bg-linear-to-t from-background via-background/95 to-transparent transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -76,7 +76,7 @@ const FeatureCard = ({
     transition={{ duration: 0.8, delay: index * 0.1 }}
     className="relative group"
   >
-    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg transform -rotate-1" />
+    <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-accent/5 rounded-lg transform -rotate-1" />
     <div className="relative p-12 flex flex-col items-center text-center">
       <div className="mb-8 transform group-hover:scale-110 transition-transform duration-500">
         {feature.icon}

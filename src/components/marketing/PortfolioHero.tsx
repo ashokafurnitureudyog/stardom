@@ -109,7 +109,7 @@ export const PortfolioHero = ({
 
         {/* Overlay */}
         <div
-          className={`absolute inset-0 bg-gradient-to-b from-black/${overlayOpacity} via-black/${Math.max(
+          className={`absolute inset-0 bg-linear-to-b from-black/${overlayOpacity} via-black/${Math.max(
             20,
             overlayOpacity - 20,
           )} to-black/${overlayOpacity}`}

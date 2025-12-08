@@ -21,10 +21,10 @@ export const ProductGrid: React.FC = () => {
             className="group relative overflow-hidden border-primary/10"
           >
             {/* Glow effect */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute -inset-1 bg-linear-to-r from-primary/5 via-accent/5 to-primary/5 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
             {/* Product image skeleton */}
-            <div className="aspect-[4/3] w-full relative overflow-hidden border-b border-primary/10">
+            <div className="aspect-4/3 w-full relative overflow-hidden border-b border-primary/10">
               <Skeleton className="h-full w-full rounded-none" />
               {/* Badge skeleton */}
               <div className="absolute bottom-2 left-2 z-10">
@@ -65,7 +65,7 @@ export const ProductGrid: React.FC = () => {
         >
           <div className="relative mx-auto mb-8 w-20 h-20">
             {/* Subtle glow effect */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full blur-md animate-pulse" />
+            <div className="absolute -inset-1 bg-linear-to-r from-primary/10 via-accent/10 to-primary/10 rounded-full blur-md animate-pulse" />
 
             {/* Icon container */}
             <div className="relative flex items-center justify-center w-full h-full bg-background border border-primary/10 rounded-full">

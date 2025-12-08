@@ -133,7 +133,7 @@ export const ProductImages = ({
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index} className="flex justify-center">
-              <div className="rounded-3xl overflow-hidden bg-card relative shadow-[0_0_32px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]">
+              <div className="rounded-3xl overflow-hidden bg-card relative shadow-[0_0_32px_rgba(34,42,53,0.06),0_1px_1px_rgba(0,0,0,0.05),0_0_0_1px_rgba(34,42,53,0.04),0_0_4px_rgba(34,42,53,0.08),0_16px_68px_rgba(47,48,55,0.05),0_1px_0_rgba(255,255,255,0.1)_inset]">
                 {!imagesLoaded[index] && (
                   <div className="absolute inset-0 flex items-center justify-center bg-muted/30">
                     <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>

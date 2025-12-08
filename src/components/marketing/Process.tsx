@@ -39,7 +39,7 @@ const CraftsmanshipSection = () => {
   return (
     <div className="w-full bg-background py-32 md:py-40 font-sans relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(var(--primary-rgb),0.03)_49%,rgba(var(--primary-rgb),0.03)_51%,transparent_52%)] bg-[length:60px_60px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,rgba(var(--primary-rgb),0.03)_49%,rgba(var(--primary-rgb),0.03)_51%,transparent_52%)] bg-size-[60px_60px]" />
 
       <motion.div
         className="max-w-7xl mx-auto px-8 md:px-16 relative"
@@ -80,8 +80,8 @@ const CraftsmanshipSection = () => {
               transition={{ delay: index * 0.2 }}
             >
               {/* Enhanced Glow Effects */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-xl blur-2xl opacity-0 group-hover:opacity-75 transition-all duration-700" />
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
+              <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 rounded-xl blur-2xl opacity-0 group-hover:opacity-75 transition-all duration-700" />
+              <div className="absolute -inset-0.5 bg-linear-to-br from-primary/10 to-accent/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
               <Card className="relative bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 rounded-xl overflow-hidden">
                 <CardContent className="p-8">

@@ -68,7 +68,7 @@ export const SocialLinksCard = ({
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-md border border-[#3C3120] bg-black/60 hover:bg-[#3C3120]/50 transition-colors whitespace-nowrap w-[130px] flex-shrink-0 hover:border-[#A28B55]"
+                      className="flex items-center gap-3 p-3 rounded-md border border-[#3C3120] bg-black/60 hover:bg-[#3C3120]/50 transition-colors whitespace-nowrap w-[130px] shrink-0 hover:border-[#A28B55]"
                     >
                       {getSocialIcon(link.platform)}
                       <span className="capitalize truncate">

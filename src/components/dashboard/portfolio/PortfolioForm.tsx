@@ -282,7 +282,7 @@ export const PortfolioForm = ({
 
         {errorMessage && (
           <div className="bg-red-500/10 border border-red-900/50 text-red-400 p-4 rounded-md flex items-start gap-3 mb-6">
-            <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
             <p>{errorMessage}</p>
           </div>
         )}

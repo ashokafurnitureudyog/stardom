@@ -120,7 +120,7 @@ export const ProductSelectionDialog = ({
           {remainingSlots > 0 ? (
             <div className="bg-zinc-800/70 border border-zinc-700 text-zinc-100 px-5 py-3 rounded-md">
               <div className="flex items-center gap-3">
-                <Info size={18} className="text-blue-400 flex-shrink-0" />
+                <Info size={18} className="text-blue-400 shrink-0" />
                 <div className="space-y-1">
                   <p className="font-medium">
                     You can select up to{" "}
@@ -136,7 +136,7 @@ export const ProductSelectionDialog = ({
           ) : (
             <div className="bg-zinc-800/70 border border-zinc-700 text-amber-100 px-5 py-3 rounded-md">
               <div className="flex items-center gap-3">
-                <Info size={18} className="text-amber-400 flex-shrink-0" />
+                <Info size={18} className="text-amber-400 shrink-0" />
                 <div className="space-y-1">
                   <p className="font-medium">Maximum limit reached.</p>
                   <p className="text-sm text-zinc-400">
@@ -151,7 +151,7 @@ export const ProductSelectionDialog = ({
           {selectionError && (
             <div className="bg-zinc-800/70 border border-zinc-700 text-red-100 px-5 py-3 rounded-md">
               <div className="flex items-center gap-3">
-                <AlertCircle size={18} className="text-red-400 flex-shrink-0" />
+                <AlertCircle size={18} className="text-red-400 shrink-0" />
                 <div>
                   <p className="font-medium">{selectionError}</p>
                 </div>

@@ -16,7 +16,7 @@ const PortfolioSection = () => {
   return (
     <div className="w-full bg-background py-20 md:py-32 font-sans">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
-        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,rgba(var(--primary-rgb),0.02)_49%,rgba(var(--primary-rgb),0.02)_51%,transparent_52%)] bg-[length:48px_48px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,rgba(var(--primary-rgb),0.02)_49%,rgba(var(--primary-rgb),0.02)_51%,transparent_52%)] bg-size-[48px_48px]" />
 
         <motion.div
           className="max-w-7xl mx-auto px-8 md:px-16 relative"
@@ -53,10 +53,10 @@ const PortfolioSection = () => {
             {[1, 2, 3].map((i) => (
               <div key={i} className="group relative h-full">
                 <Card className="relative overflow-hidden bg-background/95 border border-primary/10 h-full flex flex-col">
-                  <div className="aspect-[4/3] w-full">
+                  <div className="aspect-4/3 w-full">
                     <Skeleton className="w-full h-full" />
                   </div>
-                  <div className="p-6 space-y-2 flex-grow">
+                  <div className="p-6 space-y-2 grow">
                     <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-4 w-full" />
                   </div>
@@ -73,13 +73,13 @@ const PortfolioSection = () => {
                   className="group relative h-full"
                 >
                   {/* Glow effect container */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
+                  <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
 
                   {/* Inner glow effect */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
+                  <div className="absolute -inset-0.5 bg-linear-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
                   <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 flex flex-col h-full">
-                    <div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden">
+                    <div className="aspect-4/3 w-full shrink-0 overflow-hidden">
                       <div className="w-full h-full">
                         <img
                           src={project.thumbnail || ""}
@@ -92,7 +92,7 @@ const PortfolioSection = () => {
                         />
                       </div>
                     </div>
-                    <div className="p-6 flex flex-col flex-grow min-h-[150px]">
+                    <div className="p-6 flex flex-col grow min-h-[150px]">
                       <h3 className="text-xl font-light text-foreground line-clamp-1 mb-2">
                         {project.title}
                       </h3>
