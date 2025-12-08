@@ -166,7 +166,7 @@ export const FeaturedSection = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex md:flex-col lg:flex-row items-center gap-4">
           <Button
             variant="outline"
             size="default"
@@ -176,7 +176,8 @@ export const FeaturedSection = () => {
               fetchAllProducts();
             }}
           >
-            <RefreshCw size={16} /> Refresh
+            <RefreshCw size={16} />{" "}
+            <span className="hidden lg:inline">Refresh</span>
           </Button>
 
           <Dialog>
@@ -196,7 +197,9 @@ export const FeaturedSection = () => {
                   }
                 }}
               >
-                <Plus size={16} /> Add Featured
+                <Plus size={16} />{" "}
+                <span className="hidden md:inline lg:inline">Add Featured</span>
+                <span className="md:hidden">Add</span>
               </Button>
             </DialogTrigger>
           </Dialog>
@@ -269,7 +272,7 @@ export const FeaturedSection = () => {
       )}
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
@@ -278,7 +281,7 @@ export const FeaturedSection = () => {
           ))}
         </div>
       ) : featuredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {featuredProducts.map((product) => (
             <FeaturedProductCard
               key={product.id || product.$id}

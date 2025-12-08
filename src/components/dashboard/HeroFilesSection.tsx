@@ -105,18 +105,18 @@ export const HeroFilesSection = () => {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex md:flex-col lg:flex-row items-center gap-3">
             <Button
               variant="outline"
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
             >
-              <RefreshCw size={16} /> Refresh
+              <RefreshCw size={16} />{" "}
+              <span className="hidden lg:inline">Refresh</span>
             </Button>
             <AddHeroMediaDialog onSuccess={fetchHeroMedia} />
           </div>
         </div>
-
         <Separator className="my-6 bg-[#3C3120]" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
@@ -143,7 +143,7 @@ export const HeroFilesSection = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex md:flex-col lg:flex-row items-center gap-3">
           <Button
             variant="outline"
             size="default"
@@ -156,7 +156,7 @@ export const HeroFilesSection = () => {
             ) : (
               <RefreshCw size={16} />
             )}{" "}
-            Refresh
+            <span className="hidden lg:inline">Refresh</span>
           </Button>
 
           <AddHeroMediaDialog onSuccess={fetchHeroMedia} />

@@ -101,14 +101,15 @@ export const TestimonialsSection = () => {
             />
           </div>
 
-          <div className="flex gap-2 w-full sm:w-auto justify-center">
+          <div className="flex gap-2 w-full sm:w-auto lg:w-auto justify-center">
             <Button
               variant="outline"
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
               onClick={handleRefresh}
             >
-              <RefreshCw size={16} /> Refresh
+              <RefreshCw size={16} />{" "}
+              <span className="hidden lg:inline">Refresh</span>
             </Button>
 
             <AddTestimonialDialog onSuccess={handleRefresh} />

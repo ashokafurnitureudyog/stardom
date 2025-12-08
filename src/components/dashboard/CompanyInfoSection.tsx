@@ -101,13 +101,14 @@ export const CompanyInfoSection = () => {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex md:flex-col lg:flex-row items-center gap-3">
             <Button
               variant="outline"
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
             >
-              <RefreshCw size={16} /> Refresh
+              <RefreshCw size={16} />{" "}
+              <span className="hidden lg:inline">Refresh</span>
             </Button>
 
             {/* Delete All button without disabled attribute */}
@@ -116,7 +117,9 @@ export const CompanyInfoSection = () => {
               size="default"
               className="flex items-center gap-2 h-10 border-[#3C3120] text-red-400 hover:bg-neutral-900/70 hover:text-red-300 hover:border-red-900/50"
             >
-              <Trash size={16} /> Delete All
+              <Trash size={16} />{" "}
+              <span className="hidden lg:inline">Delete All</span>
+              <span className="lg:hidden">Delete</span>
             </Button>
           </div>
         </div>
@@ -162,14 +165,15 @@ export const CompanyInfoSection = () => {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex md:flex-col lg:flex-row items-center gap-3">
           <Button
             variant="outline"
             size="default"
             className="flex items-center gap-2 h-10 hover:bg-secondary"
             onClick={fetchCompanyInfo}
           >
-            <RefreshCw size={16} /> Refresh
+            <RefreshCw size={16} />{" "}
+            <span className="hidden lg:inline">Refresh</span>
           </Button>
 
           {data?.companyInfo && (
@@ -180,7 +184,9 @@ export const CompanyInfoSection = () => {
                   size="default"
                   className="flex items-center gap-2 h-10 border-[#3C3120] text-red-400 hover:bg-neutral-900/70 hover:text-red-300 hover:border-red-900/50"
                 >
-                  <Trash size={16} /> Delete All
+                  <Trash size={16} />{" "}
+                  <span className="hidden lg:inline">Delete All</span>
+                  <span className="lg:hidden">Delete</span>
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className="bg-[#171410] border-[#352b1c]">
@@ -227,25 +233,25 @@ export const CompanyInfoSection = () => {
       )}
 
       {shouldShowSections ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Company Details - Wider (8 columns) */}
-          <div className="lg:col-span-8">
+        <div className="grid grid-cols-1 2xl:grid-cols-12 gap-6">
+          {/* Company Details - Full width on smaller screens, 8 columns on 2xl and above */}
+          <div className="col-span-full 2xl:col-span-8">
             <CompanyDetailsCard
               companyInfo={data?.companyInfo || null}
               onRefresh={fetchCompanyInfo}
             />
           </div>
 
-          {/* Team Members - Narrower (4 columns) */}
-          <div className="lg:col-span-4">
+          {/* Team Members - Full width on smaller screens, 4 columns on 2xl and above */}
+          <div className="col-span-full 2xl:col-span-4">
             <TeamMembersCard
               teamMembers={data?.teamMembers || []}
               onRefresh={fetchCompanyInfo}
             />
           </div>
 
-          {/* Social Links */}
-          <div className="lg:col-span-12">
+          {/* Social Links - Always full width */}
+          <div className="col-span-full">
             <SocialLinksCard
               socialLinks={data?.socialLinks || []}
               onRefresh={fetchCompanyInfo}
