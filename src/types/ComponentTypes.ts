@@ -207,6 +207,7 @@ export interface Product {
   images: string[];
   features: string[];
   colors: string[];
+  image_color_mapping?: string;
   $createdAt?: string;
   $updatedAt?: string;
 }

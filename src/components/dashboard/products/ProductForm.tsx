@@ -46,6 +46,16 @@ export const ProductForm = ({
     initialData?.images || [],
   );
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [imageColorMapping, setImageColorMapping] = useState<
+    Record<string, string>
+  >(() => {
+    if (!initialData?.image_color_mapping) return {};
+    try {
+      return JSON.parse(initialData.image_color_mapping);
+    } catch {
+      return {};
+    }
+  });
 
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,9 +64,17 @@ export const ProductForm = ({
   const { uploadMultipleFiles, uploadStatus } = useFileUpload();
 
   // Track initial image URLs for comparison during updates
+  // Track initial data updates
   useEffect(() => {
     if (initialData?.images) {
       setInitialImageUrls([...initialData.images]);
+    }
+    if (initialData?.image_color_mapping) {
+      try {
+        setImageColorMapping(JSON.parse(initialData.image_color_mapping));
+      } catch (e) {
+        console.error("Failed to parse image color mapping:", e);
+      }
     }
   }, [initialData]);
 
@@ -87,7 +105,25 @@ export const ProductForm = ({
         }
       }
 
-      // 2. Prepare the data for API request (JSON format)
+      // 2. Process image color mapping for new files
+      const finalImageColorMapping = { ...imageColorMapping };
+
+      // Map temporary filename keys to actual uploaded URLs
+      if (files.length > 0 && uploadedUrls.length === files.length) {
+        files.forEach((file, index) => {
+          const fileName = file.name;
+          // If we have a mapping for this file name
+          if (finalImageColorMapping[fileName]) {
+            // Assign the color to the new URL
+            finalImageColorMapping[uploadedUrls[index]] =
+              finalImageColorMapping[fileName];
+            // Remove the temporary file name key
+            delete finalImageColorMapping[fileName];
+          }
+        });
+      }
+
+      // 3. Prepare the data for API request (JSON format)
       const productData = {
         name,
         description,
@@ -97,6 +133,7 @@ export const ProductForm = ({
         colors,
         // Combine existing URLs with newly uploaded ones
         images: [...imageUrls, ...uploadedUrls],
+        imageColorMapping: JSON.stringify(finalImageColorMapping),
       };
 
       // 3. For editing, track removed images
@@ -261,6 +298,9 @@ export const ProductForm = ({
           setNewImageUrl={setNewImageUrl}
           handleAddImageUrl={handleAddImageUrl}
           isEditing={isEditing}
+          colors={colors}
+          imageColorMapping={imageColorMapping}
+          setImageColorMapping={setImageColorMapping}
         />
 
         {/* Upload Progress Indicator */}

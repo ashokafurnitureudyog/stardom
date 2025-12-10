@@ -45,6 +45,7 @@ export async function fetchAllProducts(): Promise<Product[]> {
     images: product.images || [],
     features: product.features || [],
     colors: product.colors || [],
+    image_color_mapping: product.image_color_mapping,
     $createdAt: product.$createdAt,
     $updatedAt: product.$updatedAt,
   })) as Product[];

@@ -73,16 +73,27 @@ export const ProductInfo = ({
         <h3 className="text-xl font-serif italic text-primary mb-6">
           Available Colors
         </h3>
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
+          <div
+            className={`px-5 py-2.5 border rounded-full text-sm transition-colors cursor-pointer
+                ${
+                  selectedColor === ""
+                    ? "border-primary text-primary bg-primary/5"
+                    : "border-border hover:border-primary/50"
+                }`}
+            onClick={() => setSelectedColor("")}
+          >
+            All Colors
+          </div>
           {product.colors.map((color, index) => (
             <div
               key={index}
               className={`px-5 py-2.5 border rounded-full text-sm transition-colors cursor-pointer
-                ${
-                  selectedColor === color
-                    ? "border-primary text-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
-                }`}
+                  ${
+                    selectedColor === color
+                      ? "border-primary text-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
               onClick={() => setSelectedColor(color)}
             >
               {color}

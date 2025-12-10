@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { Upload, Link, ImagePlus, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ImagesSectionProps {
   files: File[];
@@ -16,6 +23,9 @@ interface ImagesSectionProps {
   setNewImageUrl: (url: string) => void;
   handleAddImageUrl?: () => void;
   isEditing?: boolean;
+  colors?: string[];
+  imageColorMapping?: Record<string, string>;
+  setImageColorMapping?: (mapping: Record<string, string>) => void;
 }
 
 export function ImagesSection({
@@ -26,6 +36,9 @@ export function ImagesSection({
   newImageUrl,
   setNewImageUrl,
   handleAddImageUrl,
+  colors = [],
+  imageColorMapping,
+  setImageColorMapping,
 }: ImagesSectionProps) {
   const { toast } = useToast();
   const [isImageLoading, setIsImageLoading] = useState(false);
@@ -228,7 +241,7 @@ export function ImagesSection({
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {imageUrls.map((url, index) => (
               <div key={`img-${index}`} className="group relative">
-                <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
+                <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden mb-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={url}
@@ -236,18 +249,57 @@ export function ImagesSection({
                     className="absolute inset-0 w-full h-full object-cover"
                     onError={() => handleImageError(index)}
                   />
+                  {/* Delete button */}
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
+                    onClick={() => handleImageRemove(index)}
+                  >
+                    <X size={12} />
+                  </Button>
                 </div>
 
-                {/* Delete button */}
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                  onClick={() => handleImageRemove(index)}
-                >
-                  <X size={12} />
-                </Button>
+                {/* Color Mapping Selector - Redesigned */}
+                {setImageColorMapping && (
+                  <div className="mt-2 relative z-20 bg-neutral-900/80 p-2 rounded border border-[#3C3120]/30 shadow-sm">
+                    <label className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1.5 block pl-0.5">
+                      Assign Color
+                    </label>
+                    <Select
+                      disabled={!colors || colors.length === 0}
+                      value={imageColorMapping?.[url] || "all"}
+                      onValueChange={(value) => {
+                        const newMapping = { ...(imageColorMapping || {}) };
+                        if (value === "all") {
+                          delete newMapping[url];
+                        } else {
+                          newMapping[url] = value;
+                        }
+                        setImageColorMapping(newMapping);
+                      }}
+                    >
+                      <SelectTrigger className="w-full h-8 text-xs bg-neutral-900 border border-[#3C3120] focus:ring-[#A28B55]/50">
+                        <SelectValue
+                          placeholder={
+                            !colors || colors.length === 0
+                              ? "Add colors first"
+                              : "All Colors"
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Colors</SelectItem>
+                        {colors?.map((color) => (
+                          <SelectItem key={color} value={color}>
+                            {color}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -302,26 +354,67 @@ export function ImagesSection({
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {fileUrls.map(({ file, url }, index) => (
                   <div key={`file-${index}`} className="group relative">
-                    <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden">
+                    <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden mb-2">
                       <Image
                         src={url}
                         alt={file.name}
                         fill
                         className="object-cover"
                       />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
+                        onClick={() => {
+                          setFiles(files.filter((_, i) => i !== index));
+                        }}
+                      >
+                        <X size={12} />
+                      </Button>
                     </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute -top-2 -right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                      onClick={() => {
-                        setFiles(files.filter((_, i) => i !== index));
-                      }}
-                    >
-                      <X size={12} />
-                    </Button>
-                    <p className="text-xs truncate mt-1 text-center">
+
+                    {/* Color Mapping Selector for New Files - Redesigned */}
+                    {setImageColorMapping && (
+                      <div className="mt-2 relative z-20 bg-neutral-900/80 p-2 rounded border border-[#3C3120]/30 shadow-sm text-center sm:text-left">
+                        <label className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1.5 block pl-0.5 text-left">
+                          Assign Color
+                        </label>
+                        <Select
+                          disabled={!colors || colors.length === 0}
+                          value={imageColorMapping?.[file.name] || "all"}
+                          onValueChange={(value) => {
+                            const newMapping = { ...(imageColorMapping || {}) };
+                            if (value === "all") {
+                              delete newMapping[file.name];
+                            } else {
+                              newMapping[file.name] = value;
+                            }
+                            setImageColorMapping(newMapping);
+                          }}
+                        >
+                          <SelectTrigger className="w-full h-8 text-xs bg-neutral-900 border border-[#3C3120] focus:ring-[#A28B55]/50">
+                            <SelectValue
+                              placeholder={
+                                !colors || colors.length === 0
+                                  ? "Add colors first"
+                                  : "All Colors"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Colors</SelectItem>
+                            {colors?.map((color) => (
+                              <SelectItem key={color} value={color}>
+                                {color}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+
+                    <p className="text-xs truncate text-center text-muted-foreground mt-2">
                       {file.name.length > 20
                         ? file.name.substring(0, 17) + "..."
                         : file.name}

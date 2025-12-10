@@ -44,6 +44,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
   const queryClient = useQueryClient();
 
   // State for selected product color and active image index
+  // Empty string means "All Colors" is selected (default)
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -59,25 +60,77 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
     }
   }, [id, initialProduct, queryClient]);
 
-  /**
-   * Set default selected color when product data becomes available
-   */
-  useEffect(() => {
-    const currentProduct = initialProduct || individualProductQuery.data;
-    if (currentProduct?.colors?.length && selectedColor === "") {
-      setSelectedColor(currentProduct.colors[0]);
-    }
-  }, [initialProduct, individualProductQuery.data, selectedColor]);
-
-  /**
-   * Reset active image index when product ID changes
-   */
-  useEffect(() => {
-    setActiveImageIndex(0);
-  }, [id]);
-
   // Current product data - prioritize SSR data to avoid hydration issues
   const currentProduct = initialProduct || individualProductQuery.data;
+
+  // Parse image color mapping
+  const imageColorMapping = React.useMemo(() => {
+    if (!currentProduct?.image_color_mapping) return {};
+    try {
+      return JSON.parse(currentProduct.image_color_mapping);
+    } catch {
+      return {};
+    }
+  }, [currentProduct]);
+
+  // Filter images based on selected color
+  // Show images that are:
+  // 1. Mapped to the selected color
+  // 2. OR Not mapped to any color (common images)
+  const filteredImages = React.useMemo(() => {
+    if (!currentProduct?.images) return [];
+
+    // If no color selected ("All Colors"), return all images
+    if (!selectedColor) return currentProduct.images;
+
+    // Type casting for Record<string, string>
+    const mapping = imageColorMapping as Record<string, string>;
+
+    return currentProduct.images.filter((img: string) => {
+      // Try exact match first
+      let mappedColor = mapping[img];
+
+      // If not found, try looking up via decoded URL (in case validation encoded it differently)
+      if (!mappedColor) {
+        try {
+          // Check if any key in mapping matches the decoded img
+          const decodedImg = decodeURIComponent(img);
+          mappedColor = mapping[decodedImg];
+
+          // If still not found, try robust generic matching (ignoring query params)
+          if (!mappedColor) {
+            // 1. Try matching by "clean" URL (stripping query params)
+            const cleanImgUrl = img.split("?")[0];
+            const matchingKey = Object.keys(mapping).find(
+              (key) => key.split("?")[0] === cleanImgUrl,
+            );
+
+            // 2. If that fails, try Appwrite/Generic ID matching (fallback)
+            if (matchingKey) {
+              mappedColor = mapping[matchingKey];
+            } else {
+              // Fallback: Check if the key is contained in the URL or vice versa
+              // This helps with different domain structures or slight path variations
+              const fuzzyKey = Object.keys(mapping).find(
+                (key) =>
+                  img.includes(key) ||
+                  key.includes(img) ||
+                  (cleanImgUrl.length > 20 && key.includes(cleanImgUrl)),
+              );
+              if (fuzzyKey) mappedColor = mapping[fuzzyKey];
+            }
+          }
+        } catch (e) {}
+      }
+
+      // If image is mapped to a color, it must match the selected color.
+      // If image is NOT mapped (undefined), show it for all colors.
+      return !mappedColor || mappedColor === selectedColor;
+    });
+  }, [currentProduct?.images, selectedColor, imageColorMapping]);
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [id, selectedColor]);
 
   // Related products data
   const relatedProducts = similarProductQuery.data || [];
@@ -155,7 +208,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
                 {/* Product Image Gallery */}
                 <ProductImages
-                  images={currentProduct.images || []}
+                  images={filteredImages}
                   productName={currentProduct.name}
                   activeImageIndex={activeImageIndex}
                   setActiveImageIndex={setActiveImageIndex}
