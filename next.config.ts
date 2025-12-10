@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
         hostname: "*",
       },
     ],
+    qualities: [75, 90],
   },
   reactCompiler: true,
   cacheComponents: true,

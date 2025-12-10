@@ -33,89 +33,87 @@ export const ProductInfo = ({
 }: ProductInfoProps) => {
   return (
     <motion.div
-      className="flex flex-col justify-center"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col justify-center h-full max-w-xl"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.7, delay: 0.2 }}
-      style={{ willChange: "opacity, transform" }}
     >
-      <div className="mb-6">
-        <span className="text-sm text-primary font-medium tracking-wide uppercase">
+      <div className="mb-8">
+        <span className="text-xs font-bold tracking-[0.2em] text-muted-foreground/60 uppercase mb-4 block">
           {product.collection} Collection
         </span>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-light font-serif tracking-tight text-foreground mb-6">
+          {product.name}
+        </h1>
+        <div className="w-20 h-1 bg-primary/10 rounded-full" />
       </div>
 
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-light font-serif mb-8">
-        {product.name}
-      </h1>
-
-      <p className="text-muted-foreground text-lg mb-12 leading-relaxed">
-        {product.description}
-      </p>
+      <div className="prose prose-neutral dark:prose-invert max-w-none mb-10">
+        <p className="text-muted-foreground text-lg leading-relaxed font-light">
+          {product.description}
+        </p>
+      </div>
 
       {/* Features */}
-      <div className="mb-12">
-        <h3 className="text-xl font-serif italic text-primary mb-6">
-          Features
+      <div className="mb-10">
+        <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground/80 mb-6">
+          Key Features
         </h3>
-        <ul className="space-y-3">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
           {product.features.map((feature, index) => (
-            <li key={index} className="text-muted-foreground flex items-center">
-              <span className="w-2 h-2 bg-primary rounded-full mr-4"></span>
-              {feature}
+            <li
+              key={index}
+              className="text-muted-foreground flex items-start text-sm"
+            >
+              <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-3 flex-shrink-0" />
+              <span className="leading-relaxed">{feature}</span>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Colors */}
-      <div className="mb-14">
-        <h3 className="text-xl font-serif italic text-primary mb-6">
-          Available Colors
+      <div className="mb-12">
+        <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground/80 mb-6">
+          Available Finishes
         </h3>
-        <div className="flex gap-4 flex-wrap">
-          <div
-            className={`px-5 py-2.5 border rounded-full text-sm transition-colors cursor-pointer
-                ${
-                  selectedColor === ""
-                    ? "border-primary text-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
-                }`}
+        <div className="flex gap-3 flex-wrap">
+          <button
+            className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+              selectedColor === ""
+                ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                : "bg-background border border-border text-foreground hover:border-primary/50 hover:bg-secondary/50"
+            }`}
             onClick={() => setSelectedColor("")}
           >
-            All Colors
-          </div>
+            All Finishes
+          </button>
           {product.colors.map((color, index) => (
-            <div
+            <button
               key={index}
-              className={`px-5 py-2.5 border rounded-full text-sm transition-colors cursor-pointer
-                  ${
-                    selectedColor === color
-                      ? "border-primary text-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                  }`}
+              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+                selectedColor === color
+                  ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                  : "bg-background border border-border text-foreground hover:border-primary/50 hover:bg-secondary/50"
+              }`}
               onClick={() => setSelectedColor(color)}
             >
               {color}
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
       {/* WhatsApp Inquiry Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="mt-4"
-        style={{ willChange: "opacity, transform" }}
-      >
+      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <button
           onClick={handleWhatsAppInquiry}
-          className="flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#20BD5C] text-white py-4 px-6 rounded-full transition-all shadow-md hover:shadow-lg w-full md:w-auto"
+          className="group w-full md:w-auto min-w-[300px] flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1fb855] text-white py-4 px-8 rounded-full transition-all shadow-lg hover:shadow-[#25D366]/30"
         >
           <WhatsAppIcon />
-          <span className="font-medium">Inquire on WhatsApp</span>
+          <span className="font-medium tracking-wide">
+            Inquire via WhatsApp
+          </span>
         </button>
       </motion.div>
     </motion.div>

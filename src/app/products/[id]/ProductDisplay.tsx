@@ -9,6 +9,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { ProductDetailsSkeleton } from "@/components/products/ProductDetailsSkeleton";
 import { ProductNotFound } from "@/components/products/ProductNotFound";
 import { ProductImages } from "@/components/products/ProductDetailsImageCarousel";
+import { ProductGalleryDesktop } from "@/components/products/ProductGalleryDesktop";
 import { ProductInfo } from "@/components/products/ProductInfo";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { FloatingWhatsAppButton } from "@/components/products/FloatingWhatsappButton";
@@ -179,59 +180,73 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
     return <ProductNotFound />;
   }
 
+  const isDesktop = React.useMemo(() => {
+    if (typeof window === "undefined") return true;
+    return window.matchMedia("(min-width: 1024px)").matches;
+  }, []);
+
   return (
     <ErrorBoundary fallback={<ProductNotFound />}>
-      <BaseLayout className="overflow-x-hidden lg:overflow-auto">
-        <div className="min-h-screen bg-background font-sans">
-          {/* Hero Section with Product Details */}
+      <BaseLayout className="bg-background">
+        <div className="min-h-screen font-sans selection:bg-primary selection:text-primary-foreground">
           <Section className="pt-24 pb-32">
-            <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
-              {/* Breadcrumb Navigation */}
+            <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-[1600px]">
+              {/* Refined Breadcrumb */}
               <nav
                 aria-label="Breadcrumb"
-                className="flex flex-wrap items-center text-sm text-muted-foreground mb-12"
+                className="flex flex-wrap items-center text-xs md:text-sm tracking-wider uppercase text-muted-foreground/60 mb-8 md:mb-16 font-medium"
               >
-                <span>Products</span>
-                <span className="mx-3" aria-hidden="true">
-                  /
+                <span className="hover:text-foreground transition-colors cursor-pointer">
+                  Home
                 </span>
-                <span className="capitalize">{currentProduct.category}</span>
-                <span className="mx-3" aria-hidden="true">
-                  /
+                <span className="mx-3 text-muted-foreground/40">/</span>
+                <span className="hover:text-foreground transition-colors cursor-pointer">
+                  Products
                 </span>
-                <span className="text-foreground" aria-current="page">
-                  {currentProduct.name}
-                </span>
+                <span className="mx-3 text-muted-foreground/40">/</span>
+                <span className="text-foreground">{currentProduct.name}</span>
               </nav>
 
-              {/* Product Display Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
-                {/* Product Image Gallery */}
-                <ProductImages
-                  images={filteredImages}
-                  productName={currentProduct.name}
-                  activeImageIndex={activeImageIndex}
-                  setActiveImageIndex={setActiveImageIndex}
-                />
+              <div className="lg:grid lg:grid-cols-12 lg:gap-16 items-start">
+                {/* Product Gallery - Desktop (Sticky List) & Mobile (Carousel) */}
+                <div className="lg:col-span-8 mb-12 lg:mb-0">
+                  <div className="hidden lg:block">
+                    <ProductGalleryDesktop
+                      images={filteredImages}
+                      productName={currentProduct.name}
+                    />
+                  </div>
+                  <div className="lg:hidden">
+                    <ProductImages
+                      images={filteredImages}
+                      productName={currentProduct.name}
+                      activeImageIndex={activeImageIndex}
+                      setActiveImageIndex={setActiveImageIndex}
+                    />
+                  </div>
+                </div>
 
-                {/* Product Information */}
-                <ProductInfo
-                  product={currentProduct}
-                  selectedColor={selectedColor}
-                  setSelectedColor={setSelectedColor}
-                  handleWhatsAppInquiry={handleWhatsAppInquiry}
-                />
+                {/* Product Info - Sticky on Desktop */}
+                <div className="lg:col-span-4 lg:sticky lg:top-32 relative z-10 p-1">
+                  <ProductInfo
+                    product={currentProduct}
+                    selectedColor={selectedColor}
+                    setSelectedColor={setSelectedColor}
+                    handleWhatsAppInquiry={handleWhatsAppInquiry}
+                  />
+                </div>
               </div>
             </div>
           </Section>
 
-          {/* Related Products Section */}
-          <RelatedProducts
-            isLoading={isLoadingRelatedProducts}
-            relatedProducts={relatedProducts}
-          />
+          {/* Related Products Section with extra spacing/styling */}
+          <div className="border-t border-border bg-background/50 backdrop-blur-sm">
+            <RelatedProducts
+              isLoading={isLoadingRelatedProducts}
+              relatedProducts={relatedProducts}
+            />
+          </div>
 
-          {/* Floating WhatsApp Button */}
           <FloatingWhatsAppButton
             handleWhatsAppInquiry={handleWhatsAppInquiry}
           />
