@@ -6,22 +6,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "images.unsplash.com",
-        port: "",
-        search: "",
-      },
-      { protocol: "https", hostname: "example.com" },
-      {
-        protocol: "https",
-        hostname: "avatar.iran.liara.run",
-        port: "",
-        search: "",
-      },
-      {
-        protocol: "https",
-        hostname: "cloud.appwrite.io",
+        hostname: "*",
       },
     ],
+    qualities: [75, 90],
   },
   reactCompiler: true,
   cacheComponents: true,

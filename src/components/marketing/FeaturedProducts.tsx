@@ -19,6 +19,7 @@ import { motion } from "framer-motion";
 import { Link } from "next-view-transitions";
 import { useProducts } from "@/hooks/useProducts";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 // Define better icons matching your actual product categories
 const categoryIcons: Record<string, LucideIcon> = {
@@ -71,10 +72,10 @@ export function FeaturedProducts() {
   const bentoCells = featuredProducts.map((product, index) => {
     // Determine appropriate column span based on index
     // First and last items get more space
-    const className =
-      index === 0 || index === 3
-        ? "col-span-3 lg:col-span-2"
-        : "col-span-3 lg:col-span-1";
+    const isLarge = index === 0 || index === 3;
+    const className = isLarge
+      ? "col-span-3 lg:col-span-2"
+      : "col-span-3 lg:col-span-1";
 
     // Get icon based on category
     const Icon = getIconForCategory(product.category);
@@ -95,14 +96,20 @@ export function FeaturedProducts() {
       className,
       background: (
         <div className="absolute inset-0 w-full h-full">
-          <img
+          <Image
             src={
               product.images && product.images.length > 0
                 ? product.images[0]
                 : `https://placehold.co/600x400?text=${encodeURIComponent(product.name)}`
             }
             alt={product.name}
-            className="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            fill
+            className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            sizes={
+              isLarge
+                ? "(max-width: 1024px) 100vw, 66vw"
+                : "(max-width: 1024px) 100vw, 33vw"
+            }
           />
           {/* Darker overlay for better text contrast */}
           <div className="absolute inset-0 dark:bg-neutral-900/60 dark:group-hover:bg-neutral-900/50 transition-all duration-500" />
@@ -123,10 +130,12 @@ export function FeaturedProducts() {
       className: "col-span-3 lg:col-span-2",
       background: (
         <div className="absolute inset-0 w-full h-full">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1497215728101-856f4ea42174"
             alt="Luxury Executive Desk"
-            className="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            fill
+            className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            sizes="(max-width: 1024px) 100vw, 66vw"
           />
           <div className="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/50 transition-all duration-500" />
         </div>
@@ -142,10 +151,12 @@ export function FeaturedProducts() {
       className: "col-span-3 lg:col-span-1",
       background: (
         <div className="absolute inset-0 w-full h-full">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407"
             alt="Conference Room"
-            className="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            fill
+            className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            sizes="(max-width: 1024px) 100vw, 33vw"
           />
           <div className="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/50 transition-all duration-500" />
         </div>
@@ -161,10 +172,12 @@ export function FeaturedProducts() {
       className: "col-span-3 lg:col-span-1",
       background: (
         <div className="absolute inset-0 w-full h-full">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1681418659069-eef28d44aeab"
             alt="Ergonomic Chair"
-            className="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            fill
+            className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            sizes="(max-width: 1024px) 100vw, 33vw"
           />
           <div className="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/50 transition-all duration-500" />
         </div>
@@ -180,10 +193,12 @@ export function FeaturedProducts() {
       className: "col-span-3 lg:col-span-2",
       background: (
         <div className="absolute inset-0 w-full h-full">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1464029902023-f42eba355bde"
             alt="Lounge Collection"
-            className="w-full h-full object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            fill
+            className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
+            sizes="(max-width: 1024px) 100vw, 66vw"
           />
           <div className="absolute inset-0 bg-neutral-900/60 group-hover:bg-neutral-900/50 transition-all duration-500" />
         </div>
@@ -210,6 +225,7 @@ export function FeaturedProducts() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-32"
+          style={{ willChange: "opacity, transform" }}
         >
           <div className="text-center mb-32">
             <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">

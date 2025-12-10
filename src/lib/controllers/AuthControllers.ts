@@ -3,20 +3,38 @@ import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AppwriteException } from "node-appwrite";
+import { loginSchema, changePasswordSchema } from "@/lib/validations/auth";
 
 export type PasswordState = {
   success: boolean;
   message?: string;
   error?: string;
+  errors?: Record<string, string[]>;
 };
 
-export async function loginUser(formData: FormData) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+export async function loginUser(
+  prevState: PasswordState,
+  formData: FormData,
+): Promise<PasswordState> {
+  const data = Object.fromEntries(formData);
+  const validatedFields = loginSchema.safeParse(data);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: "Invalid input",
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { email, password } = validatedFields.data;
 
   try {
     const { account } = await createAdminClient();
-    const session = await account.createEmailPasswordSession(email, password);
+    const session = await account.createEmailPasswordSession({
+      email,
+      password,
+    });
 
     (await cookies()).set("admin-session", session.secret, {
       path: "/",
@@ -50,7 +68,7 @@ export async function signOutUser() {
     });
   } catch (error) {
     console.error("Sign out failed:", error);
-    throw new Error("Failed to sign out");
+    // Continue with redirect even if session deletion fails
   }
 
   redirect("/auth");
@@ -60,12 +78,25 @@ export async function changePassword(
   prevState: PasswordState | null,
   formData: FormData,
 ): Promise<PasswordState> {
-  try {
-    const currentPassword = formData.get("currentPassword") as string;
-    const newPassword = formData.get("newPassword") as string;
+  const data = Object.fromEntries(formData);
+  const validatedFields = changePasswordSchema.safeParse(data);
 
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: "Invalid input",
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { currentPassword, newPassword } = validatedFields.data;
+
+  try {
     const { account } = await createSessionClient();
-    await account.updatePassword(newPassword, currentPassword);
+    await account.updatePassword({
+      password: newPassword,
+      oldPassword: currentPassword,
+    });
 
     return { success: true, message: "Password updated successfully" };
   } catch (error) {

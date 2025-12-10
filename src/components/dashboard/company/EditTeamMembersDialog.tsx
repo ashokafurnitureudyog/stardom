@@ -101,12 +101,12 @@ export const EditTeamMembersDialog = ({
       return;
     }
 
-    // Validate file size (50MB max)
-    if (file.size > 50 * 1024 * 1024) {
+    // Validate file size (10MB max)
+    if (file.size > 10 * 1024 * 1024) {
       toast({
         variant: "destructive",
         title: "File too large",
-        description: "Image size should be less than 50MB",
+        description: "Image size should be less than 10MB",
       });
       return;
     }

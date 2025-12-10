@@ -105,6 +105,19 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
           const uploadResult = await uploadFile(
             selectedFile,
             process.env.NEXT_PUBLIC_APPWRITE_PRODUCT_IMAGES_BUCKET_ID!,
+            {
+              allowedTypes:
+                mediaType === "video"
+                  ? ["video/mp4", "video/webm", "video/ogg"]
+                  : [
+                      "image/png",
+                      "image/jpeg",
+                      "image/jpg",
+                      "image/webp",
+                      "image/gif",
+                    ],
+              maxSizeInMB: mediaType === "video" ? 50 : 10,
+            },
           );
 
           if (!uploadResult) {

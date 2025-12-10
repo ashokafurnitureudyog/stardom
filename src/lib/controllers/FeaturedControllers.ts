@@ -1,5 +1,5 @@
 "use server";
-import { createAdminClient } from "@/lib/server/appwrite";
+import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
 import { AppwriteException, Query } from "node-appwrite";
 
 // Get a product by ID
@@ -55,6 +55,9 @@ async function isProductFeatured(productId: string) {
 
 // Add a product to featured
 export async function addToFeatured(productId: string) {
+  const user = await getLoggedInUser();
+  if (!user) throw new Error("Unauthorized");
+
   // Check if already featured
   const alreadyFeatured = await isProductFeatured(productId);
   if (alreadyFeatured) {
@@ -94,6 +97,9 @@ export async function addToFeatured(productId: string) {
 
 // Remove a product from featured
 export async function removeFromFeatured(productId: string) {
+  const user = await getLoggedInUser();
+  if (!user) throw new Error("Unauthorized");
+
   const { database } = await createAdminClient();
   await database.deleteDocument(
     process.env.APPWRITE_DATABASE_ID!,

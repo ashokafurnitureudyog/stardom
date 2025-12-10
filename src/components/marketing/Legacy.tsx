@@ -8,6 +8,7 @@ import { ArrowRightIcon } from "lucide-react";
 import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import { Link } from "next-view-transitions";
 import { useCompanyData } from "@/hooks/useCompanyData";
+import Image from "next/image";
 
 const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
   <motion.div whileHover={{ scale: 1.02 }} className="relative group">
@@ -31,14 +32,18 @@ const ImagePanel: React.FC<{ src: string; index: number }> = ({
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
     transition={{ duration: 0.8, delay: index * 0.2 }}
-    className="relative overflow-hidden rounded-lg"
+    className="relative overflow-hidden rounded-lg min-h-[200px]"
+    style={{ willChange: "opacity, transform" }}
   >
-    <img
+    <Image
       src={src}
       alt="Legacy showcase"
+      fill
       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      sizes="(max-width: 768px) 100vw, 25vw"
     />
   </motion.div>
 );
@@ -65,8 +70,10 @@ const LegacySection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.8 }}
             className="space-y-16"
+            style={{ willChange: "opacity, transform" }}
           >
             <div className="space-y-8">
               <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full">
@@ -113,8 +120,10 @@ const LegacySection: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.8 }}
             className="relative hidden lg:block"
+            style={{ willChange: "opacity, transform" }}
           >
             <div className="grid grid-cols-2 gap-6 group">
               {images.map((src, index) => (

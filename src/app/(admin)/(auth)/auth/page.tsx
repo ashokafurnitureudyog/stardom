@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useState } from "react";
+import React, { useActionState, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,135 +8,178 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Mail, Lock, Loader2, AlertTriangle } from "lucide-react";
-import { loginUser } from "@/lib/controllers/AuthControllers";
+import { Mail, Lock, Loader2, AlertTriangle, ArrowRight } from "lucide-react";
+import { loginUser, PasswordState } from "@/lib/controllers/AuthControllers";
+import Image from "next/image";
+
+const initialState: PasswordState = {
+  success: false,
+  message: undefined,
+  error: undefined,
+};
 
 const AdminLoginPage = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [state, formAction, isPending] = useActionState(
+    loginUser,
+    initialState,
+  );
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    setIsLoading(true);
-
-    const formData = new FormData(e.currentTarget);
-
-    try {
-      const result = await loginUser(formData);
-
-      if (result.success) {
-        router.push("/admin/dashboard");
-      } else {
-        setError(result.error || "Invalid email or password");
-      }
-    } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
+  // Redirect on success
+  React.useEffect(() => {
+    if (state.success) {
+      router.push("/admin/dashboard");
     }
-  };
+  }, [state.success, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/10 p-4">
-      {/* Premium Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.05 }}
-          transition={{ duration: 2 }}
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83zM22.343 0L13.8 8.544 15.214 9.96l9.9-9.96h-2.77zM32 0l-3.486 3.486-13.27 13.27L16.657 18.17l14.7-14.7h-2.828L14.828 17.172 16.243 18.586 28.544 6.284 32 2.828 35.456 6.284 47.757 18.586l1.415-1.414L35.47 3.47 32 0zM0 0c0 3.873 3.133 7.006 7.006 7.006L0 0zm60 0c0 3.873-3.133 7.006-7.006 7.006L60 0zM0 60c0-3.873 3.133-7.006 7.006-7.006L0 60zm60 0c0-3.873-3.133-7.006-7.006-7.006L60 60z" fill="currentColor" fill-opacity="0.1" fill-rule="evenodd"%3E%3C/path%3E%3C/svg%3E")',
-          }}
-        />
-      </div>
-
-      <Card className="w-full max-w-md relative backdrop-blur-sm bg-card/95 shadow-xl border-primary/10">
-        <CardHeader className="text-center pb-8">
+    <div className="min-h-screen flex w-full bg-background font-sans">
+      {/* Left Column - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-12 xl:p-24 relative z-10">
+        <div className="w-full max-w-sm space-y-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="mb-8 flex items-center justify-center gap-2">
-              <h1 className="text-3xl tracking-tight font-extralight">
-                STARDOM
-              </h1>
+            <div className="mb-2">
+              <span className="text-primary/80 font-serif italic text-lg tracking-wide">
+                Welcome back
+              </span>
             </div>
-            <CardTitle className="text-xl font-medium text-muted-foreground">
-              Administrator Access
-            </CardTitle>
+            <h1 className="text-4xl md:text-5xl font-light tracking-tight mb-4 font-serif">
+              Administrative <br />
+              <span className="font-medium text-primary">Access</span>
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Please enter your credentials to manage the workspace.
+            </p>
           </motion.div>
-        </CardHeader>
 
-        <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-6">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+          {state.error && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+            >
+              <Alert
+                variant="destructive"
+                className="border-red-500/20 bg-red-500/5 text-red-600"
+              >
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>{state.error}</AlertDescription>
+              </Alert>
+            </motion.div>
           )}
 
-          <motion.form
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            onSubmit={handleSubmit}
-            className="space-y-6"
-          >
+          <form action={formAction} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
-                Administrative Email
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-foreground/80"
+              >
+                Email Address
               </Label>
-              <div className="relative">
+              <div className="relative group">
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter your admin email"
-                  className="pl-10"
+                  placeholder="admin@stardom.com"
+                  className="pl-10 h-12 bg-secondary/20 border-border/40 focus:border-primary/50 transition-all font-light"
                   required
                 />
-                <Mail className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Mail className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
               </div>
+              {state.errors?.email && (
+                <p className="text-xs text-red-500 mt-1">
+                  {state.errors.email[0]}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">
-                Password
-              </Label>
-              <div className="relative">
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="password"
+                  className="text-sm font-medium text-foreground/80"
+                >
+                  Password
+                </Label>
+              </div>
+              <div className="relative group">
                 <Input
                   id="password"
                   name="password"
                   type="password"
-                  placeholder="Enter your password"
-                  className="pl-10"
+                  placeholder="••••••••"
+                  className="pl-10 h-12 bg-secondary/20 border-border/40 focus:border-primary/50 transition-all font-light"
                   required
                 />
-                <Lock className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Lock className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
               </div>
+              {state.errors?.password && (
+                <p className="text-xs text-red-500 mt-1">
+                  {state.errors.password[0]}
+                </p>
+              )}
             </div>
 
-            <Button type="submit" className="w-full h-12" disabled={isLoading}>
-              {isLoading ? (
+            <Button
+              type="submit"
+              className="w-full h-12 text-base font-medium tracking-wide bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+              disabled={isPending}
+            >
+              {isPending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                "Access Admin Panel"
+                <span className="flex items-center gap-2">
+                  Sign In <ArrowRight className="w-4 h-4" />
+                </span>
               )}
             </Button>
+          </form>
 
-            <p className="text-center text-sm text-muted-foreground mt-6">
-              This is a secure area. Unauthorized access attempts will be
-              logged.
+          <div className="pt-4 text-center">
+            <p className="text-xs text-muted-foreground/60">
+              Protected by enterprise-grade security.
+              <br />
+              Stardom © {new Date().getFullYear()}
             </p>
-          </motion.form>
-        </CardContent>
-      </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column - Visual */}
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-neutral-900">
+        <div className="absolute inset-0 bg-neutral-900/40 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent z-10 opacity-80" />
+
+        <Image
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2301&auto=format&fit=crop"
+          alt="Office Interior"
+          fill
+          className="object-cover opacity-90"
+          priority
+          sizes="50vw"
+        />
+
+        <div className="absolute bottom-0 left-0 right-0 p-16 z-20 text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h2 className="text-4xl font-serif italic mb-4">
+              "Design is intelligence made visible."
+            </h2>
+            <div className="h-px w-12 bg-white/50 mb-6" />
+            <p className="text-white/80 font-light max-w-md text-lg leading-relaxed">
+              Manage your premium furniture collections, customer interactions,
+              and portfolio with precision and elegance.
+            </p>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

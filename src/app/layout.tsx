@@ -83,7 +83,11 @@ export default function RootLayout({
   ].join(" ");
 
   return (
-    <html lang="en" className="scrollbar-hide overflow-x-hidden">
+    <html
+      lang="en"
+      className="scrollbar-hide overflow-x-hidden"
+      suppressHydrationWarning
+    >
       <head>
         {/* Performance optimizations for external resources */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

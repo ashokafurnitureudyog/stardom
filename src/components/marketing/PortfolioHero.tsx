@@ -14,11 +14,28 @@ const BackgroundMedia = ({ item, isActive }: BackgroundMediaProps) => {
     isActive ? "opacity-100 scale-100" : "opacity-0 scale-105"
   }`;
 
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (item.type === "video" && videoRef.current) {
+      if (isActive) {
+        const playPromise = videoRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.log("Auto-play was prevented:", error);
+          });
+        }
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isActive, item.type]);
+
   if (item.type === "video") {
     return (
       <div className={className}>
         <video
-          autoPlay
+          ref={videoRef}
           muted
           loop
           playsInline

@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       features: productData.features || [],
       colors: productData.colors || [],
       images: productData.images || [],
+      imageColorMapping: productData.imageColorMapping,
     };
 
     // Call the controller with no files (files are now uploaded directly)
@@ -66,6 +67,7 @@ export async function PUT(request: NextRequest) {
       features: productData.features || [],
       colors: productData.colors || [],
       images: productData.images || [],
+      imageColorMapping: productData.imageColorMapping,
       removedImages: productData.removedImages,
     };
 

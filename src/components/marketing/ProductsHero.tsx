@@ -3,6 +3,7 @@
 import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import AnimatedText from "../shared/HeroAnimatedText";
 import { useCompanyData } from "@/hooks/useCompanyData";
+import Image from "next/image";
 
 export const ProductsHero = () => {
   const { companyInfo } = useCompanyData();
@@ -12,10 +13,13 @@ export const ProductsHero = () => {
   return (
     <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
       <div className="absolute inset-0 w-full h-full">
-        <img
+        <Image
           src="/images/headers/product_header.jpg"
           alt="Products Hero"
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
+          priority
+          sizes="100vw"
         />
         <div
           className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Link } from "next-view-transitions";
 import { usePortfolioProjects } from "@/hooks/usePortfolioProjects";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 const PortfolioSection = () => {
   // Use the custom hook to fetch projects with a limit of 3
@@ -25,6 +26,7 @@ const PortfolioSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
           variants={fadeInUpVariants}
+          style={{ willChange: "opacity, transform" }}
         >
           <div className="text-center mb-24 md:mb-32">
             <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
@@ -79,18 +81,14 @@ const PortfolioSection = () => {
                   <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
                   <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 flex flex-col h-full">
-                    <div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden">
-                      <div className="w-full h-full">
-                        <img
-                          src={project.thumbnail || ""}
-                          alt={project.title}
-                          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "https://placehold.co/600x400?text=No+Image";
-                          }}
-                        />
-                      </div>
+                    <div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden relative">
+                      <Image
+                        src={project.thumbnail || ""}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                      />
                     </div>
                     <div className="p-6 flex flex-col flex-grow min-h-[150px]">
                       <h3 className="text-xl font-light text-foreground line-clamp-1 mb-2">

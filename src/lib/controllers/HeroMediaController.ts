@@ -1,6 +1,6 @@
 "use server";
 import { ID } from "node-appwrite";
-import { createAdminClient } from "@/lib/server/appwrite";
+import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
 import { MediaItem } from "@/types/MediaTypes";
 
 const COLLECTION_ID = process.env.APPWRITE_HERO_MEDIA_COLLECTION_ID as string;
@@ -66,6 +66,9 @@ export async function addHeroMedia(
   media: MediaInput,
 ): Promise<HeroMediaResult> {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database } = await createAdminClient();
 
     if (!media.type || !media.src) {
@@ -117,6 +120,9 @@ export async function addHeroMedia(
 
 export async function deleteHeroMedia(id: string): Promise<HeroMediaResult> {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     if (!id || id === "undefined") {
       return {
         success: false,
