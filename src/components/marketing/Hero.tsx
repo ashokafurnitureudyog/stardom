@@ -12,6 +12,7 @@ import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { Link } from "next-view-transitions";
 import { useCompanyData } from "@/hooks/useCompanyData";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
   children,
@@ -24,6 +25,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     animate="visible"
     transition={{ duration: 1, delay }}
     className={className}
+    style={{ willChange: "opacity, transform" }}
   >
     {children}
   </motion.div>
@@ -33,16 +35,18 @@ const BackgroundMedia: React.FC<{
   item: MediaItem;
   isActive: boolean;
   isNext: boolean;
-}> = ({ item, isActive, isNext }) => {
+  priority?: boolean;
+}> = ({ item, isActive, isNext, priority = false }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const mediaRef = useRef<HTMLDivElement>(null);
 
   // Only load the media when it's active or about to be active
+  // For first image (priority=true), we want it to load immediately
   useEffect(() => {
-    if (isActive || isNext) {
+    if (isActive || isNext || priority) {
       setIsLoaded(true);
     }
-  }, [isActive, isNext]);
+  }, [isActive, isNext, priority]);
 
   const className = `absolute inset-0 w-full h-full transition-all duration-1000 ${
     isActive ? "opacity-100 scale-100" : "opacity-0 scale-105"
@@ -52,24 +56,27 @@ const BackgroundMedia: React.FC<{
     return (
       <div className={className} ref={mediaRef}>
         <video
-          autoPlay
+          ref={(el) => {
+            // We need to store this ref to control playback
+            if (el) {
+              if (isActive) {
+                const playPromise = el.play();
+                if (playPromise !== undefined) {
+                  playPromise.catch((error) => {
+                    console.log("Auto-play was prevented:", error);
+                  });
+                }
+              } else {
+                el.pause();
+              }
+            }
+          }}
           muted
           loop
           playsInline
           className="object-cover w-full h-full"
           preload="metadata"
           poster={item.poster || ""}
-          onLoadedData={() => {
-            if (isActive) {
-              // If this is the active slide, play the video
-              const videoElement = mediaRef.current?.querySelector("video");
-              if (videoElement) {
-                videoElement
-                  .play()
-                  .catch((e) => console.error("Video play failed:", e));
-              }
-            }
-          }}
         >
           {item.webmSrc && <source src={item.webmSrc} type="video/webm" />}
           <source src={item.src} type="video/mp4" />
@@ -78,14 +85,17 @@ const BackgroundMedia: React.FC<{
     );
   }
 
-  if (item.type === "image" && isLoaded) {
+  if (item.type === "image" && (isLoaded || priority)) {
     return (
       <div className={className} ref={mediaRef}>
-        <img
+        <Image
           src={item.src}
           alt={item.alt || ""}
-          className="object-cover w-full h-full"
-          loading={isActive ? "eager" : "lazy"}
+          fill
+          className="object-cover"
+          priority={priority}
+          sizes="100vw"
+          quality={90}
         />
       </div>
     );
@@ -131,6 +141,7 @@ const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
           item={item}
           isActive={index === currentIndex}
           isNext={index === getNextIndex(currentIndex)}
+          priority={index === 0}
         />
       ))}
       <div

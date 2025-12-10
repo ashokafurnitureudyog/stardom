@@ -45,6 +45,7 @@ export const RelatedProducts = ({
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainerVariants}
+            style={{ willChange: "opacity, transform" }}
           >
             {relatedProducts.map((product) => (
               <motion.div key={product.id} variants={fadeInUpVariants}>

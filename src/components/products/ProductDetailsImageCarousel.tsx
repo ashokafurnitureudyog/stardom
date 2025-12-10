@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/carousel";
 import type { CarouselApi } from "@/components/ui/carousel";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 interface ProductImagesProps {
   images: string[];
@@ -32,42 +33,6 @@ export const ProductImages = ({
   const setActiveIndex = externalSetActiveIndex || setInternalActiveIndex;
 
   const [api, setApi] = useState<CarouselApi>();
-  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>(
-    Array(images.length).fill(false),
-  );
-  const [, setImageDimensions] = useState<
-    Array<{ width: number; height: number }>
-  >(Array(images.length).fill({ width: 0, height: 0 }));
-
-  // Preload images and get their dimensions
-  useEffect(() => {
-    const preloadImages = images.map((src, index) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => {
-        setImagesLoaded((prev) => {
-          const newState = [...prev];
-          newState[index] = true;
-          return newState;
-        });
-        setImageDimensions((prev) => {
-          const newDimensions = [...prev];
-          newDimensions[index] = {
-            width: img.naturalWidth,
-            height: img.naturalHeight,
-          };
-          return newDimensions;
-        });
-      };
-      return img;
-    });
-
-    return () => {
-      preloadImages.forEach((img) => {
-        img.onload = null;
-      });
-    };
-  }, [images]);
 
   // Sync carousel with activeIndex changes
   useEffect(() => {
@@ -123,6 +88,7 @@ export const ProductImages = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      style={{ willChange: "opacity" }}
     >
       <Carousel
         className="w-full relative rounded-3xl"
@@ -133,21 +99,16 @@ export const ProductImages = ({
         <CarouselContent>
           {images.map((image, index) => (
             <CarouselItem key={index} className="flex justify-center">
-              <div className="rounded-3xl overflow-hidden bg-card relative shadow-[0_0_32px_rgba(34,42,53,0.06),0_1px_1px_rgba(0,0,0,0.05),0_0_0_1px_rgba(34,42,53,0.04),0_0_4px_rgba(34,42,53,0.08),0_16px_68px_rgba(47,48,55,0.05),0_1px_0_rgba(255,255,255,0.1)_inset]">
-                {!imagesLoaded[index] && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted/30">
-                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                )}
-                <div className="flex items-center justify-center max-h-96">
-                  <img
-                    src={image}
-                    alt={`${productName} - image ${index + 1}`}
-                    className="max-w-full max-h-96 object-contain transition-opacity duration-300"
-                    style={{ opacity: imagesLoaded[index] ? 1 : 0 }}
-                    loading={index === 0 ? "eager" : "lazy"}
-                  />
-                </div>
+              <div className="w-full h-96 relative rounded-3xl overflow-hidden bg-card shadow-[0_0_32px_rgba(34,42,53,0.06),0_1px_1px_rgba(0,0,0,0.05),0_0_0_1px_rgba(34,42,53,0.04),0_0_4px_rgba(34,42,53,0.08),0_16px_68px_rgba(47,48,55,0.05),0_1px_0_rgba(255,255,255,0.1)_inset]">
+                <Image
+                  src={image}
+                  alt={`${productName} - image ${index + 1}`}
+                  fill
+                  className="object-contain p-4"
+                  priority={index === 0}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={85}
+                />
               </div>
             </CarouselItem>
           ))}
@@ -186,7 +147,7 @@ export const ProductImages = ({
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`w-16 h-16 rounded-lg overflow-hidden transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
+              className={`w-16 h-16 rounded-lg overflow-hidden transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary relative ${
                 activeIndex === index
                   ? "ring-2 ring-primary scale-105"
                   : "opacity-70 hover:opacity-100"
@@ -194,14 +155,13 @@ export const ProductImages = ({
               aria-label={`View ${productName} image ${index + 1}`}
               aria-current={activeIndex === index ? "true" : "false"}
             >
-              <div className="w-full h-full">
-                <img
-                  src={image}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
+              <Image
+                src={image}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="64px"
+              />
             </button>
           ))}
         </motion.div>

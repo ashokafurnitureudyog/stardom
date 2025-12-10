@@ -37,6 +37,7 @@ export const ProductInfo = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.2 }}
+      style={{ willChange: "opacity, transform" }}
     >
       <div className="mb-6">
         <span className="text-sm text-primary font-medium tracking-wide uppercase">
@@ -96,6 +97,7 @@ export const ProductInfo = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
         className="mt-4"
+        style={{ willChange: "opacity, transform" }}
       >
         <button
           onClick={handleWhatsAppInquiry}
