@@ -12,6 +12,11 @@ interface UploadProgress {
   error: string | null;
 }
 
+interface UploadOptions {
+  allowedTypes?: string[];
+  maxSizeInMB?: number;
+}
+
 export function useFileUpload() {
   const [uploadStatus, setUploadStatus] = useState<UploadProgress>({
     uploading: false,
@@ -25,6 +30,7 @@ export function useFileUpload() {
   const uploadFile = async (
     file: File,
     bucketId: string,
+    options?: UploadOptions,
   ): Promise<string | null> => {
     try {
       setUploadStatus({
@@ -41,7 +47,7 @@ export function useFileUpload() {
         }));
       }, 300);
 
-      const fileUrl = await uploadFileToStorage(file, bucketId);
+      const fileUrl = await uploadFileToStorage(file, bucketId, options);
 
       clearInterval(progressInterval);
       setUploadStatus({
@@ -67,6 +73,7 @@ export function useFileUpload() {
   const uploadMultipleFiles = async (
     files: File[],
     bucketId: string,
+    options?: UploadOptions,
   ): Promise<string[]> => {
     try {
       if (files.length === 0) return [];
@@ -85,7 +92,11 @@ export function useFileUpload() {
         }));
       }, 200);
 
-      const fileUrls = await uploadMultipleFilesToStorage(files, bucketId);
+      const fileUrls = await uploadMultipleFilesToStorage(
+        files,
+        bucketId,
+        options,
+      );
 
       clearInterval(progressInterval);
       setUploadStatus({

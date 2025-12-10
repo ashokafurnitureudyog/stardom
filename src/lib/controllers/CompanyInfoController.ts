@@ -1,7 +1,7 @@
 "use server";
 import { ID } from "node-appwrite";
 import { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
-import { createAdminClient } from "../server/appwrite";
+import { createAdminClient, getLoggedInUser } from "../server/appwrite";
 
 // Get company info
 export async function getCompanyInfo() {
@@ -98,6 +98,9 @@ export async function getCompanyInfo() {
 
 export async function updateCompanyInfo(data: CompanyInfo) {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database } = await createAdminClient();
     // ...
     return {
@@ -121,6 +124,9 @@ export async function updateSocialLinks(
   links: { platform: string; url: string; id?: string }[],
 ) {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database } = await createAdminClient();
     // ...
     return {
@@ -142,6 +148,9 @@ export async function updateSocialLinks(
 // Update team members
 export async function updateTeamMembers(members: TeamMember[]) {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database, storage } = await createAdminClient();
     // ...
     return {
@@ -163,6 +172,9 @@ export async function updateTeamMembers(members: TeamMember[]) {
 // Delete all company info
 export async function deleteCompanyInfo() {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database, storage } = await createAdminClient();
     // ...
     return {

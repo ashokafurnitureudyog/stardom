@@ -1,6 +1,6 @@
 "use server";
 import { ID } from "node-appwrite";
-import { createAdminClient } from "@/lib/server/appwrite";
+import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
 import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
 
 interface ProductInput {
@@ -39,6 +39,9 @@ export const addProduct = async (
   productData: ProductInput,
 ): Promise<ProductResponse> => {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database } = await createAdminClient();
 
     const result = await database.createDocument(
@@ -70,6 +73,9 @@ export const updateProduct = async (
   productData: ProductInput,
 ): Promise<ProductResponse> => {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PRODUCTS_COLLECTION_ID!;
@@ -115,6 +121,9 @@ export const deleteProduct = async (
   imageUrls: string[] = [],
 ): Promise<ProductResponse> => {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database } = await createAdminClient();
     const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 

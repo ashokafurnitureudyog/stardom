@@ -1,6 +1,6 @@
 "use server";
 import { ID, Permission, Role } from "node-appwrite";
-import { createAdminClient } from "@/lib/server/appwrite";
+import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
 import { PortfolioProject } from "@/types/ComponentTypes";
 import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
 
@@ -100,6 +100,9 @@ export async function createPortfolioProject(
   thumbnailFile?: File,
 ): Promise<PortfolioResponse> {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database, storage } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
@@ -185,6 +188,9 @@ export async function deletePortfolioProject(
   imageUrls: string[] = [],
 ): Promise<PortfolioResponse> {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
@@ -218,6 +224,9 @@ export async function updatePortfolioProject(
   removedGalleryUrls: string[] = [],
 ): Promise<PortfolioResponse> {
   try {
+    const user = await getLoggedInUser();
+    if (!user) throw new Error("Unauthorized");
+
     const { database, storage } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
