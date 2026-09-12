@@ -126,108 +126,110 @@ const NavbarComponent = () => {
   const onProducts = pathname.startsWith("/products");
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full border-b transition-colors duration-300 ${
-        scrolled
-          ? "border-border/60 bg-background/90 backdrop-blur-xl"
-          : "border-transparent bg-background/70 backdrop-blur-md"
-      }`}
-    >
-      <nav className="mx-auto flex h-20 max-w-7xl items-center gap-8 px-6 md:h-24 lg:px-10">
-        <Link href="/" aria-label="Stardom, home" className="shrink-0">
-          <Image
-            src="/images/logo.png"
-            width={600}
-            height={485}
-            alt="Stardom"
-            className="h-16 w-auto md:h-[72px] dark:hidden"
-            priority
-          />
-          <Image
-            src="/images/logo-dark.png"
-            width={600}
-            height={485}
-            alt="Stardom"
-            className="hidden h-16 w-auto md:h-[72px] dark:block"
-            priority
-          />
-        </Link>
+    <>
+      <header
+        className={`sticky top-0 z-50 w-full border-b transition-colors duration-300 ${
+          scrolled
+            ? "border-border/60 bg-background/90 backdrop-blur-xl"
+            : "border-transparent bg-background/70 backdrop-blur-md"
+        }`}
+      >
+        <nav className="mx-auto flex h-20 max-w-7xl items-center gap-8 px-6 md:h-24 lg:px-10">
+          <Link href="/" aria-label="Stardom, home" className="shrink-0">
+            <Image
+              src="/images/logo.png"
+              width={600}
+              height={485}
+              alt="Stardom"
+              className="h-16 w-auto md:h-[72px] dark:hidden"
+              priority
+            />
+            <Image
+              src="/images/logo-dark.png"
+              width={600}
+              height={485}
+              alt="Stardom"
+              className="hidden h-16 w-auto md:h-[72px] dark:block"
+              priority
+            />
+          </Link>
 
-        <div
-          ref={seriesRef}
-          className="ml-auto hidden items-center gap-9 md:flex"
-          onMouseLeave={() => closeSeries()}
-        >
-          <div className="relative">
+          <div
+            ref={seriesRef}
+            className="ml-auto hidden items-center gap-9 md:flex"
+            onMouseLeave={() => closeSeries()}
+          >
+            <div className="relative">
+              <button
+                type="button"
+                aria-expanded={seriesOpen}
+                aria-controls="series-panel"
+                onClick={() => (seriesOpen ? closeSeries({ immediate: true }) : openSeries())}
+                onMouseEnter={openSeries}
+                onFocus={openSeries}
+                className={`flex items-center gap-1.5 ${linkClass(onProducts)}`}
+              >
+                Chairs
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    seriesOpen ? "rotate-180" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+
+            {PAGES.map((page) => (
+              <Link key={page.path} href={page.path} className={linkClass(pathname === page.path)}>
+                {page.name}
+              </Link>
+            ))}
+
+            <ModeToggle />
+          </div>
+
+          <div className="ml-auto flex items-center gap-2 md:hidden">
+            <ModeToggle />
             <button
               type="button"
-              aria-expanded={seriesOpen}
-              aria-controls="series-panel"
-              onClick={() => (seriesOpen ? closeSeries({ immediate: true }) : openSeries())}
-              onMouseEnter={openSeries}
-              onFocus={openSeries}
-              className={`flex items-center gap-1.5 ${linkClass(onProducts)}`}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+              className="p-2 text-foreground"
             >
-              Chairs
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                  seriesOpen ? "rotate-180" : ""
-                }`}
-                aria-hidden="true"
-              />
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
+        </nav>
 
-          {PAGES.map((page) => (
-            <Link key={page.path} href={page.path} className={linkClass(pathname === page.path)}>
-              {page.name}
-            </Link>
-          ))}
-
-          <ModeToggle />
-        </div>
-
-        <div className="ml-auto flex items-center gap-2 md:hidden">
-          <ModeToggle />
-          <button
-            type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-            className="p-2 text-foreground"
+        {seriesOpen && (
+          <div
+            id="series-panel"
+            className="series-panel absolute inset-x-0 top-full hidden border-b border-border/60 bg-background/98 backdrop-blur-xl md:block"
+            onMouseEnter={openSeries}
+            onMouseLeave={() => closeSeries()}
           >
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </nav>
-
-      {seriesOpen && (
-        <div
-          id="series-panel"
-          className="series-panel absolute inset-x-0 top-full hidden border-b border-border/60 bg-background/98 backdrop-blur-xl md:block"
-          onMouseEnter={openSeries}
-          onMouseLeave={() => closeSeries()}
-        >
-          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:px-10">
-            <div className="lg:w-64">
-              <p className="font-serif text-2xl italic text-primary">Seven series</p>
-              <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                Every Stardom chair belongs to one of seven ranges, named for the room it was built
-                for.
-              </p>
-              <Link
-                href="/products"
-                className="mt-5 inline-block text-sm text-foreground underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
-              >
-                See the whole catalogue
-              </Link>
-            </div>
-            <div className="flex-1">
-              <SeriesList onNavigate={() => closeSeries({ immediate: true })} />
+            <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:px-10">
+              <div className="lg:w-64">
+                <p className="font-serif text-2xl italic text-primary">Seven series</p>
+                <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
+                  Every Stardom chair belongs to one of seven ranges, named for the room it was
+                  built for.
+                </p>
+                <Link
+                  href="/products"
+                  className="mt-5 inline-block text-sm text-foreground underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+                >
+                  See the whole catalogue
+                </Link>
+              </div>
+              <div className="flex-1">
+                <SeriesList onNavigate={() => closeSeries({ immediate: true })} />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </header>
 
       {menuOpen && (
         <div className="mobile-menu fixed inset-0 z-50 flex flex-col bg-background md:hidden">
@@ -281,7 +283,7 @@ const NavbarComponent = () => {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 };
 
