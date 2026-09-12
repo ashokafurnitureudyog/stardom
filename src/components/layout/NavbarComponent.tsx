@@ -53,6 +53,31 @@ const NavbarComponent = () => {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const seriesRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Moving the pointer from the trigger to the panel crosses the gap between
+  // them, which would otherwise read as leaving the menu. A short grace period
+  // lets the pointer make the journey.
+  const openSeries = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setSeriesOpen(true);
+  };
+
+  const closeSeries = ({ immediate = false } = {}) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (immediate) {
+      setSeriesOpen(false);
+      return;
+    }
+    closeTimer.current = setTimeout(() => setSeriesOpen(false), 180);
+  };
+
+  useEffect(
+    () => () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    },
+    [],
+  );
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -63,7 +88,7 @@ const NavbarComponent = () => {
 
   useEffect(() => {
     setMenuOpen(false);
-    setSeriesOpen(false);
+    closeSeries({ immediate: true });
   }, [pathname]);
 
   // The menu covers the viewport, so the page behind it must not scroll.
@@ -80,10 +105,14 @@ const NavbarComponent = () => {
     if (!seriesOpen) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSeriesOpen(false);
+      if (event.key === "Escape") closeSeries({ immediate: true });
     };
     const onPointerDown = (event: PointerEvent) => {
-      if (!seriesRef.current?.contains(event.target as Node)) setSeriesOpen(false);
+      const target = event.target as HTMLElement;
+      // The panel is rendered outside the trigger's wrapper, so closing on a
+      // pointerdown inside it would unmount the link before the click landed.
+      if (seriesRef.current?.contains(target) || target.closest("#series-panel")) return;
+      closeSeries({ immediate: true });
     };
 
     document.addEventListener("keydown", onKeyDown);
@@ -127,15 +156,16 @@ const NavbarComponent = () => {
         <div
           ref={seriesRef}
           className="ml-auto hidden items-center gap-9 md:flex"
-          onMouseLeave={() => setSeriesOpen(false)}
+          onMouseLeave={() => closeSeries()}
         >
           <div className="relative">
             <button
               type="button"
               aria-expanded={seriesOpen}
               aria-controls="series-panel"
-              onClick={() => setSeriesOpen((open) => !open)}
-              onMouseEnter={() => setSeriesOpen(true)}
+              onClick={() => (seriesOpen ? closeSeries({ immediate: true }) : openSeries())}
+              onMouseEnter={openSeries}
+              onFocus={openSeries}
               className={`flex items-center gap-1.5 ${linkClass(onProducts)}`}
             >
               Chairs
@@ -174,9 +204,9 @@ const NavbarComponent = () => {
       {seriesOpen && (
         <div
           id="series-panel"
-          className="series-panel absolute inset-x-0 top-full hidden border-b border-border/60 bg-background/95 backdrop-blur-xl md:block"
-          onMouseEnter={() => setSeriesOpen(true)}
-          onMouseLeave={() => setSeriesOpen(false)}
+          className="series-panel absolute inset-x-0 top-full hidden border-b border-border/60 bg-background/98 backdrop-blur-xl md:block"
+          onMouseEnter={openSeries}
+          onMouseLeave={() => closeSeries()}
         >
           <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:px-10">
             <div className="lg:w-64">
@@ -193,7 +223,7 @@ const NavbarComponent = () => {
               </Link>
             </div>
             <div className="flex-1">
-              <SeriesList onNavigate={() => setSeriesOpen(false)} />
+              <SeriesList onNavigate={() => closeSeries({ immediate: true })} />
             </div>
           </div>
         </div>
