@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { useCompanyData } from "@/hooks/useCompanyData";
+import { useCompanyData } from "@/lib/client/company-data-context";
 import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import type { BackgroundMediaProps, PortfolioHeroProps } from "@/types/ComponentTypes";
 import AnimatedText from "../shared/HeroAnimatedText";

@@ -1,59 +1,46 @@
-/**
- * Product data for the admin dashboard. Public pages render products on the
- * server, so this hook only covers the authenticated, interactive views.
- * @module useProducts
- */
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { loadFeaturedIds, loadProducts } from "@/lib/actions/content-actions";
+import { deleteProduct as removeProduct } from "@/lib/controllers/ProductControllers";
 import type { Product } from "@/types/ComponentTypes";
 
-const STALE_TIME = 5 * 60 * 1000;
-
-async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url, { headers: { "Content-Type": "application/json" } });
-  if (!response.ok) {
-    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
-  }
-  return response.json();
-}
-
+/**
+ * Products for the dashboard. The storefront reads products during render, so
+ * this covers only the authenticated views that mutate them.
+ */
 export const useProducts = () => {
-  const queryClient = useQueryClient();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [featuredIds, setFeaturedIds] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const productsQuery = useQuery({
-    queryKey: ["products"],
-    queryFn: () => fetchJson<Product[]>("/api/products"),
-    staleTime: STALE_TIME,
-  });
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const [all, featured] = await Promise.all([loadProducts(), loadFeaturedIds()]);
+      setProducts(all);
+      setFeaturedIds(featured);
+      setError(null);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause : new Error("Failed to load products"));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-  const featuredProductsQuery = useQuery({
-    queryKey: ["featuredProducts"],
-    queryFn: () => fetchJson<Product[]>("/api/featured"),
-    staleTime: STALE_TIME,
-  });
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
-  const deleteProductMutation = useMutation({
-    mutationFn: async ({ productId, imageUrls }: { productId: string; imageUrls: string[] }) => {
-      const response = await fetch("/api/protected/products", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId, imageUrls }),
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Failed to delete product");
+  const deleteProduct = useCallback(
+    async ({ productId, imageUrls }: { productId: string; imageUrls: string[] }) => {
+      const result = await removeProduct(productId, imageUrls);
+      if (!result.ok) throw new Error(result.error);
+      await refresh();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      queryClient.invalidateQueries({ queryKey: ["featuredProducts"] });
-    },
-  });
+    [refresh],
+  );
 
-  return {
-    products: productsQuery.data || [],
-    featuredProducts: featuredProductsQuery.data || [],
-    isLoading: productsQuery.isLoading,
-    error: productsQuery.error || featuredProductsQuery.error || null,
-    deleteProduct: deleteProductMutation.mutateAsync,
-    productsQuery,
-    featuredProductsQuery,
-  };
+  return { products, featuredIds, isLoading, error, deleteProduct, refresh };
 };

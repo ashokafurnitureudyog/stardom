@@ -6,6 +6,10 @@ import { Progress } from "@/components/ui/progress"; // Make sure this component
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import {
+  createPortfolioProject,
+  updatePortfolioProject,
+} from "@/lib/controllers/PortfolioControllers";
 import { ChallengeSection } from "./ChallengeSection";
 import { ImagesSection } from "./ImagesSection";
 import { ProjectDetailsSection } from "./ProjectDetailsSection";
@@ -179,21 +183,12 @@ export const PortfolioForm = ({
         removedGalleryUrls: removedGalleryUrls.length > 0 ? removedGalleryUrls : undefined,
       };
 
-      // 4. Send the data to the API
-      const response = await fetch("/api/protected/portfolio", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(portfolioData),
-        credentials: "include",
-      });
+      const projectId = isEditing ? (initialData?.id ?? initialData?.$id ?? "") : "";
+      const result = projectId
+        ? await updatePortfolioProject(projectId, portfolioData)
+        : await createPortfolioProject(portfolioData);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to save portfolio project");
-      }
+      if (!result.ok) throw new Error(result.error);
 
       toast({
         title: "Success",

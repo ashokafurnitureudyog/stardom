@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { sendContactMessage } from "@/lib/actions/contact-actions";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 
 const ContactSection = () => {
@@ -40,20 +41,8 @@ const ContactSection = () => {
     });
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const _data = await response.json();
+      const result = await sendContactMessage(formData);
+      if (!result.ok) throw new Error(result.error);
 
       setFormStatus({
         isSubmitting: false,

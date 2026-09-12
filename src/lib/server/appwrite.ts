@@ -22,6 +22,7 @@ export function appwriteIds() {
     teamMembers: process.env.APPWRITE_TEAM_MEMBERS_COLLECTION_ID,
     testimonials: process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID,
     portfolio: process.env.APPWRITE_PORTFOLIO_COLLECTION_ID,
+    contactLog: process.env.APPWRITE_CONTACT_LOG_COLLECTION_ID,
     productImages: requireEnv("APPWRITE_PRODUCT_IMAGES_BUCKET_ID"),
   };
 }

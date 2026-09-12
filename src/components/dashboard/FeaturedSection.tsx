@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { loadFeaturedIds, loadProducts } from "@/lib/actions/content-actions";
+import {
+  addToFeatured as featureProduct,
+  removeFromFeatured as unfeatureProduct,
+} from "@/lib/controllers/FeaturedControllers";
 import type { Product } from "@/types/ComponentTypes";
 import { FeaturedProductCard } from "./featured/FeaturedProductCard";
 import { ProductSelectionDialog } from "./featured/ProductSelectionDialog";
@@ -33,15 +38,9 @@ export const FeaturedSection = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/featured", {
-        cache: "no-store",
-        next: { revalidate: 0 },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch featured products");
-
-      const data = await res.json();
-      setFeaturedProducts(data);
+      const [ids, products] = await Promise.all([loadFeaturedIds(), loadProducts()]);
+      const byId = new Map(products.map((product) => [product.id, product]));
+      setFeaturedProducts(ids.map((id) => byId.get(id)).filter(Boolean) as Product[]);
     } catch (error: unknown) {
       console.error("Failed to fetch featured products:", error);
       setError(error instanceof Error ? error.message : "Failed to load featured products");
@@ -52,15 +51,7 @@ export const FeaturedSection = () => {
 
   const fetchAllProducts = async () => {
     try {
-      const res = await fetch("/api/products", {
-        cache: "no-store",
-        next: { revalidate: 0 },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch products");
-
-      const data = await res.json();
-      setAllProducts(data);
+      setAllProducts(await loadProducts());
     } catch (error: unknown) {
       console.error("Failed to fetch products:", error);
     }
@@ -72,17 +63,8 @@ export const FeaturedSection = () => {
     try {
       // Process each product sequentially
       for (const productId of productIds) {
-        const response = await fetch("/api/protected/featured", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productId }),
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.error || "Failed to add to featured products");
-        }
+        const result = await featureProduct(productId);
+        if (!result.ok) throw new Error(result.error);
       }
 
       setError(
@@ -104,17 +86,8 @@ export const FeaturedSection = () => {
         prev.filter((product) => product.id !== productId && product.$id !== productId),
       );
 
-      const response = await fetch("/api/protected/featured", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId }),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to remove from featured products");
-      }
+      const result = await unfeatureProduct(productId);
+      if (!result.ok) throw new Error(result.error);
 
       setError("Product removed from featured section");
       setTimeout(() => setError(""), 3000); // Clear after 3 seconds

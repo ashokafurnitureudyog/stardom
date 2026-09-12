@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { updateTeamMembers } from "@/lib/controllers/CompanyInfoController";
 import { cn } from "@/lib/utils/utils";
 import type { TeamMember } from "@/types/ComponentTypes";
 
@@ -157,22 +158,8 @@ export const EditTeamMembersDialog = ({
     setIsSubmitting(true);
 
     try {
-      // Send the data as JSON
-      const response = await fetch("/api/protected/company-info", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          section: "team",
-          members: members,
-        }),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update team members");
-      }
+      const result = await updateTeamMembers(members);
+      if (!result.ok) throw new Error(result.error);
 
       toast({
         title: "Success",

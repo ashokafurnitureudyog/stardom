@@ -1,242 +1,127 @@
 "use server";
-import { cacheLife, cacheTag, updateTag } from "next/cache";
-import { ID, Query } from "node-appwrite";
+
+import { updateTag } from "next/cache";
+import { ID } from "node-appwrite";
 import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
-import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
+import { type ActionResult, authorized, failure, guarded } from "@/lib/server/action-result";
+import { appwriteIds, createAdminClient } from "@/lib/server/appwrite";
 import { PRODUCTS_TAG } from "@/lib/server/products";
+import { type ProductInput, productSchema } from "@/lib/validations/cms";
 
-interface ProductInput {
-  name: string;
-  description: string;
-  category: string;
-  collection: string;
-  images: string[];
-  features: string[];
-  colors: string[];
-  removedImages?: string[];
-  imageColorMapping?: string;
-}
+/**
+ * The image/colour map is stored as JSON in a single column. It is only valid
+ * if every value names one of the product's own colours; otherwise the gallery
+ * filter on the product page shows nothing for that colour.
+ */
+function assertValidColorMapping(mapping: string | undefined, colors: string[]) {
+  if (!mapping) return;
 
-interface ProductResponse {
-  success: boolean;
-  data?: unknown;
-  error?: string;
-}
-
-// Validation function for image_color_mapping
-const validateImageColorMapping = (
-  mappingStr: string | undefined,
-  colors: string[],
-  _images: string[],
-): boolean => {
-  if (!mappingStr) return true; // Optional field
-
+  let parsed: unknown;
   try {
-    const mapping = JSON.parse(mappingStr);
-
-    // Check if it's an object
-    if (typeof mapping !== "object" || mapping === null || Array.isArray(mapping)) {
-      return false;
-    }
-
-    // Validate entries
-    // Data structure: { "image_url": "color_name" }
-    for (const [imageUrl, color] of Object.entries(mapping)) {
-      // Value (color) must be in the product's color list
-      if (typeof color !== "string" || !colors.includes(color)) {
-        // Invalid color or not in the allowed list
-        return false;
-      }
-
-      // Key (imageUrl) must be a string.
-      if (typeof imageUrl !== "string") {
-        return false;
-      }
-    }
-
-    return true;
-  } catch (_e) {
-    return false;
+    parsed = JSON.parse(mapping);
+  } catch {
+    throw new Error("Image colour mapping is not valid JSON");
   }
-};
 
-export const getCachedProducts = async () => {
-  "use cache";
-  cacheTag(PRODUCTS_TAG);
-  cacheLife("max");
-  const { database } = await createAdminClient();
-  const products = await database.listRows({
-    databaseId: process.env.APPWRITE_DATABASE_ID!,
-    tableId: process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
-    queries: [Query.limit(100)],
-  });
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    throw new Error("Image colour mapping must map an image URL to a colour");
+  }
 
-  return products.rows.map((product) => ({
-    ...product,
-    id: product.$id,
-    collection: product.product_collection,
-  }));
-};
-
-export const addProduct = async (productData: ProductInput): Promise<ProductResponse> => {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
-
-    // Validate image_color_mapping
-    if (
-      !validateImageColorMapping(
-        productData.imageColorMapping,
-        productData.colors,
-        productData.images,
-      )
-    ) {
-      throw new Error(
-        "Invalid image_color_mapping: Must be valid JSON mapping existing colors to valid image URLs.",
-      );
+  for (const [image, color] of Object.entries(parsed)) {
+    if (typeof image !== "string" || typeof color !== "string" || !colors.includes(color)) {
+      throw new Error("Image colour mapping references a colour that is not on this product");
     }
+  }
+}
 
-    const { database } = await createAdminClient();
+function toRow(product: ProductInput) {
+  return {
+    name: product.name,
+    description: product.description,
+    category: product.category,
+    product_collection: product.collection,
+    features: product.features,
+    colors: product.colors,
+    images: product.images,
+    image_color_mapping: product.imageColorMapping,
+  };
+}
 
-    const result = await database.createRow({
-      databaseId: process.env.APPWRITE_DATABASE_ID!,
-      tableId: process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+export async function addProduct(input: unknown): Promise<ActionResult<{ id: string }>> {
+  return guarded(productSchema, input, async (product) => {
+    assertValidColorMapping(product.imageColorMapping, product.colors);
+
+    const { tables } = await createAdminClient();
+    const ids = appwriteIds();
+    const row = await tables.createRow({
+      databaseId: ids.database,
+      tableId: ids.products,
       rowId: ID.unique(),
-      data: {
-        name: productData.name,
-        description: productData.description,
-        category: productData.category,
-        product_collection: productData.collection,
-        features: productData.features,
-        colors: productData.colors,
-        images: productData.images,
-        image_color_mapping: productData.imageColorMapping,
-      },
+      data: toRow(product),
     });
 
     updateTag(PRODUCTS_TAG);
-    return { success: true, data: result };
-  } catch (error) {
-    console.error("Failed to add product:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to add product";
-    return { success: false, error: errorMessage };
-  }
-};
+    return { id: row.$id };
+  });
+}
 
-export const updateProduct = async (
+export async function updateProduct(
   productId: string,
-  productData: ProductInput,
-): Promise<ProductResponse> => {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
+  input: unknown,
+): Promise<ActionResult<{ id: string }>> {
+  if (!productId) return failure("Product id is required");
 
-    // Validate image_color_mapping
-    if (
-      !validateImageColorMapping(
-        productData.imageColorMapping,
-        productData.colors,
-        productData.images,
-      )
-    ) {
-      throw new Error(
-        "Invalid image_color_mapping: Must be valid JSON mapping existing colors to valid image URLs.",
-      );
+  return guarded(productSchema, input, async (product) => {
+    assertValidColorMapping(product.imageColorMapping, product.colors);
+
+    const { tables } = await createAdminClient();
+    const ids = appwriteIds();
+
+    if (product.removedImages?.length) {
+      await deleteFilesFromStorage(product.removedImages, ids.productImages);
     }
 
-    const { database } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_PRODUCTS_COLLECTION_ID!;
-    const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
-
-    // Get the current product (we don't need to read the images, just ensure we can update the product)
-    await database.getRow({
-      databaseId: databaseId,
-      tableId: collectionId,
+    const row = await tables.updateRow({
+      databaseId: ids.database,
+      tableId: ids.products,
       rowId: productId,
-    });
-
-    // Process removed images if they were explicitly provided
-    if (productData.removedImages && productData.removedImages.length > 0) {
-      // Delete the removed images from storage
-      await deleteFilesFromStorage(productData.removedImages, bucketId);
-    }
-
-    // Update the document with new image URLs
-    const result = await database.updateRow({
-      databaseId: databaseId,
-      tableId: collectionId,
-      rowId: productId,
-      data: {
-        name: productData.name,
-        description: productData.description,
-        category: productData.category,
-        product_collection: productData.collection,
-        features: productData.features,
-        colors: productData.colors,
-        images: productData.images,
-        image_color_mapping: productData.imageColorMapping,
-      },
+      data: toRow(product),
     });
 
     updateTag(PRODUCTS_TAG);
     updateTag(`product-${productId}`);
-    return { success: true, data: result };
-  } catch (error) {
-    console.error("Failed to update product:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to update product";
-    return { success: false, error: errorMessage };
-  }
-};
+    return { id: row.$id };
+  });
+}
 
-// Keep deleteProduct function as is
-export const deleteProduct = async (
+export async function deleteProduct(
   productId: string,
   imageUrls: string[] = [],
-): Promise<ProductResponse> => {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
+): Promise<ActionResult<{ id: string }>> {
+  if (!productId) return failure("Product id is required");
 
-    const { database } = await createAdminClient();
-    const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
+  return authorized(async () => {
+    const { tables } = await createAdminClient();
+    const ids = appwriteIds();
 
-    // Delete images from storage
-    if (imageUrls && imageUrls.length > 0) {
-      await deleteFilesFromStorage(imageUrls, bucketId);
+    if (imageUrls.length) await deleteFilesFromStorage(imageUrls, ids.productImages);
+
+    if (ids.featured) {
+      // A featured row carries its product's id, so removing the product has to
+      // remove it from the home grid as well.
+      await tables
+        .deleteRow({ databaseId: ids.database, tableId: ids.featured, rowId: productId })
+        .catch(() => undefined);
     }
 
-    // Try to delete from featured collection if it exists
-    // This should happen ONCE per product, not for each image
-    try {
-      if (process.env.APPWRITE_FEATURED_COLLECTION_ID) {
-        await database.deleteRow({
-          databaseId: process.env.APPWRITE_DATABASE_ID!,
-          tableId: process.env.APPWRITE_FEATURED_COLLECTION_ID,
-          rowId: productId,
-        });
-      }
-    } catch (error) {
-      // Use the error in a logging statement to avoid the unused variable warning
-      console.error(
-        "Product was not in featured collection or collection doesn't exist:",
-        error instanceof Error ? error.message : "Unknown error",
-      );
-    }
-
-    // Delete the product document
-    const result = await database.deleteRow({
-      databaseId: process.env.APPWRITE_DATABASE_ID!,
-      tableId: process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+    await tables.deleteRow({
+      databaseId: ids.database,
+      tableId: ids.products,
       rowId: productId,
     });
 
     updateTag(PRODUCTS_TAG);
     updateTag(`product-${productId}`);
-    return { success: true, data: result };
-  } catch (error) {
-    console.error("Failed to delete product:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to delete product";
-    return { success: false, error: errorMessage };
-  }
-};
+    return { id: productId };
+  });
+}

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { Button } from "@/components/ui/button";
-import { useCompanyData } from "@/hooks/useCompanyData";
+import { useCompanyData } from "@/lib/client/company-data-context";
 import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import type { StatisticProps } from "@/types/ComponentTypes";
 import NumberTicker from "../ui/number-ticker";

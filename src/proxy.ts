@@ -8,30 +8,7 @@ const ROUTES = {
   ADMIN_DASHBOARD: "/admin/dashboard",
   ADMIN: "/admin",
   AUTH_DASHBOARD: "/auth/dashboard",
-  API_PROTECTED: "/api/protected",
 };
-
-/**
- * Handle API protected routes
- */
-async function handleApiProtectedRoutes(request: NextRequest): Promise<NextResponse | null> {
-  const url = new URL(request.url);
-
-  if (!url.pathname.startsWith(ROUTES.API_PROTECTED)) {
-    return null;
-  }
-
-  // We rely on api-utils.ts for the actual detailed validation to avoid double-fetching
-  // inside the proxy if possible, OR we do a quick check here.
-  // However, since we want to block unauthorized access at the edge/proxy level:
-  const user = await getLoggedInUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  return null; // Let the request continue to the actual API route
-}
 
 /**
  * The single account allowed into the dashboard. Missing configuration denies
@@ -98,10 +75,6 @@ async function handleAdminRoutes(request: NextRequest): Promise<NextResponse | n
 }
 
 export default async function proxy(request: NextRequest): Promise<NextResponse> {
-  // Check API routes first
-  const apiResponse = await handleApiProtectedRoutes(request);
-  if (apiResponse) return apiResponse;
-
   // Check Auth page
   const authResponse = await handleAuthPage(request);
   if (authResponse) return authResponse;
@@ -123,5 +96,5 @@ export default async function proxy(request: NextRequest): Promise<NextResponse>
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/auth", "/auth/dashboard", "/api/protected/:path*"],
+  matcher: ["/admin/:path*", "/auth", "/auth/dashboard"],
 };

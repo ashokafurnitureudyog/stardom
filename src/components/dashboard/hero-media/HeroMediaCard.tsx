@@ -15,13 +15,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import type { MediaItem } from "@/types/MediaTypes";
+import type { HeroMedia } from "@/types/MediaTypes";
 import { HeroMediaDetails } from "./HeroMediaDetails";
 
-type MediaItemWithId = MediaItem & { id: string };
-
 interface HeroMediaCardProps {
-  item: MediaItemWithId;
+  item: HeroMedia;
   onDelete: (id: string) => Promise<void>;
 }
 

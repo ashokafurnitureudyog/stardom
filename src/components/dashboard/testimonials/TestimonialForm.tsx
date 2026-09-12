@@ -13,6 +13,7 @@ import {
   TESTIMONIAL_AVATAR_NUMBERS,
   TESTIMONIAL_MONTHS,
 } from "@/lib/constants/TestimonialConstants";
+import { createTestimonial, updateTestimonial } from "@/lib/controllers/TestimonialsControllers";
 import { cn } from "@/lib/utils/utils";
 import type { ClientTestimonial } from "@/types/ComponentTypes";
 
@@ -182,33 +183,23 @@ export const TestimonialForm = ({
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData(e.currentTarget);
-      const purchaseDate = `${selectedMonth} ${selectedYear}`;
-      formData.set("purchaseDate", purchaseDate);
-      formData.set("img", finalImageUrl);
-      formData.set("imageUrl", finalImageUrl);
-      formData.set("imageSource", imageTab);
-      formData.set("imageRemoved", isImageRemoved.toString());
+      const fields = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
+      const payload = {
+        name: fields.name,
+        title: fields.title,
+        location: fields.location,
+        context: fields.context,
+        quote: fields.quote,
+        purchaseDate: `${selectedMonth} ${selectedYear}`,
+        img: finalImageUrl,
+      };
 
-      // If editing, include the testimonial ID
-      if (isEditing && initialData) {
-        const testimonialId = initialData.id || initialData.$id;
-        if (testimonialId) {
-          formData.set("id", testimonialId);
-        }
-      }
+      const testimonialId = isEditing && initialData ? (initialData.id ?? initialData.$id) : "";
+      const result = testimonialId
+        ? await updateTestimonial(testimonialId, payload)
+        : await createTestimonial(payload);
 
-      // Use POST method for both create and update
-      const response = await fetch("/api/protected/testimonials", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || `Failed to ${isEditing ? "update" : "add"} testimonial`);
-      }
+      if (!result.ok) throw new Error(result.error);
 
       onSuccess();
     } catch (error: unknown) {

@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
+import { addProduct, updateProduct } from "@/lib/controllers/ProductControllers";
 import type { Product } from "@/types/ComponentTypes";
 import { ColorsSection } from "./colors-section";
 import { FeaturesSection } from "./features-section";
@@ -133,33 +134,17 @@ export const ProductForm = ({ onSuccess, initialData, isEditing = false }: Produ
         removedImages = initialImageUrls.filter((url) => !imageUrls.includes(url));
       }
 
-      // 4. Send the product data to the API
-      const response = await fetch("/api/protected/products", {
-        method: isEditing ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...productData,
-          id: isEditing && initialData ? initialData.id || initialData.$id : undefined,
-          removedImages: removedImages.length > 0 ? removedImages : undefined,
-        }),
-        credentials: "include",
-      });
+      const payload = {
+        ...productData,
+        removedImages: removedImages.length > 0 ? removedImages : undefined,
+      };
 
-      if (!response.ok) {
-        const text = await response.text();
-        let error = "An error occurred";
-        try {
-          if (text) {
-            const data = JSON.parse(text);
-            error = data.error || error;
-          }
-        } catch {
-          error = `Server error: ${response.status}`;
-        }
-        throw new Error(error);
-      }
+      const productId = isEditing && initialData ? initialData.id || initialData.$id : undefined;
+      const result = productId
+        ? await updateProduct(productId, payload)
+        : await addProduct(payload);
+
+      if (!result.ok) throw new Error(result.error);
 
       onSuccess();
     } catch (error: unknown) {

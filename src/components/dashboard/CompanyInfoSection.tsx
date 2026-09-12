@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { loadCompanyData } from "@/lib/actions/content-actions";
 import type { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
 
 import { CompanyDetailsCard } from "./company/CompanyDetailsCard";
@@ -38,15 +39,7 @@ export const CompanyInfoSection = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/protected/company-info", {
-        cache: "no-store",
-        next: { revalidate: 0 },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch company information");
-
-      const data = await res.json();
-      setData(data);
+      setData(await loadCompanyData());
     } catch (error: unknown) {
       console.error("Failed to fetch company information:", error);
       setError(error instanceof Error ? error.message : "Failed to load company information");
@@ -58,27 +51,6 @@ export const CompanyInfoSection = () => {
   useEffect(() => {
     fetchCompanyInfo();
   }, [fetchCompanyInfo]);
-
-  const handleDeleteAll = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch("/api/protected/company-info", {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete company information");
-      }
-
-      fetchCompanyInfo();
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Failed to delete company information");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -157,44 +129,6 @@ export const CompanyInfoSection = () => {
           >
             <RefreshCw size={16} /> <span className="hidden lg:inline">Refresh</span>
           </Button>
-
-          {data?.companyInfo && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="default"
-                  className="flex items-center gap-2 h-10 border-[#3C3120] text-red-400 hover:bg-neutral-900/70 hover:text-red-300 hover:border-red-900/50"
-                >
-                  <Trash size={16} /> <span className="hidden lg:inline">Delete All</span>
-                  <span className="lg:hidden">Delete</span>
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="bg-[#171410] border-[#352b1c]">
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="text-[#A28B55]">
-                    Delete All Company Information
-                  </AlertDialogTitle>
-                  <AlertDialogDescription className="text-neutral-400">
-                    Are you sure you want to delete all company information? This action cannot be
-                    undone and will permanently remove all company details, team members and social
-                    links.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-transparent border-[#3C3120] text-neutral-300 hover:bg-neutral-900 hover:border-[#A28B55]">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-red-950/30 text-red-400 hover:bg-red-950/50 border border-red-900/30 hover:border-red-500/50"
-                    onClick={handleDeleteAll}
-                  >
-                    Delete All
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
         </div>
       </div>
 

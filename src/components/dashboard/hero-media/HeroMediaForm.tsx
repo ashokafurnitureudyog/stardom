@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress"; // Make sure this component
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { addHeroMedia } from "@/lib/controllers/HeroMediaController";
 import { MediaPreview } from "./MediaPreview";
 import { MediaTypeSelector } from "./MediaTypeSelector";
 import { MediaUploadTabs } from "./MediaUploadTabs";
@@ -138,21 +139,8 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
         lowResSrc: "",
       };
 
-      // Send the JSON data to the API
-      const res = await fetch("/api/protected/hero-media", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(mediaData),
-        credentials: "include",
-      });
-
-      const result = await res.json();
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to add media");
-      }
+      const result = await addHeroMedia(mediaData);
+      if (!result.ok) throw new Error(result.error);
 
       toast({
         title: "Media Added",

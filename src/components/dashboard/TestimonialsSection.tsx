@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { MessageSquare, RefreshCw, Search } from "lucide-react";
 import { useOptimistic, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -16,9 +15,9 @@ export const TestimonialsSection = () => {
     isLoading: loading,
     error: queryError,
     deleteTestimonial,
+    refresh,
   } = useTestimonials();
 
-  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
 
@@ -50,7 +49,7 @@ export const TestimonialsSection = () => {
   };
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+    refresh();
   };
 
   const handleDelete = async (id: string, imageUrl: string) => {

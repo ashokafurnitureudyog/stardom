@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { sendContactMessage } from "@/lib/actions/contact-actions";
 
 // Contact form schema with validation rules
 const formSchema = z.object({
@@ -37,22 +38,9 @@ interface SubmitContactFormProps {
   data: ContactFormValues;
 }
 
-// API call function to submit the contact form data
 async function submitContactForm({ data }: SubmitContactFormProps): Promise<void> {
-  const response = await fetch("/api/contact", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to submit form");
-  }
-
-  return response.json();
+  const result = await sendContactMessage(data);
+  if (!result.ok) throw new Error(result.error);
 }
 
 export default function ContactForm() {

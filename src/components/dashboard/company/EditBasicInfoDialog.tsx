@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { updateCompanyInfo } from "@/lib/controllers/CompanyInfoController";
 import type { CompanyInfo } from "@/types/ComponentTypes";
 
 interface EditBasicInfoDialogProps {
@@ -123,18 +124,8 @@ export const EditBasicInfoDialog = ({
     setIsSubmitting(true);
 
     try {
-      const submitFormData = new FormData();
-      submitFormData.append("section", "basic");
-      submitFormData.append("data", JSON.stringify(formData));
-
-      const response = await fetch("/api/protected/company-info", {
-        method: "POST",
-        body: submitFormData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update company info");
-      }
+      const result = await updateCompanyInfo(formData);
+      if (!result.ok) throw new Error(result.error);
 
       toast({
         title: "Success",

@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { ImageIcon, RefreshCw, Search } from "lucide-react";
 import { useOptimistic, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,9 +17,14 @@ interface DatabasePortfolioProject extends PortfolioProject {
 }
 
 export const PortfolioSection = () => {
-  const { projects, isLoading: loading, error: queryError, deleteProject } = usePortfolio();
+  const {
+    projects,
+    isLoading: loading,
+    error: queryError,
+    deleteProject,
+    refresh,
+  } = usePortfolio();
 
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -50,7 +54,7 @@ export const PortfolioSection = () => {
   );
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ["portfolio"] });
+    refresh();
   };
 
   const handleDelete = async (projectId: string, imageUrls: string[]) => {
@@ -141,7 +145,7 @@ export const PortfolioSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project, index) => (
             <PortfolioCard
-              key={project.id || project.$id || `${project.title}-${index}`}
+              key={project.id || project.id || `${project.title}-${index}`}
               project={project}
               onDelete={handleDelete}
               onEditSuccess={handleRefresh}

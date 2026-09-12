@@ -1,41 +1,42 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
+import { loadTestimonials } from "@/lib/actions/content-actions";
+import { deleteTestimonial as removeTestimonial } from "@/lib/controllers/TestimonialsControllers";
 import type { ClientTestimonial } from "@/types/ComponentTypes";
 
+/**
+ * Testimonials for the dashboard section, which reloads them after each edit.
+ */
 export const useTestimonials = () => {
-  const queryClient = useQueryClient();
+  const [testimonials, setTestimonials] = useState<ClientTestimonial[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const testimonialsQuery = useQuery({
-    queryKey: ["testimonials"],
-    queryFn: async () => {
-      const res = await fetch("/api/testimonials");
-      if (!res.ok) throw new Error("Failed to fetch testimonials");
-      return res.json() as Promise<ClientTestimonial[]>;
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      setTestimonials(await loadTestimonials());
+      setError(null);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause : new Error("Failed to load testimonials"));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const deleteTestimonial = useCallback(
+    async ({ id, imageUrl }: { id: string; imageUrl?: string }) => {
+      const result = await removeTestimonial(id, imageUrl);
+      if (!result.ok) throw new Error(result.error);
+      await refresh();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+    [refresh],
+  );
 
-  const deleteTestimonialMutation = useMutation({
-    mutationFn: async ({ id, imageUrl }: { id: string; imageUrl: string }) => {
-      const response = await fetch("/api/protected/testimonials", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, imageUrl }),
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error("Failed to delete testimonial");
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
-    },
-  });
-
-  return {
-    testimonials: testimonialsQuery.data || [],
-    isLoading: testimonialsQuery.isLoading,
-    error: testimonialsQuery.error,
-    deleteTestimonial: deleteTestimonialMutation.mutateAsync,
-  };
+  return { testimonials, isLoading, error, deleteTestimonial, refresh };
 };

@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { PackageOpen, RefreshCw, Search } from "lucide-react";
 import { useOptimistic, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -16,14 +15,14 @@ export const ProductsSection = () => {
     isLoading: loading,
     error: queryError,
     deleteProduct,
-    featuredProducts,
+    featuredIds,
+    refresh,
   } = useProducts();
 
-  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const featuredProductIds = new Set(featuredProducts.map((p) => p.id || p.$id || ""));
+  const featuredProductIds = new Set(featuredIds);
 
   const [optimisticProducts, addOptimisticProduct] = useOptimistic(
     products,
@@ -51,8 +50,7 @@ export const ProductsSection = () => {
   );
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ["products"] });
-    queryClient.invalidateQueries({ queryKey: ["featuredProducts"] });
+    refresh();
   };
 
   const handleDelete = async (productId: string, imageUrls: string[]) => {
@@ -67,7 +65,7 @@ export const ProductsSection = () => {
           description: "Failed to delete product",
           variant: "destructive",
         });
-        // React Query will automatically refetch/revert if mutation fails
+        refresh();
       }
     });
   };

@@ -5,15 +5,15 @@ import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import type { MediaItem } from "@/types/MediaTypes";
+import { loadHeroMedia } from "@/lib/actions/content-actions";
+import { deleteHeroMedia } from "@/lib/controllers/HeroMediaController";
+import type { HeroMedia } from "@/types/MediaTypes";
 import { AddHeroMediaDialog } from "./hero-media/AddHeroMediaDialog";
 import { HeroMediaCard } from "./hero-media/HeroMediaCard";
 
-type MediaItemWithId = MediaItem & { id: string };
-
 export const HeroFilesSection = () => {
   const { toast } = useToast();
-  const [data, setData] = useState<MediaItemWithId[]>([]);
+  const [data, setData] = useState<HeroMedia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -21,20 +21,7 @@ export const HeroFilesSection = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/hero-media", {
-        cache: "no-store",
-        next: { revalidate: 0 },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch hero media");
-
-      const result = await res.json();
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to fetch hero media");
-      }
-
-      setData(result.mediaItems || []);
+      setData(await loadHeroMedia());
     } catch (error: unknown) {
       console.error("Failed to fetch hero media:", error);
       setError(error instanceof Error ? error.message : "Failed to load hero media");
@@ -55,15 +42,10 @@ export const HeroFilesSection = () => {
         throw new Error("Invalid media ID");
       }
 
-      const response = await fetch(`/api/protected/hero-media?id=${encodeURIComponent(id)}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const result = await deleteHeroMedia(id);
 
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || "Failed to delete media item");
+      if (!result.ok) {
+        throw new Error(result.error);
       }
 
       toast({

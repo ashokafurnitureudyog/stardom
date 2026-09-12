@@ -9,7 +9,7 @@ import type {
   SocialLink,
   TeamMember,
 } from "@/types/ComponentTypes";
-import type { MediaItem } from "@/types/MediaTypes";
+import type { HeroMedia } from "@/types/MediaTypes";
 import { appwriteIds, createAdminClient } from "./appwrite";
 
 export const HERO_MEDIA_TAG = "hero-media";
@@ -35,7 +35,7 @@ async function rows(tableId: string, queries: string[] = []): Promise<Row[]> {
  * Hero slideshow media, in the order the dashboard stores it. Read on the
  * server so the first slide is in the HTML rather than two round trips away.
  */
-export async function getHeroMedia(): Promise<MediaItem[]> {
+export async function getHeroMedia(): Promise<HeroMedia[]> {
   "use cache";
   cacheTag(HERO_MEDIA_TAG);
   cacheLife("max");
@@ -45,7 +45,7 @@ export async function getHeroMedia(): Promise<MediaItem[]> {
 
   return (await rows(ids.heroMedia)).map((row) => ({
     id: row.$id as string,
-    type: row.type as MediaItem["type"],
+    type: row.type as HeroMedia["type"],
     src: row.src as string,
     alt: (row.alt as string) || undefined,
     poster: (row.poster as string) || undefined,

@@ -3,12 +3,10 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import { DialogClose } from "@/components/ui/dialog";
-import type { MediaItem } from "@/types/MediaTypes";
-
-type MediaItemWithId = MediaItem & { id: string };
+import type { HeroMedia } from "@/types/MediaTypes";
 
 interface HeroMediaDetailsProps {
-  item: MediaItemWithId;
+  item: HeroMedia;
 }
 
 export const HeroMediaDetails = ({ item }: HeroMediaDetailsProps) => {

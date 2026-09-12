@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { updateSocialLinks } from "@/lib/controllers/CompanyInfoController";
 
 export const EditSocialLinksDialog = ({
   initialData,
@@ -76,18 +77,8 @@ export const EditSocialLinksDialog = ({
     setIsSubmitting(true);
 
     try {
-      const submitFormData = new FormData();
-      submitFormData.append("section", "social");
-      submitFormData.append("data", JSON.stringify(links));
-
-      const response = await fetch("/api/protected/company-info", {
-        method: "POST",
-        body: submitFormData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update social links");
-      }
+      const result = await updateSocialLinks(links);
+      if (!result.ok) throw new Error(result.error);
 
       toast({
         title: "Success",

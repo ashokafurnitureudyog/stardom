@@ -1,330 +1,88 @@
 "use server";
-import { ID, Permission, Query, Role } from "node-appwrite";
+
+import { updateTag } from "next/cache";
+import { ID } from "node-appwrite";
 import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
-import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
-import type { PortfolioProject } from "@/types/ComponentTypes";
+import { type ActionResult, authorized, failure, guarded } from "@/lib/server/action-result";
+import { appwriteIds, createAdminClient } from "@/lib/server/appwrite";
+import { PORTFOLIO_TAG } from "@/lib/server/content";
+import { type PortfolioProjectInput, portfolioProjectSchema } from "@/lib/validations/cms";
 
-// Define interface for portfolio responses
-interface PortfolioResponse {
-  success: boolean;
-  data?: PortfolioProject | PortfolioProject[] | Record<string, unknown>;
-  error?: string;
+function portfolioTable() {
+  const ids = appwriteIds();
+  if (!ids.portfolio) throw new Error("Portfolio table is not configured");
+  return { databaseId: ids.database, tableId: ids.portfolio };
 }
 
-// Define interface for database document response
-interface PortfolioDocument {
-  $id: string;
-  $createdAt: string;
-  $updatedAt: string;
-  $permissions: string[];
-  $databaseId: string;
-  $collectionId: string;
-  title: string;
-  tags: string[];
-  thumbnail: string;
-  description: string;
-  challenge: string;
-  solution: string;
-  impact: string;
-  testimonial_quote: string;
-  testimonial_author: string;
-  testimonial_position: string;
-  gallery: string[];
-  [key: string]: unknown;
-}
-
-/**
- * Maps database document to PortfolioProject type
- */
-function mapToPortfolioProject(doc: PortfolioDocument): PortfolioProject {
+function toRow(project: PortfolioProjectInput) {
   return {
-    id: doc.$id,
-    title: doc.title,
-    tags: doc.tags,
-    thumbnail: doc.thumbnail,
-    description: doc.description,
-    challenge: doc.challenge,
-    solution: doc.solution,
-    impact: doc.impact,
-    testimonial: {
-      quote: doc.testimonial_quote || "",
-      author: doc.testimonial_author || "",
-      position: doc.testimonial_position || "",
-    },
-    gallery: doc.gallery,
+    title: project.title,
+    tags: project.tags,
+    thumbnail: project.thumbnail || "",
+    description: project.description,
+    challenge: project.challenge,
+    solution: project.solution,
+    impact: project.impact,
+    testimonial_quote: project.testimonial_quote || "",
+    testimonial_author: project.testimonial_author || "",
+    testimonial_position: project.testimonial_position || "",
+    gallery: project.gallery,
   };
 }
 
-export async function getPortfolioProjects(): Promise<PortfolioResponse> {
-  try {
-    const { database } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
-
-    const response = await database.listRows({
-      databaseId: databaseId,
-      tableId: collectionId,
-      queries: [Query.limit(100)],
-    });
-
-    // Map the documents to our PortfolioProject type
-    const projects = response.rows.map((doc) =>
-      mapToPortfolioProject(doc as unknown as PortfolioDocument),
-    );
-
-    return { success: true, data: projects };
-  } catch (error: unknown) {
-    console.error("Failed to fetch portfolio projects:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch portfolio projects";
-    return { success: false, error: errorMessage };
-  }
-}
-
-// Project data input interface - what's accepted by the function
-interface ProjectInput {
-  title: string;
-  tags: string[];
-  thumbnail?: string;
-  description: string;
-  challenge: string;
-  solution: string;
-  impact: string;
-  testimonial_quote?: string;
-  testimonial_author?: string;
-  testimonial_position?: string;
-  gallery: string[];
-}
-
 export async function createPortfolioProject(
-  projectData: ProjectInput,
-  files?: File[],
-  thumbnailFile?: File,
-): Promise<PortfolioResponse> {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
-
-    const { database, storage } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
-    const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
-
-    let thumbnail = projectData.thumbnail || "";
-
-    if (thumbnailFile) {
-      try {
-        const fileId = ID.unique();
-        await storage.createFile(bucketId, fileId, thumbnailFile, [Permission.read(Role.any())]);
-
-        thumbnail = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
-      } catch (uploadError: unknown) {
-        console.error(
-          "Thumbnail upload error:",
-          uploadError instanceof Error ? uploadError.message : "Unknown error",
-        );
-      }
-    }
-
-    const uploadedUrls: string[] = [];
-    if (files && files.length > 0) {
-      for (const file of files) {
-        try {
-          const fileId = ID.unique();
-          await storage.createFile(bucketId, fileId, file, [Permission.read(Role.any())]);
-          uploadedUrls.push(
-            `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`,
-          );
-        } catch (fileError: unknown) {
-          console.error(
-            "Gallery file upload error:",
-            fileError instanceof Error ? fileError.message : "Unknown error",
-          );
-        }
-      }
-    }
-
-    const gallery = [...projectData.gallery, ...uploadedUrls];
-
-    const dbDocument = await database.createRow({
-      databaseId: databaseId,
-      tableId: collectionId,
+  input: unknown,
+): Promise<ActionResult<{ id: string }>> {
+  return guarded(portfolioProjectSchema, input, async (project) => {
+    const { tables } = await createAdminClient();
+    const row = await tables.createRow({
+      ...portfolioTable(),
       rowId: ID.unique(),
-      data: {
-        title: projectData.title,
-        tags: projectData.tags,
-        thumbnail: thumbnail,
-        description: projectData.description,
-        challenge: projectData.challenge,
-        solution: projectData.solution,
-        impact: projectData.impact,
-        testimonial_quote: projectData.testimonial_quote || "",
-        testimonial_author: projectData.testimonial_author || "",
-        testimonial_position: projectData.testimonial_position || "",
-        gallery: gallery,
-      },
+      data: toRow(project),
     });
 
-    // Map to our PortfolioProject type
-    const project = mapToPortfolioProject(dbDocument as unknown as PortfolioDocument);
+    updateTag(PORTFOLIO_TAG);
+    return { id: row.$id };
+  });
+}
 
-    return { success: true, data: project };
-  } catch (error: unknown) {
-    console.error("Failed to create portfolio project:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to create portfolio project";
-    return { success: false, error: errorMessage };
-  }
+export async function updatePortfolioProject(
+  projectId: string,
+  input: unknown,
+): Promise<ActionResult<{ id: string }>> {
+  if (!projectId) return failure("Project id is required");
+
+  return guarded(portfolioProjectSchema, input, async (project) => {
+    const { tables } = await createAdminClient();
+
+    if (project.removedImages?.length) {
+      await deleteFilesFromStorage(project.removedImages);
+    }
+
+    const row = await tables.updateRow({
+      ...portfolioTable(),
+      rowId: projectId,
+      data: toRow(project),
+    });
+
+    updateTag(PORTFOLIO_TAG);
+    return { id: row.$id };
+  });
 }
 
 export async function deletePortfolioProject(
   projectId: string,
   imageUrls: string[] = [],
-): Promise<PortfolioResponse> {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
+): Promise<ActionResult<{ id: string }>> {
+  if (!projectId) return failure("Project id is required");
 
-    const { database } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
-    const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
+  return authorized(async () => {
+    const { tables } = await createAdminClient();
 
-    if (imageUrls && imageUrls.length > 0) {
-      // Use our centralized deletion utility
-      await deleteFilesFromStorage(imageUrls, bucketId);
-    }
+    if (imageUrls.length) await deleteFilesFromStorage(imageUrls);
+    await tables.deleteRow({ ...portfolioTable(), rowId: projectId });
 
-    // Delete the project document
-    await database.deleteRow({
-      databaseId: databaseId,
-      tableId: collectionId,
-      rowId: projectId,
-    });
-
-    return { success: true };
-  } catch (error: unknown) {
-    console.error("Failed to delete portfolio project:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to delete portfolio project";
-    return { success: false, error: errorMessage };
-  }
-}
-
-export async function updatePortfolioProject(
-  projectId: string,
-  projectData: ProjectInput,
-  files?: File[],
-  thumbnailFile?: File,
-  thumbnailRemoved: boolean = false,
-  removedGalleryUrls: string[] = [],
-): Promise<PortfolioResponse> {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
-
-    const { database, storage } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
-    const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
-
-    // Get existing document
-    const existingDoc = await database.getRow({
-      databaseId: databaseId,
-      tableId: collectionId,
-      rowId: projectId,
-    });
-
-    // Handle removing gallery images from storage
-    if (removedGalleryUrls && removedGalleryUrls.length > 0) {
-      const result = await deleteFilesFromStorage(removedGalleryUrls, bucketId);
-      if (result.errors.length > 0) {
-        console.error("Errors during gallery cleanup:", result.errors);
-      }
-    }
-
-    let thumbnail = projectData.thumbnail || "";
-    const oldThumbnail = existingDoc.thumbnail || "";
-
-    // Handle thumbnail
-    if (thumbnailRemoved) {
-      // Delete old thumbnail from storage if it's an Appwrite URL
-      if (oldThumbnail) {
-        await deleteFilesFromStorage([oldThumbnail], bucketId);
-      }
-      thumbnail = "";
-    } else if (thumbnailFile) {
-      // Upload new thumbnail and delete old one if it exists
-      try {
-        const fileId = ID.unique();
-        await storage.createFile(bucketId, fileId, thumbnailFile, [Permission.read(Role.any())]);
-
-        thumbnail = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
-
-        // If there was an old thumbnail that's being replaced, delete it
-        if (oldThumbnail && oldThumbnail !== thumbnail) {
-          await deleteFilesFromStorage([oldThumbnail], bucketId);
-        }
-      } catch (uploadError: unknown) {
-        console.error(
-          "Thumbnail upload error:",
-          uploadError instanceof Error ? uploadError.message : "Unknown error",
-        );
-      }
-    }
-
-    // Upload new gallery images if any
-    const uploadedUrls: string[] = [];
-    if (files && files.length > 0) {
-      for (const file of files) {
-        try {
-          const fileId = ID.unique();
-          await storage.createFile(bucketId, fileId, file, [Permission.read(Role.any())]);
-          const newUrl = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
-          uploadedUrls.push(newUrl);
-        } catch (fileError: unknown) {
-          console.error(
-            "Gallery file upload error:",
-            fileError instanceof Error ? fileError.message : "Unknown error",
-          );
-        }
-      }
-    }
-
-    // Handle gallery - add newly uploaded images to current gallery
-    const gallery = [...projectData.gallery, ...uploadedUrls];
-
-    // Create the update payload
-    const updatePayload = {
-      title: projectData.title,
-      tags: projectData.tags,
-      thumbnail: thumbnail,
-      description: projectData.description,
-      challenge: projectData.challenge,
-      solution: projectData.solution,
-      impact: projectData.impact,
-      testimonial_quote: projectData.testimonial_quote || "",
-      testimonial_author: projectData.testimonial_author || "",
-      testimonial_position: projectData.testimonial_position || "",
-      gallery: gallery,
-    };
-
-    // Update the document
-    const dbDocument = await database.updateRow({
-      databaseId: databaseId,
-      tableId: collectionId,
-      rowId: projectId,
-      data: updatePayload,
-    });
-
-    // Map to our PortfolioProject type
-    const project = mapToPortfolioProject(dbDocument as unknown as PortfolioDocument);
-
-    return { success: true, data: project };
-  } catch (error: unknown) {
-    console.error("Failed to update portfolio project:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to update portfolio project";
-    return { success: false, error: errorMessage };
-  }
+    updateTag(PORTFOLIO_TAG);
+    return { id: projectId };
+  });
 }

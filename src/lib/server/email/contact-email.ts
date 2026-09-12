@@ -1,5 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import "server-only";
 
 const HTML_ESCAPES: Record<string, string> = {
   "&": "&amp;",
@@ -9,103 +8,37 @@ const HTML_ESCAPES: Record<string, string> = {
   "'": "&#39;",
 };
 
+/** Form fields are plain text, so escaping them is the whole job. */
+const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => HTML_ESCAPES[char]);
+
+export interface ContactEmailFields {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
 /**
- * Escapes a form field for interpolation into the notification email. The
- * fields are plain text, so escaping is the whole job: no markup survives.
+ * Renders the enquiry notification. Every interpolated value is escaped here,
+ * so no caller can forget to do it.
  */
-const escapeHtml = (value: string) =>
-  String(value).replace(/[&<>"']/g, (char) => HTML_ESCAPES[char]);
-
-const rateLimits = new Map<string, { count: number; timestamp: number }>();
-
-// Configure rate limiting
-const RATE_LIMIT_MAX = 30; // Maximum requests per time window
-const RATE_LIMIT_WINDOW = 3600 * 1000; // Time window in milliseconds (1 hour)
-
-/** Drops rate-limit entries whose window has already elapsed. */
-const pruneRateLimits = (now: number) => {
-  for (const [key, data] of rateLimits) {
-    if (now - data.timestamp > RATE_LIMIT_WINDOW) rateLimits.delete(key);
-  }
-};
-
-const transporter = nodemailer.createTransport({
-  // @ts-expect-error idk why this is throwing an error
-  service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    type: "OAuth2",
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-    clientId: process.env.MAIL_CLIENT_ID,
-    clientSecret: process.env.MAIL_CLIENT_SECRET,
-    refreshToken: process.env.MAIL_REFRESH_TOKEN,
-  },
-});
-
-export async function POST(request: NextRequest) {
-  try {
-    // Get client IP for rate limiting
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
-
-    // Check rate limit
-    const now = Date.now();
-    pruneRateLimits(now);
-    const rateLimit = rateLimits.get(ip) || { count: 0, timestamp: now };
-
-    // Reset counter if the time window has passed
-    if (now - rateLimit.timestamp > RATE_LIMIT_WINDOW) {
-      rateLimit.count = 0;
-      rateLimit.timestamp = now;
-    }
-
-    // Check if rate limit is exceeded
-    if (rateLimit.count >= RATE_LIMIT_MAX) {
-      return NextResponse.json(
-        { error: "Rate limit exceeded. Please try again later." },
-        { status: 429 },
-      );
-    }
-
-    // Parse request body
-    const {
-      name = "",
-      email = "",
-      phone = "Phone not provided",
-      subject = "No Subject",
-      message = "",
-    } = await request.json();
-
-    // Validate inputs
-    if (!name.trim() || !email.trim() || !message.trim()) {
-      return NextResponse.json({ error: "Name, email, and message are required" }, { status: 400 });
-    }
-
-    // Sanitize inputs
-    const sanitizedName = escapeHtml(name);
-    const sanitizedEmail = escapeHtml(email);
-    const sanitizedPhone = escapeHtml(phone);
-    const sanitizedSubject = escapeHtml(subject);
-    const sanitizedMessage = escapeHtml(message);
-
-    // Simple email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      return NextResponse.json({ error: "Please provide a valid email address" }, { status: 400 });
-    }
-
-    // Get current date in a nice format
-    const currentDate = new Date().toLocaleDateString("en-US", {
+export function renderContactEmail(input: ContactEmailFields): string {
+  const fields = {
+    name: escapeHtml(input.name),
+    email: escapeHtml(input.email),
+    phone: escapeHtml(input.phone || "Not provided"),
+    subject: escapeHtml(input.subject || "No subject"),
+    message: escapeHtml(input.message).replace(/\n/g, "<br>"),
+    date: new Date().toLocaleDateString("en-IN", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
-    });
+    }),
+  };
 
-    // Create a premium, visually striking HTML email template
-    const htmlTemplate = `
+  return `
       <!DOCTYPE html>
       <html>
         <head>
@@ -279,7 +212,7 @@ export async function POST(request: NextRequest) {
             <div class="header">
               <div class="logo">STARDOM</div>
               <h2>New Client Inquiry</h2>
-              <div class="date-banner">${currentDate}</div>
+              <div class="date-banner">${fields.date}</div>
             </div>
             
             <div class="content">
@@ -290,37 +223,37 @@ export async function POST(request: NextRequest) {
               <div class="card">
                 <div class="field">
                   <div class="label">From</div>
-                  <div class="value">${sanitizedName}</div>
+                  <div class="value">${fields.name}</div>
                 </div>
                 
                 <div class="field">
                   <div class="label">Email Address</div>
-                  <div class="value">${sanitizedEmail}</div>
+                  <div class="value">${fields.email}</div>
                 </div>
                 
                 <div class="field">
                   <div class="label">Phone Number</div>
-                  <div class="value">${sanitizedPhone}</div>
+                  <div class="value">${fields.phone}</div>
                 </div>
                 
                 <div class="field">
                   <div class="label">Subject</div>
-                  <div class="value">${sanitizedSubject}</div>
+                  <div class="value">${fields.subject}</div>
                 </div>
               </div>
               
               <div class="field">
                 <div class="label">Their Message</div>
-                <div class="message-box">${sanitizedMessage.replace(/\n/g, "<br>")}</div>
+                <div class="message-box">${fields.message}</div>
               </div>
               
               <div class="cta">
-                <a href="mailto:${sanitizedEmail}" class="cta-button">Reply Now</a>
+                <a href="mailto:${fields.email}" class="cta-button">Reply Now</a>
               </div>
               
               <div class="signature">
                 This is an automated email from your <span class="highlight">Stardom</span> website.<br>
-                Received on ${new Date().toLocaleString()} from IP: ${ip}
+                Received on ${fields.date}
               </div>
             </div>
             
@@ -332,35 +265,4 @@ export async function POST(request: NextRequest) {
         </body>
       </html>
     `;
-
-    const mailOptions: nodemailer.SendMailOptions = {
-      from: `"Stardom Digital" <${process.env.MAIL_USER}>`,
-      to: process.env.MY_MAIL,
-      replyTo: sanitizedEmail,
-      priority: "high",
-      subject: `✨ New Client Inquiry: ${sanitizedSubject}`,
-      html: htmlTemplate,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    // Increment rate limit counter
-    rateLimit.count += 1;
-    rateLimits.set(ip, rateLimit);
-
-    return NextResponse.json(
-      { success: true, message: "Email sent successfully" },
-      { status: 200 },
-    );
-  } catch (error) {
-    console.error("Error sending email:", error);
-
-    return NextResponse.json(
-      {
-        error: "Failed to send email",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 500 },
-    );
-  }
 }
