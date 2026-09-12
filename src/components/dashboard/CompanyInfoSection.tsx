@@ -1,17 +1,6 @@
 "use client";
 import { Building2, Plus, RefreshCw, Trash } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { loadCompanyData } from "@/lib/actions/content-actions";

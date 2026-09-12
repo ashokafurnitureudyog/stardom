@@ -22,8 +22,7 @@ const ContactSection = () => {
     message: "",
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleChange = (e: { target: { name: any; value: any } }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,

@@ -3,7 +3,7 @@
 import { CalendarIcon, CheckCircleIcon, MapPinIcon, QuoteIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils/utils";
 
 import type { ClientTestimonial } from "@/types/ComponentTypes";
@@ -27,11 +27,11 @@ export function FancyTestimonialsSlider({
     return () => clearInterval(interval);
   }, [active, autorotate, testimonials.length, autorotateTiming]);
 
-  const heightFix = () => {
+  const heightFix = useCallback(() => {
     if (testimonialsRef.current?.parentElement) {
       testimonialsRef.current.parentElement.style.height = `${testimonialsRef.current.clientHeight}px`;
     }
-  };
+  }, []);
 
   useEffect(() => {
     heightFix();

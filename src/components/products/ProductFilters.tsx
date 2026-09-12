@@ -82,11 +82,23 @@ export const ProductFilter = ({
     });
   };
 
+  // Debounced straight into the URL. setParams is rebuilt every render, so
+  // depending on it here would reset the timer on each keystroke's re-render.
   useEffect(() => {
     if (search === filters.q) return;
-    const timer = setTimeout(() => setParams({ q: search }), 300);
+
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
+      if (search) params.set("q", search);
+      else params.delete("q");
+      const query = params.toString();
+      startTransition(() => {
+        router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+      });
+    }, 300);
+
     return () => clearTimeout(timer);
-  }, [search, setParams, filters.q]);
+  }, [search, filters.q, pathname, router, searchParams]);
 
   const activeFilters = [
     optimistic.category !== "all" && { key: "category" as const, label: optimistic.category },

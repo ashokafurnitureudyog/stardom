@@ -1,6 +1,6 @@
 "use client";
 import { Check, Loader2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,29 +48,29 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     };
   }, []);
 
-  // Function to safely clean up object URL if it exists
-  const cleanupObjectUrl = () => {
+  const cleanupObjectUrl = useCallback(() => {
     if (previewUrlRef.current?.startsWith("blob:")) {
       URL.revokeObjectURL(previewUrlRef.current);
     }
-  };
+  }, []);
 
-  // Reset state when media type changes
+  // Switching between image and video, or between upload and URL, clears the
+  // half-finished selection. Both effects previously listed only the cleanup
+  // helper, so neither ever ran and a chosen file survived the switch.
   useEffect(() => {
     cleanupObjectUrl();
     setPreviewUrl(null);
     setSelectedFile(null);
     setMediaUrl("");
     setMediaAlt("");
-  }, [cleanupObjectUrl]);
+  }, [mediaType, cleanupObjectUrl]);
 
-  // Reset state when method changes
   useEffect(() => {
     cleanupObjectUrl();
     setPreviewUrl(null);
     setSelectedFile(null);
     setMediaUrl("");
-  }, [cleanupObjectUrl]);
+  }, [addMethod, cleanupObjectUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

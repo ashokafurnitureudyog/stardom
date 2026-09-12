@@ -28,8 +28,9 @@ interface MapSectionProps {
 const DEFAULT_COORDINATES: Coordinates = [30.6960369, 76.7828628];
 const DEFAULT_ZOOM = 16;
 
-// Fix default icon paths for Leaflet in Next.js
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+// Leaflet infers its icon paths from the stylesheet URL, which a bundler
+// rewrites, so the inferred path is removed and the icons set explicitly below.
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",

@@ -114,7 +114,7 @@ async function ProductContent({ id }: { id: string }) {
       />
 
       {/* Product display component with initial server data */}
-      <ProductDisplay id={id} product={product} similarProducts={similarProducts} />
+      <ProductDisplay product={product} similarProducts={similarProducts} />
     </>
   );
 }

@@ -9,7 +9,6 @@ import { MissionStatement } from "@/components/marketing/MissionStatement";
 import { TeamSection } from "@/components/marketing/TeamSection";
 import TestingToolsSection from "@/components/marketing/TestingTools";
 import { LogoRevealCard } from "@/components/shared/RevealCard";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
 import { Timeline } from "@/components/ui/timeline";
 import { getCompanyData } from "@/lib/server/content";

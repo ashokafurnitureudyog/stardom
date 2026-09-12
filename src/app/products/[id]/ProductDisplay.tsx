@@ -19,8 +19,6 @@ import type { Product } from "@/types/ComponentTypes";
  * @interface ProductDisplayProps
  */
 interface ProductDisplayProps {
-  /** Product unique identifier */
-  id: string;
   /** Product resolved on the server */
   product?: Product;
   /** Products in the same category, resolved on the server */
@@ -37,7 +35,6 @@ interface ProductDisplayProps {
  * @returns {JSX.Element} Rendered product display component
  */
 const ProductDisplay: React.FC<ProductDisplayProps> = ({
-  id,
   product: currentProduct,
   similarProducts,
 }) => {
@@ -113,9 +110,11 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
       return !mappedColor || mappedColor === selectedColor;
     });
   }, [currentProduct?.images, selectedColor, imageColorMapping]);
+
+  // A colour change re-filters the gallery, so the carousel starts over.
   useEffect(() => {
     setActiveImageIndex(0);
-  }, []);
+  }, [selectedColor]);
 
   /**
    * Handle WhatsApp inquiry for the current product

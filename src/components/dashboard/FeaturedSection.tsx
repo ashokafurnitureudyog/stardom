@@ -1,6 +1,6 @@
 "use client";
 import { AlertCircle, CheckCircle2, Plus, RefreshCw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
@@ -34,7 +34,7 @@ export const FeaturedSection = () => {
       ),
   );
 
-  const fetchFeaturedProducts = async () => {
+  const fetchFeaturedProducts = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -47,15 +47,15 @@ export const FeaturedSection = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchAllProducts = async () => {
+  const fetchAllProducts = useCallback(async () => {
     try {
       setAllProducts(await loadProducts());
     } catch (error: unknown) {
       console.error("Failed to fetch products:", error);
     }
-  };
+  }, []);
 
   const addToFeatured = async (productIds: string[]) => {
     if (productIds.length === 0) return;
