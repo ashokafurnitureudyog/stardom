@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { ArrowRight, Database, Eye, Lock } from "lucide-react";
+import { motion } from "motion/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
-import { Eye, Database, Lock, ArrowRight } from "lucide-react";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 import { Button } from "@/components/ui/button";
-import { Link } from "next-view-transitions";
+import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 
 const privacySections = [
   {
@@ -50,9 +50,7 @@ const privacySections = [
 ];
 
 const PrivacyPolicyPage: React.FC = () => {
-  const [activeSection, setActiveSection] = useState<string>(
-    privacySections[0]?.id || "",
-  );
+  const [activeSection, setActiveSection] = useState<string>(privacySections[0]?.id || "");
   const [scrollPosition, setScrollPosition] = useState(0);
 
   // Handle scroll position for visual effects
@@ -98,20 +96,17 @@ const PrivacyPolicyPage: React.FC = () => {
       <div className="min-h-screen bg-background font-sans">
         {/* Hero Section with subtle gradient background */}
         <Section className="relative pt-32 pb-16 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
           <motion.div
             className="text-center max-w-2xl mx-auto relative z-10"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <SectionTitle>
-              Privacy{" "}
-              <span className="font-serif italic text-primary">Policy</span>
-            </SectionTitle>
+            <SectionTitle>Privacy Policy</SectionTitle>
             <p className="text-muted-foreground text-lg md:text-xl font-light mx-auto mb-8 max-w-xl">
-              Our commitment to protecting your privacy while delivering premium
-              furniture experiences.
+              Our commitment to protecting your privacy while delivering premium furniture
+              experiences.
             </p>
             <div className="h-px w-24 bg-primary/30 mx-auto mt-10" />
           </motion.div>
@@ -126,12 +121,11 @@ const PrivacyPolicyPage: React.FC = () => {
                 className={`transition-all duration-300 ${scrollPosition > 150 ? "sticky top-32" : ""}`}
               >
                 <div className="space-y-8">
-                  <h3 className="text-base font-medium mb-4 text-primary/80 uppercase tracking-wider">
-                    Policy Sections
-                  </h3>
+                  <h3 className="mb-4 font-serif text-xl text-primary">Policy Sections</h3>
                   <nav className="space-y-2">
                     {privacySections.map((section, idx) => (
                       <button
+                        type="button"
                         key={idx}
                         onClick={() => scrollToSection(section.id)}
                         className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${
@@ -157,9 +151,7 @@ const PrivacyPolicyPage: React.FC = () => {
                   </nav>
 
                   <div className="pt-8 mt-8 border-t border-input/20">
-                    <h3 className="text-base font-medium mb-6 text-primary/80 uppercase tracking-wider">
-                      Related Policies
-                    </h3>
+                    <h3 className="mb-6 font-serif text-xl text-primary">Related Policies</h3>
                     <div className="space-y-3">
                       <Button
                         className="w-full justify-start text-muted-foreground border-input/20 hover:border-primary/30 hover:text-foreground"
@@ -192,11 +184,10 @@ const PrivacyPolicyPage: React.FC = () => {
               >
                 <div className="px-6 py-8 bg-primary/5 rounded-xl border border-primary/10">
                   <p className="text-lg font-light leading-relaxed">
-                    As a premium furniture brand, we believe that respecting
-                    your privacy is as essential as crafting quality furniture.
-                    This Privacy Policy outlines our minimal data practices, as
-                    our website primarily serves to showcase our exceptional
-                    furniture collections.
+                    As a premium furniture brand, we believe that respecting your privacy is as
+                    essential as crafting quality furniture. This Privacy Policy outlines our
+                    minimal data practices, as our website primarily serves to showcase our
+                    exceptional furniture collections.
                   </p>
                 </div>
               </motion.div>
@@ -218,13 +209,11 @@ const PrivacyPolicyPage: React.FC = () => {
                     <h2 className="text-2xl md:text-3xl font-light flex items-center gap-3">
                       {section.title}
                     </h2>
-                    <div className="h-px flex-grow bg-primary/10" />
+                    <div className="h-px grow bg-primary/10" />
                   </div>
 
                   <div className="prose prose-slate max-w-none prose-headings:font-medium prose-headings:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground/90 pl-1">
-                    <div
-                      dangerouslySetInnerHTML={{ __html: section.content }}
-                    />
+                    <div dangerouslySetInnerHTML={{ __html: section.content }} />
                   </div>
                 </motion.div>
               ))}
@@ -239,10 +228,7 @@ const PrivacyPolicyPage: React.FC = () => {
               <p className="text-muted-foreground text-center md:text-left">
                 Last updated: March 2025
               </p>
-              <Button
-                variant="outline"
-                className="border-primary/20 hover:border-primary/50"
-              >
+              <Button variant="outline" className="border-primary/20 hover:border-primary/50">
                 <Link href="/contact">Contact Us With Questions</Link>
               </Button>
             </div>

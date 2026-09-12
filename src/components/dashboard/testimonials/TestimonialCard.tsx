@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +13,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ClientTestimonial } from "@/types/ComponentTypes";
 import { EditTestimonialDialog } from "./EditTestimonialDialog";
@@ -37,10 +37,7 @@ export const TestimonialCard = ({
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      await onDelete(
-        testimonial.id || testimonial.$id || "",
-        testimonial.img || "",
-      );
+      await onDelete(testimonial.id || testimonial.$id || "", testimonial.img || "");
     } finally {
       setIsDeleting(false);
     }
@@ -83,7 +80,7 @@ export const TestimonialCard = ({
   }
 
   return (
-    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
+    <div className="group relative rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
       <div className="relative h-full flex flex-col">
         <div className="p-4 border-b border-[#3C3120] group-hover:border-[#A28B55]/40 transition-colors duration-300">
           <div className="flex items-center gap-3">
@@ -163,12 +160,10 @@ export const TestimonialCard = ({
               </AlertDialogTrigger>
               <AlertDialogContent className="bg-[#171410] border-[#3C3120]">
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-[#A28B55]">
-                    Delete Testimonial
-                  </AlertDialogTitle>
+                  <AlertDialogTitle className="text-[#A28B55]">Delete Testimonial</AlertDialogTitle>
                   <AlertDialogDescription className="text-neutral-400">
-                    Are you sure you want to delete this testimonial from{" "}
-                    {testimonial.name}? This action cannot be undone.
+                    Are you sure you want to delete this testimonial from {testimonial.name}? This
+                    action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

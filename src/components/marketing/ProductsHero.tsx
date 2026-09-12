@@ -1,14 +1,13 @@
 "use client";
 
+import Image from "next/image";
+import { useCompanyData } from "@/lib/client/company-data-context";
 import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import AnimatedText from "../shared/HeroAnimatedText";
-import { useCompanyData } from "@/hooks/useCompanyData";
-import Image from "next/image";
 
 export const ProductsHero = () => {
   const { companyInfo } = useCompanyData();
-  const established =
-    companyInfo?.established || fallbackCompanyInfo.established;
+  const established = companyInfo?.established || fallbackCompanyInfo.established;
 
   return (
     <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
@@ -22,7 +21,7 @@ export const ProductsHero = () => {
           sizes="100vw"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"
+          className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/70"
           aria-hidden="true"
         />
       </div>
@@ -37,39 +36,26 @@ export const ProductsHero = () => {
 
           <AnimatedText delay={0.2}>
             <h1 className="text-5xl lg:text-6xl tracking-tight mb-4 font-extralight">
-              Our{" "}
-              <span className="font-serif italic text-primary">Collection</span>
+              Our Collection
             </h1>
             <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
-            <p className="text-2xl text-white/90 font-serif">
-              Curated Excellence in Office Design
-            </p>
+            <p className="text-2xl text-white/90 font-serif">Curated Excellence in Office Design</p>
           </AnimatedText>
         </div>
 
         {/* Content Column */}
         <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
-          <AnimatedText
-            delay={0.4}
-            className="text-3xl lg:text-4xl font-light leading-tight mb-8"
-          >
+          <AnimatedText delay={0.4} className="text-3xl lg:text-4xl font-light leading-tight mb-8">
             <h2>
-              Where{" "}
-              <span className="text-primary font-serif italic">
-                Craftsmanship
-              </span>{" "}
-              Meets{" "}
+              Where <span className="text-primary font-serif italic">Craftsmanship</span> Meets{" "}
               <span className="text-primary font-serif italic">Innovation</span>
             </h2>
           </AnimatedText>
 
-          <AnimatedText
-            delay={0.6}
-            className="text-white/80 text-lg mb-12 leading-relaxed"
-          >
-            Explore our signature pieces that redefine office luxury. Each
-            creation embodies our legacy of precision engineering and artistic
-            vision, offering unparalleled comfort and sophistication.
+          <AnimatedText delay={0.6} className="text-white/80 text-lg mb-12 leading-relaxed">
+            Explore our signature pieces that redefine office luxury. Each creation embodies our
+            legacy of precision engineering and artistic vision, offering unparalleled comfort and
+            sophistication.
           </AnimatedText>
         </div>
       </div>

@@ -1,5 +1,5 @@
-import { LucideIcon } from "lucide-react";
-import { MediaItem } from "./MediaTypes";
+import type { LucideIcon } from "lucide-react";
+import type { MediaItem } from "./MediaTypes";
 
 export interface CarouselProps {
   images: string[];

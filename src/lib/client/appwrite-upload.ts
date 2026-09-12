@@ -1,25 +1,18 @@
 "use client";
 
-import { Client, Storage, ID, Permission, Role } from "appwrite";
-
-// Initialize the Appwrite client for uploads only
-const client = new Client()
-  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
-  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
-
-// Create a storage service instance
-const storage = new Storage(client);
+import { Client, ID, Permission, Role, Storage } from "appwrite";
+import { createUploadCredentials, type UploadCredentials } from "@/lib/actions/upload-actions";
 
 interface UploadOptions {
   allowedTypes?: string[];
   maxSizeInMB?: number;
+  onProgress?: (percent: number) => void;
 }
 
-const DEFAULT_OPTIONS: UploadOptions = {
-  allowedTypes: ["image/*", "video/*"],
-  maxSizeInMB: 100,
-};
+const DEFAULT_ALLOWED_TYPES = ["image/*", "video/*"];
+const DEFAULT_MAX_SIZE_MB = 50;
 
+/** Appwrite cannot transcode these, and browsers cannot play them back. */
 const EXCLUDED_TYPES = [
   "image/heic",
   "image/heif",
@@ -28,79 +21,106 @@ const EXCLUDED_TYPES = [
   "video/x-hevc",
 ];
 
+let cached: UploadCredentials | null = null;
+
 /**
- * Client-side file upload to Appwrite storage
- * Use this ONLY for direct file uploads to bypass Next.js API size limits
+ * The browser uploads with the admin's own short-lived JWT, so the storage
+ * bucket does not have to accept writes from anonymous visitors. The token is
+ * reused until it is close to expiry, since a multi-file upload would otherwise
+ * mint one per file.
  */
-export async function uploadFileToStorage(
-  file: File,
-  bucketId: string,
-  options: UploadOptions = DEFAULT_OPTIONS,
-): Promise<string> {
-  try {
-    // 1. Validate File Size
-    const maxSize = (options.maxSizeInMB || 100) * 1024 * 1024;
-    if (file.size > maxSize) {
-      throw new Error(
-        `File size exceeds the limit of ${options.maxSizeInMB || 100}MB`,
-      );
-    }
+async function authenticatedStorage(): Promise<Storage> {
+  if (!cached || cached.expiresAt <= Date.now()) {
+    cached = await createUploadCredentials();
+  }
 
-    // 2. Validate File Type
-    // Check for explicitly excluded types (HEIC/HEVC)
-    if (EXCLUDED_TYPES.includes(file.type)) {
-      throw new Error("HEIC and HEVC file formats are not supported.");
-    }
+  const client = new Client()
+    .setEndpoint(cached.endpoint)
+    .setProject(cached.project)
+    .setJWT(cached.jwt);
 
-    const allowedTypes = options.allowedTypes || DEFAULT_OPTIONS.allowedTypes!;
+  return new Storage(client);
+}
 
-    // Check if file type matches any of the allowed types (handling wildcards)
-    const isAllowed = allowedTypes.some((type) => {
-      if (type.endsWith("/*")) {
-        const prefix = type.split("/")[0];
-        return file.type.startsWith(`${prefix}/`);
-      }
-      return type === file.type;
-    });
+function assertUploadable(file: File, options: UploadOptions) {
+  const maxSizeMb = options.maxSizeInMB ?? DEFAULT_MAX_SIZE_MB;
+  if (file.size > maxSizeMb * 1024 * 1024) {
+    throw new Error(`${file.name} is larger than the ${maxSizeMb}MB limit`);
+  }
 
-    if (!isAllowed) {
-      throw new Error(
-        `Invalid file type: ${file.type}. Allowed types: ${allowedTypes.join(", ")}`,
-      );
-    }
+  if (EXCLUDED_TYPES.includes(file.type)) {
+    throw new Error("HEIC and HEVC files are not supported. Export as JPEG or MP4 first.");
+  }
 
-    // Generate a unique file ID
-    const fileId = ID.unique();
+  const allowed = options.allowedTypes ?? DEFAULT_ALLOWED_TYPES;
+  const isAllowed = allowed.some((type) =>
+    type.endsWith("/*") ? file.type.startsWith(`${type.slice(0, -1)}`) : type === file.type,
+  );
 
-    // Upload the file to Appwrite storage with public read permission
-    // Note: We use Permission.read(Role.any()) assuming these are public assets (images).
-    await storage.createFile(bucketId, fileId, file, [
-      Permission.read(Role.any()),
-    ]);
-
-    // Return the file URL in the same format used by server-side code
-    return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
-  } catch (error) {
-    console.error("Error uploading file to Appwrite:", error);
-    throw error;
+  if (!isAllowed) {
+    throw new Error(`${file.type || "This file type"} is not allowed`);
   }
 }
 
 /**
- * Upload multiple files and return array of URLs
+ * Uploads one file directly to Appwrite storage and returns its public URL.
+ * Files over 5MB are sent in chunks by the SDK, and `onProgress` reports the
+ * real byte count rather than a timer.
+ */
+export async function uploadFileToStorage(
+  file: File,
+  bucketId: string,
+  options: UploadOptions = {},
+): Promise<string> {
+  assertUploadable(file, options);
+
+  const storage = await authenticatedStorage();
+  const fileId = ID.unique();
+
+  await storage.createFile({
+    bucketId,
+    fileId,
+    file,
+    permissions: [Permission.read(Role.any())],
+    onProgress: options.onProgress
+      ? (progress) => options.onProgress?.(Math.round(progress.progress))
+      : undefined,
+  });
+
+  const endpoint = cached?.endpoint ?? process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT;
+  const project = cached?.project ?? process.env.NEXT_PUBLIC_APPWRITE_PROJECT;
+  return `${endpoint}/storage/buckets/${bucketId}/files/${fileId}/view?project=${project}`;
+}
+
+/**
+ * Uploads several files, two at a time. Full parallelism on a slow connection
+ * starves every upload at once and makes per-file progress meaningless.
  */
 export async function uploadMultipleFilesToStorage(
   files: File[],
   bucketId: string,
-  options: UploadOptions = DEFAULT_OPTIONS,
+  options: UploadOptions = {},
 ): Promise<string[]> {
-  try {
-    const uploadPromises = files.map((file) =>
-      uploadFileToStorage(file, bucketId, options),
-    );
-    return await Promise.all(uploadPromises);
-  } catch (error) {
-    console.error("Error uploading multiple files:", error);
-    throw error;
+  const CONCURRENCY = 2;
+  const urls: string[] = new Array(files.length);
+  let cursor = 0;
+  let completed = 0;
+
+  async function worker() {
+    while (cursor < files.length) {
+      const index = cursor++;
+      urls[index] = await uploadFileToStorage(files[index], bucketId, {
+        ...options,
+        onProgress: options.onProgress
+          ? (percent) =>
+              options.onProgress?.(Math.round(((completed + percent / 100) / files.length) * 100))
+          : undefined,
+      });
+      completed++;
+      options.onProgress?.(Math.round((completed / files.length) * 100));
+    }
   }
+
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, files.length) }, worker));
+  return urls;
 }

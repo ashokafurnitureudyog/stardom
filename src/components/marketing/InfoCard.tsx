@@ -1,16 +1,13 @@
-import React from "react";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
-import { CompanyInfo } from "@/types/ComponentTypes";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import type React from "react";
+import type { CompanyInfo } from "@/types/ComponentTypes";
 
 interface InfoCardProps {
   companyInfo: CompanyInfo;
   isLoading?: boolean;
 }
 
-export const InfoCard: React.FC<InfoCardProps> = ({
-  companyInfo,
-  isLoading = false,
-}) => {
+export const InfoCard: React.FC<InfoCardProps> = ({ companyInfo, isLoading = false }) => {
   const infoItems = [
     {
       Icon: MapPin,
@@ -24,12 +21,8 @@ export const InfoCard: React.FC<InfoCardProps> = ({
       title: "Business Hours",
       content: (
         <>
-          <p className="text-muted-foreground">
-            Weekdays: {companyInfo?.hours?.weekday}
-          </p>
-          <p className="text-muted-foreground">
-            Sunday: {companyInfo?.hours?.sunday}
-          </p>
+          <p className="text-muted-foreground">Weekdays: {companyInfo?.hours?.weekday}</p>
+          <p className="text-muted-foreground">Sunday: {companyInfo?.hours?.sunday}</p>
         </>
       ),
     },
@@ -41,7 +34,7 @@ export const InfoCard: React.FC<InfoCardProps> = ({
   }
 
   return (
-    <div className="hidden lg:block absolute top-1/2 right-12 transform -translate-y-1/2 w-96 bg-card/95 backdrop-blur-sm shadow-2xl rounded-lg p-8 border border-border/50 z-[1000]">
+    <div className="hidden lg:block absolute top-1/2 right-12 transform -translate-y-1/2 w-96 bg-card/95 backdrop-blur-sm shadow-2xl rounded-lg p-8 border border-border/50 z-1000">
       <h2 className="text-2xl flex flex-col tracking-tight mb-4 font-extralight">
         STARDOM
         <span className="text-lg">

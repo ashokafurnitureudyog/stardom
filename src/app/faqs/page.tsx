@@ -1,7 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { Search } from "lucide-react";
+import { motion } from "motion/react";
+import Link from "next/link";
+import type React from "react";
+import { useEffect, useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
@@ -13,20 +16,14 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "next-view-transitions";
-import { faqCategories } from "@/lib/constants/FAQ";
-import { Search } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { FAQ } from "@/types/ComponentTypes";
+import { faqCategories } from "@/lib/constants/FAQ";
+import type { FAQ } from "@/types/ComponentTypes";
 
 const FAQPage: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>(
-    faqCategories[0]?.title || "",
-  );
+  const [activeCategory, setActiveCategory] = useState<string>(faqCategories[0]?.title || "");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<
-    (FAQ & { category: string })[]
-  >([]);
+  const [searchResults, setSearchResults] = useState<(FAQ & { category: string })[]>([]);
   const [allFaqs, setAllFaqs] = useState<(FAQ & { category: string })[]>([]);
 
   // Prepare flat list of all FAQs for searching
@@ -50,8 +47,7 @@ const FAQPage: React.FC = () => {
     const query = searchQuery.toLowerCase();
     const results = allFaqs.filter(
       (faq) =>
-        faq.question.toLowerCase().includes(query) ||
-        faq.answer.toLowerCase().includes(query),
+        faq.question.toLowerCase().includes(query) || faq.answer.toLowerCase().includes(query),
     );
 
     setSearchResults(results);
@@ -71,16 +67,11 @@ const FAQPage: React.FC = () => {
         {/* Hero Section */}
         <Section className="pt-24 pb-12">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="inline-block text-primary/90 uppercase tracking-widest text-xs font-medium mb-4">
-              Support Center
-            </span>
-            <SectionTitle>
-              How can we{" "}
-              <span className="font-serif italic text-primary">help you?</span>
-            </SectionTitle>
+            <span className="mb-4 inline-block text-sm text-primary">Support Center</span>
+            <SectionTitle>How can we help you?</SectionTitle>
             <p className="text-muted-foreground text-lg mx-auto mb-10">
-              Find answers to common questions about our premium furniture
-              collections, craftsmanship, and services.
+              Find answers to common questions about our premium furniture collections,
+              craftsmanship, and services.
             </p>
 
             {/* Search Bar */}
@@ -91,7 +82,7 @@ const FAQPage: React.FC = () => {
               <Input
                 type="text"
                 placeholder="Search for answers..."
-                className="w-full py-6 pl-12 pr-4 bg-background border border-input/50 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all text-base"
+                className="w-full py-6 pl-12 pr-4 bg-background border border-input/50 rounded-full focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all text-base"
                 value={searchQuery}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setSearchQuery(e.target.value)
@@ -119,9 +110,7 @@ const FAQPage: React.FC = () => {
                   >
                     <AccordionTrigger className="text-left hover:no-underline py-4 px-6 transition-all hover:text-primary">
                       <div>
-                        <div className="text-lg font-medium">
-                          {faq.question}
-                        </div>
+                        <div className="text-lg font-medium">{faq.question}</div>
                         <div className="text-xs text-muted-foreground mt-1">
                           Category: {faq.category}
                         </div>
@@ -144,12 +133,11 @@ const FAQPage: React.FC = () => {
               {/* Navigation Sidebar */}
               <div className="lg:col-span-1">
                 <div className="sticky top-32 space-y-8">
-                  <h3 className="text-lg font-medium mb-4 text-foreground/80">
-                    Categories
-                  </h3>
+                  <h3 className="text-lg font-medium mb-4 text-foreground/80">Categories</h3>
                   <nav className="space-y-1">
                     {faqCategories.map((category, idx) => (
                       <button
+                        type="button"
                         key={idx}
                         onClick={() => scrollToCategory(category.title)}
                         className={`w-full text-left px-4 py-3 rounded-lg transition-all ${
@@ -164,9 +152,7 @@ const FAQPage: React.FC = () => {
                   </nav>
 
                   <div className="pt-6 mt-6 border-t border-input/30">
-                    <h3 className="text-lg font-medium mb-4 text-foreground/80">
-                      Need more help?
-                    </h3>
+                    <h3 className="text-lg font-medium mb-4 text-foreground/80">Need more help?</h3>
                     <Button
                       className="w-full justify-start border-input/50 hover:border-primary/50"
                       asChild
@@ -190,7 +176,7 @@ const FAQPage: React.FC = () => {
                       <h2 className="text-2xl lg:text-3xl font-light font-serif">
                         {category.title}
                       </h2>
-                      <div className="h-px flex-grow bg-primary/20" />
+                      <div className="h-px grow bg-primary/20" />
                     </div>
 
                     <Accordion type="single" collapsible className="w-full">
@@ -219,22 +205,14 @@ const FAQPage: React.FC = () => {
         {/* Contact CTA */}
         <Section className="bg-card">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="inline-block text-primary/80 uppercase tracking-widest text-xs font-medium mb-3">
-              Personalized assistance
-            </span>
-            <SectionTitle>
-              Still Have{" "}
-              <span className="font-serif italic text-primary">Questions?</span>
-            </SectionTitle>
+            <span className="mb-3 inline-block text-sm text-primary">Personalized assistance</span>
+            <SectionTitle>Still Have Questions?</SectionTitle>
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
-              Our dedicated specialists are ready to provide personalized
-              guidance and support. Experience the same level of excellence in
-              our customer service as you do in our furniture.
+              Our dedicated specialists are ready to provide personalized guidance and support.
+              Experience the same level of excellence in our customer service as you do in our
+              furniture.
             </p>
-            <Button
-              className="min-w-[240px] h-14 text-lg tracking-wide"
-              asChild
-            >
+            <Button className="min-w-[240px] h-14 text-lg tracking-wide" asChild>
               <Link href="/contact">Contact Our Team</Link>
             </Button>
           </div>

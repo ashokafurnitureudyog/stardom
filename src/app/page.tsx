@@ -6,18 +6,31 @@ import LegacySection from "@/components/marketing/Legacy";
 import PortfolioSection from "@/components/marketing/PortfolioSection";
 import CraftsmanshipSection from "@/components/marketing/Process";
 import TestimonialsSection from "@/components/marketing/Testimonials";
-import React from "react";
+import {
+  getCompanyData,
+  getHeroMedia,
+  getPortfolioProjects,
+  getTestimonials,
+} from "@/lib/server/content";
+import { getFeaturedProducts } from "@/lib/server/products";
 
-const Home = () => {
+const Home = async () => {
+  const [heroMedia, company, featuredProducts, projects, testimonials] = await Promise.all([
+    getHeroMedia(),
+    getCompanyData(),
+    getFeaturedProducts(),
+    getPortfolioProjects(),
+    getTestimonials(),
+  ]);
+
   return (
     <BaseLayout>
-      <HeroSection />
-      <FeaturedProducts />
+      <HeroSection mediaItems={heroMedia} companyInfo={company.companyInfo} />
+      <FeaturedProducts featuredProducts={featuredProducts} />
       <LegacySection />
-      {/* <SignatureCollection /> */}
       <CraftsmanshipSection />
-      <PortfolioSection />
-      <TestimonialsSection />
+      <PortfolioSection projects={projects.slice(0, 3)} />
+      <TestimonialsSection testimonials={testimonials} />
       <ContactSection />
     </BaseLayout>
   );

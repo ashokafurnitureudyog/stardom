@@ -1,20 +1,20 @@
 "use client";
 import {
-  Package,
-  Star,
-  MessageSquare,
-  Image,
   Building2,
+  ChevronDown,
+  ChevronUp,
   Film,
+  Image,
   LayoutDashboard,
   LogOut,
+  type LucideIcon,
+  MessageSquare,
+  Package,
   Settings,
-  ChevronUp,
-  ChevronDown,
+  Star,
 } from "lucide-react";
-import { LucideIcon } from "lucide-react";
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { signOutUser } from "@/lib/controllers/AuthControllers";
 import { StorageUsage } from "./StorageUsage";
@@ -83,29 +83,24 @@ export const Sidebar = ({
       <div className="mb-8 flex items-start gap-3">
         <LayoutDashboard className="w-12 h-12 text-primary" />
         <div className="flex flex-col">
-          <h1 className="text-xl font-medium tracking-tight leading-tight">
-            Admin
-          </h1>
-          <h1 className="text-xl font-medium tracking-tight leading-tight">
-            Dashboard
-          </h1>
+          <h1 className="text-xl font-medium tracking-tight leading-tight">Admin</h1>
+          <h1 className="text-xl font-medium tracking-tight leading-tight">Dashboard</h1>
         </div>
       </div>
 
       <nav className="space-y-1">
         {sidebarItems.map((sidebarItem) => (
           <button
+            type="button"
             key={sidebarItem.id}
             onClick={() => handleSectionChange(sidebarItem.id)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
               activeSection === sidebarItem.id
-                ? "bg-primary/10 text-primary font-medium shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]"
-                : "text-muted-foreground hover:bg-secondary hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]"
+                ? "bg-primary/10 text-primary font-medium shadow-[0_0_10px_color-mix(in_oklab,var(--primary)_30%,transparent)]"
+                : "text-muted-foreground hover:bg-secondary hover:scale-[1.02] hover:shadow-[0_0_15px_color-mix(in_oklab,var(--primary)_20%,transparent)]"
             }`}
           >
-            <sidebarItem.icon
-              className={`w-5 h-5 transition-transform duration-200`}
-            />
+            <sidebarItem.icon className={`w-5 h-5 transition-transform duration-200`} />
             <span>{sidebarItem.label}</span>
           </button>
         ))}
@@ -115,14 +110,13 @@ export const Sidebar = ({
       <div className="mt-auto pt-4 border-t border-[#3C3120] relative">
         {" "}
         <button
+          type="button"
           onClick={() => setShowUserMenu(!showUserMenu)}
           className="flex items-center justify-between w-full px-4 py-2 rounded-lg hover:bg-neutral-900/60 transition-all duration-150 active:scale-[0.98] active:bg-[#A28B55]/10"
         >
           <div className="flex items-center gap-2">
             <Avatar className="w-8 h-8">
-              <AvatarFallback className="bg-[#A28B55]/90">
-                {user.name.charAt(0)}
-              </AvatarFallback>
+              <AvatarFallback className="bg-[#A28B55]/90">{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="text-left">
               <span className="block text-sm font-medium">{user.name}</span>
@@ -143,6 +137,7 @@ export const Sidebar = ({
             <StorageUsage />
 
             <button
+              type="button"
               onClick={handlePasswordChange}
               className="flex items-center gap-2 px-4 py-3 w-full text-left hover:bg-neutral-950/60 transition-colors"
             >
@@ -151,6 +146,7 @@ export const Sidebar = ({
             </button>
 
             <button
+              type="button"
               onClick={handleSignOut}
               className="flex items-center gap-2 px-4 py-3 w-full text-left hover:bg-neutral-950/60 transition-colors"
             >

@@ -1,11 +1,11 @@
 "use client";
+import { ImagePlus, Link, Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Link, ImagePlus, X, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
-import { useState } from "react";
 
 interface ThumbnailUploaderProps {
   thumbnailUrl: string;
@@ -18,35 +18,25 @@ export const ThumbnailUploader = ({
   thumbnailFile,
   onChange,
 }: ThumbnailUploaderProps) => {
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>(
     thumbnailFile ? "upload" : thumbnailUrl ? "url" : "upload",
   );
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       const file = e.target.files[0];
 
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        toast({
-          title: "Invalid file type",
-          description:
-            "Please select an image file (JPG, PNG, WEBP, GIF, etc.)",
-          variant: "destructive",
-        });
+        toast.error("Please select an image file (JPG, PNG, WEBP, GIF, etc.)");
         return;
       }
 
       // Validate file size (max 10MB)
       if (file.size > 50 * 1024 * 1024) {
         // 50MB limit
-        toast({
-          title: "File too large",
-          description: "Image size should be less than 50MB",
-          variant: "destructive",
-        });
+        toast.error("Image size should be less than 50MB");
         return;
       }
 
@@ -60,11 +50,7 @@ export const ThumbnailUploader = ({
 
     // Make sure URL isn't longer than 512 chars
     if (url.length > 512) {
-      toast({
-        title: "URL too long",
-        description: "The URL cannot be longer than 512 characters",
-        variant: "destructive",
-      });
+      toast.error("The URL cannot be longer than 512 characters");
       return;
     }
 
@@ -73,20 +59,14 @@ export const ThumbnailUploader = ({
 
   const handleClearImage = () => {
     onChange(undefined, "");
-    toast({
-      title: "Thumbnail removed",
-      description: "The thumbnail image has been removed",
-    });
+    toast("Thumbnail removed", { description: "The thumbnail image has been removed" });
   };
 
   // Function to handle image load errors
   const handleImageError = () => {
-    toast({
-      title: "Image Error",
-      description:
-        "Could not load image from the provided URL. Please check the URL or try another image.",
-      variant: "destructive",
-    });
+    toast.error(
+      "Could not load image from the provided URL. Please check the URL or try another image.",
+    );
     // Clear the invalid URL
     onChange(undefined, "");
     setIsImageLoading(false);
@@ -102,11 +82,7 @@ export const ThumbnailUploader = ({
 
     // Validate URL length
     if (url.length > 512) {
-      toast({
-        title: "URL too long",
-        description: "The URL cannot be longer than 512 characters",
-        variant: "destructive",
-      });
+      toast.error("The URL cannot be longer than 512 characters");
       return;
     }
 
@@ -130,20 +106,14 @@ export const ThumbnailUploader = ({
       await Promise.race([testPromise, timeoutPromise]);
 
       setIsImageLoading(false);
-      toast({
-        title: "Image verified",
-        description: "The image URL was verified and added as thumbnail",
-      });
+      toast("Image verified", { description: "The image URL was verified and added as thumbnail" });
     } catch (error: unknown) {
       setIsImageLoading(false);
-      toast({
-        title: "Invalid Image URL",
-        description:
-          error instanceof Error
-            ? `Error: ${error.message}`
-            : "The URL does not point to a valid image. Please check the URL or try another one.",
-        variant: "destructive",
-      });
+      toast.error(
+        error instanceof Error
+          ? `Error: ${error.message}`
+          : "The URL does not point to a valid image. Please check the URL or try another one.",
+      );
     }
   };
 
@@ -152,9 +122,7 @@ export const ThumbnailUploader = ({
     if (thumbnailFile || thumbnailUrl) {
       return (
         <div className="mt-6">
-          <h4 className="text-sm font-medium text-neutral-400 mb-3">
-            Current Thumbnail
-          </h4>
+          <h4 className="text-sm font-medium text-neutral-400 mb-3">Current Thumbnail</h4>
           <div className="group relative w-40 h-40 mx-auto">
             <div className="aspect-square rounded-md overflow-hidden border border-[#3C3120] bg-neutral-950/50">
               {thumbnailFile ? (

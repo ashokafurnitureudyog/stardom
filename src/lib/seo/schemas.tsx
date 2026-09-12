@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 /**
  * Base Schema interface for common properties across root schema types
@@ -309,14 +309,7 @@ export const organizationSchema: OrganizationSchemaType = {
       areaServed: "IN",
       hoursAvailable: {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ],
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         opens: "10:00",
         closes: "18:30",
       },
@@ -347,8 +340,7 @@ export const organizationSchema: OrganizationSchemaType = {
         itemOffered: {
           "@type": "Product",
           name: "Executive Office Chairs",
-          description:
-            "Premium executive office chairs with ergonomic design by Stardom",
+          description: "Premium executive office chairs with ergonomic design by Stardom",
           category: "Office Furniture > Seating > Executive Chairs",
           brand: {
             "@type": "Brand",
@@ -386,8 +378,7 @@ export const organizationSchema: OrganizationSchemaType = {
         itemOffered: {
           "@type": "Product",
           name: "Conference Room Solutions",
-          description:
-            "Complete conference room furniture solutions by Stardom",
+          description: "Complete conference room furniture solutions by Stardom",
           category: "Office Furniture > Conference Room",
           brand: {
             "@type": "Brand",
@@ -491,14 +482,7 @@ export const localBusinessSchema: LocalBusinessSchemaType = {
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       opens: "10:00",
       closes: "18:30",
     },
@@ -597,9 +581,7 @@ interface BreadcrumbPage {
  * @param pages - Array of page objects with name and path
  * @returns Breadcrumb schema with the provided pages included
  */
-export const createBreadcrumbSchema = (
-  pages: BreadcrumbPage[],
-): BreadcrumbSchemaType => {
+export const createBreadcrumbSchema = (pages: BreadcrumbPage[]): BreadcrumbSchemaType => {
   const baseSchema = { ...breadcrumbSchema };
 
   const breadcrumbItems = [

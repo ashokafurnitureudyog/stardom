@@ -1,19 +1,18 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { MediaItem } from "@/types/MediaTypes";
-import { HeroMediaCard } from "./hero-media/HeroMediaCard";
-import { AddHeroMediaDialog } from "./hero-media/AddHeroMediaDialog";
-import { RefreshCw, Film, Loader2 } from "lucide-react";
+import { Film, Loader2, RefreshCw } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { AlertDialog } from "@/components/ui/alert-dialog";
-
-type MediaItemWithId = MediaItem & { id: string };
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { loadHeroMedia } from "@/lib/actions/content-actions";
+import { deleteHeroMedia } from "@/lib/controllers/HeroMediaController";
+import type { HeroMedia } from "@/types/MediaTypes";
+import { AddHeroMediaDialog } from "./hero-media/AddHeroMediaDialog";
+import { HeroMediaCard } from "./hero-media/HeroMediaCard";
 
 export const HeroFilesSection = () => {
-  const { toast } = useToast();
-  const [data, setData] = useState<MediaItemWithId[]>([]);
+  const [data, setData] = useState<HeroMedia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -21,25 +20,10 @@ export const HeroFilesSection = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/hero-media", {
-        cache: "no-store",
-        next: { revalidate: 0 },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch hero media");
-
-      const result = await res.json();
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to fetch hero media");
-      }
-
-      setData(result.mediaItems || []);
+      setData(await loadHeroMedia());
     } catch (error: unknown) {
       console.error("Failed to fetch hero media:", error);
-      setError(
-        error instanceof Error ? error.message : "Failed to load hero media",
-      );
+      setError(error instanceof Error ? error.message : "Failed to load hero media");
     } finally {
       setLoading(false);
     }
@@ -57,36 +41,19 @@ export const HeroFilesSection = () => {
         throw new Error("Invalid media ID");
       }
 
-      const response = await fetch(
-        `/api/protected/hero-media?id=${encodeURIComponent(id)}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        },
-      );
+      const result = await deleteHeroMedia(id);
 
-      const result = await response.json();
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || "Failed to delete media item");
+      if (!result.ok) {
+        throw new Error(result.error);
       }
 
-      toast({
-        title: "Media Deleted",
-        description: "Hero media has been deleted successfully.",
-        variant: "default",
-      });
+      toast("Media Deleted", { description: "Hero media has been deleted successfully." });
 
       fetchHeroMedia();
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to delete media item";
+      const errorMessage = error instanceof Error ? error.message : "Failed to delete media item";
       setError(errorMessage);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -97,9 +64,7 @@ export const HeroFilesSection = () => {
       <div>
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
           <div>
-            <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-              Hero Media
-            </h2>
+            <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">Hero Media</h2>
             <p className="text-muted-foreground mb-1">
               Manage media files for the homepage hero section
             </p>
@@ -111,8 +76,7 @@ export const HeroFilesSection = () => {
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
             >
-              <RefreshCw size={16} />{" "}
-              <span className="hidden lg:inline">Refresh</span>
+              <RefreshCw size={16} /> <span className="hidden lg:inline">Refresh</span>
             </Button>
             <AddHeroMediaDialog onSuccess={fetchHeroMedia} />
           </div>
@@ -121,10 +85,7 @@ export const HeroFilesSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="bg-black/40 border border-[#3C3120]/50 rounded-md h-[280px]"
-            />
+            <div key={i} className="bg-black/40 border border-[#3C3120]/50 rounded-md h-[280px]" />
           ))}
         </div>
       </div>
@@ -135,9 +96,7 @@ export const HeroFilesSection = () => {
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-            Hero Media
-          </h2>
+          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">Hero Media</h2>
           <p className="text-muted-foreground mb-1">
             Manage media files for the homepage hero section
           </p>
@@ -151,19 +110,13 @@ export const HeroFilesSection = () => {
             onClick={fetchHeroMedia}
             disabled={loading}
           >
-            {loading ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <RefreshCw size={16} />
-            )}{" "}
+            {loading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}{" "}
             <span className="hidden lg:inline">Refresh</span>
           </Button>
 
           <AddHeroMediaDialog onSuccess={fetchHeroMedia} />
 
-          {data.length > 0 && (
-            <AlertDialog>{/* Delete All dialog content */}</AlertDialog>
-          )}
+          {data.length > 0 && <AlertDialog>{/* Delete All dialog content */}</AlertDialog>}
         </div>
       </div>
 
@@ -186,28 +139,19 @@ export const HeroFilesSection = () => {
         <div className="text-center py-20 bg-black/40 border border-[#3C3120] rounded-md">
           <div className="flex flex-col items-center justify-center">
             <Film className="w-16 h-16 text-[#A28B55]/30 mb-4" />
-            <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
-              No Hero Media Added Yet
-            </h3>
+            <h3 className="text-xl font-medium mb-3 text-[#A28B55]">No Hero Media Added Yet</h3>
             <p className="text-neutral-500 mb-6 max-w-md mx-auto">
-              Add images and videos to create an engaging hero section on your
-              homepage.
+              Add images and videos to create an engaging hero section on your homepage.
             </p>
             <AddHeroMediaDialog onSuccess={fetchHeroMedia} />
           </div>
         </div>
       ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data.map((item) => (
-              <HeroMediaCard
-                key={item.id}
-                item={item}
-                onDelete={handleDeleteMedia}
-              />
-            ))}
-          </div>
-        </>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.map((item) => (
+            <HeroMediaCard key={item.id} item={item} onDelete={handleDeleteMedia} />
+          ))}
+        </div>
       )}
     </div>
   );

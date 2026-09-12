@@ -1,4 +1,5 @@
 export interface MediaItem {
+  id?: string;
   src: string;
   alt?: string;
   type: "image" | "video";
@@ -13,3 +14,6 @@ export interface AnimatedTextProps {
   delay?: number;
   className?: string;
 }
+
+/** A hero slide as stored, which always has a row id. */
+export type HeroMedia = MediaItem & { id: string };

@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PortfolioForm } from "./PortfolioForm";
-import { PortfolioProjectType } from "./portfolio/types";
+import type { PortfolioProjectType } from "./portfolio/types";
 
 interface EditPortfolioDialogProps {
   open: boolean;
@@ -48,11 +48,7 @@ export function EditPortfolioDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] sm:max-w-[900px] max-h-[90vh] overflow-y-auto bg-neutral-900 border border-[#3C3120]">
-        <PortfolioForm
-          initialData={initialData}
-          onSuccess={handleSuccess}
-          isEditing={true}
-        />
+        <PortfolioForm initialData={initialData} onSuccess={handleSuccess} isEditing={true} />
       </DialogContent>
     </Dialog>
   );

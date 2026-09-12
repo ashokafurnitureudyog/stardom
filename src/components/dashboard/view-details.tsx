@@ -1,9 +1,9 @@
 "use client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Product } from "@/types/ComponentTypes";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Product } from "@/types/ComponentTypes";
 
 interface ProductDetailsProps {
   product: Product;
@@ -30,7 +30,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 h-full w-full overflow-auto md:overflow-hidden bg-neutral-900">
       {/* Image section with strict height constraints */}
-      <div className="w-full h-[45vh] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
+      <div className="w-full h-[45vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
         {/* Image container with adjusted height to account for nav */}
         <div className="absolute inset-0 bottom-14 p-4 flex items-center justify-center bg-black/30 overflow-hidden">
           <div className="w-[90%] h-[90%] relative rounded-md overflow-hidden">
@@ -57,6 +57,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               {/* Navigation content (unchanged) */}
               {/* Left arrow */}
               <button
+                type="button"
                 onClick={prevImage}
                 className="w-9 h-9 rounded-full bg-black/50 border border-[#3C3120] flex items-center justify-center hover:bg-black/70 hover:border-[#A28B55] transition-all duration-200"
               >
@@ -74,6 +75,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <div className="flex items-center space-x-2">
                   {Array.from({ length: totalImages }).map((_, idx) => (
                     <button
+                      type="button"
                       key={idx}
                       onClick={() => setCurrentImageIndex(idx)}
                       className={`transition-all duration-300 ${
@@ -89,6 +91,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
               {/* Right arrow */}
               <button
+                type="button"
                 onClick={nextImage}
                 className="w-9 h-9 rounded-full bg-black/50 border border-[#3C3120] flex items-center justify-center hover:bg-black/70 hover:border-[#A28B55] transition-all duration-200"
               >
@@ -126,9 +129,7 @@ function ProductContent({ product }: { product: Product }) {
     <>
       {/* Product Title and Categories */}
       <div>
-        <p className="text-2xl font-semibold text-[#A28B55] pr-2">
-          {product.name}
-        </p>
+        <p className="text-2xl font-semibold text-[#A28B55] pr-2">{product.name}</p>
         <div className="mt-3 space-y-2">
           {product.category && (
             <div className="flex items-center">
@@ -138,18 +139,14 @@ function ProductContent({ product }: { product: Product }) {
           )}
           {product.product_collection && (
             <div className="flex items-center">
-              <span className="text-[#A28B55] font-medium mr-2">
-                Collection:
-              </span>
-              <span className="text-neutral-400">
-                {product.product_collection}
-              </span>
+              <span className="text-[#A28B55] font-medium mr-2">Collection:</span>
+              <span className="text-neutral-400">{product.product_collection}</span>
             </div>
           )}
         </div>
       </div>
 
-      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Description */}
       <div>
@@ -160,11 +157,9 @@ function ProductContent({ product }: { product: Product }) {
       {/* Features */}
       {product.features && product.features.length > 0 && (
         <>
-          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
-            <h3 className="text-lg font-medium mb-3 text-[#A28B55]">
-              Features
-            </h3>
+            <h3 className="text-lg font-medium mb-3 text-[#A28B55]">Features</h3>
             <div className="flex flex-wrap gap-2">
               {product.features.map((feature, index) => (
                 <Badge
@@ -183,11 +178,9 @@ function ProductContent({ product }: { product: Product }) {
       {/* Colors */}
       {product.colors && product.colors.length > 0 && (
         <>
-          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
-            <h3 className="text-lg font-medium mb-3 text-[#A28B55]">
-              Available Colors
-            </h3>
+            <h3 className="text-lg font-medium mb-3 text-[#A28B55]">Available Colors</h3>
             <div className="flex flex-wrap gap-2">
               {product.colors.map((color, index) => (
                 <Badge
@@ -203,14 +196,12 @@ function ProductContent({ product }: { product: Product }) {
         </>
       )}
 
-      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Product ID */}
       <div className="text-sm text-neutral-500">
         <p>ID: {product.id || product.$id}</p>
-        {product.$createdAt && (
-          <p>Added: {new Date(product.$createdAt).toLocaleDateString()}</p>
-        )}
+        {product.$createdAt && <p>Added: {new Date(product.$createdAt).toLocaleDateString()}</p>}
       </div>
     </>
   );

@@ -1,17 +1,14 @@
 "use client";
+import { Film, Image as ImageIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Image as ImageIcon, Film } from "lucide-react";
 
 interface MediaTypeSelectorProps {
   mediaType: "image" | "video";
   setMediaType: (type: "image" | "video") => void;
 }
 
-export const MediaTypeSelector = ({
-  mediaType,
-  setMediaType,
-}: MediaTypeSelectorProps) => {
+export const MediaTypeSelector = ({ mediaType, setMediaType }: MediaTypeSelectorProps) => {
   return (
     <div className="space-y-4">
       <Label className="text-neutral-400">Choose Media Type</Label>
@@ -42,11 +39,7 @@ export const MediaTypeSelector = ({
               >
                 <ImageIcon
                   size={24}
-                  className={
-                    mediaType === "image"
-                      ? "text-[#A28B55]"
-                      : "text-neutral-500"
-                  }
+                  className={mediaType === "image" ? "text-[#A28B55]" : "text-neutral-500"}
                 />
               </div>
               <div>
@@ -87,11 +80,7 @@ export const MediaTypeSelector = ({
               >
                 <Film
                   size={24}
-                  className={
-                    mediaType === "video"
-                      ? "text-[#A28B55]"
-                      : "text-neutral-500"
-                  }
+                  className={mediaType === "video" ? "text-[#A28B55]" : "text-neutral-500"}
                 />
               </div>
               <div>

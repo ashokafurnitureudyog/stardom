@@ -1,278 +1,74 @@
-"use client";
-
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { AnimatedTextProps, MediaItem } from "@/types/MediaTypes";
-import {
-  HERO_SLIDE_DURATION,
-  HERO_TRANSITION_DURATION,
-} from "@/lib/constants/MediaConstants";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { Link } from "next-view-transitions";
-import { useCompanyData } from "@/hooks/useCompanyData";
-import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
+import type { CompanyInfo } from "@/types/ComponentTypes";
+import type { MediaItem } from "@/types/MediaTypes";
+import { HeroSlideshow } from "./HeroSlideshow";
 
-const AnimatedText: React.FC<AnimatedTextProps> = ({
-  children,
-  delay = 2,
-  className = "",
-}) => (
-  <motion.div
-    variants={fadeInUpVariants}
-    initial="hidden"
-    animate="visible"
-    transition={{ duration: 1, delay }}
-    className={className}
-    style={{ willChange: "opacity, transform" }}
-  >
-    {children}
-  </motion.div>
-);
+const BUTTON_CLASS = "h-14 min-w-[220px] text-base";
 
-const BackgroundMedia: React.FC<{
-  item: MediaItem;
-  isActive: boolean;
-  isNext: boolean;
-  priority?: boolean;
-}> = ({ item, isActive, isNext, priority = false }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const mediaRef = useRef<HTMLDivElement>(null);
-
-  // Only load the media when it's active or about to be active
-  // For first image (priority=true), we want it to load immediately
-  useEffect(() => {
-    if (isActive || isNext || priority) {
-      setIsLoaded(true);
-    }
-  }, [isActive, isNext, priority]);
-
-  const className = `absolute inset-0 w-full h-full transition-all duration-1000 ${
-    isActive ? "opacity-100 scale-100" : "opacity-0 scale-105"
-  }`;
-
-  if (item.type === "video" && isLoaded) {
-    return (
-      <div className={className} ref={mediaRef}>
-        <video
-          ref={(el) => {
-            // We need to store this ref to control playback
-            if (el) {
-              if (isActive) {
-                const playPromise = el.play();
-                if (playPromise !== undefined) {
-                  playPromise.catch((error) => {
-                    console.log("Auto-play was prevented:", error);
-                  });
-                }
-              } else {
-                el.pause();
-              }
-            }
-          }}
-          muted
-          loop
-          playsInline
-          className="object-cover w-full h-full"
-          preload="metadata"
-          poster={item.poster || ""}
-        >
-          {item.webmSrc && <source src={item.webmSrc} type="video/webm" />}
-          <source src={item.src} type="video/mp4" />
-        </video>
-      </div>
-    );
-  }
-
-  if (item.type === "image" && (isLoaded || priority)) {
-    return (
-      <div className={className} ref={mediaRef}>
-        <Image
-          src={item.src}
-          alt={item.alt || ""}
-          fill
-          className="object-cover"
-          priority={priority}
-          sizes="100vw"
-          quality={90}
-        />
-      </div>
-    );
-  }
-
-  return <div className={className} ref={mediaRef} />;
-};
-
-const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
+/**
+ * Landing hero. Rendered on the server with its media and company details
+ * already resolved, so the headline and first slide are in the initial HTML
+ * instead of waiting on two client fetches.
+ */
+const HeroSection = ({
   mediaItems,
-}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [, setIsTransitioning] = useState(false);
+  companyInfo,
+}: {
+  mediaItems: MediaItem[];
+  companyInfo: CompanyInfo | null;
+}) => (
+  <section className="relative flex min-h-screen items-center justify-center overflow-hidden font-sans text-white">
+    <HeroSlideshow mediaItems={mediaItems} />
 
-  const getNextIndex = (index: number) => (index + 1) % mediaItems.length;
-
-  useEffect(() => {
-    if (mediaItems.length === 0) return;
-
-    const slideTimer = setTimeout(() => {
-      setIsTransitioning(true);
-
-      const transitionTimer = setTimeout(() => {
-        setCurrentIndex(getNextIndex);
-        setIsTransitioning(false);
-      }, HERO_TRANSITION_DURATION);
-
-      return () => clearTimeout(transitionTimer);
-    }, HERO_SLIDE_DURATION);
-
-    return () => clearTimeout(slideTimer);
-  }, [currentIndex, mediaItems]);
-
-  if (mediaItems.length === 0) {
-    return <div className="absolute inset-0 bg-black/80"></div>;
-  }
-
-  return (
-    <div className="absolute inset-0 w-full h-full">
-      {mediaItems.map((item, index) => (
-        <BackgroundMedia
-          key={`${item.src}-${index}`}
-          item={item}
-          isActive={index === currentIndex}
-          isNext={index === getNextIndex(currentIndex)}
-          priority={index === 0}
-        />
-      ))}
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"
-        aria-hidden="true"
-      />
-    </div>
-  );
-};
-
-const HeroSection: React.FC = () => {
-  const buttonBaseClass = useMemo(
-    () => "min-w-[240px] h-14 text-lg tracking-wide",
-    [],
-  );
-
-  // Fetch company data using our hook
-  const { companyInfo, isLoading: isCompanyLoading } = useCompanyData();
-
-  // Fetch hero media using React Query
-  const {
-    data: heroMediaData,
-    isLoading: isMediaLoading,
-    error: mediaError,
-  } = useQuery({
-    queryKey: ["hero-media"],
-    queryFn: async () => {
-      const response = await fetch("/api/hero-media");
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to fetch hero media");
-      }
-      return response.json();
-    },
-  });
-
-  const isLoading = isCompanyLoading || isMediaLoading;
-  const mediaItems = heroMediaData?.mediaItems || [];
-
-  return (
-    <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden font-sans">
-      {isLoading && (
-        <div className="absolute inset-0 z-50 bg-black flex items-center justify-center">
-          <span className="text-white">Loading...</span>
-        </div>
-      )}
-
-      {mediaError && (
-        <div className="absolute inset-0 z-40 bg-black/90 flex items-center justify-center">
-          <div className="text-center p-8 max-w-md">
-            <p className="text-red-400 text-xl mb-4">Failed to load media</p>
-            <p className="text-white/70">
-              {mediaError instanceof Error
-                ? mediaError.message
-                : "An unknown error occurred"}
-            </p>
-          </div>
-        </div>
-      )}
-
-      <BackgroundSlideshow mediaItems={mediaItems} />
-
-      <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 px-6">
-        {/* Brand Column */}
-        <div className="text-center lg:text-left">
-          <AnimatedText className="mb-4">
-            <span className="text-primary font-serif text-sm tracking-[0.3em] uppercase inline-block border border-primary/30 rounded px-4 py-2">
-              {companyInfo ? `Since ${companyInfo.established}` : "Established"}
-            </span>
-          </AnimatedText>
-
-          <AnimatedText delay={0.2}>
-            <h1 className="text-6xl lg:text-7xl tracking-tight mb-4 font-extralight">
-              {companyInfo?.name?.toUpperCase() || "STARDOM"}
-            </h1>
-            <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
-            <span className="text-xl text-white/80 font-serif italic">by</span>
-            <p className="text-2xl text-white/90 font-serif mt-2">
-              {companyInfo?.parentCompany || "Ashoka Furniture Udyog"}
-            </p>
-          </AnimatedText>
-
-          <AnimatedText delay={0.3} className="mt-6">
-            <p className="text-lg text-primary/90 font-serif italic tracking-wide">
-              Where Excellence Takes a Seat
-            </p>
-          </AnimatedText>
+    <div className="relative z-10 mx-auto grid max-w-6xl grid-cols-1 gap-16 px-6 lg:grid-cols-2">
+      <div className="text-center lg:text-left">
+        <div className="mb-4">
+          <span className="font-serif text-sm tracking-[0.2em] text-primary">
+            {companyInfo ? `Since ${companyInfo.established}` : "Established"}
+          </span>
         </div>
 
-        {/* Content Column */}
-        <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
-          <AnimatedText delay={0.4}>
-            <h2 className="text-3xl lg:text-4xl font-light leading-tight mb-8">
-              Elevate Your Workspace with{" "}
-              <span className="text-primary font-serif italic">Timeless</span>{" "}
-              Design
-            </h2>
-          </AnimatedText>
+        <h1 className="mb-4 text-6xl font-extralight tracking-tight lg:text-7xl">
+          {companyInfo?.name?.toUpperCase() || "STARDOM"}
+        </h1>
+        <div className="my-6 mx-auto h-px w-24 bg-primary lg:mx-0" />
+        <span className="font-serif text-xl italic text-white/80">by</span>
+        <p className="mt-2 font-serif text-2xl text-white/90">
+          {companyInfo?.parentCompany || "Ashoka Furniture Udyog"}
+        </p>
 
-          <AnimatedText
-            delay={0.6}
-            className="text-white/80 text-lg mb-12 leading-relaxed"
+        <p className="mt-6 font-serif text-lg italic tracking-wide text-primary/90">
+          Where Excellence Takes a Seat
+        </p>
+      </div>
+
+      <div className="text-center lg:border-l lg:border-white/20 lg:pl-16 lg:text-left">
+        <h2 className="mb-8 text-3xl font-light leading-tight lg:text-4xl">
+          Elevate Your Workspace with Timeless Design
+        </h2>
+
+        <p className="mb-12 text-lg leading-relaxed text-white/80">
+          Experience the fusion of artisanal craftsmanship and contemporary luxury in every piece.
+          Creating distinguished office environments for those who demand excellence.
+        </p>
+
+        <div className="flex flex-col justify-center gap-6 sm:flex-row lg:justify-start">
+          <Button size="lg" className={BUTTON_CLASS} asChild>
+            <Link href="/products">View Collection</Link>
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className={`${BUTTON_CLASS} border-white/30 text-white hover:border-white hover:bg-white/10 hover:text-white`}
+            asChild
           >
-            Experience the fusion of artisanal craftsmanship and contemporary
-            luxury in every piece. Creating distinguished office environments
-            for those who demand excellence.
-          </AnimatedText>
-
-          <AnimatedText delay={0.8}>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
-              <Button
-                size="lg"
-                className={`${buttonBaseClass} bg-primary hover:bg-primary/90`}
-                asChild
-              >
-                <Link href="/products">View Collection</Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className={`${buttonBaseClass} border-2 border-white/20 hover:border-white hover:bg-white/10 text-foreground-700 hover:text-white`}
-                asChild
-              >
-                <Link href="/contact">Book Consultation</Link>
-              </Button>
-            </div>
-          </AnimatedText>
+            <Link href="/contact">Book Consultation</Link>
+          </Button>
         </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default HeroSection;

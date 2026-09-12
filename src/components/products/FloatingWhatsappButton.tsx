@@ -1,13 +1,10 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 interface FloatingWhatsAppButtonProps {
   handleWhatsAppInquiry: () => void;
 }
 
-export const FloatingWhatsAppButton = ({
-  handleWhatsAppInquiry,
-}: FloatingWhatsAppButtonProps) => {
+export const FloatingWhatsAppButton = ({ handleWhatsAppInquiry }: FloatingWhatsAppButtonProps) => {
   return (
     <motion.div
       className="fixed bottom-8 right-8 z-50"
@@ -21,6 +18,7 @@ export const FloatingWhatsAppButton = ({
       }}
     >
       <button
+        type="button"
         onClick={handleWhatsAppInquiry}
         className="bg-[#25D366] hover:bg-[#20BD5C] text-white p-4 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
         aria-label="Chat on WhatsApp"

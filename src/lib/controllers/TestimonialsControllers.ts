@@ -1,186 +1,78 @@
 "use server";
-import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
+
+import { updateTag } from "next/cache";
 import { ID } from "node-appwrite";
-import { testimonialSchema } from "@/lib/validations/cms";
+import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
+import { type ActionResult, authorized, failure, guarded } from "@/lib/server/action-result";
+import { appwriteIds, createAdminClient } from "@/lib/server/appwrite";
+import { TESTIMONIALS_TAG } from "@/lib/server/content";
+import { type TestimonialInput, testimonialSchema } from "@/lib/validations/cms";
 
-interface TestimonialResponse {
-  success: boolean;
-  data?: unknown;
-  error?: string;
+function toRow(testimonial: TestimonialInput) {
+  return {
+    name: testimonial.name,
+    title: testimonial.title,
+    location: testimonial.location,
+    context: testimonial.context || "",
+    purchaseDate: testimonial.purchaseDate || "",
+    verified: testimonial.verified ?? true,
+    quote: testimonial.quote,
+    img: testimonial.img || "",
+  };
 }
 
-export async function getTestimonials(): Promise<TestimonialResponse> {
-  // Public read is fine
-  try {
-    const { database } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID!;
-
-    const response = await database.listDocuments(databaseId, collectionId);
-    return { success: true, data: response.documents };
-  } catch (error) {
-    console.error("Failed to fetch testimonials:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch testimonials";
-    return { success: false, error: errorMessage };
-  }
+function testimonialsTable() {
+  const ids = appwriteIds();
+  if (!ids.testimonials) throw new Error("Testimonials table is not configured");
+  return { databaseId: ids.database, tableId: ids.testimonials };
 }
 
-export async function createTestimonial(
-  formData: FormData,
-): Promise<TestimonialResponse> {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
+export async function createTestimonial(input: unknown): Promise<ActionResult<{ id: string }>> {
+  return guarded(testimonialSchema, input, async (testimonial) => {
+    const { tables } = await createAdminClient();
+    const row = await tables.createRow({
+      ...testimonialsTable(),
+      rowId: ID.unique(),
+      data: toRow(testimonial),
+    });
 
-    const rawData = Object.fromEntries(formData);
-    const validatedData = testimonialSchema.safeParse(rawData);
+    updateTag(TESTIMONIALS_TAG);
+    return { id: row.$id };
+  });
+}
 
-    if (!validatedData.success) {
-      return {
-        success: false,
-        error: validatedData.error.issues[0].message,
-      };
-    }
+export async function updateTestimonial(
+  testimonialId: string,
+  input: unknown,
+): Promise<ActionResult<{ id: string }>> {
+  if (!testimonialId) return failure("Testimonial id is required");
 
-    const { name, title, location, context, purchaseDate, quote, img } =
-      validatedData.data;
+  return guarded(testimonialSchema, input, async (testimonial) => {
+    const { tables } = await createAdminClient();
+    const row = await tables.updateRow({
+      ...testimonialsTable(),
+      rowId: testimonialId,
+      data: toRow(testimonial),
+    });
 
-    const { database } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID!;
-
-    if (!databaseId || !collectionId) {
-      throw new Error("Database or collection ID not configured");
-    }
-
-    // Create testimonial document
-    const testimonial = await database.createDocument(
-      databaseId,
-      collectionId,
-      ID.unique(),
-      {
-        name,
-        title,
-        location,
-        context,
-        purchaseDate,
-        verified: true,
-        quote,
-        img,
-      },
-    );
-
-    return { success: true, data: testimonial };
-  } catch (error) {
-    console.error("Failed to create testimonial:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to create testimonial";
-    return { success: false, error: errorMessage };
-  }
+    updateTag(TESTIMONIALS_TAG);
+    return { id: row.$id };
+  });
 }
 
 export async function deleteTestimonial(
   testimonialId: string,
-): Promise<TestimonialResponse> {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
+  imageUrl?: string,
+): Promise<ActionResult<{ id: string }>> {
+  if (!testimonialId) return failure("Testimonial id is required");
 
-    const { database } = await createAdminClient();
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID!;
+  return authorized(async () => {
+    const { tables } = await createAdminClient();
 
-    if (!databaseId || !collectionId) {
-      throw new Error("Database or collection ID not configured");
-    }
+    if (imageUrl) await deleteFilesFromStorage([imageUrl]);
+    await tables.deleteRow({ ...testimonialsTable(), rowId: testimonialId });
 
-    // Delete testimonial document
-    await database.deleteDocument(databaseId, collectionId, testimonialId);
-
-    return { success: true };
-  } catch (error) {
-    console.error("Failed to delete testimonial:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to delete testimonial";
-    return { success: false, error: errorMessage };
-  }
-}
-
-export async function updateTestimonial(
-  formData: FormData,
-): Promise<TestimonialResponse> {
-  try {
-    const user = await getLoggedInUser();
-    if (!user) throw new Error("Unauthorized");
-
-    const rawData = Object.fromEntries(formData);
-    // Validate with Zod
-    const validatedData = testimonialSchema.safeParse(rawData);
-
-    if (!validatedData.success) {
-      return {
-        success: false,
-        error: validatedData.error.issues[0].message,
-      };
-    }
-
-    const {
-      name,
-      title,
-      location,
-      context,
-      purchaseDate,
-      quote,
-      img: validatedImg,
-      id,
-      imageRemoved: imageRemovedStr,
-    } = validatedData.data;
-
-    if (!id) {
-      throw new Error("Testimonial ID is required for update");
-    }
-
-    const { database } = await createAdminClient();
-
-    let img = validatedImg || "";
-    const imageRemoved = imageRemovedStr === "true";
-
-    // If image was explicitly removed, set img to empty string
-    if (imageRemoved) {
-      img = "";
-    }
-
-    // Database details
-    const databaseId = process.env.APPWRITE_DATABASE_ID!;
-    const collectionId = process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID!;
-
-    if (!databaseId || !collectionId) {
-      throw new Error("Database or collection ID not configured");
-    }
-
-    // Update testimonial document
-    const testimonial = await database.updateDocument(
-      databaseId,
-      collectionId,
-      id,
-      {
-        name,
-        title,
-        location,
-        context,
-        purchaseDate,
-        verified: true,
-        quote,
-        img,
-      },
-    );
-
-    return { success: true, data: testimonial };
-  } catch (error) {
-    console.error("Failed to update testimonial:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to update testimonial";
-    return { success: false, error: errorMessage };
-  }
+    updateTag(TESTIMONIALS_TAG);
+    return { id: testimonialId };
+  });
 }

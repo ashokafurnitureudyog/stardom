@@ -1,111 +1,60 @@
 "use server";
-import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
-import { AppwriteException, Query } from "node-appwrite";
 
-// Get a product by ID
-async function getProductById(productId: string) {
-  const { database } = await createAdminClient();
-  return database.getDocument(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
-    productId,
-  );
+import { updateTag } from "next/cache";
+import { Query } from "node-appwrite";
+import { type ActionResult, authorized, failure } from "@/lib/server/action-result";
+import { appwriteIds, createAdminClient } from "@/lib/server/appwrite";
+import { FEATURED_TAG } from "@/lib/server/products";
+
+/** The home grid has four slots. */
+const MAX_FEATURED = 4;
+
+function featuredTable() {
+  const ids = appwriteIds();
+  if (!ids.featured) throw new Error("Featured table is not configured");
+  return { databaseId: ids.database, tableId: ids.featured };
 }
 
-// Count featured products
-async function countFeaturedProducts() {
-  const { database } = await createAdminClient();
-  const featured = await database.listDocuments(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-    [Query.limit(100)], // Set a high limit to get accurate count
-  );
+/**
+ * Marks a product as featured. The row carries the product's own id and nothing
+ * else: the product is read fresh when the home page renders, so editing a
+ * product cannot leave a stale copy on the front page.
+ */
+export async function addToFeatured(productId: string): Promise<ActionResult<{ id: string }>> {
+  if (!productId) return failure("Product id is required");
 
-  return featured.total;
-}
+  return authorized(async () => {
+    const { tables } = await createAdminClient();
+    const table = featuredTable();
 
-// Get all featured products
-export async function getFeaturedProducts() {
-  const { database } = await createAdminClient();
-  const featured = await database.listDocuments(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-  );
+    const current = await tables.listRows({
+      ...table,
+      queries: [Query.limit(MAX_FEATURED + 1), Query.select(["$id"])],
+    });
 
-  return featured.documents;
-}
-
-// Check if a product is already featured
-async function isProductFeatured(productId: string) {
-  try {
-    const { database } = await createAdminClient();
-    await database.getDocument(
-      process.env.APPWRITE_DATABASE_ID!,
-      process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-      productId,
-    );
-    return true;
-  } catch (error) {
-    if (error instanceof AppwriteException && error.code === 404) {
-      return false;
+    if (current.rows.some((row) => row.$id === productId)) {
+      throw new Error("That product is already featured");
     }
-    throw error;
-  }
+
+    if (current.total >= MAX_FEATURED) {
+      throw new Error(`Only ${MAX_FEATURED} products can be featured. Remove one first.`);
+    }
+
+    await tables.createRow({ ...table, rowId: productId, data: {} });
+
+    updateTag(FEATURED_TAG);
+    return { id: productId };
+  });
 }
 
-// Add a product to featured
-export async function addToFeatured(productId: string) {
-  const user = await getLoggedInUser();
-  if (!user) throw new Error("Unauthorized");
+export async function removeFromFeatured(productId: string): Promise<ActionResult<{ id: string }>> {
+  if (!productId) return failure("Product id is required");
 
-  // Check if already featured
-  const alreadyFeatured = await isProductFeatured(productId);
-  if (alreadyFeatured) {
-    return { success: false, message: "Product is already featured" };
-  }
+  return authorized(async () => {
+    const { tables } = await createAdminClient();
+    await tables.deleteRow({ ...featuredTable(), rowId: productId });
 
-  // Check featured count
-  const count = await countFeaturedProducts();
-  if (count >= 4) {
-    throw new Error(
-      "Maximum of 4 featured products allowed. Remove one before adding another.",
-    );
-  }
-
-  // Get product data from products collection
-  const product = await getProductById(productId);
-
-  // Add to featured collection with the same ID
-  const { database } = await createAdminClient();
-  await database.createDocument(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-    productId,
-    {
-      name: product.name,
-      description: product.description,
-      category: product.category,
-      product_collection: product.product_collection,
-      features: product.features,
-      colors: product.colors,
-      images: product.images,
-    },
-  );
-
-  return { success: true, message: "Product added to featured" };
-}
-
-// Remove a product from featured
-export async function removeFromFeatured(productId: string) {
-  const user = await getLoggedInUser();
-  if (!user) throw new Error("Unauthorized");
-
-  const { database } = await createAdminClient();
-  await database.deleteDocument(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-    productId,
-  );
-
-  return { success: true };
+    updateTag(FEATURED_TAG);
+    return { id: productId };
+  });
 }

@@ -1,81 +1,44 @@
 "use client";
-import React from "react";
-import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
-import { Button } from "@/components/ui/button";
 import {
+  ArmchairIcon,
   ArrowRightIcon,
-  ArchiveIcon,
-  ClipboardIcon,
-  LampDeskIcon,
-  LayoutGridIcon,
-  TableIcon,
-  LucideIcon,
-  SofaIcon,
-  Table2Icon,
-  TableColumnsSplitIcon,
+  BriefcaseIcon,
   CoffeeIcon,
+  CrownIcon,
+  LampDeskIcon,
+  type LucideIcon,
+  MonitorIcon,
+  UsersIcon,
+  WineIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
-import { Link } from "next-view-transitions";
-import { useProducts } from "@/hooks/useProducts";
-import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
+import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
+import { Button } from "@/components/ui/button";
+import type { Product } from "@/types/ComponentTypes";
 
-// Define better icons matching your actual product categories
 const categoryIcons: Record<string, LucideIcon> = {
-  chairs: ArchiveIcon,
-  tables: TableIcon,
-  workstations: LayoutGridIcon,
-  reception: ClipboardIcon,
-  storage: ArchiveIcon,
-  lounges: SofaIcon,
-  training: Table2Icon,
-  desks: Table2Icon,
-  partitions: TableColumnsSplitIcon,
-  cafeteria: CoffeeIcon,
+  "signature series": CrownIcon,
+  "director series": BriefcaseIcon,
+  "executive series": ArmchairIcon,
+  "work series": MonitorIcon,
+  "visitor series": UsersIcon,
+  "café series": CoffeeIcon,
+  "bar series": WineIcon,
 };
 
-// Fallback icon for categories not in the map
 const getIconForCategory = (category: string) => {
   return categoryIcons[category.toLowerCase()] || LampDeskIcon;
 };
 
-// Skeleton loader component for bento cards
-const BentoCardSkeleton = ({ className }: { className: string }) => (
-  <div
-    className={`${className} group overflow-hidden border border-neutral-200 shadow-lg bg-background relative rounded-xl`}
-  >
-    <div className="absolute inset-0">
-      <Skeleton className="w-full h-full" />
-    </div>
-    <div className="relative z-10 p-6 md:p-8 h-full flex flex-col justify-between">
-      <div className="space-y-4">
-        <Skeleton className="h-8 w-8 rounded-md" /> {/* Icon */}
-        <div className="space-y-2">
-          <Skeleton className="h-7 w-3/4" /> {/* Title */}
-          <Skeleton className="h-4 w-full" /> {/* Description line 1 */}
-          <Skeleton className="h-4 w-2/3" /> {/* Description line 2 */}
-        </div>
-      </div>
-      <div className="pt-4 mt-4">
-        <Skeleton className="h-5 w-24" /> {/* Detail text */}
-      </div>
-    </div>
-  </div>
-);
-
-export function FeaturedProducts() {
-  // Use the hook to get featured products
-  const { featuredProducts, isFeaturedLoading } = useProducts();
-
+export function FeaturedProducts({ featuredProducts }: { featuredProducts: Product[] }) {
   // Transform product data into bento grid format
   const bentoCells = featuredProducts.map((product, index) => {
     // Determine appropriate column span based on index
     // First and last items get more space
     const isLarge = index === 0 || index === 3;
-    const className = isLarge
-      ? "col-span-3 lg:col-span-2"
-      : "col-span-3 lg:col-span-1";
+    const className = isLarge ? "col-span-3 lg:col-span-2" : "col-span-3 lg:col-span-1";
 
     // Get icon based on category
     const Icon = getIconForCategory(product.category);
@@ -83,7 +46,7 @@ export function FeaturedProducts() {
     // Create a shorter description for display
     const shortDescription =
       product.description.length > 100
-        ? product.description.substring(0, 100) + "..."
+        ? `${product.description.substring(0, 100)}...`
         : product.description;
 
     return {
@@ -105,11 +68,7 @@ export function FeaturedProducts() {
             alt={product.name}
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
-            sizes={
-              isLarge
-                ? "(max-width: 1024px) 100vw, 66vw"
-                : "(max-width: 1024px) 100vw, 33vw"
-            }
+            sizes={isLarge ? "(max-width: 1024px) 100vw, 66vw" : "(max-width: 1024px) 100vw, 33vw"}
           />
           {/* Darker overlay for better text contrast */}
           <div className="absolute inset-0 dark:bg-neutral-900/60 dark:group-hover:bg-neutral-900/50 transition-all duration-500" />
@@ -121,10 +80,10 @@ export function FeaturedProducts() {
   // Fallback data with the same improved contrast
   const fallbackFeatures = [
     {
-      Icon: Table2Icon,
-      name: "Luxury Executive Desks",
-      description: "Handcrafted masterpieces for distinguished leaders",
-      detail: "Imported Italian Wood",
+      Icon: CrownIcon,
+      name: "Signature Series",
+      description: "Flagship statement chairs, handcrafted for the corner office",
+      detail: "Imported Italian Leather",
       href: "/products",
       cta: "Discover More",
       className: "col-span-3 lg:col-span-2",
@@ -132,7 +91,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1497215728101-856f4ea42174"
-            alt="Luxury Executive Desk"
+            alt="Signature Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 66vw"
@@ -142,10 +101,10 @@ export function FeaturedProducts() {
       ),
     },
     {
-      Icon: TableIcon,
-      name: "Premium Conference Solutions",
-      description: "Where visionary decisions take shape",
-      detail: "Smart Integration Ready",
+      Icon: BriefcaseIcon,
+      name: "Director Series",
+      description: "Premium MD and leadership chairs where decisions take shape",
+      detail: "Full-Grain Upholstery",
       href: "/products",
       cta: "Discover More",
       className: "col-span-3 lg:col-span-1",
@@ -153,7 +112,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407"
-            alt="Conference Room"
+            alt="Director Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 33vw"
@@ -163,9 +122,9 @@ export function FeaturedProducts() {
       ),
     },
     {
-      Icon: ArchiveIcon,
-      name: "Elite Ergonomic Seating",
-      description: "Precision-engineered comfort for excellence",
+      Icon: ArmchairIcon,
+      name: "Executive Series",
+      description: "Professional managerial chairs, precision-engineered for the full day",
       detail: "German Engineering",
       href: "/products",
       cta: "Discover More",
@@ -174,7 +133,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1681418659069-eef28d44aeab"
-            alt="Ergonomic Chair"
+            alt="Executive Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 33vw"
@@ -184,9 +143,9 @@ export function FeaturedProducts() {
       ),
     },
     {
-      Icon: SofaIcon,
-      name: "Designer Lounge Collection",
-      description: "Contemporary comfort meets timeless sophistication",
+      Icon: MonitorIcon,
+      name: "Work Series",
+      description: "Workstation, task and staff chairs built for everyday performance",
       detail: "Artisan Crafted",
       href: "/products",
       cta: "Discover More",
@@ -195,7 +154,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1464029902023-f42eba355bde"
-            alt="Lounge Collection"
+            alt="Work Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 66vw"
@@ -204,14 +163,6 @@ export function FeaturedProducts() {
         </div>
       ),
     },
-  ];
-
-  // Define skeleton layout matching the actual content
-  const skeletonLayout = [
-    { className: "col-span-3 lg:col-span-2" },
-    { className: "col-span-3 lg:col-span-1" },
-    { className: "col-span-3 lg:col-span-1" },
-    { className: "col-span-3 lg:col-span-2" },
   ];
 
   // Use the fetched products if available, otherwise use fallback data
@@ -228,41 +179,26 @@ export function FeaturedProducts() {
           style={{ willChange: "opacity, transform" }}
         >
           <div className="text-center mb-32">
-            <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
-              <div className="h-px w-8 bg-primary/40" />
-              <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-                Premium Selection
-              </h3>
-            </div>
             <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-12 font-serif">
-              Featured{" "}
-              <span className="font-normal italic text-primary">Products</span>
+              Featured <span className="font-normal italic text-primary">Products</span>
             </h2>
             <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-              Immerse yourself in a world of unparalleled sophistication. Each
-              piece in our signature collection represents the pinnacle of
-              artisanal craftsmanship and innovative design.
+              Immerse yourself in a world of unparalleled sophistication. Each piece in our
+              signature collection represents the pinnacle of artisanal craftsmanship and innovative
+              design.
             </p>
           </div>
         </motion.div>
 
-        {isFeaturedLoading ? (
-          <BentoGrid className="max-w-7xl mx-auto">
-            {skeletonLayout.map((item, idx) => (
-              <BentoCardSkeleton key={idx} className={item.className} />
-            ))}
-          </BentoGrid>
-        ) : (
-          <BentoGrid className="max-w-7xl mx-auto">
-            {features.map((feature, idx) => (
-              <BentoCard
-                key={idx}
-                {...feature}
-                className={`${feature.className} group overflow-hidden border border-neutral-200 shadow-lg hover:shadow-xl transition-all duration-500`}
-              />
-            ))}
-          </BentoGrid>
-        )}
+        <BentoGrid className="max-w-7xl mx-auto">
+          {features.map((feature, idx) => (
+            <BentoCard
+              key={idx}
+              {...feature}
+              className={`${feature.className} group overflow-hidden border border-neutral-200 shadow-lg hover:shadow-xl transition-all duration-500`}
+            />
+          ))}
+        </BentoGrid>
 
         <div className="text-center mt-24">
           <Button

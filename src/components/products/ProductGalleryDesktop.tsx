@@ -1,16 +1,12 @@
-import React from "react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductGalleryDesktopProps {
   images: string[];
   productName: string;
 }
 
-export const ProductGalleryDesktop = ({
-  images,
-  productName,
-}: ProductGalleryDesktopProps) => {
+export const ProductGalleryDesktop = ({ images, productName }: ProductGalleryDesktopProps) => {
   if (!images.length) return null;
 
   return (
@@ -23,7 +19,7 @@ export const ProductGalleryDesktop = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.5, delay: index * 0.05 }}
-            className="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden bg-secondary/30"
+            className="relative w-full aspect-4/5 rounded-4xl overflow-hidden bg-secondary/30"
           >
             <Image
               src={image}

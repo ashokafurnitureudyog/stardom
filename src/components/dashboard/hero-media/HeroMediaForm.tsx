@@ -1,16 +1,17 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { Check, Loader2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { Check, Loader2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress"; // Make sure this component exists
+import { Separator } from "@/components/ui/separator";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { addHeroMedia } from "@/lib/controllers/HeroMediaController";
+import { MediaPreview } from "./MediaPreview";
 import { MediaTypeSelector } from "./MediaTypeSelector";
 import { MediaUploadTabs } from "./MediaUploadTabs";
-import { MediaPreview } from "./MediaPreview";
-import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
-import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 
 interface HeroMediaFormProps {
   onSuccess: () => void;
@@ -18,7 +19,6 @@ interface HeroMediaFormProps {
 }
 
 export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
-  const { toast } = useToast();
   const [addMethod, setAddMethod] = useState<"url" | "upload">("upload");
   const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [mediaUrl, setMediaUrl] = useState("");
@@ -41,35 +41,35 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
   // Clean up object URLs on unmount to avoid memory leaks
   useEffect(() => {
     return () => {
-      if (previewUrlRef.current && previewUrlRef.current.startsWith("blob:")) {
+      if (previewUrlRef.current?.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrlRef.current);
       }
     };
   }, []);
 
-  // Function to safely clean up object URL if it exists
-  const cleanupObjectUrl = () => {
-    if (previewUrlRef.current && previewUrlRef.current.startsWith("blob:")) {
+  const cleanupObjectUrl = useCallback(() => {
+    if (previewUrlRef.current?.startsWith("blob:")) {
       URL.revokeObjectURL(previewUrlRef.current);
     }
-  };
+  }, []);
 
-  // Reset state when media type changes
+  // Switching between image and video, or between upload and URL, clears the
+  // half-finished selection. Both effects previously listed only the cleanup
+  // helper, so neither ever ran and a chosen file survived the switch.
   useEffect(() => {
     cleanupObjectUrl();
     setPreviewUrl(null);
     setSelectedFile(null);
     setMediaUrl("");
     setMediaAlt("");
-  }, [mediaType]);
+  }, [mediaType, cleanupObjectUrl]);
 
-  // Reset state when method changes
   useEffect(() => {
     cleanupObjectUrl();
     setPreviewUrl(null);
     setSelectedFile(null);
     setMediaUrl("");
-  }, [addMethod]);
+  }, [addMethod, cleanupObjectUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,21 +78,13 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     try {
       // Validate inputs
       if (addMethod === "url" && !mediaUrl) {
-        toast({
-          title: "Validation Error",
-          description: "Please provide a URL for the media",
-          variant: "destructive",
-        });
+        toast.error("Please provide a URL for the media");
         setIsSubmitting(false);
         return;
       }
 
       if (addMethod === "upload" && !selectedFile) {
-        toast({
-          title: "Validation Error",
-          description: "Please select a file to upload",
-          variant: "destructive",
-        });
+        toast.error("Please select a file to upload");
         setIsSubmitting(false);
         return;
       }
@@ -109,13 +101,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
               allowedTypes:
                 mediaType === "video"
                   ? ["video/mp4", "video/webm", "video/ogg"]
-                  : [
-                      "image/png",
-                      "image/jpeg",
-                      "image/jpg",
-                      "image/webp",
-                      "image/gif",
-                    ],
+                  : ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"],
               maxSizeInMB: mediaType === "video" ? 50 : 10,
             },
           );
@@ -144,48 +130,22 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
         lowResSrc: "",
       };
 
-      // Send the JSON data to the API
-      const res = await fetch("/api/protected/hero-media", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(mediaData),
-        credentials: "include",
-      });
+      const result = await addHeroMedia(mediaData);
+      if (!result.ok) throw new Error(result.error);
 
-      const result = await res.json();
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to add media");
-      }
-
-      toast({
-        title: "Media Added",
-        description: "Hero media has been added successfully.",
-        variant: "default",
-      });
+      toast("Media Added", { description: "Hero media has been added successfully." });
 
       onSuccess();
-    } catch (error: Error | unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to add media";
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to add media";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleImageError = () => {
-    toast({
-      title: "Error Loading Image",
-      description: "Could not load the image from the provided URL.",
-      variant: "destructive",
-    });
+    toast.error("Could not load the image from the provided URL.");
     clearPreview();
   };
 
@@ -197,25 +157,14 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     }
   };
 
-  const handleFileValidation = (
-    file: File,
-    type: "image" | "video",
-  ): boolean => {
+  const handleFileValidation = (file: File, type: "image" | "video"): boolean => {
     if (type === "image" && !file.type.startsWith("image/")) {
-      toast({
-        title: "Invalid File",
-        description: "Please select an image file.",
-        variant: "destructive",
-      });
+      toast.error("Please select an image file.");
       return false;
     }
 
     if (type === "video" && !file.type.startsWith("video/")) {
-      toast({
-        title: "Invalid File",
-        description: "Please select a video file.",
-        variant: "destructive",
-      });
+      toast.error("Please select a video file.");
       return false;
     }
 
@@ -232,10 +181,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
           <Separator className="mb-6 bg-[#3C3120]" />
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <MediaTypeSelector
-              mediaType={mediaType}
-              setMediaType={setMediaType}
-            />
+            <MediaTypeSelector mediaType={mediaType} setMediaType={setMediaType} />
 
             <Separator className="my-6 bg-[#3C3120]" />
 
@@ -285,12 +231,8 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
             {uploadStatus.uploading && (
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-neutral-400">
-                    Uploading media...
-                  </span>
-                  <span className="text-sm text-neutral-400">
-                    {uploadStatus.progress}%
-                  </span>
+                  <span className="text-sm text-neutral-400">Uploading media...</span>
+                  <span className="text-sm text-neutral-400">{uploadStatus.progress}%</span>
                 </div>
                 <Progress value={uploadStatus.progress} className="h-2" />
               </div>
@@ -321,8 +263,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
               >
                 {isSubmitting || uploadStatus.uploading ? (
                   <>
-                    <Loader2 size={16} className="mr-2 animate-spin" />{" "}
-                    Saving...
+                    <Loader2 size={16} className="mr-2 animate-spin" /> Saving...
                   </>
                 ) : (
                   <>

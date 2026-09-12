@@ -1,10 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { Eye, Image as ImageIcon, Play, Trash } from "lucide-react";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { MediaItem } from "@/types/MediaTypes";
-import { Trash, Eye, Image as ImageIcon, Play } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,12 +13,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import type { HeroMedia } from "@/types/MediaTypes";
 import { HeroMediaDetails } from "./HeroMediaDetails";
 
-type MediaItemWithId = MediaItem & { id: string };
-
 interface HeroMediaCardProps {
-  item: MediaItemWithId;
+  item: HeroMedia;
   onDelete: (id: string) => Promise<void>;
 }
 
@@ -58,18 +56,18 @@ export const HeroMediaCard = ({ item, onDelete }: HeroMediaCardProps) => {
       {/* Delete button - top right corner, only visible on hover */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogTrigger asChild>
-          <button className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
+          <button
+            type="button"
+            className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110"
+          >
             <Trash size={20} className="text-[#A28B55]" />
           </button>
         </AlertDialogTrigger>
         <AlertDialogContent className="bg-[#171410] border border-[#352b1c]">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#A28B55]">
-              Delete Media
-            </AlertDialogTitle>
+            <AlertDialogTitle className="text-[#A28B55]">Delete Media</AlertDialogTitle>
             <AlertDialogDescription className="text-neutral-400">
-              Are you sure you want to delete this {item.type}? This action
-              cannot be undone.
+              Are you sure you want to delete this {item.type}? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -90,10 +88,7 @@ export const HeroMediaCard = ({ item, onDelete }: HeroMediaCardProps) => {
       {/* Media container with View Details on hover */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <div
-            className="relative w-full cursor-pointer"
-            style={{ height: "280px" }}
-          >
+          <div className="relative w-full cursor-pointer" style={{ height: "280px" }}>
             {item.type === "image" ? (
               <img
                 src={item.src}

@@ -1,14 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { useState } from "react";
-import { MediaItem } from "@/types/MediaTypes";
-import { DialogClose } from "@/components/ui/dialog";
 import { X } from "lucide-react";
-
-type MediaItemWithId = MediaItem & { id: string };
+import { useState } from "react";
+import { DialogClose } from "@/components/ui/dialog";
+import type { HeroMedia } from "@/types/MediaTypes";
 
 interface HeroMediaDetailsProps {
-  item: MediaItemWithId;
+  item: HeroMedia;
 }
 
 export const HeroMediaDetails = ({ item }: HeroMediaDetailsProps) => {

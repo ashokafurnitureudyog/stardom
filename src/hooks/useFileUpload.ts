@@ -1,12 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import {
-  uploadFileToStorage,
-  uploadMultipleFilesToStorage,
-} from "@/lib/client/appwrite-upload";
+import { useCallback, useState } from "react";
+import { uploadFileToStorage, uploadMultipleFilesToStorage } from "@/lib/client/appwrite-upload";
 
-interface UploadProgress {
+interface UploadStatus {
   uploading: boolean;
   progress: number;
   error: string | null;
@@ -17,108 +14,55 @@ interface UploadOptions {
   maxSizeInMB?: number;
 }
 
+const IDLE: UploadStatus = { uploading: false, progress: 0, error: null };
+
+/**
+ * Uploads to Appwrite storage with real byte progress reported by the SDK.
+ */
 export function useFileUpload() {
-  const [uploadStatus, setUploadStatus] = useState<UploadProgress>({
-    uploading: false,
-    progress: 0,
-    error: null,
-  });
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>(IDLE);
 
-  /**
-   * Upload a single file to Appwrite storage
-   */
-  const uploadFile = async (
-    file: File,
-    bucketId: string,
-    options?: UploadOptions,
-  ): Promise<string | null> => {
-    try {
-      setUploadStatus({
-        uploading: true,
-        progress: 0,
-        error: null,
-      });
+  const run = useCallback(
+    async <T>(work: (onProgress: (percent: number) => void) => Promise<T>, empty: T) => {
+      setUploadStatus({ uploading: true, progress: 0, error: null });
+      try {
+        const result = await work((progress) =>
+          setUploadStatus((status) => ({ ...status, progress })),
+        );
+        setUploadStatus({ uploading: false, progress: 100, error: null });
+        return result;
+      } catch (error) {
+        setUploadStatus({
+          uploading: false,
+          progress: 0,
+          error: error instanceof Error ? error.message : "Upload failed",
+        });
+        return empty;
+      }
+    },
+    [],
+  );
 
-      // Simple progress simulation
-      const progressInterval = setInterval(() => {
-        setUploadStatus((prev) => ({
-          ...prev,
-          progress: Math.min(prev.progress + 10, 90), // Cap at 90% until complete
-        }));
-      }, 300);
+  const uploadFile = useCallback(
+    (file: File, bucketId: string, options?: UploadOptions) =>
+      run<string | null>(
+        (onProgress) => uploadFileToStorage(file, bucketId, { ...options, onProgress }),
+        null,
+      ),
+    [run],
+  );
 
-      const fileUrl = await uploadFileToStorage(file, bucketId, options);
+  const uploadMultipleFiles = useCallback(
+    (files: File[], bucketId: string, options?: UploadOptions) =>
+      files.length === 0
+        ? Promise.resolve([])
+        : run<string[]>(
+            (onProgress) =>
+              uploadMultipleFilesToStorage(files, bucketId, { ...options, onProgress }),
+            [],
+          ),
+    [run],
+  );
 
-      clearInterval(progressInterval);
-      setUploadStatus({
-        uploading: false,
-        progress: 100,
-        error: null,
-      });
-
-      return fileUrl;
-    } catch (error) {
-      setUploadStatus({
-        uploading: false,
-        progress: 0,
-        error: error instanceof Error ? error.message : "Upload failed",
-      });
-      return null;
-    }
-  };
-
-  /**
-   * Upload multiple files to Appwrite storage
-   */
-  const uploadMultipleFiles = async (
-    files: File[],
-    bucketId: string,
-    options?: UploadOptions,
-  ): Promise<string[]> => {
-    try {
-      if (files.length === 0) return [];
-
-      setUploadStatus({
-        uploading: true,
-        progress: 0,
-        error: null,
-      });
-
-      // Simple progress simulation
-      const progressInterval = setInterval(() => {
-        setUploadStatus((prev) => ({
-          ...prev,
-          progress: Math.min(prev.progress + 5, 90), // Cap at 90% until complete
-        }));
-      }, 200);
-
-      const fileUrls = await uploadMultipleFilesToStorage(
-        files,
-        bucketId,
-        options,
-      );
-
-      clearInterval(progressInterval);
-      setUploadStatus({
-        uploading: false,
-        progress: 100,
-        error: null,
-      });
-
-      return fileUrls;
-    } catch (error) {
-      setUploadStatus({
-        uploading: false,
-        progress: 0,
-        error: error instanceof Error ? error.message : "Upload failed",
-      });
-      return [];
-    }
-  };
-
-  return {
-    uploadFile,
-    uploadMultipleFiles,
-    uploadStatus,
-  };
+  return { uploadFile, uploadMultipleFiles, uploadStatus };
 }

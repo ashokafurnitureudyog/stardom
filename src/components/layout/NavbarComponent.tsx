@@ -1,194 +1,287 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-} from "@heroui/react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import Image from "next/image";
-import { ModeToggle } from "../ui/ThemeSwitcher";
-import { useTheme } from "next-themes";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Link } from "next-view-transitions";
-import { MenuLinkProps } from "@/types/ComponentTypes";
-import { LOGO_DIMENSIONS, MENU_ITEMS } from "@/lib/constants/NavbarConstants";
+import { useEffect, useRef, useState } from "react";
+import {
+  PRODUCT_CATEGORIES,
+  SERIES_SUMMARY,
+  seriesHref,
+  seriesName,
+} from "@/lib/constants/ProductCategories";
+import { ModeToggle } from "../ui/ThemeSwitcher";
 
-const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
-  const pathname = usePathname();
-  const isActive = pathname === item.path;
-  const [isHovered, setIsHovered] = useState(false);
+const PAGES = [
+  { name: "Heritage", path: "/heritage" },
+  { name: "Portfolio", path: "/portfolio" },
+  { name: "Contact", path: "/contact" },
+];
 
-  const desktopStyles = !isMobile && (
-    <>
-      <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
-      <div className="absolute top-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
-      <div
-        className={`
-          absolute 
-          -left-2 
-          top-1/2 
-          -translate-y-1/2 
-          opacity-0 
-          transition-all 
-          duration-300
-          ${isHovered ? "opacity-100 -translate-x-1" : ""}
-        `}
-      >
-        •
-      </div>
-      <div
-        className={`
-          absolute 
-          -right-2 
-          top-1/2 
-          -translate-y-1/2 
-          opacity-0 
-          transition-all 
-          duration-300
-          ${isHovered ? "opacity-100 translate-x-1" : ""}
-        `}
-      >
-        •
-      </div>
-    </>
-  );
+const linkClass = (isActive: boolean) =>
+  `text-sm tracking-wide transition-colors duration-200 ${
+    isActive ? "text-primary" : "text-foreground/70 hover:text-foreground"
+  }`;
 
-  return (
-    <Link
-      href={item.path}
-      className={`
-        relative
-        group
-        px-2
-        py-1
-        transition-all
-        duration-300
-        font-sans
-        ${isActive ? "text-primary font-medium" : "text-foreground"}
-        ${isMobile ? "w-full p-4 hover:bg-default-100 rounded-lg" : ""}
-      `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {desktopStyles}
-      <span className="relative">
-        {item.name}
-        <span
-          className={`
-            absolute
-            -bottom-1
-            left-0
-            w-full
-            h-px
-            bg-primary
-            transform
-            scale-x-0
-            transition-transform
-            duration-300
-            ${isActive ? "scale-x-100" : ""}
-          `}
-        />
-      </span>
-    </Link>
-  );
-};
+/**
+ * The seven series, which are the whole catalogue. Listed in the header so a
+ * buyer can tell which one fits their floor before opening a product page.
+ */
+const SeriesList = ({ onNavigate }: { onNavigate?: () => void }) => (
+  <ul className="grid gap-x-12 gap-y-1 sm:grid-cols-2">
+    {PRODUCT_CATEGORIES.map((category) => (
+      <li key={category}>
+        <Link
+          href={seriesHref(category)}
+          onClick={onNavigate}
+          className="group/series flex flex-col gap-0.5 rounded-sm px-3 py-2.5 transition-colors duration-200 hover:bg-primary/10 focus-visible:bg-primary/10"
+        >
+          <span className="font-serif text-lg text-foreground group-hover/series:text-primary">
+            {seriesName(category)}
+          </span>
+          <span className="text-xs text-muted-foreground">{SERIES_SUMMARY[category]}</span>
+        </Link>
+      </li>
+    ))}
+  </ul>
+);
 
-// Main component
-const NavbarComponent: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme, resolvedTheme } = useTheme();
-  const [logoSrc, setLogoSrc] = useState("/images/logo.png");
-  const pathname = usePathname();
+const NavbarComponent = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [seriesOpen, setSeriesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const seriesRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Moving the pointer from the trigger to the panel crosses the gap between
+  // them, which would otherwise read as leaving the menu. A short grace period
+  // lets the pointer make the journey.
+  const openSeries = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setSeriesOpen(true);
+  };
+
+  const closeSeries = ({ immediate = false } = {}) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (immediate) {
+      setSeriesOpen(false);
+      return;
+    }
+    closeTimer.current = setTimeout(() => setSeriesOpen(false), 180);
+  };
+
+  useEffect(
+    () => () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    },
+    [],
+  );
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const currentTheme = resolvedTheme || theme;
-    setLogoSrc(
-      currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png",
-    );
-  }, [theme, resolvedTheme]);
-
-  useEffect(() => {
-    setIsMenuOpen(false);
+    setMenuOpen(false);
+    closeSeries({ immediate: true });
   }, [pathname]);
 
+  // The menu covers the viewport, so the page behind it must not scroll.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const { overflow } = document.body.style;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflow;
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!seriesOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeSeries({ immediate: true });
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as HTMLElement;
+      // The panel is rendered outside the trigger's wrapper, so closing on a
+      // pointerdown inside it would unmount the link before the click landed.
+      if (seriesRef.current?.contains(target) || target.closest("#series-panel")) return;
+      closeSeries({ immediate: true });
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [seriesOpen]);
+
+  const onProducts = pathname.startsWith("/products");
+
   return (
-    <Navbar
-      onMenuOpenChange={setIsMenuOpen}
-      className={`
-        bg-background/80 
-        backdrop-blur-xl 
-        transition-all 
-        duration-300
-        ${scrolled ? "shadow-lg" : ""}
-      `}
-      isMenuOpen={isMenuOpen}
-      maxWidth="xl"
-      position="sticky"
+    <header
+      className={`sticky top-0 z-50 w-full border-b transition-colors duration-300 ${
+        scrolled
+          ? "border-border/60 bg-background/90 backdrop-blur-xl"
+          : "border-transparent bg-background/70 backdrop-blur-md"
+      }`}
     >
-      {/* Left section with menu toggle and logo */}
-      <NavbarContent className="gap-4">
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
-        />
-        <NavbarBrand>
-          <Link href="/">
-            <div className="overflow-hidden">
-              <Image
-                src={logoSrc}
-                width={LOGO_DIMENSIONS.width}
-                height={LOGO_DIMENSIONS.height}
-                alt="Logo"
-                className="transition-all duration-300 hover:scale-105"
-                priority
+      <nav className="mx-auto flex h-20 max-w-7xl items-center gap-8 px-6 md:h-24 lg:px-10">
+        <Link href="/" aria-label="Stardom, home" className="shrink-0">
+          <Image
+            src="/images/logo.png"
+            width={600}
+            height={485}
+            alt="Stardom"
+            className="h-16 w-auto md:h-[72px] dark:hidden"
+            priority
+          />
+          <Image
+            src="/images/logo-dark.png"
+            width={600}
+            height={485}
+            alt="Stardom"
+            className="hidden h-16 w-auto md:h-[72px] dark:block"
+            priority
+          />
+        </Link>
+
+        <div
+          ref={seriesRef}
+          className="ml-auto hidden items-center gap-9 md:flex"
+          onMouseLeave={() => closeSeries()}
+        >
+          <div className="relative">
+            <button
+              type="button"
+              aria-expanded={seriesOpen}
+              aria-controls="series-panel"
+              onClick={() => (seriesOpen ? closeSeries({ immediate: true }) : openSeries())}
+              onMouseEnter={openSeries}
+              onFocus={openSeries}
+              className={`flex items-center gap-1.5 ${linkClass(onProducts)}`}
+            >
+              Chairs
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  seriesOpen ? "rotate-180" : ""
+                }`}
+                aria-hidden="true"
               />
-            </div>
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
-
-      {/* Center section with navigation links */}
-      <NavbarContent className="hidden sm:flex gap-8" justify="center">
-        {MENU_ITEMS.map((item) => (
-          <NavbarItem key={item.path}>
-            <MenuLink item={item} />
-          </NavbarItem>
-        ))}
-      </NavbarContent>
-
-      {/* Right section with theme toggle */}
-      <NavbarContent justify="end">
-        <NavbarItem>
-          <div className="transition-transform hover:scale-105">
-            <ModeToggle />
+            </button>
           </div>
-        </NavbarItem>
-      </NavbarContent>
 
-      {/* Mobile menu */}
-      <NavbarMenu className="pt-6 gap-6 bg-background/95 backdrop-blur-xl">
-        {MENU_ITEMS.map((item) => (
-          <NavbarMenuItem key={item.path}>
-            <MenuLink item={item} isMobile={true} />
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
-    </Navbar>
+          {PAGES.map((page) => (
+            <Link key={page.path} href={page.path} className={linkClass(pathname === page.path)}>
+              {page.name}
+            </Link>
+          ))}
+
+          <ModeToggle />
+        </div>
+
+        <div className="ml-auto flex items-center gap-2 md:hidden">
+          <ModeToggle />
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+            className="p-2 text-foreground"
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+      </nav>
+
+      {seriesOpen && (
+        <div
+          id="series-panel"
+          className="series-panel absolute inset-x-0 top-full hidden border-b border-border/60 bg-background/98 backdrop-blur-xl md:block"
+          onMouseEnter={openSeries}
+          onMouseLeave={() => closeSeries()}
+        >
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 lg:flex-row lg:px-10">
+            <div className="lg:w-64">
+              <p className="font-serif text-2xl italic text-primary">Seven series</p>
+              <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
+                Every Stardom chair belongs to one of seven ranges, named for the room it was built
+                for.
+              </p>
+              <Link
+                href="/products"
+                className="mt-5 inline-block text-sm text-foreground underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+              >
+                See the whole catalogue
+              </Link>
+            </div>
+            <div className="flex-1">
+              <SeriesList onNavigate={() => closeSeries({ immediate: true })} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {menuOpen && (
+        <div className="mobile-menu fixed inset-0 z-50 flex flex-col bg-background md:hidden">
+          <div className="flex h-20 shrink-0 items-center justify-between px-6">
+            <Link href="/" aria-label="Stardom, home" onClick={() => setMenuOpen(false)}>
+              <Image
+                src="/images/logo.png"
+                width={600}
+                height={485}
+                alt="Stardom"
+                className="h-16 w-auto dark:hidden"
+              />
+              <Image
+                src="/images/logo-dark.png"
+                width={600}
+                height={485}
+                alt="Stardom"
+                className="hidden h-16 w-auto dark:block"
+              />
+            </Link>
+            <div className="flex items-center gap-2">
+              <ModeToggle />
+              <button
+                type="button"
+                aria-label="Close menu"
+                onClick={() => setMenuOpen(false)}
+                className="p-2 text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto overscroll-contain px-6 pb-12">
+            <SeriesList onNavigate={() => setMenuOpen(false)} />
+            <ul className="mt-8 space-y-1 border-t border-border/60 pt-6">
+              {PAGES.map((page) => (
+                <li key={page.path}>
+                  <Link
+                    href={page.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block py-2 font-serif text-2xl ${
+                      pathname === page.path ? "text-primary" : "text-foreground"
+                    }`}
+                  >
+                    {page.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </header>
   );
 };
 

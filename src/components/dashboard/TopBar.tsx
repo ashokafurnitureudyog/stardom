@@ -1,14 +1,11 @@
 "use client";
-import { useSearchParams, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { Menu } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const SecuritySettingsDialog = dynamic(
-  () =>
-    import("./SecuritySettingsDialog").then(
-      (mod) => mod.SecuritySettingsDialog,
-    ),
+  () => import("./SecuritySettingsDialog").then((mod) => mod.SecuritySettingsDialog),
   { ssr: false },
 );
 
@@ -39,6 +36,7 @@ export const TopBar = ({
       <header className="h-16 border-b border-[#3C3120] bg-black flex items-center sticky top-0 z-30 w-full shadow-md">
         <div className="w-full flex items-center justify-between px-4 md:px-6 lg:px-8">
           <button
+            type="button"
             onClick={toggleSidebar}
             className="md:hidden text-[#A28B55] hover:text-white transition-colors duration-200 flex items-center justify-center h-10 w-10 rounded-full hover:bg-[#2a2315]"
             aria-label="Toggle sidebar"
@@ -46,7 +44,7 @@ export const TopBar = ({
             <Menu size={24} />
           </button>
 
-          <div className="flex items-center justify-center flex-grow">
+          <div className="flex items-center justify-center grow">
             <div className="flex items-center gap-4">
               <Image
                 src="/images/logo-dark.png"
@@ -67,9 +65,7 @@ export const TopBar = ({
         </div>
       </header>
 
-      {showPasswordForm && (
-        <SecuritySettingsDialog user={user} onClose={handleCloseForm} />
-      )}
+      {showPasswordForm && <SecuritySettingsDialog user={user} onClose={handleCloseForm} />}
     </>
   );
 };

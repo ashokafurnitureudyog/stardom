@@ -1,8 +1,8 @@
+import { Plus, X } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { X, Plus } from "lucide-react";
 
 interface ColorsSectionProps {
   colors: string[];
@@ -35,12 +35,7 @@ export function ColorsSection({ colors, setColors }: ColorsSectionProps) {
             }
           }}
         />
-        <Button
-          type="button"
-          onClick={handleAddColor}
-          className="flex-shrink-0"
-          size="icon"
-        >
+        <Button type="button" onClick={handleAddColor} className="shrink-0" size="icon">
           <Plus size={16} />
         </Button>
       </div>

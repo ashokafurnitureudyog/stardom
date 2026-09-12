@@ -1,9 +1,9 @@
 "use server";
-import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AppwriteException } from "node-appwrite";
-import { loginSchema, changePasswordSchema } from "@/lib/validations/auth";
+import type { AppwriteException } from "node-appwrite";
+import { createAdminClient, createSessionClient } from "@/lib/server/appwrite";
+import { changePasswordSchema, loginSchema } from "@/lib/validations/auth";
 
 export type PasswordState = {
   success: boolean;
@@ -13,7 +13,7 @@ export type PasswordState = {
 };
 
 export async function loginUser(
-  prevState: PasswordState,
+  _prevState: PasswordState,
   formData: FormData,
 ): Promise<PasswordState> {
   const data = Object.fromEntries(formData);
@@ -40,21 +40,19 @@ export async function loginUser(
       path: "/",
       httpOnly: true,
       sameSite: "strict",
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(session.expire),
     });
-
-    return { success: true };
   } catch (error) {
     console.error("Login failed:", error);
 
-    const errorMessage =
-      error instanceof Error ? error.message : "Invalid email or password";
-
     return {
       success: false,
-      error: errorMessage,
+      error: error instanceof Error ? error.message : "Invalid email or password",
     };
   }
+
+  redirect("/admin/dashboard");
 }
 
 export async function signOutUser() {
@@ -75,7 +73,7 @@ export async function signOutUser() {
 }
 
 export async function changePassword(
-  prevState: PasswordState | null,
+  _prevState: PasswordState | null,
   formData: FormData,
 ): Promise<PasswordState> {
   const data = Object.fromEntries(formData);
@@ -118,9 +116,7 @@ export async function changePassword(
 
     return {
       success: false,
-      error:
-        appwriteError.message ||
-        "Password update failed. Please check requirements:",
+      error: appwriteError.message || "Password update failed. Please check requirements:",
     };
   }
 }

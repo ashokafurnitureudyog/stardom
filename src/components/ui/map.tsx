@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from "react";
+import L from "leaflet";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import {
+  AttributionControl,
   MapContainer,
-  TileLayer,
   Marker,
   Popup,
+  TileLayer,
   ZoomControl,
-  AttributionControl,
 } from "react-leaflet";
-import { useTheme } from "next-themes";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { CompanyInfo } from "@/types/ComponentTypes";
+import type { CompanyInfo } from "@/types/ComponentTypes";
 import { InfoCard } from "../marketing/InfoCard";
 import { MapSkeleton } from "./MapSkeleton";
 
 // Override default Leaflet popup styles
 import "./Map.css";
+
 type Coordinates = [number, number];
 
 interface MapSectionProps {
@@ -27,25 +28,26 @@ interface MapSectionProps {
 const DEFAULT_COORDINATES: Coordinates = [30.6960369, 76.7828628];
 const DEFAULT_ZOOM = 16;
 
-// Fix default icon paths for Leaflet in Next.js
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+// Leaflet infers its icon paths from the stylesheet URL, which a bundler
+// rewrites, so the inferred path is removed and the icons set explicitly below.
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const mapStyle = {
-  light: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  dark: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-};
+/**
+ * OpenStreetMap's own tiles, which need no API key. The dark theme is a CSS
+ * filter over the same tiles rather than a second provider, because CARTO now
+ * watermarks basemap requests that arrive without a key.
+ */
+const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const TILE_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-export default function Map({
-  companyInfo,
-  isLoading = false,
-}: MapSectionProps) {
+export default function LocationMap({ companyInfo, isLoading = false }: MapSectionProps) {
   const { theme } = useTheme();
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,13 +56,12 @@ export default function Map({
   // Validate coordinates and use fallback if invalid
   const getValidCoordinates = (): Coordinates => {
     try {
-      const [lat, lng] =
-        companyInfo?.address?.coordinates || DEFAULT_COORDINATES;
+      const [lat, lng] = companyInfo?.address?.coordinates || DEFAULT_COORDINATES;
       if (
         typeof lat === "number" &&
         typeof lng === "number" &&
-        !isNaN(lat) &&
-        !isNaN(lng) &&
+        !Number.isNaN(lat) &&
+        !Number.isNaN(lng) &&
         lat >= -90 &&
         lat <= 90 &&
         lng >= -180 &&
@@ -93,9 +94,7 @@ export default function Map({
 
   const mapContainerStyle = {
     filter:
-      theme === "dark"
-        ? "invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)"
-        : "none",
+      theme === "dark" ? "invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)" : "none",
   };
 
   // Handle map load events
@@ -120,15 +119,13 @@ export default function Map({
   return (
     <div className="relative">
       {/* Map section */}
-      <section
-        className="relative border-b border-border"
-        style={{ height: mapHeight }}
-      >
+      <section className="relative border-b border-border" style={{ height: mapHeight }}>
         {error && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
             <div className="p-6 bg-background shadow-lg rounded-lg">
               <p className="text-destructive">{error}</p>
               <button
+                type="button"
                 className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md"
                 onClick={() => setError(null)}
               >
@@ -158,8 +155,9 @@ export default function Map({
             <ZoomControl position="bottomright" />
             <AttributionControl position="bottomleft" />
             <TileLayer
-              attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-              url={theme === "dark" ? mapStyle.dark : mapStyle.light}
+              attribution={TILE_ATTRIBUTION}
+              url={TILE_URL}
+              className={theme === "dark" ? "map-tiles-dark" : undefined}
               eventHandlers={{
                 error: handleMapError,
               }}
@@ -173,13 +171,9 @@ export default function Map({
               >
                 <div className="p-6 -m-4 bg-background shadow-lg rounded-lg">
                   <div className="space-y-3">
-                    <h3 className="font-medium text-xl text-primary">
-                      {companyInfo.name}
-                    </h3>
+                    <h3 className="font-medium text-xl text-primary">{companyInfo.name}</h3>
                     <div className="space-y-1">
-                      <p className="text-sm text-muted-foreground">
-                        {companyInfo.address.street}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{companyInfo.address.street}</p>
                       <p className="text-sm text-muted-foreground">
                         {companyInfo.address.city}, {companyInfo.address.zip}
                       </p>

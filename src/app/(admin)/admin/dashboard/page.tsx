@@ -1,17 +1,17 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { Sidebar } from "@/components/dashboard/Sidebar";
-import { TopBar } from "@/components/dashboard/TopBar";
-import { ProductsSection } from "@/components/dashboard/ProductsSection";
-import { FeaturedSection } from "@/components/dashboard/FeaturedSection";
-import { TestimonialsSection } from "@/components/dashboard/TestimonialsSection";
-import { getLoggedInUser } from "@/lib/server/appwrite";
-import { PortfolioSection } from "@/components/dashboard/PortfolioSection";
+import { Suspense, useEffect, useState } from "react";
 import { CompanyInfoSection } from "@/components/dashboard/CompanyInfoSection";
+import { FeaturedSection } from "@/components/dashboard/FeaturedSection";
 import { HeroFilesSection } from "@/components/dashboard/HeroFilesSection";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { PortfolioSection } from "@/components/dashboard/PortfolioSection";
+import { ProductsSection } from "@/components/dashboard/ProductsSection";
 import { DashboardLoader } from "@/components/dashboard/preloader/DashboardLoader";
+import { Sidebar } from "@/components/dashboard/Sidebar";
+import { TestimonialsSection } from "@/components/dashboard/TestimonialsSection";
+import { TopBar } from "@/components/dashboard/TopBar";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { getLoggedInUser } from "@/lib/actions/auth-actions";
 
 export default function AdminDashboard() {
   const [activeSection, setActiveSection] = useState("products");
@@ -44,20 +44,13 @@ export default function AdminDashboard() {
       {/* Desktop sidebar - only visible on md screens and up */}
       <div className="hidden md:block">
         <Suspense fallback={<div className="w-64 bg-card border-r h-screen" />}>
-          <Sidebar
-            activeSection={activeSection}
-            setActiveSection={setActiveSection}
-            user={user}
-          />
+          <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} user={user} />
         </Suspense>
       </div>
 
       {/* Mobile sidebar as a Sheet - only appears when toggled */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent
-          side="left"
-          className="p-0 w-[85%] max-w-[320px] sm:max-w-xs"
-        >
+        <SheetContent side="left" className="p-0 w-[85%] max-w-[320px] sm:max-w-xs">
           <Suspense fallback={<div className="w-full h-full bg-card" />}>
             <Sidebar
               activeSection={activeSection}
@@ -71,9 +64,7 @@ export default function AdminDashboard() {
       </Sheet>
 
       <div className="flex-1 flex flex-col">
-        <Suspense
-          fallback={<div className="h-16 border-b border-[#3C3120] bg-black" />}
-        >
+        <Suspense fallback={<div className="h-16 border-b border-[#3C3120] bg-black" />}>
           <TopBar user={user} toggleSidebar={toggleSidebar} />
         </Suspense>
         <main className="flex-1 p-4 md:p-8 overflow-auto">

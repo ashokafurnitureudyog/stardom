@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useActionState, useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertTriangle, ArrowRight, Loader2, Lock, Mail } from "lucide-react";
+import { motion } from "motion/react";
+import Image from "next/image";
+import { useActionState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Mail, Lock, Loader2, AlertTriangle, ArrowRight } from "lucide-react";
-import { loginUser, PasswordState } from "@/lib/controllers/AuthControllers";
-import Image from "next/image";
+import { loginUser, type PasswordState } from "@/lib/controllers/AuthControllers";
 
 const initialState: PasswordState = {
   success: false,
@@ -19,18 +16,9 @@ const initialState: PasswordState = {
 };
 
 const AdminLoginPage = () => {
-  const [state, formAction, isPending] = useActionState(
-    loginUser,
-    initialState,
-  );
-  const router = useRouter();
-
-  // Redirect on success
-  React.useEffect(() => {
-    if (state.success) {
-      router.push("/admin/dashboard");
-    }
-  }, [state.success, router]);
+  // A successful login redirects from the server action itself, so there is no
+  // client-side push that could bounce against the proxy's own redirect.
+  const [state, formAction, isPending] = useActionState(loginUser, initialState);
 
   return (
     <div className="min-h-screen flex w-full bg-background font-sans">
@@ -61,10 +49,7 @@ const AdminLoginPage = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
             >
-              <Alert
-                variant="destructive"
-                className="border-red-500/20 bg-red-500/5 text-red-600"
-              >
+              <Alert variant="destructive" className="border-red-500/20 bg-red-500/5 text-red-600">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>{state.error}</AlertDescription>
               </Alert>
@@ -73,10 +58,7 @@ const AdminLoginPage = () => {
 
           <form action={formAction} className="space-y-6">
             <div className="space-y-2">
-              <Label
-                htmlFor="email"
-                className="text-sm font-medium text-foreground/80"
-              >
+              <Label htmlFor="email" className="text-sm font-medium text-foreground/80">
                 Email Address
               </Label>
               <div className="relative group">
@@ -91,18 +73,13 @@ const AdminLoginPage = () => {
                 <Mail className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
               </div>
               {state.errors?.email && (
-                <p className="text-xs text-red-500 mt-1">
-                  {state.errors.email[0]}
-                </p>
+                <p className="text-xs text-red-500 mt-1">{state.errors.email[0]}</p>
               )}
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label
-                  htmlFor="password"
-                  className="text-sm font-medium text-foreground/80"
-                >
+                <Label htmlFor="password" className="text-sm font-medium text-foreground/80">
                   Password
                 </Label>
               </div>
@@ -118,9 +95,7 @@ const AdminLoginPage = () => {
                 <Lock className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
               </div>
               {state.errors?.password && (
-                <p className="text-xs text-red-500 mt-1">
-                  {state.errors.password[0]}
-                </p>
+                <p className="text-xs text-red-500 mt-1">{state.errors.password[0]}</p>
               )}
             </div>
 
@@ -152,7 +127,7 @@ const AdminLoginPage = () => {
       {/* Right Column - Visual */}
       <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-neutral-900">
         <div className="absolute inset-0 bg-neutral-900/40 z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent z-10 opacity-80" />
+        <div className="absolute inset-0 bg-linear-to-t from-neutral-900 via-transparent to-transparent z-10 opacity-80" />
 
         <Image
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2301&auto=format&fit=crop"
@@ -174,8 +149,8 @@ const AdminLoginPage = () => {
             </h2>
             <div className="h-px w-12 bg-white/50 mb-6" />
             <p className="text-white/80 font-light max-w-md text-lg leading-relaxed">
-              Manage your premium furniture collections, customer interactions,
-              and portfolio with precision and elegance.
+              Manage your premium furniture collections, customer interactions, and portfolio with
+              precision and elegance.
             </p>
           </motion.div>
         </div>

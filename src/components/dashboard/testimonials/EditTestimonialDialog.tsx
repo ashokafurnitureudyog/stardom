@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
 import { TestimonialForm } from "./TestimonialForm";
-import { ClientTestimonial } from "@/types/ComponentTypes";
 
 interface EditTestimonialDialogProps {
   open: boolean;
@@ -24,11 +24,7 @@ export function EditTestimonialDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6 bg-[#171410] border-[#352b1c]">
-        <TestimonialForm
-          onSuccess={handleSuccess}
-          initialData={testimonial}
-          isEditing={true}
-        />
+        <TestimonialForm onSuccess={handleSuccess} initialData={testimonial} isEditing={true} />
       </DialogContent>
     </Dialog>
   );

@@ -1,8 +1,10 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import React, { useState } from "react";
-import { CanvasRevealEffect } from "../ui/canvas-reveal-effect";
+import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
+import type React from "react";
+import { useState } from "react";
+import { DotRevealEffect } from "../ui/dot-reveal-effect";
 
 type LogoRevealCardProps = {
   imageUrl: string;
@@ -40,10 +42,7 @@ export const LogoRevealCard: React.FC<LogoRevealCardProps> = ({
             exit={{ opacity: 0 }}
             className="absolute inset-0 h-full w-full overflow-hidden rounded-lg"
           >
-            <CanvasRevealEffect
-              animationSpeed={3}
-              containerClassName="bg-transparent"
-            />
+            <DotRevealEffect containerClassName="bg-transparent" />
             <div className="absolute inset-0 flex items-center justify-center p-4">
               <h2
                 className={`z-20 text-center text-3xl font-bold text-white ${revealTextClassName}`}
@@ -57,10 +56,12 @@ export const LogoRevealCard: React.FC<LogoRevealCardProps> = ({
 
       <div className="relative z-10 flex h-full w-full items-center justify-center">
         <div className="h-full w-full transition-opacity duration-300 group-hover:opacity-0">
-          <img
+          <Image
             src={imageUrl}
             alt={imageAlt}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            width={1200}
+            height={800}
           />
         </div>
       </div>

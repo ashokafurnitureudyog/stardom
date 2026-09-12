@@ -1,15 +1,11 @@
 "use client";
+import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { HeroMediaForm } from "./HeroMediaForm";
-import { PlusCircle } from "lucide-react";
 
-export const AddHeroMediaDialog = ({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) => {
+export const AddHeroMediaDialog = ({ onSuccess }: { onSuccess: () => void }) => {
   const [open, setOpen] = useState(false);
 
   return (

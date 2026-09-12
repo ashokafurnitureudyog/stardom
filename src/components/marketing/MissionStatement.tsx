@@ -1,7 +1,7 @@
 "use client";
 
+import { motion } from "motion/react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { motion } from "framer-motion";
 
 export const MissionStatement = () => (
   <motion.div
@@ -16,8 +16,7 @@ export const MissionStatement = () => (
       transition={{ duration: 0.6 }}
       className="text-5xl font-light mb-8 tracking-wide"
     >
-      Our{" "}
-      <span className="font-serif italic text-primary relative">Vision</span>
+      Our Vision
     </motion.h2>
     <motion.p
       initial={{ opacity: 0 }}
@@ -26,11 +25,10 @@ export const MissionStatement = () => (
       className="text-xl text-muted-foreground leading-relaxed font-light"
     >
       To create extraordinary masterpieces that exemplify the pinnacle of
-      <span className="text-primary font-medium"> artisanal craftsmanship</span>
-      . Each bespoke piece embodies our dedication to
+      <span className="text-primary font-medium"> artisanal craftsmanship</span>. Each bespoke piece
+      embodies our dedication to
       <span className="text-primary font-medium"> unparalleled quality</span>,
-      <span className="text-primary font-medium"> refined sophistication</span>,
-      and
+      <span className="text-primary font-medium"> refined sophistication</span>, and
       <span className="text-primary font-medium"> enduring luxury</span>.
     </motion.p>
   </motion.div>

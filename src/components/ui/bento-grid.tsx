@@ -1,9 +1,7 @@
-import { ReactNode } from "react";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-
-import { cn } from "@/lib/utils/utils";
+import { ArrowRightIcon, type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils/utils";
 
 type BentoGridProps = {
   children: ReactNode;
@@ -24,7 +22,7 @@ const BentoGrid = ({ children, className }: BentoGridProps) => {
   return (
     <div
       className={cn(
-        "grid w-full auto-rows-[22rem] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",
+        "grid w-full auto-rows-88 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",
         className,
       )}
     >
@@ -52,12 +50,8 @@ const BentoCard = ({
     <div className="overflow-hidden">{background}</div>
     <div className="pointer-events-none z-10 flex transform-gpu flex-col gap-2 p-7 transition-all duration-500 ease-out group-hover:-translate-y-10">
       <Icon className="h-9 w-9 origin-left mb-6 transform-gpu text-primary transition-all duration-500 ease-out group-hover:scale-75 group-hover:text-primary/90" />
-      <h3 className="text-2xl font-semibold font-serif tracking-tight">
-        {name}
-      </h3>
-      <p className="max-w-lg text-sm/relaxed text-muted-foreground">
-        {description}
-      </p>
+      <h3 className="text-2xl font-semibold font-serif tracking-tight">{name}</h3>
+      <p className="max-w-lg text-sm/relaxed text-muted-foreground">{description}</p>
     </div>
 
     <div
@@ -77,7 +71,7 @@ const BentoCard = ({
         </a>
       </Button>
     </div>
-    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
+    <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/5 to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100" />
   </div>
 );
 

@@ -1,4 +1,5 @@
-import { Product } from "@/types/ComponentTypes";
+import { Eye, X } from "lucide-react";
+import Image from "next/image";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,8 +11,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { X, Eye } from "lucide-react";
-import Image from "next/image";
+import type { Product } from "@/types/ComponentTypes";
+
 interface FeaturedProductCardProps {
   product: Product;
   onRemove: (productId: string) => Promise<void>;
@@ -26,10 +27,10 @@ export const FeaturedProductCard = ({
   const productId = product.id || product.$id || "";
 
   return (
-    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
+    <div className="group relative rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
       {/* Image container with fixed dimensions */}
       <div className="relative w-full" style={{ height: "280px" }}>
-        {product.images && product.images[0] ? (
+        {product.images?.[0] ? (
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -47,18 +48,18 @@ export const FeaturedProductCard = ({
         <div className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <button className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110 transition-all duration-300">
+              <button
+                type="button"
+                className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110 transition-all duration-300"
+              >
                 <X size={25} className="text-[#A28B55]" />
               </button>
             </AlertDialogTrigger>
             <AlertDialogContent className="bg-neutral-900 border border-[#3C3120]">
               <AlertDialogHeader>
-                <AlertDialogTitle className="text-[#A28B55]">
-                  Remove from Featured
-                </AlertDialogTitle>
+                <AlertDialogTitle className="text-[#A28B55]">Remove from Featured</AlertDialogTitle>
                 <AlertDialogDescription className="text-neutral-400">
-                  Are you sure you want to remove &quot;{product.name}&quot;
-                  from featured products?
+                  Are you sure you want to remove &quot;{product.name}&quot; from featured products?
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -91,9 +92,7 @@ export const FeaturedProductCard = ({
       {/* Product info */}
       <div className="p-4">
         <h3 className="font-medium text-[#A28B55] truncate">{product.name}</h3>
-        <p className="text-xs text-neutral-500 truncate mt-1">
-          {product.description}
-        </p>
+        <p className="text-xs text-neutral-500 truncate mt-1">{product.description}</p>
       </div>
     </div>
   );

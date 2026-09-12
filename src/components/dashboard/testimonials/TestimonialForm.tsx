@@ -1,34 +1,30 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { AlertCircle, Check, ChevronDown, ChevronUp, Link, Loader2, X } from "lucide-react";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Check,
-  Link,
-  Loader2,
-  ChevronDown,
-  ChevronUp,
-  AlertCircle,
-  X,
-} from "lucide-react";
-import { cn } from "@/lib/utils/utils";
-import {
-  TESTIMONIAL_MONTHS,
-  TESTIMONIAL_AVATAR_NUMBERS,
   MAX_TESTIMONIAL_IMAGE_URL_LENGTH,
+  TESTIMONIAL_AVATAR_NUMBERS,
+  TESTIMONIAL_MONTHS,
 } from "@/lib/constants/TestimonialConstants";
-import { ClientTestimonial } from "@/types/ComponentTypes";
+import { createTestimonial, updateTestimonial } from "@/lib/controllers/TestimonialsControllers";
+import { cn } from "@/lib/utils/utils";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
 
 interface TestimonialFormProps {
   onSuccess: () => void;
   initialData?: ClientTestimonial;
   isEditing?: boolean;
 }
+
+const getAvatarUrl = (avatarNumber: number): string =>
+  `https://avatar.iran.liara.run/public/${avatarNumber}`;
 
 export const TestimonialForm = ({
   onSuccess,
@@ -58,9 +54,7 @@ export const TestimonialForm = ({
     const year = parts[1];
 
     // Validate the month
-    const validMonth = TESTIMONIAL_MONTHS.includes(month)
-      ? month
-      : TESTIMONIAL_MONTHS[0];
+    const validMonth = TESTIMONIAL_MONTHS.includes(month) ? month : TESTIMONIAL_MONTHS[0];
 
     return { month: validMonth, year };
   };
@@ -92,18 +86,11 @@ export const TestimonialForm = ({
 
   // Extract avatar number from URL if available
   useEffect(() => {
-    if (
-      isEditing &&
-      initialData?.img &&
-      initialData.img.includes("avatar.iran.liara.run")
-    ) {
+    if (isEditing && initialData?.img?.includes("avatar.iran.liara.run")) {
       const match = initialData.img.match(/\/public\/(\d+)$/);
-      if (match && match[1]) {
-        const avatarNumber = parseInt(match[1]);
-        if (
-          !isNaN(avatarNumber) &&
-          TESTIMONIAL_AVATAR_NUMBERS.includes(avatarNumber)
-        ) {
+      if (match?.[1]) {
+        const avatarNumber = parseInt(match[1], 10);
+        if (!Number.isNaN(avatarNumber) && TESTIMONIAL_AVATAR_NUMBERS.includes(avatarNumber)) {
           setSelectedAvatar(avatarNumber);
         }
       }
@@ -149,13 +136,11 @@ export const TestimonialForm = ({
     setSelectedYear(value);
 
     if (value.length === 4) {
-      const year = parseInt(value);
+      const year = parseInt(value, 10);
       const currentYear = new Date().getFullYear();
 
-      if (isNaN(year) || year < 1900 || year > currentYear) {
-        setYearError(
-          `Please enter a valid year between 1900 and ${currentYear}`,
-        );
+      if (Number.isNaN(year) || year < 1900 || year > currentYear) {
+        setYearError(`Please enter a valid year between 1900 and ${currentYear}`);
       } else {
         setYearError("");
       }
@@ -171,9 +156,6 @@ export const TestimonialForm = ({
     setIsImageRemoved(true);
     // Don't automatically switch tabs when removing an image
   };
-
-  const getAvatarUrl = (avatarNumber: number): string =>
-    `https://avatar.iran.liara.run/public/${avatarNumber}`;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -201,46 +183,28 @@ export const TestimonialForm = ({
     setIsSubmitting(true);
 
     try {
-      const formData = new FormData(e.currentTarget);
-      const purchaseDate = `${selectedMonth} ${selectedYear}`;
-      formData.set("purchaseDate", purchaseDate);
-      formData.set("img", finalImageUrl);
-      formData.set("imageUrl", finalImageUrl);
-      formData.set("imageSource", imageTab);
-      formData.set("imageRemoved", isImageRemoved.toString());
+      const fields = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
+      const payload = {
+        name: fields.name,
+        title: fields.title,
+        location: fields.location,
+        context: fields.context,
+        quote: fields.quote,
+        purchaseDate: `${selectedMonth} ${selectedYear}`,
+        img: finalImageUrl,
+      };
 
-      // If editing, include the testimonial ID
-      if (isEditing && initialData) {
-        const testimonialId = initialData.id || initialData.$id;
-        if (testimonialId) {
-          formData.set("id", testimonialId);
-        }
-      }
+      const testimonialId = isEditing && initialData ? (initialData.id ?? initialData.$id) : "";
+      const result = testimonialId
+        ? await updateTestimonial(testimonialId, payload)
+        : await createTestimonial(payload);
 
-      // Use POST method for both create and update
-      const response = await fetch("/api/protected/testimonials", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(
-          data.message ||
-            `Failed to ${isEditing ? "update" : "add"} testimonial`,
-        );
-      }
+      if (!result.ok) throw new Error(result.error);
 
       onSuccess();
-    } catch (error: Error | unknown) {
-      console.error(
-        `Failed to ${isEditing ? "update" : "submit"} testimonial:`,
-        error,
-      );
-      setError(
-        error instanceof Error ? error.message : "An unexpected error occurred",
-      );
+    } catch (error: unknown) {
+      console.error(`Failed to ${isEditing ? "update" : "submit"} testimonial:`, error);
+      setError(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
@@ -248,16 +212,13 @@ export const TestimonialForm = ({
 
   // Render the current profile image if editing and not removed
   const renderCurrentImage = () => {
-    if (!isEditing || isImageRemoved || (!initialData?.img && !imageUrl))
-      return null;
+    if (!isEditing || isImageRemoved || (!initialData?.img && !imageUrl)) return null;
 
     const displayUrl = imageUrl || initialData?.img || "";
 
     return (
       <div className="mb-6 border border-[#3C3120] rounded-md p-4 bg-neutral-950/30">
-        <h4 className="text-sm font-medium text-neutral-400 mb-3">
-          Current Profile Image
-        </h4>
+        <h4 className="text-sm font-medium text-neutral-400 mb-3">Current Profile Image</h4>
         <div className="group relative w-16 h-16 mx-auto">
           <div className="aspect-square rounded-full overflow-hidden border border-[#3C3120]">
             <Image
@@ -287,11 +248,7 @@ export const TestimonialForm = ({
 
   // Show preview for avatar selection even when editing
   const renderAvatarPreview = () => {
-    if (
-      imageTab !== "avatar" ||
-      (!isImageRemoved && isEditing && initialData?.img)
-    )
-      return null;
+    if (imageTab !== "avatar" || (!isImageRemoved && isEditing && initialData?.img)) return null;
 
     return (
       <div className="mt-4 border border-[#3C3120] rounded-md p-4 bg-neutral-950/30">
@@ -324,7 +281,7 @@ export const TestimonialForm = ({
 
       {error && (
         <div className="bg-red-500/10 border border-red-900/50 text-red-400 p-4 rounded-md flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+          <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
           <p>{error}</p>
         </div>
       )}
@@ -392,11 +349,7 @@ export const TestimonialForm = ({
                   className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] cursor-pointer pl-3 pr-8"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                  {showMonths ? (
-                    <ChevronUp size={16} />
-                  ) : (
-                    <ChevronDown size={16} />
-                  )}
+                  {showMonths ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </div>
 
                 {showMonths && (
@@ -433,9 +386,7 @@ export const TestimonialForm = ({
                 className="w-24 bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55]"
               />
             </div>
-            {yearError && (
-              <p className="text-xs text-red-400 mt-1">{yearError}</p>
-            )}
+            {yearError && <p className="text-xs text-red-400 mt-1">{yearError}</p>}
           </div>
         </div>
 
@@ -482,9 +433,7 @@ export const TestimonialForm = ({
               1. Not editing, OR
               2. Image was removed, OR
               3. No initial image exists */}
-          {(!isEditing ||
-            isImageRemoved ||
-            (!initialData?.img && !imageUrl)) && (
+          {(!isEditing || isImageRemoved || (!initialData?.img && !imageUrl)) && (
             <Tabs
               defaultValue={imageTab}
               value={imageTab}
@@ -586,7 +535,7 @@ export const TestimonialForm = ({
         </div>
       </div>
 
-      <Separator className="bg-gradient-to-r from-transparent via-[#3C3120] to-transparent" />
+      <Separator className="bg-linear-to-r from-transparent via-[#3C3120] to-transparent" />
 
       <div className="flex justify-end gap-3">
         <Button
@@ -609,8 +558,7 @@ export const TestimonialForm = ({
             </>
           ) : (
             <>
-              <Check size={16} className="mr-2" />{" "}
-              {isEditing ? "Update" : "Save"} Testimonial
+              <Check size={16} className="mr-2" /> {isEditing ? "Update" : "Save"} Testimonial
             </>
           )}
         </Button>

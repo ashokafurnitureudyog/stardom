@@ -1,15 +1,11 @@
 "use client";
+import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { TestimonialForm } from "./TestimonialForm";
-import { PlusCircle } from "lucide-react";
 
-export const AddTestimonialDialog = ({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) => {
+export const AddTestimonialDialog = ({ onSuccess }: { onSuccess: () => void }) => {
   const [open, setOpen] = useState(false);
 
   return (

@@ -1,16 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Transition } from "@headlessui/react";
+import { CalendarIcon, CheckCircleIcon, MapPinIcon, QuoteIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils/utils";
-import {
-  QuoteIcon,
-  MapPinIcon,
-  CalendarIcon,
-  CheckCircleIcon,
-} from "lucide-react";
 
-import { ClientTestimonial } from "@/types/ComponentTypes";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
 
 export function FancyTestimonialsSlider({
   testimonials,
@@ -31,45 +27,40 @@ export function FancyTestimonialsSlider({
     return () => clearInterval(interval);
   }, [active, autorotate, testimonials.length, autorotateTiming]);
 
-  const heightFix = () => {
+  const heightFix = useCallback(() => {
     if (testimonialsRef.current?.parentElement) {
       testimonialsRef.current.parentElement.style.height = `${testimonialsRef.current.clientHeight}px`;
     }
-  };
+  }, []);
 
   useEffect(() => {
     heightFix();
-  }, []);
+  }, [heightFix]);
 
   return (
     <div className="mx-auto w-full max-w-4xl text-center">
       {/* Testimonial image */}
       <div className="relative h-32">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[420px] lg:w-[480px] lg:h-[480px] -translate-x-1/2 before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-gradient-to-b before:from-primary/5 before:via-primary/2 before:via-25% before:to-transparent before:to-75%">
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[420px] lg:w-[480px] lg:h-[480px] -translate-x-1/2 before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-linear-to-b before:from-primary/5 before:via-primary/2 before:via-25% before:to-transparent before:to-75%">
           <div className="h-32 mask-[linear-gradient(0deg,transparent,var(--color-white)_20%,var(--color-white))]">
-            {testimonials.map((testimonial, index) => (
-              <Transition
-                as="div"
-                key={index}
-                show={active === index}
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={active}
                 className="absolute inset-0 -z-10 h-full"
-                enter="transition ease-[cubic-bezier(0.68,-0.3,0.32,1)] duration-700 order-first"
-                enterFrom="opacity-0 -rotate-60"
-                enterTo="opacity-100 rotate-0"
-                leave="transition ease-[cubic-bezier(0.68,-0.3,0.32,1)] duration-700"
-                leaveFrom="opacity-100 rotate-0"
-                leaveTo="opacity-0 rotate-60"
-                beforeEnter={() => heightFix()}
+                initial={{ opacity: 0, rotate: -60 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 60 }}
+                transition={{ duration: 0.7, ease: [0.68, -0.3, 0.32, 1] }}
               >
-                <img
+                <Image
                   className="relative left-1/2 top-11 -translate-x-1/2 rounded-full border border-primary/10 p-1"
-                  src={testimonial.img}
+                  src={testimonials[active].img}
                   width={56}
                   height={56}
-                  alt={testimonial.name}
+                  alt={testimonials[active].name}
                 />
-              </Transition>
-            ))}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -82,55 +73,50 @@ export function FancyTestimonialsSlider({
       {/* Text */}
       <div className="mb-12 transition-all delay-300 duration-150 ease-in-out">
         <div className="relative flex flex-col" ref={testimonialsRef}>
-          {testimonials.map((testimonial, index) => (
-            <Transition
-              key={index}
-              show={active === index}
-              enter="transition ease-in-out duration-500 delay-200 order-first"
-              enterFrom="opacity-0 translate-y-4"
-              enterTo="opacity-100 translate-y-0"
-              leave="transition ease-out duration-300 delay-300 absolute inset-0"
-              leaveFrom="opacity-100 translate-y-0"
-              leaveTo="opacity-0 translate-y-4"
-              beforeEnter={() => heightFix()}
+          <AnimatePresence initial={false} onExitComplete={heightFix}>
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 16, position: "absolute", inset: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              onAnimationStart={heightFix}
             >
               <div className="space-y-4">
                 <p className="text-2xl md:text-3xl font-extralight text-foreground font-serif max-w-2xl mx-auto leading-relaxed">
-                  {testimonial.quote}
+                  {testimonials[active].quote}
                 </p>
                 <div className="space-y-2">
-                  <p className="text-foreground font-medium">
-                    {testimonial.name}
-                  </p>
+                  <p className="text-foreground font-medium">{testimonials[active].name}</p>
 
                   {/* Client Details - Replaces Role */}
                   <div className="flex items-center justify-center gap-3 text-sm text-primary/80">
-                    {testimonial.location && (
+                    {testimonials[active].location && (
                       <span className="flex items-center gap-1">
                         <MapPinIcon className="h-3 w-3" />
-                        {testimonial.location}
+                        {testimonials[active].location}
                       </span>
                     )}
 
-                    {testimonial.context && (
+                    {testimonials[active].context && (
                       <span className="hidden sm:inline-block">•</span>
                     )}
 
-                    {testimonial.context && <span>{testimonial.context}</span>}
+                    {testimonials[active].context && <span>{testimonials[active].context}</span>}
 
-                    {testimonial.purchaseDate && (
+                    {testimonials[active].purchaseDate && (
                       <span className="hidden sm:inline-block">•</span>
                     )}
 
-                    {testimonial.purchaseDate && (
+                    {testimonials[active].purchaseDate && (
                       <span className="flex items-center gap-1">
                         <CalendarIcon className="h-3 w-3" />
-                        {testimonial.purchaseDate}
+                        {testimonials[active].purchaseDate}
                       </span>
                     )}
                   </div>
 
-                  {testimonial.verified && (
+                  {testimonials[active].verified && (
                     <div className="flex justify-center mt-1">
                       <span className="inline-flex items-center gap-1 bg-primary/5 px-2 py-0.5 rounded-full text-xs text-primary/90">
                         <CheckCircleIcon className="h-3 w-3" />
@@ -140,8 +126,8 @@ export function FancyTestimonialsSlider({
                   )}
                 </div>
               </div>
-            </Transition>
-          ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
@@ -149,11 +135,12 @@ export function FancyTestimonialsSlider({
       <div className="-m-1.5 flex flex-wrap justify-center">
         {testimonials.map((testimonial, index) => (
           <button
+            type="button"
             key={index}
             className={cn(
               "m-1.5 inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5",
               "text-xs tracking-wider uppercase transition-colors duration-150",
-              "border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+              "border focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring",
               active === index
                 ? "border-primary/20 bg-primary/5 text-primary"
                 : "border-transparent text-muted-foreground hover:text-primary/60",

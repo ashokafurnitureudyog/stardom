@@ -1,4 +1,4 @@
-"use client";
+import Image from "next/image";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
@@ -9,14 +9,9 @@ import { MissionStatement } from "@/components/marketing/MissionStatement";
 import { TeamSection } from "@/components/marketing/TeamSection";
 import TestingToolsSection from "@/components/marketing/TestingTools";
 import { LogoRevealCard } from "@/components/shared/RevealCard";
-import {
-  AnimatedSpan,
-  Terminal,
-  TypingAnimation,
-} from "@/components/ui/terminal";
+import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
 import { Timeline } from "@/components/ui/timeline";
-import { useCompanyData } from "@/hooks/useCompanyData";
-import { Skeleton } from "@/components/ui/skeleton";
+import { getCompanyData } from "@/lib/server/content";
 
 //Will not shift to constants as it integrates react components
 const timelineData = [
@@ -28,22 +23,25 @@ const timelineData = [
           Founded as Ashoka Furniture Udyog
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Started serving the local Chandigarh market with quality handcrafted
-          furniture.
+          Started serving the local Chandigarh market with quality handcrafted furniture.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1965&q=80"
               alt="Traditional woodworking workshop"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1580480055273-228ff5388ef8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
               alt="Traditional furniture craftsmanship"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -58,22 +56,26 @@ const timelineData = [
           Regional Expansion
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Expanded operations across Northern India including Delhi NCR, Punjab,
-          Haryana, Himachal Pradesh and Uttar Pradesh.
+          Expanded operations across Northern India including Delhi NCR, Punjab, Haryana, Himachal
+          Pradesh and Uttar Pradesh.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
               alt="Modern furniture showroom"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1916&q=80"
               alt="Designer office furniture"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -88,22 +90,25 @@ const timelineData = [
           Global Partnerships
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Expanded into international markets with global partners and
-          suppliers.
+          Expanded into international markets with global partners and suppliers.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80"
               alt="International furniture exhibition"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
               alt="Global logistics and shipping"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -118,30 +123,30 @@ const timelineData = [
           Premium Brand Launch
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Launched Stardom as a premium furniture brand under Ashoka Furniture
-          Udyog.
+          Launched Stardom as a premium furniture brand under Ashoka Furniture Udyog.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1567016432779-094069958ea5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80"
               alt="Premium living room furniture"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1538688423619-a81d3f23454b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
               alt="Luxury brand furniture"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
         <div className="flex items-center justify-center w-full mx-auto mt-6">
-          <LogoRevealCard
-            imageUrl="/images/logo.png"
-            revealText="stardom.co.in"
-          />
+          <LogoRevealCard imageUrl="/images/logo.png" revealText="stardom.co.in" />
         </div>
       </div>
     ),
@@ -154,22 +159,25 @@ const timelineData = [
           Digital Transformation
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Launched comprehensive digital product showcase platform with
-          interactive features.
+          Launched comprehensive digital product showcase platform with interactive features.
         </p>
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1618220179428-22790b461013?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2027&q=80"
               alt="Digital furniture shopping experience"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
               alt="Online furniture catalog"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -217,9 +225,8 @@ const timelineData = [
   },
 ];
 
-const HeritagePage: React.FC = () => {
-  // Fetch company data using our hook
-  const { teamMembers, isLoading } = useCompanyData();
+const HeritagePage = async () => {
+  const { teamMembers } = await getCompanyData();
 
   return (
     <BaseLayout className="overflow-x-hidden lg:overflow-auto">
@@ -231,46 +238,25 @@ const HeritagePage: React.FC = () => {
         </Section>
 
         <Section className="bg-background">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Journey</span>
-          </SectionTitle>
+          <SectionTitle>Our Journey</SectionTitle>
           <Timeline data={timelineData} />
         </Section>
         <Section className="bg-background">
-          <SectionTitle>
-            Our{" "}
-            <span className="font-serif italic text-primary">Facilities</span>
-          </SectionTitle>
+          <SectionTitle>Our Facilities</SectionTitle>
           <ManufacturingFacilities />
         </Section>
         <Section className="bg-background">
-          <SectionTitle>
-            Our{" "}
-            <span className="font-serif italic text-primary">Standards</span>
-          </SectionTitle>
+          <SectionTitle>Our Standards</SectionTitle>
           <CertificationsSection />
         </Section>
         <Section className="bg-background">
-          <SectionTitle>
-            Testing{" "}
-            <span className="font-serif italic text-primary">Equipment</span>
-          </SectionTitle>
+          <SectionTitle>Testing Equipment</SectionTitle>
           <TestingToolsSection />
         </Section>
 
         <Section className="bg-card">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Team</span>
-          </SectionTitle>
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-[400px] w-full rounded-lg" />
-              ))}
-            </div>
-          ) : (
-            <TeamSection members={teamMembers || []} />
-          )}
+          <SectionTitle>Our Team</SectionTitle>
+          <TeamSection members={teamMembers} />
         </Section>
       </div>
     </BaseLayout>

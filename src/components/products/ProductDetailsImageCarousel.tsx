@@ -1,13 +1,8 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import type { CarouselApi } from "@/components/ui/carousel";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import type { CarouselApi } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 interface ProductImagesProps {
   images: string[];
@@ -26,10 +21,7 @@ export const ProductImages = ({
 }: ProductImagesProps) => {
   // Use either external or internal state management
   const [internalActiveIndex, setInternalActiveIndex] = useState(initialIndex);
-  const activeIndex =
-    externalActiveIndex !== undefined
-      ? externalActiveIndex
-      : internalActiveIndex;
+  const activeIndex = externalActiveIndex !== undefined ? externalActiveIndex : internalActiveIndex;
   const setActiveIndex = externalSetActiveIndex || setInternalActiveIndex;
 
   const [api, setApi] = useState<CarouselApi>();
@@ -57,7 +49,7 @@ export const ProductImages = ({
   // Handle empty images array
   if (!images.length) {
     return (
-      <div className="w-full aspect-square bg-muted/20 rounded-[2rem] flex items-center justify-center">
+      <div className="w-full aspect-square bg-muted/20 rounded-4xl flex items-center justify-center">
         <p className="text-muted-foreground font-medium">No images available</p>
       </div>
     );
@@ -79,7 +71,7 @@ export const ProductImages = ({
         <CarouselContent className="-ml-4">
           {images.map((image, index) => (
             <CarouselItem key={`${image}-${index}`} className="pl-4 basis-full">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-secondary/30">
+              <div className="relative aspect-4/5 overflow-hidden rounded-4xl bg-secondary/30">
                 <Image
                   src={image}
                   alt={`${productName} - view ${index + 1}`}
@@ -98,12 +90,11 @@ export const ProductImages = ({
         <div className="flex justify-center gap-2 mt-6">
           {images.map((_, index) => (
             <button
+              type="button"
               key={index}
               onClick={() => api?.scrollTo(index)}
               className={`h-2 rounded-full transition-all duration-300 ${
-                activeIndex === index
-                  ? "w-8 bg-primary"
-                  : "w-2 bg-primary/20 hover:bg-primary/40"
+                activeIndex === index ? "w-8 bg-primary" : "w-2 bg-primary/20 hover:bg-primary/40"
               }`}
               aria-label={`Go to slide ${index + 1}`}
               aria-pressed={activeIndex === index}

@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImagePlus, Link, Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { Upload, Link, ImagePlus, X, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ImagesSectionProps {
   files: File[];
@@ -40,7 +41,6 @@ export function ImagesSection({
   imageColorMapping,
   setImageColorMapping,
 }: ImagesSectionProps) {
-  const { toast } = useToast();
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("upload");
 
@@ -71,31 +71,18 @@ export function ImagesSection({
       const newFiles = Array.from(fileList);
 
       // Validate file types
-      const invalidFiles = newFiles.filter(
-        (file) => !file.type.startsWith("image/"),
-      );
+      const invalidFiles = newFiles.filter((file) => !file.type.startsWith("image/"));
       if (invalidFiles.length > 0) {
-        toast({
-          title: "Invalid file type",
-          description:
-            "Please select only image files (JPG, PNG, WEBP, GIF, etc.)",
-          variant: "destructive",
-        });
+        toast.error("Please select only image files (JPG, PNG, WEBP, GIF, etc.)");
         e.target.value = "";
         return;
       }
 
       // Validate file sizes (max 50MB each - we're now using direct Appwrite upload)
       // This is a client-side check for better UX, the actual limit is handled by Appwrite
-      const largeFiles = newFiles.filter(
-        (file) => file.size > 50 * 1024 * 1024,
-      );
+      const largeFiles = newFiles.filter((file) => file.size > 50 * 1024 * 1024);
       if (largeFiles.length > 0) {
-        toast({
-          title: "File too large",
-          description: `${largeFiles.length} file(s) exceed the maximum size of 50MB`,
-          variant: "destructive",
-        });
+        toast.error(`${largeFiles.length} file(s) exceed the maximum size of 50MB`);
         e.target.value = "";
         return;
       }
@@ -105,8 +92,7 @@ export function ImagesSection({
       });
 
       // Provide success feedback
-      toast({
-        title: "Images added",
+      toast("Images added", {
         description: `${newFiles.length} image${newFiles.length > 1 ? "s" : ""} successfully added`,
       });
 
@@ -119,31 +105,19 @@ export function ImagesSection({
   // Custom URL validation and handling
   const validateImageUrl = (url: string) => {
     if (!url.trim()) {
-      toast({
-        title: "Empty URL",
-        description: "Please enter a valid image URL",
-        variant: "destructive",
-      });
+      toast.error("Please enter a valid image URL");
       return false;
     }
 
     // Check URL length
     if (url.length > 512) {
-      toast({
-        title: "URL too long",
-        description: "The URL cannot be longer than 512 characters",
-        variant: "destructive",
-      });
+      toast.error("The URL cannot be longer than 512 characters");
       return false;
     }
 
     // Check if URL is already in the list
     if (imageUrls.includes(url.trim())) {
-      toast({
-        title: "Duplicate URL",
-        description: "This image URL is already in your gallery",
-        variant: "destructive",
-      });
+      toast.error("This image URL is already in your gallery");
       return false;
     }
 
@@ -176,19 +150,11 @@ export function ImagesSection({
       // URL is valid, add it to the list
       setImageUrls([...imageUrls, url.trim()]);
       setNewImageUrl("");
-      toast({
-        title: "Image added",
-        description: "The image URL was verified and added to your gallery",
-      });
+      toast("Image added", { description: "The image URL was verified and added to your gallery" });
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to validate image URL";
+      const errorMessage = err instanceof Error ? err.message : "Failed to validate image URL";
 
-      toast({
-        title: "Invalid Image URL",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorMessage);
     } finally {
       setIsImageLoading(false);
     }
@@ -207,11 +173,7 @@ export function ImagesSection({
 
   // Handle image error for already added URLs
   const handleImageError = (index: number) => {
-    toast({
-      title: "Image Error",
-      description: "An image URL is no longer valid and was removed",
-      variant: "destructive",
-    });
+    toast.error("An image URL is no longer valid and was removed");
     setImageUrls(imageUrls.filter((_, i) => i !== index));
   };
 
@@ -222,10 +184,7 @@ export function ImagesSection({
     newUrls.splice(index, 1);
     setImageUrls(newUrls);
 
-    toast({
-      title: "Image removed",
-      description: "The image has been removed from the product",
-    });
+    toast("Image removed", { description: "The image has been removed from the product" });
   };
 
   return (
@@ -235,9 +194,7 @@ export function ImagesSection({
       {/* Current Images Display - always visible */}
       {imageUrls.length > 0 && (
         <div className="mb-6">
-          <h4 className="text-sm font-medium mb-3">
-            Current Images ({imageUrls.length})
-          </h4>
+          <h4 className="text-sm font-medium mb-3">Current Images ({imageUrls.length})</h4>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {imageUrls.map((url, index) => (
               <div key={`img-${index}`} className="group relative">
@@ -283,9 +240,7 @@ export function ImagesSection({
                       <SelectTrigger className="w-full h-8 text-xs bg-neutral-900 border border-[#3C3120] focus:ring-[#A28B55]/50">
                         <SelectValue
                           placeholder={
-                            !colors || colors.length === 0
-                              ? "Add colors first"
-                              : "All Colors"
+                            !colors || colors.length === 0 ? "Add colors first" : "All Colors"
                           }
                         />
                       </SelectTrigger>
@@ -348,19 +303,12 @@ export function ImagesSection({
 
           {files.length > 0 && fileUrls.length > 0 && (
             <div className="mt-6">
-              <h4 className="text-sm font-medium mb-3">
-                New Files ({files.length})
-              </h4>
+              <h4 className="text-sm font-medium mb-3">New Files ({files.length})</h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {fileUrls.map(({ file, url }, index) => (
                   <div key={`file-${index}`} className="group relative">
                     <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden mb-2">
-                      <Image
-                        src={url}
-                        alt={file.name}
-                        fill
-                        className="object-cover"
-                      />
+                      <Image src={url} alt={file.name} fill className="object-cover" />
                       <Button
                         type="button"
                         variant="destructive"
@@ -396,9 +344,7 @@ export function ImagesSection({
                           <SelectTrigger className="w-full h-8 text-xs bg-neutral-900 border border-[#3C3120] focus:ring-[#A28B55]/50">
                             <SelectValue
                               placeholder={
-                                !colors || colors.length === 0
-                                  ? "Add colors first"
-                                  : "All Colors"
+                                !colors || colors.length === 0 ? "Add colors first" : "All Colors"
                               }
                             />
                           </SelectTrigger>
@@ -415,9 +361,7 @@ export function ImagesSection({
                     )}
 
                     <p className="text-xs truncate text-center text-muted-foreground mt-2">
-                      {file.name.length > 20
-                        ? file.name.substring(0, 17) + "..."
-                        : file.name}
+                      {file.name.length > 20 ? `${file.name.substring(0, 17)}...` : file.name}
                     </p>
                   </div>
                 ))}
@@ -434,11 +378,7 @@ export function ImagesSection({
                 const url = e.target.value;
                 // Handle max URL length
                 if (url.length > 512) {
-                  toast({
-                    title: "URL too long",
-                    description: "The URL cannot be longer than 512 characters",
-                    variant: "destructive",
-                  });
+                  toast.error("The URL cannot be longer than 512 characters");
                   return;
                 }
                 setNewImageUrl(url);
@@ -456,7 +396,7 @@ export function ImagesSection({
               type="button"
               onClick={handleAddUrlClick}
               disabled={isImageLoading || !newImageUrl.trim()}
-              className="flex-shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
+              className="shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
             >
               {isImageLoading ? (
                 <>

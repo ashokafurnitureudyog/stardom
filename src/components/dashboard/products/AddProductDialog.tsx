@@ -1,9 +1,9 @@
 "use client";
+import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ProductForm } from "./ProductForm";
-import { PlusCircle } from "lucide-react";
 
 export const AddProductDialog = ({ onSuccess }: { onSuccess: () => void }) => {
   const [open, setOpen] = useState(false);

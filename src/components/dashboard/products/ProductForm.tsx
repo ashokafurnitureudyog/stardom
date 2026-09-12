@@ -1,16 +1,25 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { ImagesSection } from "./images-section";
-import { FeaturesSection } from "./features-section";
-import { ColorsSection } from "./colors-section";
-import type { Product } from "@/types/ComponentTypes";
-import { useToast } from "@/hooks/use-toast";
-import { useFileUpload } from "@/hooks/useFileUpload";
 import { Progress } from "@/components/ui/progress"; // Ensure you have this component
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
+import { addProduct, updateProduct } from "@/lib/controllers/ProductControllers";
+import type { Product } from "@/types/ComponentTypes";
+import { ColorsSection } from "./colors-section";
+import { FeaturesSection } from "./features-section";
+import { ImagesSection } from "./images-section";
 
 interface ProductFormProps {
   onSuccess: () => void;
@@ -18,37 +27,21 @@ interface ProductFormProps {
   isEditing?: boolean;
 }
 
-export const ProductForm = ({
-  onSuccess,
-  initialData,
-  isEditing = false,
-}: ProductFormProps) => {
+export const ProductForm = ({ onSuccess, initialData, isEditing = false }: ProductFormProps) => {
   // Form state
   const [name, setName] = useState(initialData?.name || "");
-  const [description, setDescription] = useState(
-    initialData?.description || "",
-  );
+  const [description, setDescription] = useState(initialData?.description || "");
   const [category, setCategory] = useState(initialData?.category || "");
-  const [collection, setCollection] = useState(
-    initialData?.product_collection || "",
-  );
-  const [features, setFeatures] = useState<string[]>(
-    initialData?.features || [],
-  );
+  const [collection, setCollection] = useState(initialData?.product_collection || "");
+  const [features, setFeatures] = useState<string[]>(initialData?.features || []);
   const [colors, setColors] = useState<string[]>(initialData?.colors || []);
 
   // Image handling
   const [files, setFiles] = useState<File[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>(
-    initialData?.images || [],
-  );
-  const [initialImageUrls, setInitialImageUrls] = useState<string[]>(
-    initialData?.images || [],
-  );
+  const [imageUrls, setImageUrls] = useState<string[]>(initialData?.images || []);
+  const [initialImageUrls, setInitialImageUrls] = useState<string[]>(initialData?.images || []);
   const [newImageUrl, setNewImageUrl] = useState("");
-  const [imageColorMapping, setImageColorMapping] = useState<
-    Record<string, string>
-  >(() => {
+  const [imageColorMapping, setImageColorMapping] = useState<Record<string, string>>(() => {
     if (!initialData?.image_color_mapping) return {};
     try {
       return JSON.parse(initialData.image_color_mapping);
@@ -60,7 +53,6 @@ export const ProductForm = ({
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { toast } = useToast();
   const { uploadMultipleFiles, uploadStatus } = useFileUpload();
 
   // Track initial image URLs for comparison during updates
@@ -115,8 +107,7 @@ export const ProductForm = ({
           // If we have a mapping for this file name
           if (finalImageColorMapping[fileName]) {
             // Assign the color to the new URL
-            finalImageColorMapping[uploadedUrls[index]] =
-              finalImageColorMapping[fileName];
+            finalImageColorMapping[uploadedUrls[index]] = finalImageColorMapping[fileName];
             // Remove the temporary file name key
             delete finalImageColorMapping[fileName];
           }
@@ -139,54 +130,26 @@ export const ProductForm = ({
       // 3. For editing, track removed images
       let removedImages: string[] = [];
       if (isEditing && initialData) {
-        removedImages = initialImageUrls.filter(
-          (url) => !imageUrls.includes(url),
-        );
+        removedImages = initialImageUrls.filter((url) => !imageUrls.includes(url));
       }
 
-      // 4. Send the product data to the API
-      const response = await fetch("/api/protected/products", {
-        method: isEditing ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...productData,
-          id:
-            isEditing && initialData
-              ? initialData.id || initialData.$id
-              : undefined,
-          removedImages: removedImages.length > 0 ? removedImages : undefined,
-        }),
-        credentials: "include",
-      });
+      const payload = {
+        ...productData,
+        removedImages: removedImages.length > 0 ? removedImages : undefined,
+      };
 
-      if (!response.ok) {
-        const text = await response.text();
-        let error = "An error occurred";
-        try {
-          if (text) {
-            const data = JSON.parse(text);
-            error = data.error || error;
-          }
-        } catch {
-          error = `Server error: ${response.status}`;
-        }
-        throw new Error(error);
-      }
+      const productId = isEditing && initialData ? initialData.id || initialData.$id : undefined;
+      const result = productId
+        ? await updateProduct(productId, payload)
+        : await addProduct(payload);
+
+      if (!result.ok) throw new Error(result.error);
 
       onSuccess();
     } catch (error: unknown) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Failed to save product",
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Failed to save product");
 
-      toast({
-        title: "Error",
-        description:
-          error instanceof Error ? error.message : "Failed to save product",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "Failed to save product");
     } finally {
       setIsSubmitting(false);
     }
@@ -223,10 +186,7 @@ export const ProductForm = ({
           </div>
 
           <div>
-            <label
-              htmlFor="description"
-              className="text-sm font-medium block mb-1"
-            >
+            <label htmlFor="description" className="text-sm font-medium block mb-1">
               Description
             </label>
             <Textarea
@@ -241,26 +201,27 @@ export const ProductForm = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label
-                htmlFor="category"
-                className="text-sm font-medium block mb-1"
-              >
+              <label htmlFor="category" className="text-sm font-medium block mb-1">
                 Category
               </label>
-              <Input
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Category"
-                required
-                className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-              />
+              <Select value={category} onValueChange={setCategory} required>
+                <SelectTrigger
+                  id="category"
+                  className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus:ring-[#A28B55]/20 focus:border-[#A28B55]"
+                >
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent className="bg-neutral-950 border-[#352b1c] text-neutral-200">
+                  {PRODUCT_CATEGORIES.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <label
-                htmlFor="collection"
-                className="text-sm font-medium block mb-1"
-              >
+              <label htmlFor="collection" className="text-sm font-medium block mb-1">
                 Collection
               </label>
               <Input
@@ -307,12 +268,8 @@ export const ProductForm = ({
         {uploadStatus.uploading && (
           <div className="mt-4 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-neutral-400">
-                Uploading files...
-              </span>
-              <span className="text-sm text-neutral-400">
-                {uploadStatus.progress}%
-              </span>
+              <span className="text-sm text-neutral-400">Uploading files...</span>
+              <span className="text-sm text-neutral-400">{uploadStatus.progress}%</span>
             </div>
             <Progress value={uploadStatus.progress} className="h-2" />
           </div>

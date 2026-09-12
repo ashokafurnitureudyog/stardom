@@ -1,17 +1,21 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress"; // Make sure this component exists
+import { Separator } from "@/components/ui/separator";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import {
+  createPortfolioProject,
+  updatePortfolioProject,
+} from "@/lib/controllers/PortfolioControllers";
+import { ChallengeSection } from "./ChallengeSection";
 import { ImagesSection } from "./ImagesSection";
 import { ProjectDetailsSection } from "./ProjectDetailsSection";
-import { ChallengeSection } from "./ChallengeSection";
+import type { PortfolioFormData } from "./portfolio/types";
 import { TestimonialSection } from "./TestimonialSection";
 import { ThumbnailUploader } from "./ThumbnailUploader";
-import { useToast } from "@/hooks/use-toast";
-import { PortfolioFormData } from "./portfolio/types";
-import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
-import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 
 interface PortfolioFormProps {
   onSuccess: () => void;
@@ -24,20 +28,15 @@ export const PortfolioForm = ({
   initialData,
   isEditing = false,
 }: PortfolioFormProps) => {
-  const { toast } = useToast();
   const { uploadFile, uploadMultipleFiles, uploadStatus } = useFileUpload(); // Use the existing hook
 
   // Project details
   const [title, setTitle] = useState(initialData?.title || "");
-  const [description, setDescription] = useState(
-    initialData?.description || "",
-  );
+  const [description, setDescription] = useState(initialData?.description || "");
   const [challenge, setChallenge] = useState(initialData?.challenge || "");
   const [solution, setSolution] = useState(initialData?.solution || "");
   const [impact, setImpact] = useState(initialData?.impact || "");
-  const [thumbnailFile, setThumbnailFile] = useState<File | undefined>(
-    undefined,
-  );
+  const [thumbnailFile, setThumbnailFile] = useState<File | undefined>(undefined);
 
   // Tags
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
@@ -50,19 +49,13 @@ export const PortfolioForm = ({
     initialData?.testimonial?.author || initialData?.testimonial_author || "",
   );
   const [testimonialPosition, setTestimonialPosition] = useState(
-    initialData?.testimonial?.position ||
-      initialData?.testimonial_position ||
-      "",
+    initialData?.testimonial?.position || initialData?.testimonial_position || "",
   );
 
   // Image handling
   const [files, setFiles] = useState<File[]>([]);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>(
-    initialData?.thumbnail || "",
-  );
-  const [galleryUrls, setGalleryUrls] = useState<string[]>(
-    initialData?.gallery || [],
-  );
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>(initialData?.thumbnail || "");
+  const [galleryUrls, setGalleryUrls] = useState<string[]>(initialData?.gallery || []);
   const [newImageUrl, setNewImageUrl] = useState("");
 
   // Track removed gallery URLs (only for editing)
@@ -184,51 +177,31 @@ export const PortfolioForm = ({
         testimonial_author: testimonialAuthor,
         testimonial_position: testimonialPosition,
         // For editing
-        id:
-          isEditing && initialData
-            ? initialData.id || initialData.$id
-            : undefined,
+        id: isEditing && initialData ? initialData.id || initialData.$id : undefined,
         thumbnailRemoved: isThumbnailRemoved,
-        removedGalleryUrls:
-          removedGalleryUrls.length > 0 ? removedGalleryUrls : undefined,
+        removedGalleryUrls: removedGalleryUrls.length > 0 ? removedGalleryUrls : undefined,
       };
 
-      // 4. Send the data to the API
-      const response = await fetch("/api/protected/portfolio", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(portfolioData),
-        credentials: "include",
-      });
+      const projectId = isEditing ? (initialData?.id ?? initialData?.$id ?? "") : "";
+      const result = projectId
+        ? await updatePortfolioProject(projectId, portfolioData)
+        : await createPortfolioProject(portfolioData);
 
-      const data = await response.json();
+      if (!result.ok) throw new Error(result.error);
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to save portfolio project");
-      }
-
-      toast({
-        title: "Success",
-        description: isEditing
+      toast.success(
+        isEditing
           ? "Portfolio project updated successfully"
           : "Portfolio project created successfully",
-      });
+      );
 
       onSuccess();
-    } catch (error: Error | unknown) {
+    } catch (error: unknown) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to save portfolio project";
+        error instanceof Error ? error.message : "Failed to save portfolio project";
       console.error("Portfolio submission error:", error);
       setErrorMessage(errorMessage);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -250,12 +223,7 @@ export const PortfolioForm = ({
     } else if (url) {
       // When setting a URL, make sure it's not longer than 512 chars
       if (url.length > 512) {
-        toast({
-          title: "URL too long",
-          description:
-            "The image URL exceeds the maximum allowed length of 512 characters",
-          variant: "destructive",
-        });
+        toast.error("The image URL exceeds the maximum allowed length of 512 characters");
         return;
       }
       setThumbnailUrl(url);
@@ -282,7 +250,7 @@ export const PortfolioForm = ({
 
         {errorMessage && (
           <div className="bg-red-500/10 border border-red-900/50 text-red-400 p-4 rounded-md flex items-start gap-3 mb-6">
-            <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
             <p>{errorMessage}</p>
           </div>
         )}
@@ -348,12 +316,8 @@ export const PortfolioForm = ({
         {uploadStatus.uploading && (
           <div className="mt-4 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-neutral-400">
-                Uploading files...
-              </span>
-              <span className="text-sm text-neutral-400">
-                {uploadStatus.progress}%
-              </span>
+              <span className="text-sm text-neutral-400">Uploading files...</span>
+              <span className="text-sm text-neutral-400">{uploadStatus.progress}%</span>
             </div>
             <Progress value={uploadStatus.progress} className="h-2" />
           </div>

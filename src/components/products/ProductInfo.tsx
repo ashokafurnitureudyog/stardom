@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export const WhatsAppIcon = () => (
   <svg
@@ -56,16 +56,11 @@ export const ProductInfo = ({
 
       {/* Features */}
       <div className="mb-10">
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground/80 mb-6">
-          Key Features
-        </h3>
+        <h3 className="mb-6 font-serif text-xl text-foreground">Key Features</h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
           {product.features.map((feature, index) => (
-            <li
-              key={index}
-              className="text-muted-foreground flex items-start text-sm"
-            >
-              <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-3 flex-shrink-0" />
+            <li key={index} className="text-muted-foreground flex items-start text-sm">
+              <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-3 shrink-0" />
               <span className="leading-relaxed">{feature}</span>
             </li>
           ))}
@@ -74,11 +69,10 @@ export const ProductInfo = ({
 
       {/* Colors */}
       <div className="mb-12">
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground/80 mb-6">
-          Available Finishes
-        </h3>
+        <h3 className="mb-6 font-serif text-xl text-foreground">Available Finishes</h3>
         <div className="flex gap-3 flex-wrap">
           <button
+            type="button"
             className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
               selectedColor === ""
                 ? "bg-primary text-primary-foreground shadow-lg scale-105"
@@ -90,6 +84,7 @@ export const ProductInfo = ({
           </button>
           {product.colors.map((color, index) => (
             <button
+              type="button"
               key={index}
               className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 selectedColor === color
@@ -107,13 +102,12 @@ export const ProductInfo = ({
       {/* WhatsApp Inquiry Button */}
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <button
+          type="button"
           onClick={handleWhatsAppInquiry}
           className="group w-full md:w-auto min-w-[300px] flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1fb855] text-white py-4 px-8 rounded-full transition-all shadow-lg hover:shadow-[#25D366]/30"
         >
           <WhatsAppIcon />
-          <span className="font-medium tracking-wide">
-            Inquire via WhatsApp
-          </span>
+          <span className="font-medium tracking-wide">Inquire via WhatsApp</span>
         </button>
       </motion.div>
     </motion.div>

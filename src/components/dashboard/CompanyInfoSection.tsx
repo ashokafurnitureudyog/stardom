@@ -1,24 +1,14 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { Separator } from "@/components/ui/separator";
+import { Building2, Plus, RefreshCw, Trash } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
-import { Building2, RefreshCw, Trash, Plus } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { Separator } from "@/components/ui/separator";
+import { loadCompanyData } from "@/lib/actions/content-actions";
+import type { CompanyInfo, TeamMember } from "@/types/ComponentTypes";
 
 import { CompanyDetailsCard } from "./company/CompanyDetailsCard";
-import { TeamMembersCard } from "./company/TeamMembersCard";
 import { SocialLinksCard } from "./company/SocialLinksCard";
+import { TeamMembersCard } from "./company/TeamMembersCard";
 
 type CompanyInfoData = {
   companyInfo: CompanyInfo | null;
@@ -38,22 +28,10 @@ export const CompanyInfoSection = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/protected/company-info", {
-        cache: "no-store",
-        next: { revalidate: 0 },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch company information");
-
-      const data = await res.json();
-      setData(data);
+      setData(await loadCompanyData());
     } catch (error: unknown) {
       console.error("Failed to fetch company information:", error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to load company information",
-      );
+      setError(error instanceof Error ? error.message : "Failed to load company information");
     } finally {
       setLoading(false);
     }
@@ -63,39 +41,12 @@ export const CompanyInfoSection = () => {
     fetchCompanyInfo();
   }, [fetchCompanyInfo]);
 
-  const handleDeleteAll = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch("/api/protected/company-info", {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete company information");
-      }
-
-      fetchCompanyInfo();
-    } catch (error: unknown) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to delete company information",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div>
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
           <div>
-            <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-              Company Information
-            </h2>
+            <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">Company Information</h2>
             <p className="text-muted-foreground">
               Manage your company details, team, and social media
             </p>
@@ -107,8 +58,7 @@ export const CompanyInfoSection = () => {
               size="default"
               className="flex items-center gap-2 h-10 hover:bg-secondary"
             >
-              <RefreshCw size={16} />{" "}
-              <span className="hidden lg:inline">Refresh</span>
+              <RefreshCw size={16} /> <span className="hidden lg:inline">Refresh</span>
             </Button>
 
             {/* Delete All button without disabled attribute */}
@@ -117,8 +67,7 @@ export const CompanyInfoSection = () => {
               size="default"
               className="flex items-center gap-2 h-10 border-[#3C3120] text-red-400 hover:bg-neutral-900/70 hover:text-red-300 hover:border-red-900/50"
             >
-              <Trash size={16} />{" "}
-              <span className="hidden lg:inline">Delete All</span>
+              <Trash size={16} /> <span className="hidden lg:inline">Delete All</span>
               <span className="lg:hidden">Delete</span>
             </Button>
           </div>
@@ -147,19 +96,14 @@ export const CompanyInfoSection = () => {
   }
 
   const hasData =
-    data &&
-    (data.companyInfo ||
-      data.teamMembers.length > 0 ||
-      data.socialLinks.length > 0);
+    data && (data.companyInfo || data.teamMembers.length > 0 || data.socialLinks.length > 0);
   const shouldShowSections = hasData || showEmptySections;
 
   return (
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-            Company Information
-          </h2>
+          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">Company Information</h2>
           <p className="text-muted-foreground">
             Manage your company details, team, and social media
           </p>
@@ -172,48 +116,8 @@ export const CompanyInfoSection = () => {
             className="flex items-center gap-2 h-10 hover:bg-secondary"
             onClick={fetchCompanyInfo}
           >
-            <RefreshCw size={16} />{" "}
-            <span className="hidden lg:inline">Refresh</span>
+            <RefreshCw size={16} /> <span className="hidden lg:inline">Refresh</span>
           </Button>
-
-          {data?.companyInfo && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="default"
-                  className="flex items-center gap-2 h-10 border-[#3C3120] text-red-400 hover:bg-neutral-900/70 hover:text-red-300 hover:border-red-900/50"
-                >
-                  <Trash size={16} />{" "}
-                  <span className="hidden lg:inline">Delete All</span>
-                  <span className="lg:hidden">Delete</span>
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="bg-[#171410] border-[#352b1c]">
-                <AlertDialogHeader>
-                  <AlertDialogTitle className="text-[#A28B55]">
-                    Delete All Company Information
-                  </AlertDialogTitle>
-                  <AlertDialogDescription className="text-neutral-400">
-                    Are you sure you want to delete all company information?
-                    This action cannot be undone and will permanently remove all
-                    company details, team members and social links.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-transparent border-[#3C3120] text-neutral-300 hover:bg-neutral-900 hover:border-[#A28B55]">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-red-950/30 text-red-400 hover:bg-red-950/50 border border-red-900/30 hover:border-red-500/50"
-                    onClick={handleDeleteAll}
-                  >
-                    Delete All
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
         </div>
       </div>
 
@@ -244,29 +148,20 @@ export const CompanyInfoSection = () => {
 
           {/* Team Members - Full width on smaller screens, 4 columns on 2xl and above */}
           <div className="col-span-full 2xl:col-span-4">
-            <TeamMembersCard
-              teamMembers={data?.teamMembers || []}
-              onRefresh={fetchCompanyInfo}
-            />
+            <TeamMembersCard teamMembers={data?.teamMembers || []} onRefresh={fetchCompanyInfo} />
           </div>
 
           {/* Social Links - Always full width */}
           <div className="col-span-full">
-            <SocialLinksCard
-              socialLinks={data?.socialLinks || []}
-              onRefresh={fetchCompanyInfo}
-            />
+            <SocialLinksCard socialLinks={data?.socialLinks || []} onRefresh={fetchCompanyInfo} />
           </div>
         </div>
       ) : (
         <div className="text-center py-20 bg-black/40 border border-[#3C3120] rounded-md">
           <Building2 className="mx-auto h-16 w-16 text-[#A28B55]/30 mb-4" />
-          <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
-            No Company Information Yet
-          </h3>
+          <h3 className="text-xl font-medium mb-3 text-[#A28B55]">No Company Information Yet</h3>
           <p className="text-neutral-500 mb-6">
-            Get started by adding your company details, team members, and social
-            links.
+            Get started by adding your company details, team members, and social links.
           </p>
           <div className="flex justify-center">
             <Button

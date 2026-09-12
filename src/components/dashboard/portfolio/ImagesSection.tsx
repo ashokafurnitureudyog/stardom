@@ -1,12 +1,12 @@
 "use client";
+import { ImagePlus, Link, Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Link, ImagePlus, X, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
-import { useState, useEffect, useMemo } from "react";
 
 interface ImagesSectionProps {
   files: File[];
@@ -28,7 +28,6 @@ export const ImagesSection = ({
   setNewImageUrl,
   onRemoveImageUrl,
 }: ImagesSectionProps) => {
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>("upload");
   const [isImageLoading, setIsImageLoading] = useState(false);
 
@@ -54,16 +53,9 @@ export const ImagesSection = ({
       const newFiles = Array.from(e.target.files);
 
       // Validate file types
-      const invalidFiles = newFiles.filter(
-        (file) => !file.type.startsWith("image/"),
-      );
+      const invalidFiles = newFiles.filter((file) => !file.type.startsWith("image/"));
       if (invalidFiles.length > 0) {
-        toast({
-          title: "Invalid file type",
-          description:
-            "Please select only image files (JPG, PNG, WEBP, GIF, etc.)",
-          variant: "destructive",
-        });
+        toast.error("Please select only image files (JPG, PNG, WEBP, GIF, etc.)");
         return;
       }
 
@@ -72,11 +64,7 @@ export const ImagesSection = ({
         (file) => file.size > 50 * 1024 * 1024, // 50MB limit
       );
       if (largeFiles.length > 0) {
-        toast({
-          title: "File too large",
-          description: `${largeFiles.length} image(s) exceed the maximum size of 50MB`,
-          variant: "destructive",
-        });
+        toast.error(`${largeFiles.length} image(s) exceed the maximum size of 50MB`);
         return;
       }
 
@@ -84,8 +72,7 @@ export const ImagesSection = ({
       setActiveTab("upload");
 
       // Provide success feedback
-      toast({
-        title: "Images added",
+      toast("Images added", {
         description: `${newFiles.length} image${newFiles.length > 1 ? "s" : ""} successfully added`,
       });
 
@@ -96,10 +83,7 @@ export const ImagesSection = ({
 
   const handleRemoveFile = (index: number) => {
     setFiles(files.filter((_, i) => i !== index));
-    toast({
-      title: "Image removed",
-      description: "The uploaded image has been removed",
-    });
+    toast("Image removed", { description: "The uploaded image has been removed" });
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,11 +91,7 @@ export const ImagesSection = ({
 
     // Check URL length
     if (url.length > 512) {
-      toast({
-        title: "URL too long",
-        description: "The URL cannot be longer than 512 characters",
-        variant: "destructive",
-      });
+      toast.error("The URL cannot be longer than 512 characters");
       return;
     }
 
@@ -127,10 +107,7 @@ export const ImagesSection = ({
       setImageUrls(imageUrls.filter((_, i) => i !== index));
     }
 
-    toast({
-      title: "Image removed",
-      description: "The image has been removed from the gallery",
-    });
+    toast("Image removed", { description: "The image has been removed from the gallery" });
   };
 
   // Test the URL when a user enters it
@@ -139,21 +116,13 @@ export const ImagesSection = ({
 
     // Validate URL length
     if (url.length > 512) {
-      toast({
-        title: "URL too long",
-        description: "The URL cannot be longer than 512 characters",
-        variant: "destructive",
-      });
+      toast.error("The URL cannot be longer than 512 characters");
       return;
     }
 
     // Check for duplicates
     if (imageUrls.includes(url.trim())) {
-      toast({
-        title: "Duplicate URL",
-        description: "This image URL is already in your gallery",
-        variant: "destructive",
-      });
+      toast.error("This image URL is already in your gallery");
       return;
     }
 
@@ -180,33 +149,23 @@ export const ImagesSection = ({
       if (url.trim()) {
         setImageUrls([...imageUrls, url.trim()]);
         setNewImageUrl("");
-        toast({
-          title: "Image added",
+        toast("Image added", {
           description: "The image URL was verified and added to the gallery",
         });
       }
 
       setIsImageLoading(false);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to validate image URL";
+      const errorMessage = err instanceof Error ? err.message : "Failed to validate image URL";
 
       setIsImageLoading(false);
-      toast({
-        title: "Invalid Image URL",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorMessage);
     }
   };
 
   // Handle image error for existing URLs
   const handleImageError = (index: number) => {
-    toast({
-      title: "Image Error",
-      description: "An image URL is no longer valid and was removed",
-      variant: "destructive",
-    });
+    toast.error("An image URL is no longer valid and was removed");
     handleRemoveImageUrl(index);
   };
 
@@ -247,12 +206,7 @@ export const ImagesSection = ({
         </div>
       ) : null}
 
-      <Tabs
-        defaultValue="upload"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="w-full"
-      >
+      <Tabs defaultValue="upload" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
           <TabsTrigger
             value="upload"
@@ -294,9 +248,7 @@ export const ImagesSection = ({
 
           {files.length > 0 && (
             <div className="mt-6 space-y-4">
-              <Label className="text-neutral-400">
-                New Images ({files.length})
-              </Label>
+              <Label className="text-neutral-400">New Images ({files.length})</Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {fileUrls.map(({ file, url }, index) => (
                   <div key={`file-${index}`} className="group relative">
@@ -318,9 +270,7 @@ export const ImagesSection = ({
                       <X size={12} />
                     </Button>
                     <p className="text-xs truncate mt-1 text-center text-neutral-500">
-                      {file.name.length > 20
-                        ? file.name.substring(0, 17) + "..."
-                        : file.name}
+                      {file.name.length > 20 ? `${file.name.substring(0, 17)}...` : file.name}
                     </p>
                   </div>
                 ))}
