@@ -3,8 +3,16 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useState } from "react";
+import { CompanyDataProvider } from "@/lib/client/company-data-context";
+import type { CompanyData } from "@/lib/server/content";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  companyData,
+}: {
+  children: React.ReactNode;
+  companyData: CompanyData;
+}) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -19,7 +27,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <NextThemesProvider attribute="class" defaultTheme="system">
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <CompanyDataProvider value={companyData}>{children}</CompanyDataProvider>
+      </QueryClientProvider>
     </NextThemesProvider>
   );
 }

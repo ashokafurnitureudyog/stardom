@@ -1,8 +1,8 @@
 import { Montserrat, Playfair_Display } from "next/font/google";
-import { ViewTransition } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { metadata, viewport } from "@/lib/seo/metadata";
 import { SchemaMarkup } from "@/lib/seo/schemas";
+import { getCompanyData } from "@/lib/server/content";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -21,10 +21,12 @@ const montserrat = Montserrat({
 export { metadata, viewport };
 
 /**
- * Root layout. Wraps every route in a View Transition so client navigations
- * cross-fade instead of snapping, using React's built-in transition support.
+ * Root layout. Company details are resolved once here and handed to the tree,
+ * so the chrome never fetches them again on the client.
  */
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const companyData = await getCompanyData();
+
   return (
     <html
       lang="en"
@@ -35,8 +37,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SchemaMarkup />
       </head>
       <body className="antialiased">
-        <Providers>
-          <ViewTransition>{children}</ViewTransition>
+        <Providers companyData={companyData}>
+          {children}
           <Toaster />
         </Providers>
       </body>

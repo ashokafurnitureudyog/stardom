@@ -1,14 +1,11 @@
 "use client";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useTestimonials } from "@/hooks/useTestimonials";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
 import { FancyTestimonialsSlider } from "../ui/testimonialslider";
 
-const TestimonialsSection = () => {
-  const { testimonials, isLoading } = useTestimonials();
-
+const TestimonialsSection = ({ testimonials }: { testimonials: ClientTestimonial[] }) => {
   return (
     <div className="w-full bg-background py-20 md:py-32 px-8 md:px-16 font-sans relative">
       <div className="max-w-7xl mx-auto space-y-16 relative">
@@ -40,19 +37,7 @@ const TestimonialsSection = () => {
           </div>
         </motion.div>
 
-        {isLoading ? (
-          <div className="w-full py-12">
-            <div className="flex flex-col items-center justify-center space-y-6">
-              <Skeleton className="h-40 w-4/5 max-w-3xl rounded-lg" />
-              <div className="flex flex-col items-center space-y-2">
-                <Skeleton className="h-6 w-40 rounded-full" />
-                <Skeleton className="h-4 w-60 rounded-full" />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <FancyTestimonialsSlider testimonials={testimonials} />
-        )}
+        <FancyTestimonialsSlider testimonials={testimonials} />
 
         <motion.div
           className="text-center mt-16 pt-12 border-t border-primary/10"

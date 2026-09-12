@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { AlertTriangle, ArrowRight, Loader2, Lock, Mail } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useActionState } from "react";
+import { useActionState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,15 +16,9 @@ const initialState: PasswordState = {
 };
 
 const AdminLoginPage = () => {
+  // A successful login redirects from the server action itself, so there is no
+  // client-side push that could bounce against the proxy's own redirect.
   const [state, formAction, isPending] = useActionState(loginUser, initialState);
-  const router = useRouter();
-
-  // Redirect on success
-  React.useEffect(() => {
-    if (state.success) {
-      router.push("/admin/dashboard");
-    }
-  }, [state.success, router]);
 
   return (
     <div className="min-h-screen flex w-full bg-background font-sans">

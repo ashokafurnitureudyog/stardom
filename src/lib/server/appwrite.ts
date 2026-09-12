@@ -16,6 +16,12 @@ export function appwriteIds() {
     database: requireEnv("APPWRITE_DATABASE_ID"),
     products: requireEnv("APPWRITE_PRODUCTS_COLLECTION_ID"),
     featured: process.env.APPWRITE_FEATURED_COLLECTION_ID,
+    heroMedia: process.env.APPWRITE_HERO_MEDIA_COLLECTION_ID,
+    companyInfo: process.env.APPWRITE_COMPANY_INFO_COLLECTION_ID,
+    socialLinks: process.env.APPWRITE_SOCIAL_LINKS_COLLECTION_ID,
+    teamMembers: process.env.APPWRITE_TEAM_MEMBERS_COLLECTION_ID,
+    testimonials: process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID,
+    portfolio: process.env.APPWRITE_PORTFOLIO_COLLECTION_ID,
     productImages: requireEnv("APPWRITE_PRODUCT_IMAGES_BUCKET_ID"),
   };
 }

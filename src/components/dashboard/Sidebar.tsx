@@ -96,8 +96,8 @@ export const Sidebar = ({
             onClick={() => handleSectionChange(sidebarItem.id)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
               activeSection === sidebarItem.id
-                ? "bg-primary/10 text-primary font-medium shadow-[0_0_10px_rgba(var(--primary-rgb),0.3)]"
-                : "text-muted-foreground hover:bg-secondary hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]"
+                ? "bg-primary/10 text-primary font-medium shadow-[0_0_10px_color-mix(in_oklab,var(--primary)_30%,transparent)]"
+                : "text-muted-foreground hover:bg-secondary hover:scale-[1.02] hover:shadow-[0_0_15px_color-mix(in_oklab,var(--primary)_20%,transparent)]"
             }`}
           >
             <sidebarItem.icon className={`w-5 h-5 transition-transform duration-200`} />

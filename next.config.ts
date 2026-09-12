@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Baked at build time: cacheComponents rejects new Date() during a client prerender.
+  env: { NEXT_PUBLIC_BUILD_YEAR: String(new Date().getFullYear()) },
   reactCompiler: true,
   cacheComponents: true,
   partialPrefetching: true,

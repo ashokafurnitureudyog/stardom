@@ -1,4 +1,5 @@
 export interface MediaItem {
+  id?: string;
   src: string;
   alt?: string;
   type: "image" | "video";

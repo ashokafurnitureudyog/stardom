@@ -4,7 +4,6 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { LOGO_DIMENSIONS, MENU_ITEMS } from "@/lib/constants/NavbarConstants";
 import type { MenuLinkProps } from "@/types/ComponentTypes";
@@ -35,13 +34,13 @@ const MenuLink = ({ item, isMobile = false }: MenuLinkProps) => {
 };
 
 /**
- * Sticky site header. The logo swaps with the resolved theme, so it renders the
- * light asset until the theme is known on the client.
+ * Sticky site header. Both logos are rendered and CSS picks one from the theme
+ * class, because the resolved theme is not known during SSR and reading it
+ * during render would mismatch on hydration.
  */
 const NavbarComponent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { resolvedTheme } = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -52,8 +51,6 @@ const NavbarComponent = () => {
   }, []);
 
   useEffect(() => setIsMenuOpen(false), [pathname]);
-
-  const logoSrc = resolvedTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png";
 
   return (
     <header
@@ -74,11 +71,19 @@ const NavbarComponent = () => {
 
         <Link href="/" className="overflow-hidden">
           <Image
-            src={logoSrc}
+            src="/images/logo.png"
             width={LOGO_DIMENSIONS.width}
             height={LOGO_DIMENSIONS.height}
             alt="Stardom"
-            className="transition-transform duration-300 hover:scale-105"
+            className="h-auto w-auto transition-transform duration-300 hover:scale-105 dark:hidden"
+            priority
+          />
+          <Image
+            src="/images/logo-dark.png"
+            width={LOGO_DIMENSIONS.width}
+            height={LOGO_DIMENSIONS.height}
+            alt="Stardom"
+            className="hidden h-auto w-auto transition-transform duration-300 hover:scale-105 dark:block"
             priority
           />
         </Link>

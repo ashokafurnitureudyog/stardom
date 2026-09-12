@@ -82,8 +82,6 @@ const ContactSection = () => {
   return (
     <div className="w-full bg-background py-32 md:py-40 px-8 md:px-16 font-sans relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.05),transparent_40%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(var(--primary-rgb),0.05),transparent_40%)]" />
 
       <div className="max-w-7xl mx-auto space-y-24 relative">
         {/* Header Section */}

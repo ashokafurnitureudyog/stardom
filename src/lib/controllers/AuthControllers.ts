@@ -40,20 +40,19 @@ export async function loginUser(
       path: "/",
       httpOnly: true,
       sameSite: "strict",
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(session.expire),
     });
-
-    return { success: true };
   } catch (error) {
     console.error("Login failed:", error);
 
-    const errorMessage = error instanceof Error ? error.message : "Invalid email or password";
-
     return {
       success: false,
-      error: errorMessage,
+      error: error instanceof Error ? error.message : "Invalid email or password",
     };
   }
+
+  redirect("/admin/dashboard");
 }
 
 export async function signOutUser() {

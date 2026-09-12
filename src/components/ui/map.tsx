@@ -37,10 +37,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const mapStyle = {
-  light: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  dark: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-};
+/**
+ * OpenStreetMap's own tiles, which need no API key. The dark theme is a CSS
+ * filter over the same tiles rather than a second provider, because CARTO now
+ * watermarks basemap requests that arrive without a key.
+ */
+const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+const TILE_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 export default function LocationMap({ companyInfo, isLoading = false }: MapSectionProps) {
   const { theme } = useTheme();
@@ -150,8 +154,9 @@ export default function LocationMap({ companyInfo, isLoading = false }: MapSecti
             <ZoomControl position="bottomright" />
             <AttributionControl position="bottomleft" />
             <TileLayer
-              attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-              url={theme === "dark" ? mapStyle.dark : mapStyle.light}
+              attribution={TILE_ATTRIBUTION}
+              url={TILE_URL}
+              className={theme === "dark" ? "map-tiles-dark" : undefined}
               eventHandlers={{
                 error: handleMapError,
               }}

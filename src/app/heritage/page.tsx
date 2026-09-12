@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
@@ -13,7 +12,7 @@ import { LogoRevealCard } from "@/components/shared/RevealCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
 import { Timeline } from "@/components/ui/timeline";
-import { useCompanyData } from "@/hooks/useCompanyData";
+import { getCompanyData } from "@/lib/server/content";
 
 //Will not shift to constants as it integrates react components
 const timelineData = [
@@ -227,9 +226,8 @@ const timelineData = [
   },
 ];
 
-const HeritagePage: React.FC = () => {
-  // Fetch company data using our hook
-  const { teamMembers, isLoading } = useCompanyData();
+const HeritagePage = async () => {
+  const { teamMembers } = await getCompanyData();
 
   return (
     <BaseLayout className="overflow-x-hidden lg:overflow-auto">
@@ -269,15 +267,7 @@ const HeritagePage: React.FC = () => {
           <SectionTitle>
             Our <span className="font-serif italic text-primary">Team</span>
           </SectionTitle>
-          {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-[400px] w-full rounded-lg" />
-              ))}
-            </div>
-          ) : (
-            <TeamSection members={teamMembers || []} />
-          )}
+          <TeamSection members={teamMembers} />
         </Section>
       </div>
     </BaseLayout>

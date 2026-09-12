@@ -2,7 +2,15 @@
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image, { type ImageProps } from "next/image";
-import React, { createContext, type JSX, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  type JSX,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { cn } from "@/lib/utils/utils";
 
@@ -32,20 +40,22 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
   const [canScrollRight, setCanScrollRight] = React.useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Stable so the mount effect below cannot re-run on every scroll event and
+  // snap the carousel back to its initial position.
+  const checkScrollability = useCallback(() => {
+    if (carouselRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(Math.ceil(scrollLeft) < scrollWidth - clientWidth);
+    }
+  }, []);
+
   useEffect(() => {
     if (carouselRef.current) {
       carouselRef.current.scrollLeft = initialScroll;
       checkScrollability();
     }
   }, [initialScroll, checkScrollability]);
-
-  function checkScrollability() {
-    if (carouselRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth);
-    }
-  }
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -110,7 +120,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                   },
                 }}
                 key={`card${index}`}
-                className="last:pr-[5%] md:last:pr-[33%]  rounded-3xl"
+                className="rounded-3xl last:pr-4 md:last:pr-20"
               >
                 {item}
               </motion.div>
@@ -151,8 +161,16 @@ export const Card = ({
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null!);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { onCardClose, currentIndex } = useContext(CarouselContext);
+  const { onCardClose } = useContext(CarouselContext);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    onCardClose(index);
+  }, [onCardClose, index]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -161,26 +179,13 @@ export const Card = ({
       }
     }
 
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    document.body.style.overflow = open ? "hidden" : "auto";
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, handleClose]);
 
   useOutsideClick(containerRef, () => handleClose());
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  function handleClose() {
-    setOpen(false);
-    onCardClose(index);
-  }
 
   return (
     <>

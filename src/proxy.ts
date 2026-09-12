@@ -34,6 +34,20 @@ async function handleApiProtectedRoutes(request: NextRequest): Promise<NextRespo
 }
 
 /**
+ * The single account allowed into the dashboard. Missing configuration denies
+ * access outright rather than bouncing the user between /auth and /admin,
+ * which reads as a redirect loop in the browser.
+ */
+function adminUserId(): string | null {
+  const id = process.env.APPWRITE_ADMIN_USER_ID;
+  if (!id) {
+    console.error("APPWRITE_ADMIN_USER_ID is not set; admin access is disabled.");
+    return null;
+  }
+  return id;
+}
+
+/**
  * Handle auth page
  */
 async function handleAuthPage(request: NextRequest): Promise<NextResponse | null> {
@@ -43,9 +57,12 @@ async function handleAuthPage(request: NextRequest): Promise<NextResponse | null
     return null;
   }
 
+  const admin = adminUserId();
+  if (!admin) return null;
+
   const user = await getLoggedInUser();
 
-  if (user?.$id === process.env.APPWRITE_ADMIN_USER_ID) {
+  if (user?.$id === admin) {
     return NextResponse.redirect(new URL(ROUTES.ADMIN_DASHBOARD, request.url));
   }
 
@@ -62,13 +79,18 @@ async function handleAdminRoutes(request: NextRequest): Promise<NextResponse | n
     return null;
   }
 
+  const admin = adminUserId();
+  if (!admin) {
+    return new NextResponse("Admin access is not configured.", { status: 503 });
+  }
+
   const user = await getLoggedInUser();
 
   if (!user) {
     return NextResponse.redirect(new URL(ROUTES.AUTH, request.url));
   }
 
-  if (user.$id !== process.env.APPWRITE_ADMIN_USER_ID) {
+  if (user.$id !== admin) {
     return NextResponse.redirect(new URL(`${ROUTES.AUTH}?error=unauthorized`, request.url));
   }
 

@@ -1,9 +1,9 @@
+"use client";
+
 import { ArrowUp, type LucideProps, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import type React from "react";
-import { useEffect, useState } from "react";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -12,23 +12,14 @@ import {
   YoutubeIcon,
 } from "@/components/ui/brand-icons";
 import { Button } from "@/components/ui/button";
-import { useCompanyData } from "@/hooks/useCompanyData";
+import { useCompanyData } from "@/lib/client/company-data-context";
 import {
   BasicCompanyInfo as fallbackCompanyInfo,
   socialLinks as fallbackSocialLinks,
 } from "@/lib/constants/CompanyInfo";
 
 const Footer = () => {
-  const { theme, resolvedTheme } = useTheme();
-  const [logoSrc, setLogoSrc] = useState("/images/logo.png");
-  const [currentYear, setCurrentYear] = useState<number | null>(null);
-  const { companyInfo, socialLinks, isLoading } = useCompanyData();
-
-  useEffect(() => {
-    const currentTheme = resolvedTheme || theme;
-    setLogoSrc(currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png");
-    setCurrentYear(new Date().getFullYear());
-  }, [theme, resolvedTheme]);
+  const { companyInfo, socialLinks } = useCompanyData();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -65,8 +56,6 @@ const Footer = () => {
   return (
     <footer className="w-full bg-background relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary-rgb),0.03),transparent_40%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(var(--primary-rgb),0.03),transparent_40%)]" />
 
       {/* Main Content */}
       <div className="relative border-t border-primary/10">
@@ -77,11 +66,18 @@ const Footer = () => {
               <div className="flex h-16 items-center">
                 <Link href="/">
                   <Image
-                    src={logoSrc}
+                    src="/images/logo.png"
                     alt="Stardom Logo"
                     width={160}
                     height={40}
-                    className="transform hover:scale-105 transition-transform duration-300"
+                    className="h-auto w-auto transform transition-transform duration-300 hover:scale-105 dark:hidden"
+                  />
+                  <Image
+                    src="/images/logo-dark.png"
+                    alt="Stardom Logo"
+                    width={160}
+                    height={40}
+                    className="hidden h-auto w-auto transform transition-transform duration-300 hover:scale-105 dark:block"
                   />
                 </Link>
               </div>
@@ -90,24 +86,26 @@ const Footer = () => {
                 elegance and functionality since 1996.
               </p>
               <div className="flex gap-6">
-                {(socialLinks || fallbackSocialLinks).map((social, index) => {
-                  // Get the icon component based on platform name
-                  const IconComponent = social.platform?.toLowerCase()
-                    ? platformIcons[social.platform.toLowerCase()]
-                    : undefined;
+                {(socialLinks.length > 0 ? socialLinks : fallbackSocialLinks).map(
+                  (social, index) => {
+                    // Get the icon component based on platform name
+                    const IconComponent = social.platform?.toLowerCase()
+                      ? platformIcons[social.platform.toLowerCase()]
+                      : undefined;
 
-                  return IconComponent ? (
-                    <Link
-                      key={index}
-                      href={social.url}
-                      className="text-primary/60 hover:text-primary transition-colors duration-300"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <IconComponent className="h-5 w-5" />
-                    </Link>
-                  ) : null;
-                })}
+                    return IconComponent ? (
+                      <Link
+                        key={index}
+                        href={social.url}
+                        className="text-primary/60 hover:text-primary transition-colors duration-300"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <IconComponent className="h-5 w-5" />
+                      </Link>
+                    ) : null;
+                  },
+                )}
               </div>
             </div>
 
@@ -156,17 +154,11 @@ const Footer = () => {
                     Icon: MapPin,
                     content: (
                       <p className="text-muted-foreground/80 leading-relaxed">
-                        {isLoading ? (
-                          "Loading address..."
-                        ) : (
-                          <>
-                            {companyInfo?.address.street || fallbackCompanyInfo.address.street}
-                            <br />
-                            {companyInfo?.address.city || fallbackCompanyInfo.address.city},{" "}
-                            {companyInfo?.address.Country || fallbackCompanyInfo.address.Country}{" "}
-                            {companyInfo?.address.zip || fallbackCompanyInfo.address.zip}
-                          </>
-                        )}
+                        {companyInfo?.address.street || fallbackCompanyInfo.address.street}
+                        <br />
+                        {companyInfo?.address.city || fallbackCompanyInfo.address.city},{" "}
+                        {companyInfo?.address.Country || fallbackCompanyInfo.address.Country}{" "}
+                        {companyInfo?.address.zip || fallbackCompanyInfo.address.zip}
                       </p>
                     ),
                   },
@@ -208,7 +200,7 @@ const Footer = () => {
               {/* Policy Links */}
               <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                 <p className="text-muted-foreground/60 text-sm">
-                  © {currentYear ?? ""} Stardom. All rights reserved.
+                  © {process.env.NEXT_PUBLIC_BUILD_YEAR} Stardom. All rights reserved.
                 </p>
                 <div className="flex items-center gap-8">
                   {policyLinks.map((item) => (
