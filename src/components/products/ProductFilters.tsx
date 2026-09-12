@@ -114,8 +114,11 @@ export const ProductFilter = ({
       type="button"
       key={value}
       onClick={onSelect}
-      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-        active ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+      aria-pressed={active}
+      className={`border-b-2 pb-1.5 text-sm transition-colors duration-200 ${
+        active
+          ? "border-primary text-foreground"
+          : "border-transparent text-muted-foreground hover:text-foreground"
       }`}
     >
       {label}
@@ -132,7 +135,7 @@ export const ProductFilter = ({
       </div>
 
       <TabsContent value="categories" className="mt-2">
-        <div className="mb-6 flex flex-wrap justify-center gap-2">
+        <div className="mb-6 flex flex-wrap justify-center gap-x-7 gap-y-3">
           {chip("All", "all", optimistic.category === "all", () => setParams({ category: "all" }))}
           {PRODUCT_CATEGORIES.map((category) =>
             chip(category, category, optimistic.category === category, () =>
@@ -143,7 +146,7 @@ export const ProductFilter = ({
       </TabsContent>
 
       <TabsContent value="collections" className="mt-2">
-        <div className="mb-6 flex flex-wrap justify-center gap-2">
+        <div className="mb-6 flex flex-wrap justify-center gap-x-7 gap-y-3">
           {chip("All", "all", optimistic.collection === "all", () =>
             setParams({ collection: "all" }),
           )}

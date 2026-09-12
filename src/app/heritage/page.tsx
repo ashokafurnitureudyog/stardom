@@ -238,34 +238,24 @@ const HeritagePage = async () => {
         </Section>
 
         <Section className="bg-background">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Journey</span>
-          </SectionTitle>
+          <SectionTitle>Our Journey</SectionTitle>
           <Timeline data={timelineData} />
         </Section>
         <Section className="bg-background">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Facilities</span>
-          </SectionTitle>
+          <SectionTitle>Our Facilities</SectionTitle>
           <ManufacturingFacilities />
         </Section>
         <Section className="bg-background">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Standards</span>
-          </SectionTitle>
+          <SectionTitle>Our Standards</SectionTitle>
           <CertificationsSection />
         </Section>
         <Section className="bg-background">
-          <SectionTitle>
-            Testing <span className="font-serif italic text-primary">Equipment</span>
-          </SectionTitle>
+          <SectionTitle>Testing Equipment</SectionTitle>
           <TestingToolsSection />
         </Section>
 
         <Section className="bg-card">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Team</span>
-          </SectionTitle>
+          <SectionTitle>Our Team</SectionTitle>
           <TeamSection members={teamMembers} />
         </Section>
       </div>

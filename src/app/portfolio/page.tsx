@@ -16,16 +16,12 @@ const PortfolioPage = async () => {
       <PortfolioHero />
 
       <Section className="bg-background">
-        <SectionTitle>
-          Our <span className="font-serif italic text-primary">Work</span>
-        </SectionTitle>
+        <SectionTitle>Our Work</SectionTitle>
         <PortfolioGallery projects={projects} />
       </Section>
 
       <Section className="bg-background">
-        <SectionTitle>
-          Our <span className="font-serif italic text-primary">Standards</span>
-        </SectionTitle>
+        <SectionTitle>Our Standards</SectionTitle>
         <CertificationsSection />
       </Section>
 

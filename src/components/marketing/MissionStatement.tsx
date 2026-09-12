@@ -16,7 +16,7 @@ export const MissionStatement = () => (
       transition={{ duration: 0.6 }}
       className="text-5xl font-light mb-8 tracking-wide"
     >
-      Our <span className="font-serif italic text-primary relative">Vision</span>
+      Our Vision
     </motion.h2>
     <motion.p
       initial={{ opacity: 0 }}

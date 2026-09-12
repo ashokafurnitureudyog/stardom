@@ -49,13 +49,6 @@ const CraftsmanshipSection = () => {
         variants={fadeInUpVariants}
       >
         <div className="text-center mb-24 md:mb-32">
-          <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
-            <div className="h-px w-8 bg-primary/40" />
-            <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-              Mastery in Creation
-            </h3>
-          </div>
-
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-foreground font-serif mb-8">
             The Art of Fine
             <span className="block mt-4 font-normal italic text-primary/90">Craftsmanship</span>

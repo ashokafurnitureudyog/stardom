@@ -45,8 +45,8 @@ export default function ProductsPage({ searchParams }: PageProps) {
         <ProductsHero />
 
         <Section className="bg-background">
-          <SectionTitle>
-            Our <span className="font-serif italic text-primary">Collection</span>
+          <SectionTitle description="Every chair belongs to one of seven series, named for the room it was built for. Filter by series, or by the collection it was finished in.">
+            Our Collection
           </SectionTitle>
 
           <Suspense fallback={<ProductGridSkeleton />}>

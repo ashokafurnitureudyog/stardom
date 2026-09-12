@@ -105,12 +105,8 @@ const ShippingInfoPage: React.FC = () => {
         {/* Hero Section */}
         <Section className="pt-24 pb-12">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="inline-block text-primary/90 uppercase tracking-widest text-xs font-medium mb-4">
-              Shipping Information
-            </span>
-            <SectionTitle>
-              Delivery <span className="font-serif italic text-primary">Details</span>
-            </SectionTitle>
+            <span className="mb-4 inline-block text-sm text-primary">Shipping Information</span>
+            <SectionTitle>Delivery Details</SectionTitle>
             <p className="text-muted-foreground text-lg mx-auto mb-10">
               Learn about our shipping options, delivery timeframes, and policies for our premium
               furniture collections throughout India.
@@ -204,12 +200,8 @@ const ShippingInfoPage: React.FC = () => {
         {/* Business Solutions CTA */}
         <Section className="bg-card">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="inline-block text-primary/80 uppercase tracking-widest text-xs font-medium mb-3">
-              Business Solutions
-            </span>
-            <SectionTitle>
-              Corporate <span className="font-serif italic text-primary">Partnerships</span>
-            </SectionTitle>
+            <span className="mb-3 inline-block text-sm text-primary">Business Solutions</span>
+            <SectionTitle>Corporate Partnerships</SectionTitle>
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
               We offer specialized shipping arrangements and flexible payment terms for our business
               clients. Contact our B2B sales team to discuss your specific requirements and explore

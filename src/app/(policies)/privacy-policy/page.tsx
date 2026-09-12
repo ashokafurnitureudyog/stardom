@@ -103,9 +103,7 @@ const PrivacyPolicyPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <SectionTitle>
-              Privacy <span className="font-serif italic text-primary">Policy</span>
-            </SectionTitle>
+            <SectionTitle>Privacy Policy</SectionTitle>
             <p className="text-muted-foreground text-lg md:text-xl font-light mx-auto mb-8 max-w-xl">
               Our commitment to protecting your privacy while delivering premium furniture
               experiences.
@@ -123,9 +121,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 className={`transition-all duration-300 ${scrollPosition > 150 ? "sticky top-32" : ""}`}
               >
                 <div className="space-y-8">
-                  <h3 className="text-base font-medium mb-4 text-primary/80 uppercase tracking-wider">
-                    Policy Sections
-                  </h3>
+                  <h3 className="mb-4 font-serif text-xl text-primary">Policy Sections</h3>
                   <nav className="space-y-2">
                     {privacySections.map((section, idx) => (
                       <button
@@ -155,9 +151,7 @@ const PrivacyPolicyPage: React.FC = () => {
                   </nav>
 
                   <div className="pt-8 mt-8 border-t border-input/20">
-                    <h3 className="text-base font-medium mb-6 text-primary/80 uppercase tracking-wider">
-                      Related Policies
-                    </h3>
+                    <h3 className="mb-6 font-serif text-xl text-primary">Related Policies</h3>
                     <div className="space-y-3">
                       <Button
                         className="w-full justify-start text-muted-foreground border-input/20 hover:border-primary/30 hover:text-foreground"

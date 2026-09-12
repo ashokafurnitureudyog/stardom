@@ -56,9 +56,7 @@ export const ProductInfo = ({
 
       {/* Features */}
       <div className="mb-10">
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground/80 mb-6">
-          Key Features
-        </h3>
+        <h3 className="mb-6 font-serif text-xl text-foreground">Key Features</h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
           {product.features.map((feature, index) => (
             <li key={index} className="text-muted-foreground flex items-start text-sm">
@@ -71,9 +69,7 @@ export const ProductInfo = ({
 
       {/* Colors */}
       <div className="mb-12">
-        <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground/80 mb-6">
-          Available Finishes
-        </h3>
+        <h3 className="mb-6 font-serif text-xl text-foreground">Available Finishes</h3>
         <div className="flex gap-3 flex-wrap">
           <button
             type="button"

@@ -36,7 +36,7 @@ export const ProductsHero = () => {
 
           <AnimatedText delay={0.2}>
             <h1 className="text-5xl lg:text-6xl tracking-tight mb-4 font-extralight">
-              Our <span className="font-serif italic text-primary">Collection</span>
+              Our Collection
             </h1>
             <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
             <p className="text-2xl text-white/90 font-serif">Curated Excellence in Office Design</p>

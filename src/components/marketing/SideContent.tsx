@@ -72,9 +72,7 @@ const EmergencySupport = () => (
 // Social links section
 const SocialLinks = ({ socialLinks }: { socialLinks: SocialLink[] }) => (
   <motion.div {...ANIMATIONS.fadeInUp} transition={{ duration: 0.4, delay: 0.2 }}>
-    <h2 className="text-2xl lg:text-3xl font-light mb-8 font-serif">
-      Connect with <span className="font-serif italic text-primary">Us</span>
-    </h2>
+    <h2 className="text-2xl lg:text-3xl font-light mb-8 font-serif">Connect with Us</h2>
     <div className="flex gap-4">
       {socialLinks.map((social, index) => {
         // Get the icon component based on platform name
@@ -104,7 +102,7 @@ const SocialLinks = ({ socialLinks }: { socialLinks: SocialLink[] }) => (
 const FAQSection = ({ faqs }: { faqs: FAQ[] }) => (
   <motion.div {...ANIMATIONS.fadeInUp} transition={{ duration: 0.4, delay: 0.3 }}>
     <h3 className="text-2xl lg:text-3xl font-light mb-8 flex items-center gap-2 font-serif">
-      Frequently Asked <span className="font-serif italic text-primary relative">Questions</span>
+      Frequently Asked Questions
     </h3>
     {faqs.length === 0 ? (
       <p className="text-muted-foreground">No FAQs available at the moment.</p>

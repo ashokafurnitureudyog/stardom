@@ -122,9 +122,7 @@ const CookiePolicyPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <SectionTitle>
-              Cookie <span className="font-serif italic text-primary">Policy</span>
-            </SectionTitle>
+            <SectionTitle>Cookie Policy</SectionTitle>
             <p className="text-muted-foreground text-lg md:text-xl font-light mx-auto mb-8 max-w-xl">
               Transparency in how we use cookies to improve your experience.
             </p>
@@ -141,9 +139,7 @@ const CookiePolicyPage: React.FC = () => {
                 className={`transition-all duration-300 ${scrollPosition > 150 ? "sticky top-32" : ""}`}
               >
                 <div className="space-y-8">
-                  <h3 className="text-base font-medium mb-4 text-primary/80 uppercase tracking-wider">
-                    Categories
-                  </h3>
+                  <h3 className="mb-4 font-serif text-xl text-primary">Categories</h3>
                   <nav className="space-y-2">
                     {cookieCategories.map((category, idx) => (
                       <button
@@ -173,9 +169,7 @@ const CookiePolicyPage: React.FC = () => {
                   </nav>
 
                   <div className="pt-8 mt-8 border-t border-input/20">
-                    <h3 className="text-base font-medium mb-6 text-primary/80 uppercase tracking-wider">
-                      Related Policies
-                    </h3>
+                    <h3 className="mb-6 font-serif text-xl text-primary">Related Policies</h3>
                     <div className="space-y-3">
                       <Button
                         className="w-full justify-start text-muted-foreground border-input/20 hover:border-primary/30 hover:text-foreground"

@@ -15,9 +15,7 @@ export const RelatedProducts = ({ isLoading, relatedProducts }: RelatedProductsP
   return (
     <Section className="bg-card py-32">
       <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
-        <SectionTitle>
-          You May Also <span className="font-serif italic text-primary">Like</span>
-        </SectionTitle>
+        <SectionTitle>You May Also Like</SectionTitle>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 py-10">

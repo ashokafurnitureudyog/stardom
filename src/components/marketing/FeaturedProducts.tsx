@@ -179,12 +179,6 @@ export function FeaturedProducts({ featuredProducts }: { featuredProducts: Produ
           style={{ willChange: "opacity, transform" }}
         >
           <div className="text-center mb-32">
-            <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
-              <div className="h-px w-8 bg-primary/40" />
-              <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-                Premium Selection
-              </h3>
-            </div>
             <h2 className="text-5xl md:text-7xl font-light tracking-tight mb-12 font-serif">
               Featured <span className="font-normal italic text-primary">Products</span>
             </h2>

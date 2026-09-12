@@ -67,12 +67,8 @@ const FAQPage: React.FC = () => {
         {/* Hero Section */}
         <Section className="pt-24 pb-12">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="inline-block text-primary/90 uppercase tracking-widest text-xs font-medium mb-4">
-              Support Center
-            </span>
-            <SectionTitle>
-              How can we <span className="font-serif italic text-primary">help you?</span>
-            </SectionTitle>
+            <span className="mb-4 inline-block text-sm text-primary">Support Center</span>
+            <SectionTitle>How can we help you?</SectionTitle>
             <p className="text-muted-foreground text-lg mx-auto mb-10">
               Find answers to common questions about our premium furniture collections,
               craftsmanship, and services.
@@ -209,12 +205,8 @@ const FAQPage: React.FC = () => {
         {/* Contact CTA */}
         <Section className="bg-card">
           <div className="text-center max-w-3xl mx-auto">
-            <span className="inline-block text-primary/80 uppercase tracking-widest text-xs font-medium mb-3">
-              Personalized assistance
-            </span>
-            <SectionTitle>
-              Still Have <span className="font-serif italic text-primary">Questions?</span>
-            </SectionTitle>
+            <span className="mb-3 inline-block text-sm text-primary">Personalized assistance</span>
+            <SectionTitle>Still Have Questions?</SectionTitle>
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
               Our dedicated specialists are ready to provide personalized guidance and support.
               Experience the same level of excellence in our customer service as you do in our

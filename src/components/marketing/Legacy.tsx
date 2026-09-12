@@ -67,13 +67,6 @@ const LegacySection: React.FC = () => {
             style={{ willChange: "opacity, transform" }}
           >
             <div className="space-y-8">
-              <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full">
-                <div className="h-px w-8 bg-primary/40" />
-                <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-                  Heritage of Excellence
-                </h3>
-              </div>
-
               <h2 className="text-5xl lg:text-7xl font-light tracking-tight text-foreground">
                 <span className="font-serif">Crafting</span>{" "}
                 <span className="text-primary/90 font-serif italic">Elegance</span>

@@ -81,12 +81,6 @@ const ContactSection = () => {
           variants={fadeInUpVariants}
           className="text-center space-y-8"
         >
-          <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full">
-            <div className="h-px w-8 bg-primary/40" />
-            <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-              Bespoke Consultation
-            </h3>
-          </div>
           <h2 className="text-5xl md:text-7xl font-light tracking-tight text-foreground font-serif">
             Experience
             <span className="block mt-2 font-normal italic text-primary">Exceptional Service</span>
@@ -162,9 +156,7 @@ const ContactSection = () => {
               className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-8 border border-primary/5"
             >
               <div className="space-y-3">
-                <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">
-                  Full Name
-                </label>
+                <label className="text-sm text-muted-foreground">Full Name</label>
                 <Input
                   name="name"
                   value={formData.name}
@@ -176,9 +168,7 @@ const ContactSection = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">
-                  Email
-                </label>
+                <label className="text-sm text-muted-foreground">Email</label>
                 <Input
                   type="email"
                   name="email"
@@ -191,9 +181,7 @@ const ContactSection = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">
-                  Message
-                </label>
+                <label className="text-sm text-muted-foreground">Message</label>
                 <Textarea
                   name="message"
                   value={formData.message}

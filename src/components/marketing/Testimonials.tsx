@@ -18,13 +18,6 @@ const TestimonialsSection = ({ testimonials }: { testimonials: ClientTestimonial
           variants={fadeInUpVariants}
         >
           <div className="text-center">
-            <div className="inline-flex items-center gap-3 bg-primary/5 px-6 py-3 rounded-full mb-8">
-              <div className="h-px w-8 bg-primary/40" />
-              <h3 className="text-primary/90 uppercase tracking-widest text-sm font-medium">
-                Client Testimonials
-              </h3>
-            </div>
-
             <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-foreground font-serif mb-8">
               Voices of
               <span className="block mt-4 font-normal italic text-primary/90">Excellence</span>
