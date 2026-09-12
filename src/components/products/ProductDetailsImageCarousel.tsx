@@ -90,6 +90,7 @@ export const ProductImages = ({
         <div className="flex justify-center gap-2 mt-6">
           {images.map((_, index) => (
             <button
+              type="button"
               key={index}
               onClick={() => api?.scrollTo(index)}
               className={`h-2 rounded-full transition-all duration-300 ${

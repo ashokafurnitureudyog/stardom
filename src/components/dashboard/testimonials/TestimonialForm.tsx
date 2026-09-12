@@ -1,13 +1,5 @@
 "use client";
-import {
-  AlertCircle,
-  Check,
-  ChevronDown,
-  ChevronUp,
-  Link,
-  Loader2,
-  X,
-} from "lucide-react";
+import { AlertCircle, Check, ChevronDown, ChevronUp, Link, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -61,9 +53,7 @@ export const TestimonialForm = ({
     const year = parts[1];
 
     // Validate the month
-    const validMonth = TESTIMONIAL_MONTHS.includes(month)
-      ? month
-      : TESTIMONIAL_MONTHS[0];
+    const validMonth = TESTIMONIAL_MONTHS.includes(month) ? month : TESTIMONIAL_MONTHS[0];
 
     return { month: validMonth, year };
   };
@@ -95,17 +85,11 @@ export const TestimonialForm = ({
 
   // Extract avatar number from URL if available
   useEffect(() => {
-    if (
-      isEditing &&
-      initialData?.img?.includes("avatar.iran.liara.run")
-    ) {
+    if (isEditing && initialData?.img?.includes("avatar.iran.liara.run")) {
       const match = initialData.img.match(/\/public\/(\d+)$/);
       if (match?.[1]) {
         const avatarNumber = parseInt(match[1], 10);
-        if (
-          !Number.isNaN(avatarNumber) &&
-          TESTIMONIAL_AVATAR_NUMBERS.includes(avatarNumber)
-        ) {
+        if (!Number.isNaN(avatarNumber) && TESTIMONIAL_AVATAR_NUMBERS.includes(avatarNumber)) {
           setSelectedAvatar(avatarNumber);
         }
       }
@@ -155,9 +139,7 @@ export const TestimonialForm = ({
       const currentYear = new Date().getFullYear();
 
       if (Number.isNaN(year) || year < 1900 || year > currentYear) {
-        setYearError(
-          `Please enter a valid year between 1900 and ${currentYear}`,
-        );
+        setYearError(`Please enter a valid year between 1900 and ${currentYear}`);
       } else {
         setYearError("");
       }
@@ -225,21 +207,13 @@ export const TestimonialForm = ({
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(
-          data.message ||
-            `Failed to ${isEditing ? "update" : "add"} testimonial`,
-        );
+        throw new Error(data.message || `Failed to ${isEditing ? "update" : "add"} testimonial`);
       }
 
       onSuccess();
-    } catch (error: Error | unknown) {
-      console.error(
-        `Failed to ${isEditing ? "update" : "submit"} testimonial:`,
-        error,
-      );
-      setError(
-        error instanceof Error ? error.message : "An unexpected error occurred",
-      );
+    } catch (error: unknown) {
+      console.error(`Failed to ${isEditing ? "update" : "submit"} testimonial:`, error);
+      setError(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
@@ -247,16 +221,13 @@ export const TestimonialForm = ({
 
   // Render the current profile image if editing and not removed
   const renderCurrentImage = () => {
-    if (!isEditing || isImageRemoved || (!initialData?.img && !imageUrl))
-      return null;
+    if (!isEditing || isImageRemoved || (!initialData?.img && !imageUrl)) return null;
 
     const displayUrl = imageUrl || initialData?.img || "";
 
     return (
       <div className="mb-6 border border-[#3C3120] rounded-md p-4 bg-neutral-950/30">
-        <h4 className="text-sm font-medium text-neutral-400 mb-3">
-          Current Profile Image
-        </h4>
+        <h4 className="text-sm font-medium text-neutral-400 mb-3">Current Profile Image</h4>
         <div className="group relative w-16 h-16 mx-auto">
           <div className="aspect-square rounded-full overflow-hidden border border-[#3C3120]">
             <Image
@@ -286,11 +257,7 @@ export const TestimonialForm = ({
 
   // Show preview for avatar selection even when editing
   const renderAvatarPreview = () => {
-    if (
-      imageTab !== "avatar" ||
-      (!isImageRemoved && isEditing && initialData?.img)
-    )
-      return null;
+    if (imageTab !== "avatar" || (!isImageRemoved && isEditing && initialData?.img)) return null;
 
     return (
       <div className="mt-4 border border-[#3C3120] rounded-md p-4 bg-neutral-950/30">
@@ -391,11 +358,7 @@ export const TestimonialForm = ({
                   className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] cursor-pointer pl-3 pr-8"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                  {showMonths ? (
-                    <ChevronUp size={16} />
-                  ) : (
-                    <ChevronDown size={16} />
-                  )}
+                  {showMonths ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </div>
 
                 {showMonths && (
@@ -432,9 +395,7 @@ export const TestimonialForm = ({
                 className="w-24 bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55]"
               />
             </div>
-            {yearError && (
-              <p className="text-xs text-red-400 mt-1">{yearError}</p>
-            )}
+            {yearError && <p className="text-xs text-red-400 mt-1">{yearError}</p>}
           </div>
         </div>
 
@@ -481,9 +442,7 @@ export const TestimonialForm = ({
               1. Not editing, OR
               2. Image was removed, OR
               3. No initial image exists */}
-          {(!isEditing ||
-            isImageRemoved ||
-            (!initialData?.img && !imageUrl)) && (
+          {(!isEditing || isImageRemoved || (!initialData?.img && !imageUrl)) && (
             <Tabs
               defaultValue={imageTab}
               value={imageTab}
@@ -608,8 +567,7 @@ export const TestimonialForm = ({
             </>
           ) : (
             <>
-              <Check size={16} className="mr-2" />{" "}
-              {isEditing ? "Update" : "Save"} Testimonial
+              <Check size={16} className="mr-2" /> {isEditing ? "Update" : "Save"} Testimonial
             </>
           )}
         </Button>

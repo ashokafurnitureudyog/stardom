@@ -1,4 +1,5 @@
 import { Quote } from "lucide-react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -40,10 +41,12 @@ export const ProjectDetails = ({ project, open, onClose }: ProjectDetailsProps) 
                 {project.gallery[0] && (
                   <div className="md:w-1/2 w-full">
                     <div className="relative aspect-4/3 overflow-hidden rounded-xl shadow-lg">
-                      <img
+                      <Image
                         src={project.gallery[0]}
                         alt={`${project.title} - Challenge`}
                         className="w-full h-full object-cover hover:scale-105 transition-all duration-500 ease-out"
+                        width={1200}
+                        height={800}
                       />
                       <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </div>
@@ -67,10 +70,12 @@ export const ProjectDetails = ({ project, open, onClose }: ProjectDetailsProps) 
                 {project.gallery[1] && (
                   <div className="md:w-1/2 w-full">
                     <div className="relative aspect-4/3 overflow-hidden rounded-xl shadow-lg">
-                      <img
+                      <Image
                         src={project.gallery[1]}
                         alt={`${project.title} - Solution`}
                         className="w-full h-full object-cover hover:scale-105 transition-all duration-500 ease-out"
+                        width={1200}
+                        height={800}
                       />
                       <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </div>
@@ -94,10 +99,12 @@ export const ProjectDetails = ({ project, open, onClose }: ProjectDetailsProps) 
                 {project.gallery[2] && (
                   <div className="md:w-1/2 w-full">
                     <div className="relative aspect-4/3 overflow-hidden rounded-xl shadow-lg">
-                      <img
+                      <Image
                         src={project.gallery[2]}
                         alt={`${project.title} - Impact`}
                         className="w-full h-full object-cover hover:scale-105 transition-all duration-500 ease-out"
+                        width={1200}
+                        height={800}
                       />
                       <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </div>
@@ -139,10 +146,12 @@ export const ProjectDetails = ({ project, open, onClose }: ProjectDetailsProps) 
                       key={index}
                       className="group relative aspect-4/3 overflow-hidden rounded-xl shadow-lg cursor-pointer"
                     >
-                      <img
+                      <Image
                         src={image}
                         alt={`${project.title} - Additional Image ${index + 4}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ease-out"
+                        width={1200}
+                        height={800}
                       />
                       <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>

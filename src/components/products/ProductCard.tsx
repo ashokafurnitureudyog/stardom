@@ -71,7 +71,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           <div className="mt-4 pt-4 border-t border-primary/10">
             <Link href={`/products/${id}`}>
-              <button className="w-full py-2 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 font-light">
+              <button
+                type="button"
+                className="w-full py-2 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 font-light"
+              >
                 View Details
               </button>
             </Link>

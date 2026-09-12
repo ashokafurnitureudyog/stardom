@@ -29,15 +29,11 @@ export const PortfolioForm = ({
 
   // Project details
   const [title, setTitle] = useState(initialData?.title || "");
-  const [description, setDescription] = useState(
-    initialData?.description || "",
-  );
+  const [description, setDescription] = useState(initialData?.description || "");
   const [challenge, setChallenge] = useState(initialData?.challenge || "");
   const [solution, setSolution] = useState(initialData?.solution || "");
   const [impact, setImpact] = useState(initialData?.impact || "");
-  const [thumbnailFile, setThumbnailFile] = useState<File | undefined>(
-    undefined,
-  );
+  const [thumbnailFile, setThumbnailFile] = useState<File | undefined>(undefined);
 
   // Tags
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
@@ -50,19 +46,13 @@ export const PortfolioForm = ({
     initialData?.testimonial?.author || initialData?.testimonial_author || "",
   );
   const [testimonialPosition, setTestimonialPosition] = useState(
-    initialData?.testimonial?.position ||
-      initialData?.testimonial_position ||
-      "",
+    initialData?.testimonial?.position || initialData?.testimonial_position || "",
   );
 
   // Image handling
   const [files, setFiles] = useState<File[]>([]);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>(
-    initialData?.thumbnail || "",
-  );
-  const [galleryUrls, setGalleryUrls] = useState<string[]>(
-    initialData?.gallery || [],
-  );
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>(initialData?.thumbnail || "");
+  const [galleryUrls, setGalleryUrls] = useState<string[]>(initialData?.gallery || []);
   const [newImageUrl, setNewImageUrl] = useState("");
 
   // Track removed gallery URLs (only for editing)
@@ -184,13 +174,9 @@ export const PortfolioForm = ({
         testimonial_author: testimonialAuthor,
         testimonial_position: testimonialPosition,
         // For editing
-        id:
-          isEditing && initialData
-            ? initialData.id || initialData.$id
-            : undefined,
+        id: isEditing && initialData ? initialData.id || initialData.$id : undefined,
         thumbnailRemoved: isThumbnailRemoved,
-        removedGalleryUrls:
-          removedGalleryUrls.length > 0 ? removedGalleryUrls : undefined,
+        removedGalleryUrls: removedGalleryUrls.length > 0 ? removedGalleryUrls : undefined,
       };
 
       // 4. Send the data to the API
@@ -217,11 +203,9 @@ export const PortfolioForm = ({
       });
 
       onSuccess();
-    } catch (error: Error | unknown) {
+    } catch (error: unknown) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to save portfolio project";
+        error instanceof Error ? error.message : "Failed to save portfolio project";
       console.error("Portfolio submission error:", error);
       setErrorMessage(errorMessage);
       toast({
@@ -252,8 +236,7 @@ export const PortfolioForm = ({
       if (url.length > 512) {
         toast({
           title: "URL too long",
-          description:
-            "The image URL exceeds the maximum allowed length of 512 characters",
+          description: "The image URL exceeds the maximum allowed length of 512 characters",
           variant: "destructive",
         });
         return;
@@ -348,12 +331,8 @@ export const PortfolioForm = ({
         {uploadStatus.uploading && (
           <div className="mt-4 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-neutral-400">
-                Uploading files...
-              </span>
-              <span className="text-sm text-neutral-400">
-                {uploadStatus.progress}%
-              </span>
+              <span className="text-sm text-neutral-400">Uploading files...</span>
+              <span className="text-sm text-neutral-400">{uploadStatus.progress}%</span>
             </div>
             <Progress value={uploadStatus.progress} className="h-2" />
           </div>

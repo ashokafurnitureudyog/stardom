@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,10 +18,12 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
   >
     <Card className="overflow-hidden h-full flex flex-col">
       <div className="relative h-64 overflow-hidden">
-        <img
+        <Image
           src={project.thumbnail}
           alt={project.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          width={1200}
+          height={800}
         />
         <div className="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
           <Button variant="outline" className="border-2">

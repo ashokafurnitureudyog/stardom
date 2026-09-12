@@ -109,13 +109,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
               allowedTypes:
                 mediaType === "video"
                   ? ["video/mp4", "video/webm", "video/ogg"]
-                  : [
-                      "image/png",
-                      "image/jpeg",
-                      "image/jpg",
-                      "image/webp",
-                      "image/gif",
-                    ],
+                  : ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"],
               maxSizeInMB: mediaType === "video" ? 50 : 10,
             },
           );
@@ -167,9 +161,8 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
       });
 
       onSuccess();
-    } catch (error: Error | unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to add media";
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to add media";
       toast({
         title: "Error",
         description: errorMessage,
@@ -197,10 +190,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     }
   };
 
-  const handleFileValidation = (
-    file: File,
-    type: "image" | "video",
-  ): boolean => {
+  const handleFileValidation = (file: File, type: "image" | "video"): boolean => {
     if (type === "image" && !file.type.startsWith("image/")) {
       toast({
         title: "Invalid File",
@@ -232,10 +222,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
           <Separator className="mb-6 bg-[#3C3120]" />
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <MediaTypeSelector
-              mediaType={mediaType}
-              setMediaType={setMediaType}
-            />
+            <MediaTypeSelector mediaType={mediaType} setMediaType={setMediaType} />
 
             <Separator className="my-6 bg-[#3C3120]" />
 
@@ -285,12 +272,8 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
             {uploadStatus.uploading && (
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-neutral-400">
-                    Uploading media...
-                  </span>
-                  <span className="text-sm text-neutral-400">
-                    {uploadStatus.progress}%
-                  </span>
+                  <span className="text-sm text-neutral-400">Uploading media...</span>
+                  <span className="text-sm text-neutral-400">{uploadStatus.progress}%</span>
                 </div>
                 <Progress value={uploadStatus.progress} className="h-2" />
               </div>
@@ -321,8 +304,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
               >
                 {isSubmitting || uploadStatus.uploading ? (
                   <>
-                    <Loader2 size={16} className="mr-2 animate-spin" />{" "}
-                    Saving...
+                    <Loader2 size={16} className="mr-2 animate-spin" /> Saving...
                   </>
                 ) : (
                   <>

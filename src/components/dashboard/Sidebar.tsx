@@ -91,6 +91,7 @@ export const Sidebar = ({
       <nav className="space-y-1">
         {sidebarItems.map((sidebarItem) => (
           <button
+            type="button"
             key={sidebarItem.id}
             onClick={() => handleSectionChange(sidebarItem.id)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
@@ -109,6 +110,7 @@ export const Sidebar = ({
       <div className="mt-auto pt-4 border-t border-[#3C3120] relative">
         {" "}
         <button
+          type="button"
           onClick={() => setShowUserMenu(!showUserMenu)}
           className="flex items-center justify-between w-full px-4 py-2 rounded-lg hover:bg-neutral-900/60 transition-all duration-150 active:scale-[0.98] active:bg-[#A28B55]/10"
         >
@@ -135,6 +137,7 @@ export const Sidebar = ({
             <StorageUsage />
 
             <button
+              type="button"
               onClick={handlePasswordChange}
               className="flex items-center gap-2 px-4 py-3 w-full text-left hover:bg-neutral-950/60 transition-colors"
             >
@@ -143,6 +146,7 @@ export const Sidebar = ({
             </button>
 
             <button
+              type="button"
               onClick={handleSignOut}
               className="flex items-center gap-2 px-4 py-3 w-full text-left hover:bg-neutral-950/60 transition-colors"
             >

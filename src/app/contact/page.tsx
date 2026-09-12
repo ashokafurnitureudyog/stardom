@@ -11,7 +11,7 @@ import {
 import { contactPageFaq } from "@/lib/constants/FAQ";
 
 // Dynamically import the Map component to avoid SSR issues
-const Map = dynamic(() => import("@/components/ui/map"), { ssr: false });
+const LocationMap = dynamic(() => import("@/components/ui/map"), { ssr: false });
 
 const ContactPage = () => {
   // Fetch company data using our hook
@@ -20,7 +20,7 @@ const ContactPage = () => {
   return (
     <BaseLayout className="min-h-screen bg-background font-sans">
       {/* Pass isLoading directly to Map component */}
-      <Map companyInfo={companyInfo || fallbackCompanyInfo} isLoading={isLoading} />
+      <LocationMap companyInfo={companyInfo || fallbackCompanyInfo} isLoading={isLoading} />
 
       <div className="w-full mx-auto px-6 py-24 flex items-center justify-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 lg:max-w-4xl">

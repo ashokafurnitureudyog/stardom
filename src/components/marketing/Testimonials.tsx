@@ -68,7 +68,10 @@ const TestimonialsSection = () => {
             Contact us with your title, review and we&apos;ll respond within a week.
           </p>
           <Link href="/contact">
-            <button className="mt-6 px-8 py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors">
+            <button
+              type="button"
+              className="mt-6 px-8 py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors"
+            >
               Share Your Experience
             </button>
           </Link>

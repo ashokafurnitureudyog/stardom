@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card, Carousel } from "@/components/ui/apple-cards-carousel";
 import type { FacilityContentProps, FacilityData } from "@/types/ComponentTypes";
 
@@ -10,10 +11,12 @@ const FacilityContent: React.FC<FacilityContentProps> = ({ facility }) => {
         </span>{" "}
         {facility.description}
       </p>
-      <img
+      <Image
         src="https://images.unsplash.com/photo-1598625776361-024551c79cb5"
         alt="Facility showcase"
         className="md:w-1/2 md:h-1/2 h-full w-full mx-auto object-cover rounded-xl mt-8"
+        width={1200}
+        height={800}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useCompanyData } from "@/hooks/useCompanyData";
 import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
@@ -40,11 +41,13 @@ const BackgroundMedia = ({ item, isActive }: BackgroundMediaProps) => {
 
   return (
     <div className={className}>
-      <img
+      <Image
         src={item.src}
         alt={item.alt || "Background image"}
         className="object-cover w-full h-full"
         loading="eager"
+        width={1200}
+        height={800}
       />
     </div>
   );

@@ -58,7 +58,10 @@ export const ProductCard = ({
       <div className="absolute right-2 top-2 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
         {/* Edit button */}
         <EditProductDialog product={product} onSuccess={onUpdate}>
-          <button className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
+          <button
+            type="button"
+            className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110"
+          >
             <Pencil size={18} className="text-[#A28B55]" />
           </button>
         </EditProductDialog>
@@ -66,7 +69,10 @@ export const ProductCard = ({
         {/* Delete button */}
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogTrigger asChild>
-            <button className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
+            <button
+              type="button"
+              className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110"
+            >
               <Trash size={18} className="text-[#A28B55]" />
             </button>
           </AlertDialogTrigger>

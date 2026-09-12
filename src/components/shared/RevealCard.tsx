@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
 
@@ -61,10 +62,12 @@ export const LogoRevealCard: React.FC<LogoRevealCardProps> = ({
 
       <div className="relative z-10 flex h-full w-full items-center justify-center">
         <div className="h-full w-full transition-opacity duration-300 group-hover:opacity-0">
-          <img
+          <Image
             src={imageUrl}
             alt={imageAlt}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            width={1200}
+            height={800}
           />
         </div>
       </div>

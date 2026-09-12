@@ -76,6 +76,7 @@ export const ProductInfo = ({
         </h3>
         <div className="flex gap-3 flex-wrap">
           <button
+            type="button"
             className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
               selectedColor === ""
                 ? "bg-primary text-primary-foreground shadow-lg scale-105"
@@ -87,6 +88,7 @@ export const ProductInfo = ({
           </button>
           {product.colors.map((color, index) => (
             <button
+              type="button"
               key={index}
               className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                 selectedColor === color
@@ -104,6 +106,7 @@ export const ProductInfo = ({
       {/* WhatsApp Inquiry Button */}
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
         <button
+          type="button"
           onClick={handleWhatsAppInquiry}
           className="group w-full md:w-auto min-w-[300px] flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1fb855] text-white py-4 px-8 rounded-full transition-all shadow-lg hover:shadow-[#25D366]/30"
         >

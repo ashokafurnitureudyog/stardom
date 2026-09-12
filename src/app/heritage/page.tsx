@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
@@ -28,17 +29,21 @@ const timelineData = [
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1965&q=80"
               alt="Traditional woodworking workshop"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1580480055273-228ff5388ef8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
               alt="Traditional furniture craftsmanship"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -58,17 +63,21 @@ const timelineData = [
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
               alt="Modern furniture showroom"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1916&q=80"
               alt="Designer office furniture"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -87,17 +96,21 @@ const timelineData = [
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80"
               alt="International furniture exhibition"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
               alt="Global logistics and shipping"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -116,17 +129,21 @@ const timelineData = [
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1567016432779-094069958ea5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80"
               alt="Premium living room furniture"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1538688423619-a81d3f23454b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
               alt="Luxury brand furniture"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>
@@ -148,17 +165,21 @@ const timelineData = [
         </p>
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1618220179428-22790b461013?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2027&q=80"
               alt="Digital furniture shopping experience"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
           <div className="overflow-hidden rounded-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
               alt="Online furniture catalog"
               className="rounded-lg object-cover h-32 md:h-44 lg:h-60 w-full transform hover:scale-105 transition-transform duration-500"
+              width={1200}
+              height={800}
             />
           </div>
         </div>

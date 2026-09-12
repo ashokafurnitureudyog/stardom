@@ -70,6 +70,7 @@ export const PortfolioCard = ({
       <div className="absolute top-2 right-2 z-20 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
         {/* Edit button */}
         <button
+          type="button"
           onClick={() => setEditDialogOpen(true)}
           className="h-8 w-8 p-0 flex items-center justify-center rounded-full bg-neutral-900/80 backdrop-blur-sm transform scale-100 hover:scale-110 border border-[#3C3120] hover:border-[#A28B55]"
           title="Edit project"
@@ -81,6 +82,7 @@ export const PortfolioCard = ({
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogTrigger asChild>
             <button
+              type="button"
               className="h-8 w-8 p-0 flex items-center justify-center rounded-full bg-neutral-900/80 backdrop-blur-sm transform scale-100 hover:scale-110 border border-[#3C3120] hover:border-[#A28B55]"
               title="Delete project"
             >

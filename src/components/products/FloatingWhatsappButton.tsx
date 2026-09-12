@@ -18,6 +18,7 @@ export const FloatingWhatsAppButton = ({ handleWhatsAppInquiry }: FloatingWhatsA
       }}
     >
       <button
+        type="button"
         onClick={handleWhatsAppInquiry}
         className="bg-[#25D366] hover:bg-[#20BD5C] text-white p-4 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
         aria-label="Chat on WhatsApp"

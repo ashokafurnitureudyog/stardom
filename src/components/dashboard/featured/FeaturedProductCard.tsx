@@ -48,7 +48,10 @@ export const FeaturedProductCard = ({
         <div className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <button className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110 transition-all duration-300">
+              <button
+                type="button"
+                className="h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110 transition-all duration-300"
+              >
                 <X size={25} className="text-[#A28B55]" />
               </button>
             </AlertDialogTrigger>

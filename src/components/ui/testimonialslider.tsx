@@ -2,6 +2,7 @@
 
 import { CalendarIcon, CheckCircleIcon, MapPinIcon, QuoteIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils/utils";
 
@@ -51,7 +52,7 @@ export function FancyTestimonialsSlider({
                 exit={{ opacity: 0, rotate: 60 }}
                 transition={{ duration: 0.7, ease: [0.68, -0.3, 0.32, 1] }}
               >
-                <img
+                <Image
                   className="relative left-1/2 top-11 -translate-x-1/2 rounded-full border border-primary/10 p-1"
                   src={testimonials[active].img}
                   width={56}
@@ -134,6 +135,7 @@ export function FancyTestimonialsSlider({
       <div className="-m-1.5 flex flex-wrap justify-center">
         {testimonials.map((testimonial, index) => (
           <button
+            type="button"
             key={index}
             className={cn(
               "m-1.5 inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5",

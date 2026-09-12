@@ -58,7 +58,10 @@ export const HeroMediaCard = ({ item, onDelete }: HeroMediaCardProps) => {
       {/* Delete button - top right corner, only visible on hover */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogTrigger asChild>
-          <button className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110">
+          <button
+            type="button"
+            className="absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 h-8 w-8 p-0 flex items-center justify-center rounded-full transform scale-100 hover:scale-110"
+          >
             <Trash size={20} className="text-[#A28B55]" />
           </button>
         </AlertDialogTrigger>

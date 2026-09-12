@@ -123,6 +123,7 @@ const ReturnsInfoPage: React.FC = () => {
                 <nav className="space-y-1">
                   {returnsCategories.map((category, idx) => (
                     <button
+                      type="button"
                       key={idx}
                       onClick={() => scrollToCategory(category.title)}
                       className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${

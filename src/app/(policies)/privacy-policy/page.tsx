@@ -129,6 +129,7 @@ const PrivacyPolicyPage: React.FC = () => {
                   <nav className="space-y-2">
                     {privacySections.map((section, idx) => (
                       <button
+                        type="button"
                         key={idx}
                         onClick={() => scrollToSection(section.id)}
                         className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 ${

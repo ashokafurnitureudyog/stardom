@@ -57,6 +57,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
               {/* Navigation content (unchanged) */}
               {/* Left arrow */}
               <button
+                type="button"
                 onClick={prevImage}
                 className="w-9 h-9 rounded-full bg-black/50 border border-[#3C3120] flex items-center justify-center hover:bg-black/70 hover:border-[#A28B55] transition-all duration-200"
               >
@@ -74,6 +75,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                 <div className="flex items-center space-x-2">
                   {Array.from({ length: totalImages }).map((_, idx) => (
                     <button
+                      type="button"
                       key={idx}
                       onClick={() => setCurrentImageIndex(idx)}
                       className={`transition-all duration-300 ${
@@ -89,6 +91,7 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
               {/* Right arrow */}
               <button
+                type="button"
                 onClick={nextImage}
                 className="w-9 h-9 rounded-full bg-black/50 border border-[#3C3120] flex items-center justify-center hover:bg-black/70 hover:border-[#A28B55] transition-all duration-200"
               >

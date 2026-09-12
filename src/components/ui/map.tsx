@@ -42,7 +42,7 @@ const mapStyle = {
   dark: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
 };
 
-export default function Map({ companyInfo, isLoading = false }: MapSectionProps) {
+export default function LocationMap({ companyInfo, isLoading = false }: MapSectionProps) {
   const { theme } = useTheme();
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +120,7 @@ export default function Map({ companyInfo, isLoading = false }: MapSectionProps)
             <div className="p-6 bg-background shadow-lg rounded-lg">
               <p className="text-destructive">{error}</p>
               <button
+                type="button"
                 className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md"
                 onClick={() => setError(null)}
               >

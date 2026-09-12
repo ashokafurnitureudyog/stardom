@@ -100,7 +100,10 @@ const PortfolioSection = () => {
         )}
 
         <div className="text-center mt-16">
-          <button className="inline-flex items-center px-8 py-3 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 group font-light">
+          <button
+            type="button"
+            className="inline-flex items-center px-8 py-3 border border-primary/20 text-primary/90 hover:text-primary hover:border-primary/40 transition-all duration-300 group font-light"
+          >
             <Link href="/portfolio">
               <div>
                 View Complete Portfolio

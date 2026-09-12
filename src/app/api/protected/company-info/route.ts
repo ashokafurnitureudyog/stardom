@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       const data = await req.json();
       const { section } = data;
 
-      let result;
+      let result: Awaited<ReturnType<typeof updateCompanyInfo>>;
 
       switch (section) {
         case "basic":
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       const formData = await req.formData();
       const section = formData.get("section")?.toString();
 
-      let result;
+      let result: Awaited<ReturnType<typeof updateCompanyInfo>>;
 
       switch (section) {
         case "basic": {

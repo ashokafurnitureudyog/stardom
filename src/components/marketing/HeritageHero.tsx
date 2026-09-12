@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCompanyData } from "@/hooks/useCompanyData";
 import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
 import AnimatedText from "../shared/HeroAnimatedText";
@@ -12,10 +13,12 @@ export const HeritageHero = () => {
     <section className="relative min-h-screen lg:min-h-[70vh] flex items-center justify-center text-white overflow-hidden font-sans">
       {/* Background Section */}
       <div className="absolute inset-0 w-full h-full">
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1589350033409-35701c4273d0"
           alt="Heritage background showing our company's legacy"
           className="absolute inset-0 w-full h-full object-cover"
+          width={1200}
+          height={800}
         />
         <div
           className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/70"
