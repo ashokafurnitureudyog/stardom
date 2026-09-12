@@ -153,6 +153,35 @@
   }
 }
 
+.magic-card {
+  --spotlight-x: -200px;
+  --spotlight-y: -200px;
+  --spotlight-tint: color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+.magic-card-glow {
+  background: radial-gradient(
+    var(--spotlight-size) circle at var(--spotlight-x) var(--spotlight-y),
+    var(--spotlight-tint),
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+.magic-card:hover .magic-card-glow {
+  opacity: 0.8;
+}
+
+.magic-card-border {
+  background: radial-gradient(
+    var(--spotlight-size) circle at var(--spotlight-x) var(--spotlight-y),
+    var(--primary),
+    var(--accent),
+    var(--border) 100%
+  );
+}
+
 @keyframes dot-reveal-sweep {
   from {
     mask-size: 0% 0%;

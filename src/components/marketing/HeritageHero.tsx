@@ -17,8 +17,9 @@ export const HeritageHero = () => {
           src="https://images.unsplash.com/photo-1589350033409-35701c4273d0"
           alt="Heritage background showing our company's legacy"
           className="absolute inset-0 w-full h-full object-cover"
-          width={1200}
-          height={800}
+          fill
+          priority
+          sizes="100vw"
         />
         <div
           className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/70"

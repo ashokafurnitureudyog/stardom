@@ -1,20 +1,12 @@
 "use client";
 
-import { useTheme } from "next-themes";
 import { Toaster as SonnerToaster } from "sonner";
 
 /**
- * Toast host. Follows the site theme so toasts do not flash light-on-dark.
+ * Toast host. `theme="system"` lets sonner follow the OS preference through a
+ * media query, rather than this component reading the resolved theme during
+ * render, which the server cannot know.
  */
 export function Toaster() {
-  const { resolvedTheme } = useTheme();
-
-  return (
-    <SonnerToaster
-      theme={resolvedTheme === "dark" ? "dark" : "light"}
-      position="bottom-right"
-      closeButton
-      richColors
-    />
-  );
+  return <SonnerToaster theme="system" position="bottom-right" closeButton richColors />;
 }

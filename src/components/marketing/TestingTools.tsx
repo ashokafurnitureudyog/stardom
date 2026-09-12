@@ -1,12 +1,10 @@
 "use client";
 import { motion } from "motion/react";
-import { useTheme } from "next-themes";
 import { testingToolsData } from "@/lib/constants/ToolsInfo";
 import type { TestingTool } from "@/types/ComponentTypes";
 import { MagicCard } from "../ui/magic-card";
 
 const TestingToolCard = ({ tool, index }: { tool: TestingTool; index: number }) => {
-  const { theme } = useTheme();
   const { Icon, name, description, detail } = tool;
 
   return (
@@ -15,10 +13,7 @@ const TestingToolCard = ({ tool, index }: { tool: TestingTool; index: number }) 
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
     >
-      <MagicCard
-        className="flex-col items-center justify-center p-6 h-full"
-        gradientColor={theme === "dark" ? "#262626" : "#D9D9D955"}
-      >
+      <MagicCard className="flex-col items-center justify-center p-6 h-full">
         <div className="flex items-center mb-4">
           <Icon
             className="w-10 h-10 text-primary mr-4 group-hover:rotate-12 transition-transform duration-300"
