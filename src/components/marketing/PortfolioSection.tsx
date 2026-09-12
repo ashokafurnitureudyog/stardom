@@ -1,12 +1,11 @@
 "use client";
-import React from "react";
-import { Card } from "@/components/ui/card";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { motion } from "framer-motion";
-import { Link } from "next-view-transitions";
-import { usePortfolioProjects } from "@/hooks/usePortfolioProjects";
-import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { usePortfolioProjects } from "@/hooks/usePortfolioProjects";
+import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 
 const PortfolioSection = () => {
   // Use the custom hook to fetch projects with a limit of 3
@@ -17,7 +16,7 @@ const PortfolioSection = () => {
   return (
     <div className="w-full bg-background py-20 md:py-32 font-sans">
       <div className="max-w-7xl mx-auto px-8 md:px-16">
-        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,rgba(var(--primary-rgb),0.02)_49%,rgba(var(--primary-rgb),0.02)_51%,transparent_52%)] bg-[length:48px_48px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,rgba(var(--primary-rgb),0.02)_49%,rgba(var(--primary-rgb),0.02)_51%,transparent_52%)] bg-size-[48px_48px]" />
 
         <motion.div
           className="max-w-7xl mx-auto px-8 md:px-16 relative"
@@ -44,8 +43,8 @@ const PortfolioSection = () => {
             </h2>
 
             <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-              Explore our portfolio of prestigious projects that showcase our
-              commitment to excellence in corporate interior solutions.
+              Explore our portfolio of prestigious projects that showcase our commitment to
+              excellence in corporate interior solutions.
             </p>
           </div>
         </motion.div>
@@ -55,10 +54,10 @@ const PortfolioSection = () => {
             {[1, 2, 3].map((i) => (
               <div key={i} className="group relative h-full">
                 <Card className="relative overflow-hidden bg-background/95 border border-primary/10 h-full flex flex-col">
-                  <div className="aspect-[4/3] w-full">
+                  <div className="aspect-4/3 w-full">
                     <Skeleton className="w-full h-full" />
                   </div>
-                  <div className="p-6 space-y-2 flex-grow">
+                  <div className="p-6 space-y-2 grow">
                     <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-4 w-full" />
                   </div>
@@ -68,39 +67,35 @@ const PortfolioSection = () => {
           </div>
         ) : (
           <div className="grid md:grid-cols-3 gap-8 mb-24">
-            {projects &&
-              projects.map((project, index) => (
-                <div
-                  key={project.id || index}
-                  className="group relative h-full"
-                >
-                  {/* Glow effect container */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
+            {projects?.map((project, index) => (
+              <div key={project.id || index} className="group relative h-full">
+                {/* Glow effect container */}
+                <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
 
-                  {/* Inner glow effect */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
+                {/* Inner glow effect */}
+                <div className="absolute -inset-0.5 bg-linear-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
-                  <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 flex flex-col h-full">
-                    <div className="aspect-[4/3] w-full flex-shrink-0 overflow-hidden relative">
-                      <Image
-                        src={project.thumbnail || ""}
-                        alt={project.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-6 flex flex-col flex-grow min-h-[150px]">
-                      <h3 className="text-xl font-light text-foreground line-clamp-1 mb-2">
-                        {project.title}
-                      </h3>
-                      <p className="text-muted-foreground/80 line-clamp-3">
-                        {project.description || "No description available"}
-                      </p>
-                    </div>
-                  </Card>
-                </div>
-              ))}
+                <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 flex flex-col h-full">
+                  <div className="aspect-4/3 w-full shrink-0 overflow-hidden relative">
+                    <Image
+                      src={project.thumbnail || ""}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col grow min-h-[150px]">
+                    <h3 className="text-xl font-light text-foreground line-clamp-1 mb-2">
+                      {project.title}
+                    </h3>
+                    <p className="text-muted-foreground/80 line-clamp-3">
+                      {project.description || "No description available"}
+                    </p>
+                  </div>
+                </Card>
+              </div>
+            ))}
           </div>
         )}
 

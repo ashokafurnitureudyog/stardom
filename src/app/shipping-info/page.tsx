@@ -1,7 +1,9 @@
 "use client";
 
+import { Clock, CreditCard, Shield } from "lucide-react";
+import { motion } from "motion/react";
+import Link from "next/link";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
@@ -12,10 +14,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Link } from "next-view-transitions";
-import { Clock, CreditCard, Shield } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { ShippingCategory } from "@/types/ComponentTypes";
+import type { ShippingCategory } from "@/types/ComponentTypes";
 
 const shippingCategories: ShippingCategory[] = [
   {
@@ -89,9 +89,7 @@ const shippingCategories: ShippingCategory[] = [
 ];
 
 const ShippingInfoPage: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>(
-    shippingCategories[0]?.title || "",
-  );
+  const [activeCategory, setActiveCategory] = useState<string>(shippingCategories[0]?.title || "");
 
   const scrollToCategory = (categoryId: string): void => {
     document.getElementById(categoryId)?.scrollIntoView({
@@ -111,12 +109,11 @@ const ShippingInfoPage: React.FC = () => {
               Shipping Information
             </span>
             <SectionTitle>
-              Delivery{" "}
-              <span className="font-serif italic text-primary">Details</span>
+              Delivery <span className="font-serif italic text-primary">Details</span>
             </SectionTitle>
             <p className="text-muted-foreground text-lg mx-auto mb-10">
-              Learn about our shipping options, delivery timeframes, and
-              policies for our premium furniture collections throughout India.
+              Learn about our shipping options, delivery timeframes, and policies for our premium
+              furniture collections throughout India.
             </p>
           </div>
         </Section>
@@ -127,9 +124,7 @@ const ShippingInfoPage: React.FC = () => {
             {/* Navigation Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-32 space-y-8">
-                <h3 className="text-lg font-medium mb-4 text-foreground/80">
-                  Information
-                </h3>
+                <h3 className="text-lg font-medium mb-4 text-foreground/80">Information</h3>
                 <nav className="space-y-1">
                   {shippingCategories.map((category, idx) => (
                     <button
@@ -148,9 +143,7 @@ const ShippingInfoPage: React.FC = () => {
                 </nav>
 
                 <div className="pt-6 mt-6 border-t border-input/30">
-                  <h3 className="text-lg font-medium mb-4 text-foreground/80">
-                    Need more help?
-                  </h3>
+                  <h3 className="text-lg font-medium mb-4 text-foreground/80">Need more help?</h3>
                   <Button
                     className="w-full justify-start border-input/50 hover:border-primary/50 mb-2"
                     asChild
@@ -182,7 +175,7 @@ const ShippingInfoPage: React.FC = () => {
                       {category.icon}
                       {category.title}
                     </h2>
-                    <div className="h-px flex-grow bg-primary/20" />
+                    <div className="h-px grow bg-primary/20" />
                   </div>
 
                   <Accordion type="single" collapsible className="w-full">
@@ -214,21 +207,14 @@ const ShippingInfoPage: React.FC = () => {
               Business Solutions
             </span>
             <SectionTitle>
-              Corporate{" "}
-              <span className="font-serif italic text-primary">
-                Partnerships
-              </span>
+              Corporate <span className="font-serif italic text-primary">Partnerships</span>
             </SectionTitle>
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
-              We offer specialized shipping arrangements and flexible payment
-              terms for our business clients. Contact our B2B sales team to
-              discuss your specific requirements and explore our corporate
-              solutions.
+              We offer specialized shipping arrangements and flexible payment terms for our business
+              clients. Contact our B2B sales team to discuss your specific requirements and explore
+              our corporate solutions.
             </p>
-            <Button
-              className="min-w-[240px] h-14 text-lg tracking-wide"
-              asChild
-            >
+            <Button className="min-w-[240px] h-14 text-lg tracking-wide" asChild>
               <Link href="/contact">Contact Our B2B Team</Link>
             </Button>
           </div>

@@ -1,35 +1,27 @@
 "use client";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import NumberTicker from "../ui/number-ticker";
-import { motion } from "framer-motion";
-import { StatisticProps } from "@/types/ComponentTypes";
 import { ArrowRightIcon } from "lucide-react";
-import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
-import { Link } from "next-view-transitions";
-import { useCompanyData } from "@/hooks/useCompanyData";
+import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
+import type React from "react";
+import { Button } from "@/components/ui/button";
+import { useCompanyData } from "@/hooks/useCompanyData";
+import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
+import type { StatisticProps } from "@/types/ComponentTypes";
+import NumberTicker from "../ui/number-ticker";
 
 const Statistic: React.FC<StatisticProps> = ({ value, label }) => (
   <motion.div whileHover={{ scale: 1.02 }} className="relative group">
-    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 rounded-lg transform -rotate-1" />
+    <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-accent/5 rounded-lg transform -rotate-1" />
     <div className="relative p-8 border-l-2 border-primary/30">
-      <NumberTicker
-        className="text-6xl font-light text-foreground font-serif"
-        value={value}
-      />
+      <NumberTicker className="text-6xl font-light text-foreground font-serif" value={value} />
       <span className="text-primary text-5xl font-serif ml-1">+</span>
-      <p className="text-muted-foreground/90 mt-3 text-lg tracking-wide">
-        {label}
-      </p>
+      <p className="text-muted-foreground/90 mt-3 text-lg tracking-wide">{label}</p>
     </div>
   </motion.div>
 );
 
-const ImagePanel: React.FC<{ src: string; index: number }> = ({
-  src,
-  index,
-}) => (
+const ImagePanel: React.FC<{ src: string; index: number }> = ({ src, index }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -50,8 +42,7 @@ const ImagePanel: React.FC<{ src: string; index: number }> = ({
 
 const LegacySection: React.FC = () => {
   const { companyInfo } = useCompanyData();
-  const established =
-    companyInfo?.established || fallbackCompanyInfo.established;
+  const established = companyInfo?.established || fallbackCompanyInfo.established;
 
   const images: string[] = [
     "https://images.unsplash.com/photo-1728633826211-4e04854e344e",
@@ -85,18 +76,16 @@ const LegacySection: React.FC = () => {
 
               <h2 className="text-5xl lg:text-7xl font-light tracking-tight text-foreground">
                 <span className="font-serif">Crafting</span>{" "}
-                <span className="text-primary/90 font-serif italic">
-                  Elegance
-                </span>
+                <span className="text-primary/90 font-serif italic">Elegance</span>
                 <div className="text-4xl lg:text-5xl mt-4 flex items-center gap-4">
                   <span className="font-light">Since {established}</span>
                 </div>
               </h2>
 
               <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-                From our inception as Ashoka Furniture Udyog to our position as
-                an industry leader in luxury office furniture, we have
-                maintained an unwavering dedication to artistry and innovation.
+                From our inception as Ashoka Furniture Udyog to our position as an industry leader
+                in luxury office furniture, we have maintained an unwavering dedication to artistry
+                and innovation.
               </p>
             </div>
 
@@ -105,11 +94,7 @@ const LegacySection: React.FC = () => {
               <Statistic value={1000} label="Projects" />
             </div>
 
-            <Button
-              variant="ghost"
-              className="text-lg group px-8 py-6 hover:bg-primary/5"
-              asChild
-            >
+            <Button variant="ghost" className="text-lg group px-8 py-6 hover:bg-primary/5" asChild>
               <div>
                 <Link href="/heritage">Explore Our Legacy</Link>
                 <ArrowRightIcon className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />

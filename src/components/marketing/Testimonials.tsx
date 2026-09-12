@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
-import { FancyTestimonialsSlider } from "../ui/testimonialslider";
-import { motion } from "framer-motion";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { Link } from "next-view-transitions";
-import { useTestimonials } from "@/hooks/useTestimonials";
+import { motion } from "motion/react";
+import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTestimonials } from "@/hooks/useTestimonials";
+import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import { FancyTestimonialsSlider } from "../ui/testimonialslider";
 
 const TestimonialsSection = () => {
   const { testimonials, isLoading } = useTestimonials();
@@ -31,14 +30,12 @@ const TestimonialsSection = () => {
 
             <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-foreground font-serif mb-8">
               Voices of
-              <span className="block mt-4 font-normal italic text-primary/90">
-                Excellence
-              </span>
+              <span className="block mt-4 font-normal italic text-primary/90">Excellence</span>
             </h2>
 
             <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-              Discover why discerning organizations trust Stardom for their
-              premium office furniture needs.
+              Discover why discerning organizations trust Stardom for their premium office furniture
+              needs.
             </p>
           </div>
         </motion.div>
@@ -68,8 +65,7 @@ const TestimonialsSection = () => {
             Want to get featured too?
           </h3>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Contact us with your title, review and we&apos;ll respond within a
-            week.
+            Contact us with your title, review and we&apos;ll respond within a week.
           </p>
           <Link href="/contact">
             <button className="mt-6 px-8 py-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-full transition-colors">

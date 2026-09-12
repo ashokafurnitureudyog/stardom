@@ -1,9 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from "@/lib/controllers/ProductControllers";
+import { type NextRequest, NextResponse } from "next/server";
+import { addProduct, deleteProduct, updateProduct } from "@/lib/controllers/ProductControllers";
 import { apiHandler } from "@/lib/utils/api-utils";
 
 export async function POST(request: NextRequest) {
@@ -13,10 +9,7 @@ export async function POST(request: NextRequest) {
 
     // Verify required fields
     if (!productData.name || !productData.description) {
-      return NextResponse.json(
-        { error: "Name and description are required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Name and description are required" }, { status: 400 });
     }
 
     // Adapt the data to the format expected by the controller
@@ -44,18 +37,12 @@ export async function PUT(request: NextRequest) {
     // Get product ID
     const productId = productData.id;
     if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required for updates" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Product ID is required for updates" }, { status: 400 });
     }
 
     // Verify required fields
     if (!productData.name || !productData.description) {
-      return NextResponse.json(
-        { error: "Name and description are required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Name and description are required" }, { status: 400 });
     }
 
     // Adapt the data to the format expected by the controller
@@ -83,10 +70,7 @@ export async function DELETE(request: NextRequest) {
     const { productId, imageUrls } = data;
 
     if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
 
     await deleteProduct(productId, Array.isArray(imageUrls) ? imageUrls : []);

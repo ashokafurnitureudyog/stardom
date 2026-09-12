@@ -1,25 +1,25 @@
 "use server";
-import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
 import { AppwriteException, Query } from "node-appwrite";
+import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
 
 // Get a product by ID
 async function getProductById(productId: string) {
   const { database } = await createAdminClient();
-  return database.getDocument(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
-    productId,
-  );
+  return database.getRow({
+    databaseId: process.env.APPWRITE_DATABASE_ID!,
+    tableId: process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+    rowId: productId,
+  });
 }
 
 // Count featured products
 async function countFeaturedProducts() {
   const { database } = await createAdminClient();
-  const featured = await database.listDocuments(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-    [Query.limit(100)], // Set a high limit to get accurate count
-  );
+  const featured = await database.listRows({
+    databaseId: process.env.APPWRITE_DATABASE_ID!,
+    tableId: process.env.APPWRITE_FEATURED_COLLECTION_ID!,
+    queries: [Query.limit(100)],
+  });
 
   return featured.total;
 }
@@ -27,23 +27,24 @@ async function countFeaturedProducts() {
 // Get all featured products
 export async function getFeaturedProducts() {
   const { database } = await createAdminClient();
-  const featured = await database.listDocuments(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-  );
+  const featured = await database.listRows({
+    databaseId: process.env.APPWRITE_DATABASE_ID!,
+    tableId: process.env.APPWRITE_FEATURED_COLLECTION_ID!,
+    queries: [Query.limit(100)],
+  });
 
-  return featured.documents;
+  return featured.rows;
 }
 
 // Check if a product is already featured
 async function isProductFeatured(productId: string) {
   try {
     const { database } = await createAdminClient();
-    await database.getDocument(
-      process.env.APPWRITE_DATABASE_ID!,
-      process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-      productId,
-    );
+    await database.getRow({
+      databaseId: process.env.APPWRITE_DATABASE_ID!,
+      tableId: process.env.APPWRITE_FEATURED_COLLECTION_ID!,
+      rowId: productId,
+    });
     return true;
   } catch (error) {
     if (error instanceof AppwriteException && error.code === 404) {
@@ -67,9 +68,7 @@ export async function addToFeatured(productId: string) {
   // Check featured count
   const count = await countFeaturedProducts();
   if (count >= 4) {
-    throw new Error(
-      "Maximum of 4 featured products allowed. Remove one before adding another.",
-    );
+    throw new Error("Maximum of 4 featured products allowed. Remove one before adding another.");
   }
 
   // Get product data from products collection
@@ -77,11 +76,11 @@ export async function addToFeatured(productId: string) {
 
   // Add to featured collection with the same ID
   const { database } = await createAdminClient();
-  await database.createDocument(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-    productId,
-    {
+  await database.createRow({
+    databaseId: process.env.APPWRITE_DATABASE_ID!,
+    tableId: process.env.APPWRITE_FEATURED_COLLECTION_ID!,
+    rowId: productId,
+    data: {
       name: product.name,
       description: product.description,
       category: product.category,
@@ -90,7 +89,7 @@ export async function addToFeatured(productId: string) {
       colors: product.colors,
       images: product.images,
     },
-  );
+  });
 
   return { success: true, message: "Product added to featured" };
 }
@@ -101,11 +100,11 @@ export async function removeFromFeatured(productId: string) {
   if (!user) throw new Error("Unauthorized");
 
   const { database } = await createAdminClient();
-  await database.deleteDocument(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_FEATURED_COLLECTION_ID!,
-    productId,
-  );
+  await database.deleteRow({
+    databaseId: process.env.APPWRITE_DATABASE_ID!,
+    tableId: process.env.APPWRITE_FEATURED_COLLECTION_ID!,
+    rowId: productId,
+  });
 
   return { success: true };
 }

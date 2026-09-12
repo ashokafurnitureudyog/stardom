@@ -1,4 +1,5 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { Query } from "node-appwrite";
 import { createAdminClient } from "@/lib/server/appwrite";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -33,10 +34,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PRODUCTS_COLLECTION_ID!;
 
-    const response = await database.listDocuments(databaseId, collectionId);
+    const response = await database.listRows({
+      databaseId: databaseId,
+      tableId: collectionId,
+      queries: [Query.limit(100)],
+    });
 
     // Add dynamic product routes
-    productRoutes = response.documents.map((doc) => ({
+    productRoutes = response.rows.map((doc) => ({
       url: `${baseUrl}/products/${doc.$id}`,
       lastModified: new Date(doc.$updatedAt || doc.$createdAt),
       changeFrequency: "weekly" as const,

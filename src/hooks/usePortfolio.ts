@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { PortfolioProject } from "@/types/ComponentTypes";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { PortfolioProject } from "@/types/ComponentTypes";
 
 interface DatabasePortfolioProject extends PortfolioProject {
   $id?: string;
@@ -21,13 +21,7 @@ export const usePortfolio = () => {
   });
 
   const deletePortfolioMutation = useMutation({
-    mutationFn: async ({
-      projectId,
-      imageUrls,
-    }: {
-      projectId: string;
-      imageUrls: string[];
-    }) => {
+    mutationFn: async ({ projectId, imageUrls }: { projectId: string; imageUrls: string[] }) => {
       const response = await fetch("/api/protected/portfolio", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },

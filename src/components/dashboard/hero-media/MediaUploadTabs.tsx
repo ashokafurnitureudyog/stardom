@@ -1,10 +1,10 @@
 "use client";
-import { useState, useRef } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowRight, Link, Upload, UploadCloud } from "lucide-react";
+import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Upload, Link, UploadCloud, ArrowRight } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface MediaUploadTabsProps {
   addMethod: "url" | "upload";
@@ -75,7 +75,7 @@ export const MediaUploadTabs = ({
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
   };
@@ -142,9 +142,7 @@ export const MediaUploadTabs = ({
               <Link size={16} />
             </div>
           </div>
-          <p className="text-neutral-500 text-xs">
-            Enter a direct URL to the {mediaType} file.
-          </p>
+          <p className="text-neutral-500 text-xs">Enter a direct URL to the {mediaType} file.</p>
         </div>
       </TabsContent>
 
@@ -188,9 +186,7 @@ export const MediaUploadTabs = ({
                   ? "Support for JPG, PNG, WEBP or GIF (Max 50MB)" // Updated to 50MB
                   : "Support for MP4, WEBM (Max 50MB)"}
               </p>
-              <p className="text-neutral-500 text-sm mt-1">
-                or drop files here
-              </p>
+              <p className="text-neutral-500 text-sm mt-1">or drop files here</p>
             </div>
           </label>
         </div>

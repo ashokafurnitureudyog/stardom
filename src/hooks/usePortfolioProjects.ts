@@ -1,8 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { PortfolioProject } from "@/types/ComponentTypes";
 import { PortfolioProjects as fallbackProjects } from "@/lib/constants/PortfolioProjects";
+import type { PortfolioProject } from "@/types/ComponentTypes";
 
 interface UsePortfolioOptions {
   featured?: boolean;
@@ -17,41 +17,35 @@ export function usePortfolioProjects(options: UsePortfolioOptions = {}) {
   return useQuery<PortfolioProject[]>({
     queryKey: ["portfolio-projects", { featured, limit, tag }],
     queryFn: async () => {
-      try {
-        // Using absolute URL with origin to ensure proper path resolution
-        const endpoint = `${window.location.origin}/api/portfolio`;
+      // Using absolute URL with origin to ensure proper path resolution
+      const endpoint = `${window.location.origin}/api/portfolio`;
 
-        const response = await fetch(endpoint, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Cache-Control": "no-cache",
-          },
-        });
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Cache-Control": "no-cache",
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error(
-            `API request failed: ${response.status} ${response.statusText}`,
-          );
-        }
-
-        const data = await response.json();
-
-        // Handle different possible response structures
-        let projects: PortfolioProject[];
-
-        if (data.projects && Array.isArray(data.projects)) {
-          projects = data.projects;
-        } else if (Array.isArray(data)) {
-          projects = data;
-        } else {
-          throw new Error("API returned unexpected data structure");
-        }
-
-        return projects;
-      } catch (error) {
-        throw error; // Let React Query error handling take over
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
       }
+
+      const data = await response.json();
+
+      // Handle different possible response structures
+      let projects: PortfolioProject[];
+
+      if (data.projects && Array.isArray(data.projects)) {
+        projects = data.projects;
+      } else if (Array.isArray(data)) {
+        projects = data;
+      } else {
+        throw new Error("API returned unexpected data structure");
+      }
+
+      return projects;
     },
     enabled, // Control whether the query auto-executes
     retry: 2, // Retry failed requests a reasonable number of times
@@ -72,9 +66,7 @@ export function usePortfolioProjects(options: UsePortfolioOptions = {}) {
       // Apply filters in sequence
       if (featured !== undefined) {
         filtered = filtered.filter((project) =>
-          featured
-            ? project.tags?.includes("featured")
-            : !project.tags?.includes("featured"),
+          featured ? project.tags?.includes("featured") : !project.tags?.includes("featured"),
         );
       }
 
@@ -92,11 +84,7 @@ export function usePortfolioProjects(options: UsePortfolioOptions = {}) {
 
   // Helper function to filter fallback data based on the same options
   function getFilteredFallbacks(): PortfolioProject[] {
-    if (
-      !fallbackProjects ||
-      !Array.isArray(fallbackProjects) ||
-      fallbackProjects.length === 0
-    ) {
+    if (!fallbackProjects || !Array.isArray(fallbackProjects) || fallbackProjects.length === 0) {
       return getEmergencyFallback();
     }
 

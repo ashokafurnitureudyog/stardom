@@ -1,20 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
-import { useProducts } from "@/hooks/useProducts";
-import { ProductDetailsSkeleton } from "@/components/products/ProductDetailsSkeleton";
-import { ProductNotFound } from "@/components/products/ProductNotFound";
+import { FloatingWhatsAppButton } from "@/components/products/FloatingWhatsappButton";
 import { ProductImages } from "@/components/products/ProductDetailsImageCarousel";
 import { ProductGalleryDesktop } from "@/components/products/ProductGalleryDesktop";
 import { ProductInfo } from "@/components/products/ProductInfo";
+import { ProductNotFound } from "@/components/products/ProductNotFound";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
-import { FloatingWhatsAppButton } from "@/components/products/FloatingWhatsappButton";
-import { Product } from "@/types/ComponentTypes";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import type { Product } from "@/types/ComponentTypes";
 
 /**
  * Props for the ProductDisplay component
@@ -24,8 +21,10 @@ import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 interface ProductDisplayProps {
   /** Product unique identifier */
   id: string;
-  /** Initial product data from server-side rendering (optional) */
-  initialProduct?: Product;
+  /** Product resolved on the server */
+  product?: Product;
+  /** Products in the same category, resolved on the server */
+  similarProducts: Product[];
 }
 
 /**
@@ -39,30 +38,15 @@ interface ProductDisplayProps {
  */
 const ProductDisplay: React.FC<ProductDisplayProps> = ({
   id,
-  initialProduct,
+  product: currentProduct,
+  similarProducts,
 }) => {
   const pathname = usePathname();
-  const queryClient = useQueryClient();
 
   // State for selected product color and active image index
   // Empty string means "All Colors" is selected (default)
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-
-  // Use React Query to fetch product data
-  const { individualProductQuery, similarProductQuery } = useProducts(id);
-
-  /**
-   * Initialize React Query cache with server-provided data to prevent refetching
-   */
-  useEffect(() => {
-    if (initialProduct) {
-      queryClient.setQueryData(["product", id], initialProduct);
-    }
-  }, [id, initialProduct, queryClient]);
-
-  // Current product data - prioritize SSR data to avoid hydration issues
-  const currentProduct = initialProduct || individualProductQuery.data;
 
   // Parse image color mapping
   const imageColorMapping = React.useMemo(() => {
@@ -121,7 +105,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
               if (fuzzyKey) mappedColor = mapping[fuzzyKey];
             }
           }
-        } catch (e) {}
+        } catch (_e) {}
       }
 
       // If image is mapped to a color, it must match the selected color.
@@ -131,12 +115,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
   }, [currentProduct?.images, selectedColor, imageColorMapping]);
   useEffect(() => {
     setActiveImageIndex(0);
-  }, [id, selectedColor]);
-
-  // Related products data
-  const relatedProducts = similarProductQuery.data || [];
-  const isLoadingRelatedProducts =
-    similarProductQuery.isLoading && relatedProducts.length === 0;
+  }, []);
 
   /**
    * Handle WhatsApp inquiry for the current product
@@ -155,35 +134,12 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
     // Business WhatsApp number with country code
     const phoneNumber = "+916284673783";
 
-    window.open(
-      `https://wa.me/${phoneNumber}?text=${message}`,
-      "_blank",
-      "noopener,noreferrer",
-    );
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank", "noopener,noreferrer");
   }, [currentProduct, pathname, selectedColor]);
 
-  // Loading state - only show if we don't have initialProduct
-  if (!currentProduct && individualProductQuery.isLoading) {
-    return <ProductDetailsSkeleton />;
-  }
-
-  // Error state - only show if we don't have initialProduct
-  if (
-    !currentProduct &&
-    (individualProductQuery.isError || !individualProductQuery.data)
-  ) {
-    return <ProductNotFound />;
-  }
-
-  // Fallback for unexpected state - should not normally be reached
   if (!currentProduct) {
     return <ProductNotFound />;
   }
-
-  const isDesktop = React.useMemo(() => {
-    if (typeof window === "undefined") return true;
-    return window.matchMedia("(min-width: 1024px)").matches;
-  }, []);
 
   return (
     <ErrorBoundary fallback={<ProductNotFound />}>
@@ -196,9 +152,7 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
                 aria-label="Breadcrumb"
                 className="flex flex-wrap items-center text-xs md:text-sm tracking-wider uppercase text-muted-foreground/60 mb-8 md:mb-16 font-medium"
               >
-                <span className="hover:text-foreground transition-colors cursor-pointer">
-                  Home
-                </span>
+                <span className="hover:text-foreground transition-colors cursor-pointer">Home</span>
                 <span className="mx-3 text-muted-foreground/40">/</span>
                 <span className="hover:text-foreground transition-colors cursor-pointer">
                   Products
@@ -241,15 +195,10 @@ const ProductDisplay: React.FC<ProductDisplayProps> = ({
 
           {/* Related Products Section with extra spacing/styling */}
           <div className="border-t border-border bg-background/50 backdrop-blur-sm">
-            <RelatedProducts
-              isLoading={isLoadingRelatedProducts}
-              relatedProducts={relatedProducts}
-            />
+            <RelatedProducts isLoading={false} relatedProducts={similarProducts} />
           </div>
 
-          <FloatingWhatsAppButton
-            handleWhatsAppInquiry={handleWhatsAppInquiry}
-          />
+          <FloatingWhatsAppButton handleWhatsAppInquiry={handleWhatsAppInquiry} />
         </div>
       </BaseLayout>
     </ErrorBoundary>

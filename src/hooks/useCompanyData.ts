@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { CompanyInfo, SocialLink, TeamMember } from "@/types/ComponentTypes";
+import type { CompanyInfo, SocialLink, TeamMember } from "@/types/ComponentTypes";
 
 interface CompanyDataResponse {
   companyInfo: CompanyInfo;

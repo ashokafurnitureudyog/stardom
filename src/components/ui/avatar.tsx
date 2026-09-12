@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
+import type * as React from "react";
 
 import { cn } from "@/lib/utils/utils";
 
@@ -14,10 +14,7 @@ const Avatar = ({
 }) => (
   <AvatarPrimitive.Root
     ref={ref}
-    className={cn(
-      "relative flex h-10 w-10 flex-shrink-0 overflow-hidden rounded-full",
-      className,
-    )}
+    className={cn("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className)}
     {...props}
   />
 );
@@ -56,4 +53,4 @@ const AvatarFallback = ({
 );
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
 
-export { Avatar, AvatarImage, AvatarFallback };
+export { Avatar, AvatarFallback, AvatarImage };

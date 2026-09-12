@@ -8,8 +8,7 @@ export async function GET() {
     return NextResponse.json(mappedProducts);
   } catch (error: unknown) {
     console.error("Failed to fetch products:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch products";
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch products";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

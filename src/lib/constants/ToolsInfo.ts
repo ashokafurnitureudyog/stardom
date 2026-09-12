@@ -1,32 +1,29 @@
-import { TestingTool } from "@/types/ComponentTypes";
 import {
-  TestTubeIcon,
-  TargetIcon,
-  ScaleIcon,
   ActivityIcon,
-  LayersIcon,
   GaugeIcon,
+  LayersIcon,
+  ScaleIcon,
+  TargetIcon,
+  TestTubeIcon,
 } from "lucide-react";
+import type { TestingTool } from "@/types/ComponentTypes";
 export const testingToolsData: TestingTool[] = [
   {
     Icon: ScaleIcon,
     name: "Indentation Hardness Tester",
-    description:
-      "Advanced digital measurement system for precise compression analysis",
+    description: "Advanced digital measurement system for precise compression analysis",
     detail: "High-Precision Digital Interface",
   },
   {
     Icon: ActivityIcon,
     name: "DeMattia Upper Flex Tester",
-    description:
-      "Industrial-grade flexibility assessment for leatherette durability",
+    description: "Industrial-grade flexibility assessment for leatherette durability",
     detail: "Advanced 360° Motion Analysis",
   },
   {
     Icon: TargetIcon,
     name: "Shear Fatigue Tester",
-    description:
-      "State-of-the-art evaluation of material endurance under stress",
+    description: "State-of-the-art evaluation of material endurance under stress",
     detail: "Precision-Engineered Testing Cycles",
   },
   {

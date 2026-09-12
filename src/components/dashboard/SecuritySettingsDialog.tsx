@@ -1,18 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useEffect, useState } from "react";
+import { CheckCircle2, Eye, EyeOff, Lock } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { changePassword } from "@/lib/controllers/AuthControllers";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Eye, EyeOff, CheckCircle2, Lock } from "lucide-react";
+import { changePassword } from "@/lib/controllers/AuthControllers";
 
 interface FormData {
   currentPassword: string;
@@ -63,20 +58,18 @@ export const SecuritySettingsDialog = ({
       } else {
         setError(result.error || "Password update failed");
       }
-    } catch (err) {
+    } catch (_err) {
       setError("An unexpected error occurred");
     }
   };
 
   const SuccessToast = () => (
-    <div className="fixed bottom-6 right-6 animate-in slide-in-from-right-8 z-[1000]">
+    <div className="fixed bottom-6 right-6 animate-in slide-in-from-right-8 z-1000">
       <div className="flex items-center gap-3 bg-neutral-900 border border-[#A28B55] text-[#A28B55] px-4 py-3 rounded-xl shadow-[0_0_12px_rgba(162,139,85,0.2)]">
         <CheckCircle2 className="w-5 h-5 text-[#A28B55]" />
         <div>
           <p className="font-medium text-sm">Password Updated!</p>
-          <p className="text-xs text-neutral-200">
-            Security settings saved successfully
-          </p>
+          <p className="text-xs text-neutral-200">Security settings saved successfully</p>
         </div>
       </div>
     </div>
@@ -149,17 +142,11 @@ export const SecuritySettingsDialog = ({
                     className="absolute right-2 top-2 h-6 w-6 text-neutral-400 hover:text-[#A28B55] hover:bg-transparent"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   >
-                    {showCurrentPassword ? (
-                      <EyeOff size={16} />
-                    ) : (
-                      <Eye size={16} />
-                    )}
+                    {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </Button>
                 </div>
                 {errors.currentPassword && (
-                  <p className="text-sm text-[#A28B55]">
-                    This field is required
-                  </p>
+                  <p className="text-sm text-[#A28B55]">This field is required</p>
                 )}
               </div>
 
@@ -185,9 +172,7 @@ export const SecuritySettingsDialog = ({
                   </Button>
                 </div>
                 {errors.newPassword && (
-                  <p className="text-sm text-[#A28B55]">
-                    Password must be at least 8 characters
-                  </p>
+                  <p className="text-sm text-[#A28B55]">Password must be at least 8 characters</p>
                 )}
               </div>
             </div>

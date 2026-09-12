@@ -1,30 +1,22 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  fadeInUpVariants,
-  staggerContainerVariants,
-} from "@/lib/constants/AnimationConstants";
-import { Product } from "@/types/ComponentTypes";
+import { fadeInUpVariants, staggerContainerVariants } from "@/lib/constants/AnimationConstants";
+import type { Product } from "@/types/ComponentTypes";
 
 interface RelatedProductsProps {
   isLoading: boolean;
   relatedProducts: Product[];
 }
 
-export const RelatedProducts = ({
-  isLoading,
-  relatedProducts,
-}: RelatedProductsProps) => {
+export const RelatedProducts = ({ isLoading, relatedProducts }: RelatedProductsProps) => {
   return (
     <Section className="bg-card py-32">
       <div className="container mx-auto px-6 lg:px-8 max-w-7xl">
         <SectionTitle>
-          You May Also{" "}
-          <span className="font-serif italic text-primary">Like</span>
+          You May Also <span className="font-serif italic text-primary">Like</span>
         </SectionTitle>
 
         {isLoading ? (
@@ -54,9 +46,7 @@ export const RelatedProducts = ({
             ))}
           </motion.div>
         ) : (
-          <p className="text-center text-muted-foreground py-20">
-            No related products found
-          </p>
+          <p className="text-center text-muted-foreground py-20">No related products found</p>
         )}
       </div>
     </Section>

@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from "react";
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  MapPin,
-  Mail,
-  Phone,
-  ArrowUp,
-  Youtube,
-  LucideProps,
-} from "lucide-react";
-import { RiTwitterXFill } from "@remixicon/react";
-import { Button } from "@/components/ui/button";
+import { ArrowUp, type LucideProps, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Link } from "next-view-transitions";
+import type React from "react";
+import { useEffect, useState } from "react";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  XIcon,
+  YoutubeIcon,
+} from "@/components/ui/brand-icons";
+import { Button } from "@/components/ui/button";
 import { useCompanyData } from "@/hooks/useCompanyData";
 import {
   BasicCompanyInfo as fallbackCompanyInfo,
   socialLinks as fallbackSocialLinks,
 } from "@/lib/constants/CompanyInfo";
-import Image from "next/image";
 
 const Footer = () => {
   const { theme, resolvedTheme } = useTheme();
@@ -29,9 +26,7 @@ const Footer = () => {
 
   useEffect(() => {
     const currentTheme = resolvedTheme || theme;
-    setLogoSrc(
-      currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png",
-    );
+    setLogoSrc(currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png");
     setCurrentYear(new Date().getFullYear());
   }, [theme, resolvedTheme]);
 
@@ -41,12 +36,12 @@ const Footer = () => {
 
   // Map platform names to icon components with proper typing
   const platformIcons: Record<string, React.ComponentType<LucideProps>> = {
-    facebook: Facebook,
-    instagram: Instagram,
-    linkedin: Linkedin,
-    twitter: RiTwitterXFill as unknown as React.ComponentType<LucideProps>,
-    x: RiTwitterXFill as unknown as React.ComponentType<LucideProps>,
-    youtube: Youtube,
+    facebook: FacebookIcon,
+    instagram: InstagramIcon,
+    linkedin: LinkedinIcon,
+    twitter: XIcon as unknown as React.ComponentType<LucideProps>,
+    x: XIcon as unknown as React.ComponentType<LucideProps>,
+    youtube: YoutubeIcon,
   };
 
   const quickLinks = [
@@ -91,8 +86,8 @@ const Footer = () => {
                 </Link>
               </div>
               <p className="text-muted-foreground/80 leading-relaxed">
-                A premium collection of luxury office furniture by Ashoka
-                Furniture Udyog. Crafting elegance and functionality since 1996.
+                A premium collection of luxury office furniture by Ashoka Furniture Udyog. Crafting
+                elegance and functionality since 1996.
               </p>
               <div className="flex gap-6">
                 {(socialLinks || fallbackSocialLinks).map((social, index) => {
@@ -165,16 +160,11 @@ const Footer = () => {
                           "Loading address..."
                         ) : (
                           <>
-                            {companyInfo?.address.street ||
-                              fallbackCompanyInfo.address.street}
+                            {companyInfo?.address.street || fallbackCompanyInfo.address.street}
                             <br />
-                            {companyInfo?.address.city ||
-                              fallbackCompanyInfo.address.city}
-                            ,{" "}
-                            {companyInfo?.address.Country ||
-                              fallbackCompanyInfo.address.Country}{" "}
-                            {companyInfo?.address.zip ||
-                              fallbackCompanyInfo.address.zip}
+                            {companyInfo?.address.city || fallbackCompanyInfo.address.city},{" "}
+                            {companyInfo?.address.Country || fallbackCompanyInfo.address.Country}{" "}
+                            {companyInfo?.address.zip || fallbackCompanyInfo.address.zip}
                           </>
                         )}
                       </p>

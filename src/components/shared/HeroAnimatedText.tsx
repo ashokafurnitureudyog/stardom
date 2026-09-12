@@ -1,12 +1,8 @@
+import { motion } from "motion/react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { AnimatedTextProps } from "@/types/MediaTypes";
-import { motion } from "framer-motion";
+import type { AnimatedTextProps } from "@/types/MediaTypes";
 
-const AnimatedText = ({
-  children,
-  delay = 0.2,
-  className = "",
-}: AnimatedTextProps) => (
+const AnimatedText = ({ children, delay = 0.2, className = "" }: AnimatedTextProps) => (
   <motion.div
     variants={fadeInUpVariants}
     initial="hidden"

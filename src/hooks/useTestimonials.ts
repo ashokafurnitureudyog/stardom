@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ClientTestimonial } from "@/types/ComponentTypes";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
 
 export const useTestimonials = () => {
   const queryClient = useQueryClient();

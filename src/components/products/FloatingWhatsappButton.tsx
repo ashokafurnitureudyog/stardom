@@ -1,13 +1,10 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 interface FloatingWhatsAppButtonProps {
   handleWhatsAppInquiry: () => void;
 }
 
-export const FloatingWhatsAppButton = ({
-  handleWhatsAppInquiry,
-}: FloatingWhatsAppButtonProps) => {
+export const FloatingWhatsAppButton = ({ handleWhatsAppInquiry }: FloatingWhatsAppButtonProps) => {
   return (
     <motion.div
       className="fixed bottom-8 right-8 z-50"

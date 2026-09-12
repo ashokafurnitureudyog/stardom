@@ -1,4 +1,4 @@
-import { CompanyInfo, SocialLink, TeamMember } from "@/types/ComponentTypes";
+import type { CompanyInfo, SocialLink, TeamMember } from "@/types/ComponentTypes";
 export const BasicCompanyInfo: CompanyInfo = {
   name: "Stardom",
   parentCompany: "Ashoka Furniture Udyog",

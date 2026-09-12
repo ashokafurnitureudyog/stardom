@@ -1,16 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
+
+import { AlertCircle, Eye, Info, Search } from "lucide-react";
 import { useState } from "react";
-import { Product } from "@/types/ComponentTypes";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Search, Info, Eye, AlertCircle } from "lucide-react";
+import type { Product } from "@/types/ComponentTypes";
 
 interface ProductSelectionDialogProps {
   open: boolean;
@@ -30,9 +31,7 @@ export const ProductSelectionDialog = ({
   onViewDetails,
 }: ProductSelectionDialogProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(
-    new Set(),
-  );
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectionError, setSelectionError] = useState("");
 
@@ -41,12 +40,8 @@ export const ProductSelectionDialog = ({
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (product.category || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      (product.product_collection || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()),
+      (product.category || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.product_collection || "").toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Handle product selection
@@ -120,12 +115,11 @@ export const ProductSelectionDialog = ({
           {remainingSlots > 0 ? (
             <div className="bg-zinc-800/70 border border-zinc-700 text-zinc-100 px-5 py-3 rounded-md">
               <div className="flex items-center gap-3">
-                <Info size={18} className="text-blue-400 flex-shrink-0" />
+                <Info size={18} className="text-blue-400 shrink-0" />
                 <div className="space-y-1">
                   <p className="font-medium">
-                    You can select up to{" "}
-                    <span className="text-blue-400">{remainingSlots}</span> more
-                    product{remainingSlots !== 1 ? "s" : ""}.
+                    You can select up to <span className="text-blue-400">{remainingSlots}</span>{" "}
+                    more product{remainingSlots !== 1 ? "s" : ""}.
                   </p>
                   <p className="text-sm text-zinc-400">
                     {4 - remainingSlots} of 4 slots already used.
@@ -136,7 +130,7 @@ export const ProductSelectionDialog = ({
           ) : (
             <div className="bg-zinc-800/70 border border-zinc-700 text-amber-100 px-5 py-3 rounded-md">
               <div className="flex items-center gap-3">
-                <Info size={18} className="text-amber-400 flex-shrink-0" />
+                <Info size={18} className="text-amber-400 shrink-0" />
                 <div className="space-y-1">
                   <p className="font-medium">Maximum limit reached.</p>
                   <p className="text-sm text-zinc-400">
@@ -151,7 +145,7 @@ export const ProductSelectionDialog = ({
           {selectionError && (
             <div className="bg-zinc-800/70 border border-zinc-700 text-red-100 px-5 py-3 rounded-md">
               <div className="flex items-center gap-3">
-                <AlertCircle size={18} className="text-red-400 flex-shrink-0" />
+                <AlertCircle size={18} className="text-red-400 shrink-0" />
                 <div>
                   <p className="font-medium">{selectionError}</p>
                 </div>
@@ -181,11 +175,8 @@ export const ProductSelectionDialog = ({
             `}
                   >
                     {/* Image container */}
-                    <div
-                      className="relative w-full"
-                      style={{ height: "220px" }}
-                    >
-                      {product.images && product.images[0] ? (
+                    <div className="relative w-full" style={{ height: "220px" }}>
+                      {product.images?.[0] ? (
                         <img
                           src={product.images[0]}
                           alt={product.name}
@@ -227,9 +218,7 @@ export const ProductSelectionDialog = ({
                             }}
                           >
                             <Eye size={18} className="mr-2" />
-                            <span className="text-xs font-medium">
-                              View Details
-                            </span>
+                            <span className="text-xs font-medium">View Details</span>
                           </div>
                         </div>
                       </div>
@@ -245,9 +234,7 @@ export const ProductSelectionDialog = ({
                     </div>
 
                     <div className="p-3">
-                      <h3 className="font-medium text-[#A28B55] truncate">
-                        {product.name}
-                      </h3>
+                      <h3 className="font-medium text-[#A28B55] truncate">{product.name}</h3>
                       <p className="text-xs text-neutral-500 truncate mt-1">
                         {product.description}
                       </p>
@@ -258,9 +245,7 @@ export const ProductSelectionDialog = ({
             </div>
           ) : (
             <div className="flex items-center justify-center h-full text-neutral-500">
-              {searchQuery
-                ? "No products match your search"
-                : "No products available"}
+              {searchQuery ? "No products match your search" : "No products available"}
             </div>
           )}
         </div>

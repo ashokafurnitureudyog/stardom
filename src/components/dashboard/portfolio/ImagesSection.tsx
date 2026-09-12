@@ -1,12 +1,12 @@
 "use client";
+import { ImagePlus, Link, Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Link, ImagePlus, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
-import { useState, useEffect, useMemo } from "react";
 
 interface ImagesSectionProps {
   files: File[];
@@ -54,14 +54,11 @@ export const ImagesSection = ({
       const newFiles = Array.from(e.target.files);
 
       // Validate file types
-      const invalidFiles = newFiles.filter(
-        (file) => !file.type.startsWith("image/"),
-      );
+      const invalidFiles = newFiles.filter((file) => !file.type.startsWith("image/"));
       if (invalidFiles.length > 0) {
         toast({
           title: "Invalid file type",
-          description:
-            "Please select only image files (JPG, PNG, WEBP, GIF, etc.)",
+          description: "Please select only image files (JPG, PNG, WEBP, GIF, etc.)",
           variant: "destructive",
         });
         return;
@@ -188,8 +185,7 @@ export const ImagesSection = ({
 
       setIsImageLoading(false);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to validate image URL";
+      const errorMessage = err instanceof Error ? err.message : "Failed to validate image URL";
 
       setIsImageLoading(false);
       toast({
@@ -247,12 +243,7 @@ export const ImagesSection = ({
         </div>
       ) : null}
 
-      <Tabs
-        defaultValue="upload"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="w-full"
-      >
+      <Tabs defaultValue="upload" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
           <TabsTrigger
             value="upload"
@@ -294,9 +285,7 @@ export const ImagesSection = ({
 
           {files.length > 0 && (
             <div className="mt-6 space-y-4">
-              <Label className="text-neutral-400">
-                New Images ({files.length})
-              </Label>
+              <Label className="text-neutral-400">New Images ({files.length})</Label>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {fileUrls.map(({ file, url }, index) => (
                   <div key={`file-${index}`} className="group relative">
@@ -318,9 +307,7 @@ export const ImagesSection = ({
                       <X size={12} />
                     </Button>
                     <p className="text-xs truncate mt-1 text-center text-neutral-500">
-                      {file.name.length > 20
-                        ? file.name.substring(0, 17) + "..."
-                        : file.name}
+                      {file.name.length > 20 ? `${file.name.substring(0, 17)}...` : file.name}
                     </p>
                   </div>
                 ))}

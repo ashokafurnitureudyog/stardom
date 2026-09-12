@@ -1,30 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
+import {
+  AlertCircle,
+  Check,
+  Edit,
+  Link as LinkIcon,
+  Loader2,
+  Plus,
+  Trash2,
+  UploadCloud,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import {
-  Edit,
-  Loader2,
-  Check,
-  AlertCircle,
-  Plus,
-  Trash2,
-  Link as LinkIcon,
-  UploadCloud,
-} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { TeamMember } from "@/types/ComponentTypes";
-import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils/utils";
-import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
 import { Progress } from "@/components/ui/progress"; // Make sure this component exists
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { cn } from "@/lib/utils/utils";
+import type { TeamMember } from "@/types/ComponentTypes";
 
 export const EditTeamMembersDialog = ({
   initialData,
@@ -42,18 +41,14 @@ export const EditTeamMembersDialog = ({
   const [validationError, setValidationError] = useState("");
   const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
   const [members, setMembers] = useState<TeamMember[]>(
-    initialData.length > 0
-      ? initialData
-      : [{ name: "", role: "", bio: "", image: "" }],
+    initialData.length > 0 ? initialData : [{ name: "", role: "", bio: "", image: "" }],
   );
   const [imageTab, setImageTab] = useState<Record<number, string>>({});
   const { toast } = useToast();
 
   // Use the file upload hook
   const { uploadFile, uploadStatus } = useFileUpload();
-  const [currentUploadingIndex, setCurrentUploadingIndex] = useState<
-    number | null
-  >(null);
+  const [currentUploadingIndex, setCurrentUploadingIndex] = useState<number | null>(null);
 
   const handleAddMember = () => {
     setMembers([...members, { name: "", role: "", bio: "", image: "" }]);
@@ -68,11 +63,7 @@ export const EditTeamMembersDialog = ({
     setValidationError("");
   };
 
-  const handleMemberChange = (
-    index: number,
-    field: keyof TeamMember,
-    value: string,
-  ) => {
+  const handleMemberChange = (index: number, field: keyof TeamMember, value: string) => {
     const updatedMembers = [...members];
     updatedMembers[index] = { ...updatedMembers[index], [field]: value };
     setMembers(updatedMembers);
@@ -84,10 +75,7 @@ export const EditTeamMembersDialog = ({
     setImageTab({ ...imageTab, [index]: value });
   };
 
-  const handleFileUpload = async (
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleFileUpload = async (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -136,8 +124,7 @@ export const EditTeamMembersDialog = ({
       toast({
         variant: "destructive",
         title: "Upload failed",
-        description:
-          error instanceof Error ? error.message : "Failed to upload image",
+        description: error instanceof Error ? error.message : "Failed to upload image",
         duration: 3000,
       });
     } finally {
@@ -195,7 +182,7 @@ export const EditTeamMembersDialog = ({
 
       onSuccess();
       setOpen(false);
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -228,12 +215,8 @@ export const EditTeamMembersDialog = ({
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6 bg-[#171410] border-[#352b1c]">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <h2 className="text-2xl font-semibold text-[#A28B55] mb-2">
-              Edit Team Members
-            </h2>
-            <p className="text-neutral-400">
-              Update your company&apos;s team members
-            </p>
+            <h2 className="text-2xl font-semibold text-[#A28B55] mb-2">Edit Team Members</h2>
+            <p className="text-neutral-400">Update your company&apos;s team members</p>
           </div>
 
           <div className="space-y-6">
@@ -243,9 +226,7 @@ export const EditTeamMembersDialog = ({
                 className="border border-[#3C3120] rounded-lg p-4 space-y-4 bg-black/30"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-[#A28B55]">
-                    Team Member {index + 1}
-                  </h3>
+                  <h3 className="text-lg font-medium text-[#A28B55]">Team Member {index + 1}</h3>
                   <Button
                     type="button"
                     variant="ghost"
@@ -261,35 +242,25 @@ export const EditTeamMembersDialog = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label
-                      htmlFor={`name-${index}`}
-                      className="text-neutral-400"
-                    >
+                    <Label htmlFor={`name-${index}`} className="text-neutral-400">
                       Name
                     </Label>
                     <Input
                       id={`name-${index}`}
                       value={member.name}
-                      onChange={(e) =>
-                        handleMemberChange(index, "name", e.target.value)
-                      }
+                      onChange={(e) => handleMemberChange(index, "name", e.target.value)}
                       placeholder="Team member name"
                       className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label
-                      htmlFor={`role-${index}`}
-                      className="text-neutral-400"
-                    >
+                    <Label htmlFor={`role-${index}`} className="text-neutral-400">
                       Role / Position
                     </Label>
                     <Input
                       id={`role-${index}`}
                       value={member.role}
-                      onChange={(e) =>
-                        handleMemberChange(index, "role", e.target.value)
-                      }
+                      onChange={(e) => handleMemberChange(index, "role", e.target.value)}
                       placeholder="Job title or role"
                       className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                     />
@@ -303,9 +274,7 @@ export const EditTeamMembersDialog = ({
                   <Textarea
                     id={`bio-${index}`}
                     value={member.bio}
-                    onChange={(e) =>
-                      handleMemberChange(index, "bio", e.target.value)
-                    }
+                    onChange={(e) => handleMemberChange(index, "bio", e.target.value)}
                     placeholder="Brief professional biography"
                     rows={3}
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] resize-none text-white"
@@ -318,9 +287,7 @@ export const EditTeamMembersDialog = ({
                   <Tabs
                     defaultValue="url"
                     value={imageTab[index] || "url"}
-                    onValueChange={(value) =>
-                      handleImageTabChange(index, value)
-                    }
+                    onValueChange={(value) => handleImageTabChange(index, value)}
                     className="w-full"
                   >
                     <TabsList className="grid grid-cols-2 mb-4 bg-neutral-900 p-0.5 rounded-md gap-2 border border-[#3C3120]">
@@ -350,8 +317,7 @@ export const EditTeamMembersDialog = ({
                                 "opacity-50 pointer-events-none",
                             )}
                           >
-                            {currentUploadingIndex === index &&
-                            uploadStatus.uploading ? (
+                            {currentUploadingIndex === index && uploadStatus.uploading ? (
                               <>
                                 <Loader2 className="h-6 w-6 text-[#A28B55] animate-spin mb-1" />
                                 <p className="text-sm text-neutral-400">
@@ -361,9 +327,7 @@ export const EditTeamMembersDialog = ({
                             ) : (
                               <>
                                 <UploadCloud className="h-6 w-6 text-[#A28B55] mb-1" />
-                                <p className="text-sm text-neutral-400">
-                                  Click to upload image
-                                </p>
+                                <p className="text-sm text-neutral-400">Click to upload image</p>
                                 <p className="text-xs text-neutral-500 mt-1">
                                   PNG, JPG, WebP up to 50MB
                                 </p>
@@ -376,21 +340,14 @@ export const EditTeamMembersDialog = ({
                             type="file"
                             accept="image/png, image/jpeg, image/webp"
                             onChange={(e) => handleFileUpload(index, e)}
-                            disabled={
-                              currentUploadingIndex !== null &&
-                              uploadStatus.uploading
-                            }
+                            disabled={currentUploadingIndex !== null && uploadStatus.uploading}
                             className="hidden"
                           />
 
                           {/* Upload Progress */}
-                          {currentUploadingIndex === index &&
-                            uploadStatus.uploading && (
-                              <Progress
-                                value={uploadStatus.progress}
-                                className="h-2 w-full mt-2"
-                              />
-                            )}
+                          {currentUploadingIndex === index && uploadStatus.uploading && (
+                            <Progress value={uploadStatus.progress} className="h-2 w-full mt-2" />
+                          )}
                         </div>
                       </div>
                     </TabsContent>
@@ -399,19 +356,14 @@ export const EditTeamMembersDialog = ({
                       <div className="space-y-2">
                         <div className="flex items-center gap-2 mb-1">
                           <LinkIcon size={14} className="text-neutral-400" />
-                          <Label
-                            htmlFor={`imageUrl-${index}`}
-                            className="text-neutral-400"
-                          >
+                          <Label htmlFor={`imageUrl-${index}`} className="text-neutral-400">
                             Image URL
                           </Label>
                         </div>
                         <Input
                           id={`imageUrl-${index}`}
                           value={member.image}
-                          onChange={(e) =>
-                            handleMemberChange(index, "image", e.target.value)
-                          }
+                          onChange={(e) => handleMemberChange(index, "image", e.target.value)}
                           placeholder="https://example.com/image.jpg"
                           className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                         />
@@ -462,7 +414,7 @@ export const EditTeamMembersDialog = ({
             </div>
           )}
 
-          <Separator className="bg-gradient-to-r from-transparent via-[#3C3120] to-transparent" />
+          <Separator className="bg-linear-to-r from-transparent via-[#3C3120] to-transparent" />
 
           <div className="flex justify-end gap-3">
             <Button

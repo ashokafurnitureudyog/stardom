@@ -1,7 +1,9 @@
 "use server";
-import { ID } from "node-appwrite";
-import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
+import { ID, Query } from "node-appwrite";
 import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
+import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
+import { PRODUCTS_TAG } from "@/lib/server/products";
 
 interface ProductInput {
   name: string;
@@ -25,7 +27,7 @@ interface ProductResponse {
 const validateImageColorMapping = (
   mappingStr: string | undefined,
   colors: string[],
-  images: string[],
+  _images: string[],
 ): boolean => {
   if (!mappingStr) return true; // Optional field
 
@@ -33,11 +35,7 @@ const validateImageColorMapping = (
     const mapping = JSON.parse(mappingStr);
 
     // Check if it's an object
-    if (
-      typeof mapping !== "object" ||
-      mapping === null ||
-      Array.isArray(mapping)
-    ) {
+    if (typeof mapping !== "object" || mapping === null || Array.isArray(mapping)) {
       return false;
     }
 
@@ -57,29 +55,30 @@ const validateImageColorMapping = (
     }
 
     return true;
-  } catch (e) {
+  } catch (_e) {
     return false;
   }
 };
 
 export const getCachedProducts = async () => {
   "use cache";
+  cacheTag(PRODUCTS_TAG);
+  cacheLife("max");
   const { database } = await createAdminClient();
-  const products = await database.listDocuments(
-    process.env.APPWRITE_DATABASE_ID!,
-    process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
-  );
+  const products = await database.listRows({
+    databaseId: process.env.APPWRITE_DATABASE_ID!,
+    tableId: process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+    queries: [Query.limit(100)],
+  });
 
-  return products.documents.map((product) => ({
+  return products.rows.map((product) => ({
     ...product,
     id: product.$id,
     collection: product.product_collection,
   }));
 };
 
-export const addProduct = async (
-  productData: ProductInput,
-): Promise<ProductResponse> => {
+export const addProduct = async (productData: ProductInput): Promise<ProductResponse> => {
   try {
     const user = await getLoggedInUser();
     if (!user) throw new Error("Unauthorized");
@@ -99,11 +98,11 @@ export const addProduct = async (
 
     const { database } = await createAdminClient();
 
-    const result = await database.createDocument(
-      process.env.APPWRITE_DATABASE_ID!,
-      process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
-      ID.unique(),
-      {
+    const result = await database.createRow({
+      databaseId: process.env.APPWRITE_DATABASE_ID!,
+      tableId: process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+      rowId: ID.unique(),
+      data: {
         name: productData.name,
         description: productData.description,
         category: productData.category,
@@ -113,13 +112,13 @@ export const addProduct = async (
         images: productData.images,
         image_color_mapping: productData.imageColorMapping,
       },
-    );
+    });
 
+    updateTag(PRODUCTS_TAG);
     return { success: true, data: result };
   } catch (error) {
     console.error("Failed to add product:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to add product";
+    const errorMessage = error instanceof Error ? error.message : "Failed to add product";
     return { success: false, error: errorMessage };
   }
 };
@@ -151,7 +150,11 @@ export const updateProduct = async (
     const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
     // Get the current product (we don't need to read the images, just ensure we can update the product)
-    await database.getDocument(databaseId, collectionId, productId);
+    await database.getRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: productId,
+    });
 
     // Process removed images if they were explicitly provided
     if (productData.removedImages && productData.removedImages.length > 0) {
@@ -160,11 +163,11 @@ export const updateProduct = async (
     }
 
     // Update the document with new image URLs
-    const result = await database.updateDocument(
-      databaseId,
-      collectionId,
-      productId,
-      {
+    const result = await database.updateRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: productId,
+      data: {
         name: productData.name,
         description: productData.description,
         category: productData.category,
@@ -174,13 +177,14 @@ export const updateProduct = async (
         images: productData.images,
         image_color_mapping: productData.imageColorMapping,
       },
-    );
+    });
 
+    updateTag(PRODUCTS_TAG);
+    updateTag(`product-${productId}`);
     return { success: true, data: result };
   } catch (error) {
     console.error("Failed to update product:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to update product";
+    const errorMessage = error instanceof Error ? error.message : "Failed to update product";
     return { success: false, error: errorMessage };
   }
 };
@@ -206,11 +210,11 @@ export const deleteProduct = async (
     // This should happen ONCE per product, not for each image
     try {
       if (process.env.APPWRITE_FEATURED_COLLECTION_ID) {
-        await database.deleteDocument(
-          process.env.APPWRITE_DATABASE_ID!,
-          process.env.APPWRITE_FEATURED_COLLECTION_ID,
-          productId,
-        );
+        await database.deleteRow({
+          databaseId: process.env.APPWRITE_DATABASE_ID!,
+          tableId: process.env.APPWRITE_FEATURED_COLLECTION_ID,
+          rowId: productId,
+        });
       }
     } catch (error) {
       // Use the error in a logging statement to avoid the unused variable warning
@@ -221,17 +225,18 @@ export const deleteProduct = async (
     }
 
     // Delete the product document
-    const result = await database.deleteDocument(
-      process.env.APPWRITE_DATABASE_ID!,
-      process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
-      productId,
-    );
+    const result = await database.deleteRow({
+      databaseId: process.env.APPWRITE_DATABASE_ID!,
+      tableId: process.env.APPWRITE_PRODUCTS_COLLECTION_ID!,
+      rowId: productId,
+    });
 
+    updateTag(PRODUCTS_TAG);
+    updateTag(`product-${productId}`);
     return { success: true, data: result };
   } catch (error) {
     console.error("Failed to delete product:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to delete product";
+    const errorMessage = error instanceof Error ? error.message : "Failed to delete product";
     return { success: false, error: errorMessage };
   }
 };

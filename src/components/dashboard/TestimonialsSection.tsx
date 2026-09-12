@@ -1,14 +1,14 @@
-import { useState, useOptimistic, useTransition, useCallback } from "react";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Search, RefreshCw, MessageSquare } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { MessageSquare, RefreshCw, Search } from "lucide-react";
+import { useOptimistic, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
-import { AddTestimonialDialog } from "./testimonials/AddTestimonialDialog";
-import { TestimonialCard } from "./testimonials/TestimonialCard";
-import type { ClientTestimonial } from "@/types/ComponentTypes";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useTestimonials } from "@/hooks/useTestimonials";
-import { useQueryClient } from "@tanstack/react-query";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
+import { AddTestimonialDialog } from "./testimonials/AddTestimonialDialog";
+import { TestimonialCard } from "./testimonials/TestimonialCard";
 
 export const TestimonialsSection = () => {
   const {
@@ -78,12 +78,8 @@ export const TestimonialsSection = () => {
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-            Client Testimonials
-          </h2>
-          <p className="text-muted-foreground">
-            {testimonials.length} testimonials
-          </p>
+          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">Client Testimonials</h2>
+          <p className="text-muted-foreground">{testimonials.length} testimonials</p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -108,8 +104,7 @@ export const TestimonialsSection = () => {
               className="flex items-center gap-2 h-10 hover:bg-secondary"
               onClick={handleRefresh}
             >
-              <RefreshCw size={16} />{" "}
-              <span className="hidden lg:inline">Refresh</span>
+              <RefreshCw size={16} /> <span className="hidden lg:inline">Refresh</span>
             </Button>
 
             <AddTestimonialDialog onSuccess={handleRefresh} />
@@ -121,11 +116,7 @@ export const TestimonialsSection = () => {
 
       {queryError && (
         <div className="bg-red-500/10 text-red-400 p-4 mb-6 rounded border border-red-900/50">
-          <p>
-            {queryError instanceof Error
-              ? queryError.message
-              : "Failed to load testimonials"}
-          </p>
+          <p>{queryError instanceof Error ? queryError.message : "Failed to load testimonials"}</p>
           <Button
             variant="outline"
             className="mt-2 bg-transparent border-[#3C3120] text-[#A28B55] hover:bg-neutral-800 hover:border-[#A28B55]"
@@ -163,18 +154,12 @@ export const TestimonialsSection = () => {
           <MessageSquare className="mx-auto h-12 w-12 text-[#A28B55] opacity-70 mb-4" />
           {searchQuery ? (
             <>
-              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
-                No Testimonials Found
-              </h3>
-              <p className="text-neutral-500 mb-6">
-                No testimonials match your search query
-              </p>
+              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">No Testimonials Found</h3>
+              <p className="text-neutral-500 mb-6">No testimonials match your search query</p>
             </>
           ) : (
             <>
-              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
-                No Testimonials Yet
-              </h3>
+              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">No Testimonials Yet</h3>
               <p className="text-neutral-500 mb-6">
                 Get started by adding your first client testimonial
               </p>

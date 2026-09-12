@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { ArrowRight, Cookie, Eye, Shield } from "lucide-react";
+import { motion } from "motion/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
@@ -12,10 +14,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Link } from "next-view-transitions";
-import { Cookie, Eye, Shield, ArrowRight } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { CookieCategory } from "@/types/ComponentTypes";
+import type { CookieCategory } from "@/types/ComponentTypes";
 
 const cookieCategories: CookieCategory[] = [
   {
@@ -69,9 +69,7 @@ const cookieCategories: CookieCategory[] = [
 ];
 
 const CookiePolicyPage: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>(
-    cookieCategories[0]?.title || "",
-  );
+  const [activeCategory, setActiveCategory] = useState<string>(cookieCategories[0]?.title || "");
   const [scrollPosition, setScrollPosition] = useState(0);
 
   // Handle scroll position for visual effects
@@ -117,7 +115,7 @@ const CookiePolicyPage: React.FC = () => {
       <div className="min-h-screen bg-background font-sans">
         {/* Hero Section with subtle gradient background */}
         <Section className="relative pt-32 pb-16 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
           <motion.div
             className="text-center max-w-2xl mx-auto relative z-10"
             initial={{ opacity: 0, y: 20 }}
@@ -125,8 +123,7 @@ const CookiePolicyPage: React.FC = () => {
             transition={{ duration: 0.7 }}
           >
             <SectionTitle>
-              Cookie{" "}
-              <span className="font-serif italic text-primary">Policy</span>
+              Cookie <span className="font-serif italic text-primary">Policy</span>
             </SectionTitle>
             <p className="text-muted-foreground text-lg md:text-xl font-light mx-auto mb-8 max-w-xl">
               Transparency in how we use cookies to improve your experience.
@@ -210,10 +207,9 @@ const CookiePolicyPage: React.FC = () => {
               >
                 <div className="px-6 py-8 bg-primary/5 rounded-xl border border-primary/10">
                   <p className="text-lg font-light leading-relaxed">
-                    This Cookie Policy explains the minimal cookie usage on our
-                    furniture showcase website. As a premium furniture brand, we
-                    respect your privacy and only use essential technical
-                    cookies and limited analytics to enhance your browsing
+                    This Cookie Policy explains the minimal cookie usage on our furniture showcase
+                    website. As a premium furniture brand, we respect your privacy and only use
+                    essential technical cookies and limited analytics to enhance your browsing
                     experience.
                   </p>
                 </div>
@@ -236,7 +232,7 @@ const CookiePolicyPage: React.FC = () => {
                     <h2 className="text-2xl md:text-3xl font-light flex items-center gap-3">
                       {category.title}
                     </h2>
-                    <div className="h-px flex-grow bg-primary/10" />
+                    <div className="h-px grow bg-primary/10" />
                   </div>
 
                   <Accordion
@@ -255,9 +251,7 @@ const CookiePolicyPage: React.FC = () => {
                           {item.title}
                         </AccordionTrigger>
                         <AccordionContent className="text-muted-foreground leading-relaxed text-base py-6 px-1">
-                          <div className="pl-4 border-l-2 border-primary/30">
-                            {item.details}
-                          </div>
+                          <div className="pl-4 border-l-2 border-primary/30">{item.details}</div>
                         </AccordionContent>
                       </AccordionItem>
                     ))}
@@ -275,10 +269,7 @@ const CookiePolicyPage: React.FC = () => {
               <p className="text-muted-foreground text-center md:text-left">
                 Last updated: March 2025
               </p>
-              <Button
-                variant="outline"
-                className="border-primary/20 hover:border-primary/50"
-              >
+              <Button variant="outline" className="border-primary/20 hover:border-primary/50">
                 <Link href="/contact">Contact Us With Questions</Link>
               </Button>
             </div>

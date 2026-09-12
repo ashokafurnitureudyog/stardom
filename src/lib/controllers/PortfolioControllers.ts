@@ -1,8 +1,8 @@
 "use server";
-import { ID, Permission, Role } from "node-appwrite";
-import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
-import { PortfolioProject } from "@/types/ComponentTypes";
+import { ID, Permission, Query, Role } from "node-appwrite";
 import { deleteFilesFromStorage } from "@/lib/actions/storage-actions";
+import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
+import type { PortfolioProject } from "@/types/ComponentTypes";
 
 // Define interface for portfolio responses
 interface PortfolioResponse {
@@ -61,10 +61,14 @@ export async function getPortfolioProjects(): Promise<PortfolioResponse> {
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_PORTFOLIO_COLLECTION_ID!;
 
-    const response = await database.listDocuments(databaseId, collectionId);
+    const response = await database.listRows({
+      databaseId: databaseId,
+      tableId: collectionId,
+      queries: [Query.limit(100)],
+    });
 
     // Map the documents to our PortfolioProject type
-    const projects = response.documents.map((doc) =>
+    const projects = response.rows.map((doc) =>
       mapToPortfolioProject(doc as unknown as PortfolioDocument),
     );
 
@@ -72,9 +76,7 @@ export async function getPortfolioProjects(): Promise<PortfolioResponse> {
   } catch (error: unknown) {
     console.error("Failed to fetch portfolio projects:", error);
     const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Failed to fetch portfolio projects";
+      error instanceof Error ? error.message : "Failed to fetch portfolio projects";
     return { success: false, error: errorMessage };
   }
 }
@@ -113,9 +115,7 @@ export async function createPortfolioProject(
     if (thumbnailFile) {
       try {
         const fileId = ID.unique();
-        await storage.createFile(bucketId, fileId, thumbnailFile, [
-          Permission.read(Role.any()),
-        ]);
+        await storage.createFile(bucketId, fileId, thumbnailFile, [Permission.read(Role.any())]);
 
         thumbnail = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
       } catch (uploadError: unknown) {
@@ -131,9 +131,7 @@ export async function createPortfolioProject(
       for (const file of files) {
         try {
           const fileId = ID.unique();
-          await storage.createFile(bucketId, fileId, file, [
-            Permission.read(Role.any()),
-          ]);
+          await storage.createFile(bucketId, fileId, file, [Permission.read(Role.any())]);
           uploadedUrls.push(
             `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`,
           );
@@ -148,11 +146,11 @@ export async function createPortfolioProject(
 
     const gallery = [...projectData.gallery, ...uploadedUrls];
 
-    const dbDocument = await database.createDocument(
-      databaseId,
-      collectionId,
-      ID.unique(),
-      {
+    const dbDocument = await database.createRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: ID.unique(),
+      data: {
         title: projectData.title,
         tags: projectData.tags,
         thumbnail: thumbnail,
@@ -165,20 +163,16 @@ export async function createPortfolioProject(
         testimonial_position: projectData.testimonial_position || "",
         gallery: gallery,
       },
-    );
+    });
 
     // Map to our PortfolioProject type
-    const project = mapToPortfolioProject(
-      dbDocument as unknown as PortfolioDocument,
-    );
+    const project = mapToPortfolioProject(dbDocument as unknown as PortfolioDocument);
 
     return { success: true, data: project };
   } catch (error: unknown) {
     console.error("Failed to create portfolio project:", error);
     const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Failed to create portfolio project";
+      error instanceof Error ? error.message : "Failed to create portfolio project";
     return { success: false, error: errorMessage };
   }
 }
@@ -202,15 +196,17 @@ export async function deletePortfolioProject(
     }
 
     // Delete the project document
-    await database.deleteDocument(databaseId, collectionId, projectId);
+    await database.deleteRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: projectId,
+    });
 
     return { success: true };
   } catch (error: unknown) {
     console.error("Failed to delete portfolio project:", error);
     const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Failed to delete portfolio project";
+      error instanceof Error ? error.message : "Failed to delete portfolio project";
     return { success: false, error: errorMessage };
   }
 }
@@ -233,11 +229,11 @@ export async function updatePortfolioProject(
     const bucketId = process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
     // Get existing document
-    const existingDoc = await database.getDocument(
-      databaseId,
-      collectionId,
-      projectId,
-    );
+    const existingDoc = await database.getRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: projectId,
+    });
 
     // Handle removing gallery images from storage
     if (removedGalleryUrls && removedGalleryUrls.length > 0) {
@@ -261,9 +257,7 @@ export async function updatePortfolioProject(
       // Upload new thumbnail and delete old one if it exists
       try {
         const fileId = ID.unique();
-        await storage.createFile(bucketId, fileId, thumbnailFile, [
-          Permission.read(Role.any()),
-        ]);
+        await storage.createFile(bucketId, fileId, thumbnailFile, [Permission.read(Role.any())]);
 
         thumbnail = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
 
@@ -285,9 +279,7 @@ export async function updatePortfolioProject(
       for (const file of files) {
         try {
           const fileId = ID.unique();
-          await storage.createFile(bucketId, fileId, file, [
-            Permission.read(Role.any()),
-          ]);
+          await storage.createFile(bucketId, fileId, file, [Permission.read(Role.any())]);
           const newUrl = `${process.env.APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.APPWRITE_PROJECT}`;
           uploadedUrls.push(newUrl);
         } catch (fileError: unknown) {
@@ -318,25 +310,21 @@ export async function updatePortfolioProject(
     };
 
     // Update the document
-    const dbDocument = await database.updateDocument(
-      databaseId,
-      collectionId,
-      projectId,
-      updatePayload,
-    );
+    const dbDocument = await database.updateRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: projectId,
+      data: updatePayload,
+    });
 
     // Map to our PortfolioProject type
-    const project = mapToPortfolioProject(
-      dbDocument as unknown as PortfolioDocument,
-    );
+    const project = mapToPortfolioProject(dbDocument as unknown as PortfolioDocument);
 
     return { success: true, data: project };
   } catch (error: unknown) {
     console.error("Failed to update portfolio project:", error);
     const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Failed to update portfolio project";
+      error instanceof Error ? error.message : "Failed to update portfolio project";
     return { success: false, error: errorMessage };
   }
 }

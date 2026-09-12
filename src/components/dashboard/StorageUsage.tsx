@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Server } from "lucide-react";
+import { useEffect, useState } from "react";
 import { getStorageUsage } from "@/lib/actions/storage-actions";
 
 export function StorageUsage() {
@@ -44,14 +44,11 @@ export function StorageUsage() {
 
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+    return `${parseFloat((bytes / k ** i).toFixed(dm))} ${sizes[i]}`;
   };
 
   // Calculate percentage used
-  const percentageUsed = Math.min(
-    100,
-    Math.round((usedStorage / totalStorage) * 100),
-  );
+  const percentageUsed = Math.min(100, Math.round((usedStorage / totalStorage) * 100));
 
   return (
     <div className="px-4 py-4 border-b border-[#3C3120]">
@@ -74,9 +71,7 @@ export function StorageUsage() {
           style={{ width: `${percentageUsed}%` }}
         />
       </div>
-      {error && (
-        <p className="text-xs text-red-400 mt-2">Could not load storage data</p>
-      )}
+      {error && <p className="text-xs text-red-400 mt-2">Could not load storage data</p>}
     </div>
   );
 }

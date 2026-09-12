@@ -1,10 +1,10 @@
 import { GlobeIcon, PenToolIcon, ShieldCheckIcon } from "lucide-react";
-import { Marquee } from "../ui/marquee";
 import { cn } from "@/lib/utils/utils";
+import { BackgroundBeams } from "../ui/background-beams";
 import { BentoCard, BentoGrid } from "../ui/bento-grid";
 import { FlickeringGrid } from "../ui/flickering-grid";
+import { Marquee } from "../ui/marquee";
 import { Ripple } from "../ui/ripple";
-import { BackgroundBeams } from "../ui/background-beams";
 
 const CertificationsSection: React.FC = () => {
   const certifications = [

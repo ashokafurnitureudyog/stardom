@@ -1,39 +1,35 @@
 "use client";
+import { Link2, PenSquare } from "lucide-react";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  XIcon,
+  YoutubeIcon,
+} from "@/components/ui/brand-icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditSocialLinksDialog } from "./EditSocialLinksDialog";
-import {
-  Link2,
-  PenSquare,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Youtube,
-} from "lucide-react";
-import { RiTwitterXFill } from "@remixicon/react";
 
 interface SocialLinksCardProps {
   socialLinks: Array<{ platform: string; url: string; id?: string }>;
   onRefresh: () => Promise<void>;
 }
 
-export const SocialLinksCard = ({
-  socialLinks,
-  onRefresh,
-}: SocialLinksCardProps) => {
+export const SocialLinksCard = ({ socialLinks, onRefresh }: SocialLinksCardProps) => {
   // Helper to render social platform icon
   const getSocialIcon = (platform: string) => {
     switch (platform.toLowerCase()) {
       case "facebook":
-        return <Facebook className="h-5 w-5 text-blue-600" />;
+        return <FacebookIcon className="h-5 w-5 text-blue-600" />;
       case "instagram":
-        return <Instagram className="h-5 w-5 text-pink-500" />;
+        return <InstagramIcon className="h-5 w-5 text-pink-500" />;
       case "x":
       case "twitter": // Keep for backward compatibility
-        return <RiTwitterXFill className="h-5 w-5" />;
+        return <XIcon className="h-5 w-5" />;
       case "linkedin":
-        return <Linkedin className="h-5 w-5 text-blue-700" />;
+        return <LinkedinIcon className="h-5 w-5 text-blue-700" />;
       case "youtube":
-        return <Youtube className="h-5 w-5 text-red-600" />;
+        return <YoutubeIcon className="h-5 w-5 text-red-600" />;
       default:
         return <Link2 className="h-5 w-5 text-gray-600" />;
     }
@@ -49,10 +45,7 @@ export const SocialLinksCard = ({
 
           {/* Only show edit button in top right if there are social links */}
           {socialLinks && socialLinks.length > 0 && (
-            <EditSocialLinksDialog
-              initialData={socialLinks}
-              onSuccess={onRefresh}
-            />
+            <EditSocialLinksDialog initialData={socialLinks} onSuccess={onRefresh} />
           )}
         </CardHeader>
 
@@ -68,12 +61,10 @@ export const SocialLinksCard = ({
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-md border border-[#3C3120] bg-black/60 hover:bg-[#3C3120]/50 transition-colors whitespace-nowrap w-[130px] flex-shrink-0 hover:border-[#A28B55]"
+                      className="flex items-center gap-3 p-3 rounded-md border border-[#3C3120] bg-black/60 hover:bg-[#3C3120]/50 transition-colors whitespace-nowrap w-[130px] shrink-0 hover:border-[#A28B55]"
                     >
                       {getSocialIcon(link.platform)}
-                      <span className="capitalize truncate">
-                        {link.platform}
-                      </span>
+                      <span className="capitalize truncate">{link.platform}</span>
                     </a>
                   ))}
                 </div>
@@ -92,12 +83,8 @@ export const SocialLinksCard = ({
                     >
                       {getSocialIcon(link.platform)}
                       <div>
-                        <p className="capitalize text-sm text-white">
-                          {link.platform}
-                        </p>
-                        <p className="text-xs text-neutral-400 truncate">
-                          {link.url}
-                        </p>
+                        <p className="capitalize text-sm text-white">{link.platform}</p>
+                        <p className="text-xs text-neutral-400 truncate">{link.url}</p>
                       </div>
                     </a>
                   ))}
@@ -107,9 +94,7 @@ export const SocialLinksCard = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-[130px]">
               <Link2 className="h-16 w-16 text-[#A28B55]/30 mb-4" />
-              <p className="text-neutral-500 mb-5 text-center">
-                No social links added yet
-              </p>
+              <p className="text-neutral-500 mb-5 text-center">No social links added yet</p>
 
               <EditSocialLinksDialog
                 initialData={[]}

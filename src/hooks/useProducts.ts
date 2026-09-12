@@ -1,192 +1,44 @@
 /**
- * Custom hook for managing product data, filtering, sorting, and searching
+ * Product data for the admin dashboard. Public pages render products on the
+ * server, so this hook only covers the authenticated, interactive views.
  * @module useProducts
  */
-import { useProductStore } from "@/lib/store/ProductStore";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { Product, SortOption } from "@/types/ComponentTypes";
-import { productService } from "@/lib/services/productService";
-import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Product } from "@/types/ComponentTypes";
 
-/**
- * Sort option configuration
- */
-export const SORT_OPTIONS = [
-  { value: "featured" as const, label: "Featured" },
-  { value: "name-a-z" as const, label: "Name: A to Z" },
-  { value: "name-z-a" as const, label: "Name: Z to A" },
-] as const;
+const STALE_TIME = 5 * 60 * 1000;
 
-/**
- * Cache configuration in milliseconds
- */
-const CACHE_CONFIG = {
-  PRODUCTS_STALE_TIME: 5 * 60 * 1000, // 5 minutes
-  METADATA_STALE_TIME: 10 * 60 * 1000, // 10 minutes
-  PRODUCT_DETAILS_STALE_TIME: 3 * 60 * 1000, // 3 minutes
-  DEFAULT_RETRY_COUNT: 2,
-};
-
-/**
- * Interface for the return value of useProducts
- */
-interface UseProductsReturn {
-  // Data
-  products: Product[];
-  filteredProducts: Product[];
-  featuredProducts: Product[];
-  categories: readonly string[];
-  collections: string[];
-  product?: Product;
-  similarProducts: Product[];
-
-  // Loading states
-  isLoading: boolean;
-  isFeaturedLoading: boolean;
-  isProductLoading: boolean;
-  isSimilarProductsLoading: boolean;
-
-  // Error states
-  error: Error | null;
-  featuredError: Error | null;
-  productError: Error | null;
-
-  // Actions
-  filterByCategory: (category: string) => void;
-  filterByCollection: (collection: string) => void;
-  handleSearch: (query: string) => void;
-  handleSort: (option: SortOption) => void;
-  sortOptions: typeof SORT_OPTIONS;
-  resetFilters: () => void;
-  deleteProduct: (vars: {
-    productId: string;
-    imageUrls: string[];
-  }) => Promise<void>;
-
-  // State
-  filters: {
-    selectedCategory: string;
-    selectedCollection: string;
-  };
-  searchQuery: string;
-  sortOption: SortOption;
-
-  // Query objects (for advanced use cases)
-  productsQuery: ReturnType<typeof useQuery<Product[], Error>>;
-  featuredProductsQuery: ReturnType<typeof useQuery<Product[], Error>>;
-  collectionsQuery: ReturnType<typeof useQuery<string[], Error>>;
-  individualProductQuery: ReturnType<
-    typeof useQuery<Product | undefined, Error>
-  >;
-  similarProductQuery: ReturnType<typeof useQuery<Product[], Error>>;
+async function fetchJson<T>(url: string): Promise<T> {
+  const response = await fetch(url, { headers: { "Content-Type": "application/json" } });
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
 }
 
-/**
- * Custom hook for managing product data, filtering, sorting, and searching
- * @param productId - Optional ID to fetch a specific product
- * @returns Object containing product data, loading states, error states, and methods
- */
-export const useProducts = (productId?: string): UseProductsReturn => {
-  // Get filters from Zustand store
-  const {
-    filters,
-    searchQuery,
-    sortOption,
-    setFilter,
-    setSearchQuery,
-    setSortOption,
-    resetFilters,
-  } = useProductStore();
-
+export const useProducts = () => {
   const queryClient = useQueryClient();
 
-  // Fetch products with proper error handling and caching
   const productsQuery = useQuery({
     queryKey: ["products"],
-    queryFn: productService.getProducts,
-    staleTime: CACHE_CONFIG.PRODUCTS_STALE_TIME,
-    retry: CACHE_CONFIG.DEFAULT_RETRY_COUNT,
+    queryFn: () => fetchJson<Product[]>("/api/products"),
+    staleTime: STALE_TIME,
   });
 
-  // Fetch featured products
   const featuredProductsQuery = useQuery({
     queryKey: ["featuredProducts"],
-    queryFn: productService.getFeaturedProducts,
-    staleTime: CACHE_CONFIG.PRODUCTS_STALE_TIME,
-    retry: CACHE_CONFIG.DEFAULT_RETRY_COUNT,
+    queryFn: () => fetchJson<Product[]>("/api/featured"),
+    staleTime: STALE_TIME,
   });
 
-  // Collections are derived from products
-  const collectionsQuery = useQuery({
-    queryKey: ["collections"],
-    queryFn: productService.getCollections,
-    staleTime: CACHE_CONFIG.METADATA_STALE_TIME,
-    retry: CACHE_CONFIG.DEFAULT_RETRY_COUNT,
-    enabled: !!productsQuery.data, // Only run after products are loaded
-  });
-
-  // Fetch individual product details if productId is provided
-  const individualProductQuery = useQuery({
-    queryKey: ["product", productId],
-    queryFn: () => productService.getProductById(productId || ""),
-    enabled: !!productId,
-    staleTime: CACHE_CONFIG.PRODUCT_DETAILS_STALE_TIME,
-    retry: CACHE_CONFIG.DEFAULT_RETRY_COUNT,
-  });
-
-  // Fetch similar products if productId is provided
-  const similarProductQuery = useQuery({
-    queryKey: ["similarProducts", productId],
-    queryFn: () => productService.getSimilarProducts(productId || ""),
-    enabled: !!productId,
-    staleTime: CACHE_CONFIG.PRODUCT_DETAILS_STALE_TIME,
-    retry: CACHE_CONFIG.DEFAULT_RETRY_COUNT,
-  });
-
-  // Filter products based on current filters, search, and sort
-  const filteredProducts = useMemo(() => {
-    if (!productsQuery.data) return [];
-
-    return productService.filterProducts(
-      productsQuery.data,
-      filters.selectedCategory,
-      filters.selectedCollection,
-      searchQuery,
-      sortOption,
-    );
-  }, [
-    productsQuery.data,
-    filters.selectedCategory,
-    filters.selectedCollection,
-    searchQuery,
-    sortOption,
-  ]);
-
-  // Handler functions to update filters
-  const filterByCategory = (category: string) =>
-    setFilter("category", category);
-  const filterByCollection = (collection: string) =>
-    setFilter("collection", collection);
-  const handleSearch = (query: string) => setSearchQuery(query);
-  const handleSort = (option: SortOption) => setSortOption(option);
-
-  // Delete product mutation
   const deleteProductMutation = useMutation({
-    mutationFn: async ({
-      productId,
-      imageUrls,
-    }: {
-      productId: string;
-      imageUrls: string[];
-    }) => {
+    mutationFn: async ({ productId, imageUrls }: { productId: string; imageUrls: string[] }) => {
       const response = await fetch("/api/protected/products", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, imageUrls }),
         credentials: "include",
       });
-
       if (!response.ok) throw new Error("Failed to delete product");
     },
     onSuccess: () => {
@@ -196,45 +48,12 @@ export const useProducts = (productId?: string): UseProductsReturn => {
   });
 
   return {
-    // Data
     products: productsQuery.data || [],
-    filteredProducts,
     featuredProducts: featuredProductsQuery.data || [],
-    categories: PRODUCT_CATEGORIES,
-    collections: collectionsQuery.data || [],
-    product: individualProductQuery.data,
-    similarProducts: similarProductQuery.data || [],
-
-    // Loading states
-    isLoading: productsQuery.isLoading || collectionsQuery.isLoading,
-    isFeaturedLoading: featuredProductsQuery.isLoading,
-    isProductLoading: individualProductQuery.isLoading,
-    isSimilarProductsLoading: similarProductQuery.isLoading,
-
-    // Error states
-    error: productsQuery.error || collectionsQuery.error || null,
-    featuredError: featuredProductsQuery.error,
-    productError: individualProductQuery.error,
-
-    // Actions
-    filterByCategory,
-    filterByCollection,
-    handleSearch,
-    handleSort,
-    sortOptions: SORT_OPTIONS,
-    resetFilters,
+    isLoading: productsQuery.isLoading,
+    error: productsQuery.error || featuredProductsQuery.error || null,
     deleteProduct: deleteProductMutation.mutateAsync,
-
-    // State
-    filters,
-    searchQuery,
-    sortOption,
-
-    // Queries (for direct access if needed)
     productsQuery,
     featuredProductsQuery,
-    collectionsQuery,
-    individualProductQuery,
-    similarProductQuery,
   };
 };

@@ -15,8 +15,7 @@ export async function GET() {
     });
   } catch (error: unknown) {
     console.error("Error fetching hero media:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

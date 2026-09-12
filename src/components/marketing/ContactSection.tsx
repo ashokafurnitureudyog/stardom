@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import { motion } from "motion/react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { MapPinIcon, MailIcon, PhoneIcon } from "lucide-react";
-import { motion } from "framer-motion";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
 
 const ContactSection = () => {
@@ -53,7 +53,7 @@ const ContactSection = () => {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const data = await response.json();
+      const _data = await response.json();
 
       setFormStatus({
         isSubmitting: false,
@@ -103,14 +103,11 @@ const ContactSection = () => {
           </div>
           <h2 className="text-5xl md:text-7xl font-light tracking-tight text-foreground font-serif">
             Experience
-            <span className="block mt-2 font-normal italic text-primary">
-              Exceptional Service
-            </span>
+            <span className="block mt-2 font-normal italic text-primary">Exceptional Service</span>
           </h2>
           <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-            Connect with our dedicated team of luxury furniture specialists for
-            a personalized consultation tailored to your distinctive
-            requirements.
+            Connect with our dedicated team of luxury furniture specialists for a personalized
+            consultation tailored to your distinctive requirements.
           </p>
         </motion.div>
 
@@ -124,13 +121,11 @@ const ContactSection = () => {
             variants={fadeInUpVariants}
             className="space-y-8"
           >
-            <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
+            <div className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
-                <MapPinIcon className="h-10 w-10 text-primary/60 flex-shrink-0" />
+                <MapPinIcon className="h-10 w-10 text-primary/60 shrink-0" />
                 <div>
-                  <h3 className="font-serif italic text-xl mb-4 text-foreground">
-                    Our Store
-                  </h3>
+                  <h3 className="font-serif italic text-xl mb-4 text-foreground">Our Store</h3>
                   <p className="text-muted-foreground/80 leading-relaxed">
                     Plot No. 304, Industrial Area Phase 2
                   </p>
@@ -141,30 +136,24 @@ const ContactSection = () => {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
+            <div className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
-                <MailIcon className="h-10 w-10 text-primary/60 flex-shrink-0" />
+                <MailIcon className="h-10 w-10 text-primary/60 shrink-0" />
                 <div>
-                  <h3 className="font-serif italic text-xl mb-4 text-foreground">
-                    Support
-                  </h3>
-                  <p className="text-muted-foreground/80 leading-relaxed">
-                    hello@stardom.co.in
-                  </p>
+                  <h3 className="font-serif italic text-xl mb-4 text-foreground">Support</h3>
+                  <p className="text-muted-foreground/80 leading-relaxed">hello@stardom.co.in</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
+            <div className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-4 transition-all duration-500 hover:from-accent/10 hover:to-primary/10 border border-primary/5 hover:border-primary/10">
               <div className="flex items-start gap-8">
-                <PhoneIcon className="h-10 w-10 text-primary/60 flex-shrink-0" />
+                <PhoneIcon className="h-10 w-10 text-primary/60 shrink-0" />
                 <div>
                   <h3 className="font-serif italic text-xl mb-4 text-foreground">
                     Personal Consultation
                   </h3>
-                  <p className="text-muted-foreground/80 leading-relaxed">
-                    +91 62846 73783
-                  </p>
+                  <p className="text-muted-foreground/80 leading-relaxed">+91 62846 73783</p>
                   <p className="text-muted-foreground/80 leading-relaxed">
                     Mon - Fri, 10:00 - 18:00
                   </p>
@@ -184,7 +173,7 @@ const ContactSection = () => {
           >
             <form
               onSubmit={handleSubmit}
-              className="bg-gradient-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-8 border border-primary/5"
+              className="bg-linear-to-br from-accent/5 to-primary/5 p-10 rounded-xl space-y-8 border border-primary/5"
             >
               <div className="space-y-3">
                 <label className="text-sm text-muted-foreground/80 font-medium uppercase tracking-wider">
@@ -246,9 +235,7 @@ const ContactSection = () => {
                 disabled={formStatus.isSubmitting}
                 className="w-full bg-primary/90 hover:bg-primary text-background font-medium h-14 text-lg tracking-wide group"
               >
-                {formStatus.isSubmitting
-                  ? "Sending..."
-                  : "Schedule Consultation"}
+                {formStatus.isSubmitting ? "Sending..." : "Schedule Consultation"}
                 <span className="ml-3 group-hover:translate-x-1.5 transition-transform duration-300">
                   →
                 </span>

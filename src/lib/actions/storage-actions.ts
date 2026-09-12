@@ -51,8 +51,7 @@ export async function deleteFilesFromStorage(
 
   try {
     const { storage } = await createAdminClient();
-    const storageBucketId =
-      bucketId || process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
+    const storageBucketId = bucketId || process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID!;
 
     const results = {
       success: true,
@@ -103,9 +102,7 @@ export async function deleteFilesFromStorage(
  *
  * Note: Must be async because it's in a server actions file
  */
-export async function extractFileIdFromUrl(
-  url: string,
-): Promise<string | null> {
+export async function extractFileIdFromUrl(url: string): Promise<string | null> {
   if (!url || typeof url !== "string") return null;
 
   if (url.includes("appwrite.io") && url.includes("/files/")) {

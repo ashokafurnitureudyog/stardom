@@ -1,34 +1,37 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import {
+  AlertCircle,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Link,
+  Loader2,
+  X,
+} from "lucide-react";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Check,
-  Link,
-  Loader2,
-  ChevronDown,
-  ChevronUp,
-  AlertCircle,
-  X,
-} from "lucide-react";
-import { cn } from "@/lib/utils/utils";
-import {
-  TESTIMONIAL_MONTHS,
-  TESTIMONIAL_AVATAR_NUMBERS,
   MAX_TESTIMONIAL_IMAGE_URL_LENGTH,
+  TESTIMONIAL_AVATAR_NUMBERS,
+  TESTIMONIAL_MONTHS,
 } from "@/lib/constants/TestimonialConstants";
-import { ClientTestimonial } from "@/types/ComponentTypes";
+import { cn } from "@/lib/utils/utils";
+import type { ClientTestimonial } from "@/types/ComponentTypes";
 
 interface TestimonialFormProps {
   onSuccess: () => void;
   initialData?: ClientTestimonial;
   isEditing?: boolean;
 }
+
+const getAvatarUrl = (avatarNumber: number): string =>
+  `https://avatar.iran.liara.run/public/${avatarNumber}`;
 
 export const TestimonialForm = ({
   onSuccess,
@@ -94,14 +97,13 @@ export const TestimonialForm = ({
   useEffect(() => {
     if (
       isEditing &&
-      initialData?.img &&
-      initialData.img.includes("avatar.iran.liara.run")
+      initialData?.img?.includes("avatar.iran.liara.run")
     ) {
       const match = initialData.img.match(/\/public\/(\d+)$/);
-      if (match && match[1]) {
-        const avatarNumber = parseInt(match[1]);
+      if (match?.[1]) {
+        const avatarNumber = parseInt(match[1], 10);
         if (
-          !isNaN(avatarNumber) &&
+          !Number.isNaN(avatarNumber) &&
           TESTIMONIAL_AVATAR_NUMBERS.includes(avatarNumber)
         ) {
           setSelectedAvatar(avatarNumber);
@@ -149,10 +151,10 @@ export const TestimonialForm = ({
     setSelectedYear(value);
 
     if (value.length === 4) {
-      const year = parseInt(value);
+      const year = parseInt(value, 10);
       const currentYear = new Date().getFullYear();
 
-      if (isNaN(year) || year < 1900 || year > currentYear) {
+      if (Number.isNaN(year) || year < 1900 || year > currentYear) {
         setYearError(
           `Please enter a valid year between 1900 and ${currentYear}`,
         );
@@ -171,9 +173,6 @@ export const TestimonialForm = ({
     setIsImageRemoved(true);
     // Don't automatically switch tabs when removing an image
   };
-
-  const getAvatarUrl = (avatarNumber: number): string =>
-    `https://avatar.iran.liara.run/public/${avatarNumber}`;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -324,7 +323,7 @@ export const TestimonialForm = ({
 
       {error && (
         <div className="bg-red-500/10 border border-red-900/50 text-red-400 p-4 rounded-md flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+          <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
           <p>{error}</p>
         </div>
       )}
@@ -586,7 +585,7 @@ export const TestimonialForm = ({
         </div>
       </div>
 
-      <Separator className="bg-gradient-to-r from-transparent via-[#3C3120] to-transparent" />
+      <Separator className="bg-linear-to-r from-transparent via-[#3C3120] to-transparent" />
 
       <div className="flex justify-end gap-3">
         <Button

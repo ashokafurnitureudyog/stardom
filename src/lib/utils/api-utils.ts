@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createSessionClient } from "@/lib/server/appwrite";
 import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import { createSessionClient } from "@/lib/server/appwrite";
 
 type ApiHandlerFunction<T> = (req: NextRequest, userId?: string) => Promise<T>;
 
@@ -18,11 +18,8 @@ export async function apiHandler<T>(
 
     const sessionCookie = (await cookies()).get("admin-session");
 
-    if (!sessionCookie || !sessionCookie.value) {
-      return NextResponse.json(
-        { error: "Unauthorized: No session found" },
-        { status: 401 },
-      );
+    if (!sessionCookie?.value) {
+      return NextResponse.json({ error: "Unauthorized: No session found" }, { status: 401 });
     }
 
     // Verify session validity with Appwrite
@@ -48,24 +45,15 @@ export async function apiHandler<T>(
         (error as any).code === 401);
 
     if (isAuthError) {
-      return NextResponse.json(
-        { error: "Unauthorized: Invalid session" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: "Unauthorized: Invalid session" }, { status: 401 });
     }
 
     // Handle different error types
     if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message || "An error occurred" },
-        { status: 500 },
-      );
+      return NextResponse.json({ error: error.message || "An error occurred" }, { status: 500 });
     }
 
-    return NextResponse.json(
-      { error: "An unknown error occurred" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
   }
 }
 
@@ -79,8 +67,6 @@ export async function parseRequestJson<T>(req: NextRequest): Promise<T> {
 /**
  * Extract and parse FormData from a request
  */
-export async function parseRequestFormData(
-  req: NextRequest,
-): Promise<FormData> {
+export async function parseRequestFormData(req: NextRequest): Promise<FormData> {
   return await req.formData();
 }

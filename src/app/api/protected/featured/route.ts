@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
   addToFeatured,
-  removeFromFeatured,
   getFeaturedProducts,
+  removeFromFeatured,
 } from "@/lib/controllers/FeaturedControllers";
 import { apiHandler, parseRequestJson } from "@/lib/utils/api-utils";
 
@@ -12,10 +12,7 @@ export async function POST(request: NextRequest) {
     const { productId } = data;
 
     if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
 
     return await addToFeatured(productId);
@@ -28,10 +25,7 @@ export async function DELETE(request: NextRequest) {
     const { productId } = data;
 
     if (!productId) {
-      return NextResponse.json(
-        { error: "Product ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
 
     await removeFromFeatured(productId);

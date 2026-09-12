@@ -79,9 +79,7 @@ const BRAND = {
  * @param {ProductMetadataProps} product - Product data to generate metadata from
  * @returns {Metadata} Next.js metadata object for the product page
  */
-export function generateProductMetadata(
-  product: ProductMetadataProps,
-): Metadata {
+export function generateProductMetadata(product: ProductMetadataProps): Metadata {
   // Generate SEO-friendly keywords
   const keywords = [
     product.name,
@@ -129,9 +127,7 @@ export function generateProductMetadata(
  * @param {CategoryMetadataProps} category - Category data to generate metadata from
  * @returns {Metadata} Next.js metadata object for the category page
  */
-export function generateCategoryMetadata(
-  category: CategoryMetadataProps,
-): Metadata {
+export function generateCategoryMetadata(category: CategoryMetadataProps): Metadata {
   // Add product count if available
   const extendedDescription = category.productCount
     ? `${category.description} Browse our collection of ${category.productCount} premium ${category.name.toLowerCase()} products.`
@@ -172,16 +168,9 @@ export function generateCategoryMetadata(
  * @param {BlogPostMetadataProps} post - Blog post data to generate metadata from
  * @returns {Metadata} Next.js metadata object for the blog post
  */
-export function generateBlogPostMetadata(
-  post: BlogPostMetadataProps,
-): Metadata {
+export function generateBlogPostMetadata(post: BlogPostMetadataProps): Metadata {
   // Combine custom tags with default blog keywords
-  const keywords = [
-    ...(post.tags || []),
-    "office design",
-    "furniture blog",
-    ...BRAND.coreKeywords,
-  ];
+  const keywords = [...(post.tags || []), "office design", "furniture blog", ...BRAND.coreKeywords];
 
   return {
     title: `${post.title} | ${BRAND.name} Office Furniture Blog`,

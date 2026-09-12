@@ -1,22 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { ChevronLeft, ChevronRight, MessageSquare, Quote } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronLeft, ChevronRight, MessageSquare, Quote } from "lucide-react";
-import { PortfolioProjectType } from "./portfolio/types";
+import type { PortfolioProjectType } from "./portfolio/types";
 
 interface PortfolioProjectDetailsProps {
   project: PortfolioProjectType;
 }
 
-export function PortfolioProjectDetails({
-  project,
-}: PortfolioProjectDetailsProps) {
+export function PortfolioProjectDetails({ project }: PortfolioProjectDetailsProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const allImages = [project.thumbnail, ...(project.gallery || [])].filter(
-    Boolean,
-  );
+  const allImages = [project.thumbnail, ...(project.gallery || [])].filter(Boolean);
   const totalImages = allImages.length;
 
   // Navigate to previous image
@@ -36,7 +32,7 @@ export function PortfolioProjectDetails({
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 h-full w-full overflow-auto md:overflow-hidden bg-neutral-900">
       {/* Image section with strict height constraints */}
-      <div className="w-full h-[45vh] md:h-full flex-shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
+      <div className="w-full h-[45vh] md:h-full shrink-0 border-b md:border-b-0 md:border-r border-[#3C3120] relative">
         {/* Image container with adjusted height to account for nav */}
         <div className="absolute inset-0 bottom-14 p-4 flex items-center justify-center bg-black/30 overflow-hidden">
           <div className="w-[90%] h-[90%] relative rounded-md overflow-hidden">
@@ -131,9 +127,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
     <>
       {/* Project Title and Tags */}
       <div>
-        <h2 className="text-2xl font-semibold text-[#A28B55] pr-2">
-          {project.title}
-        </h2>
+        <h2 className="text-2xl font-semibold text-[#A28B55] pr-2">{project.title}</h2>
 
         {project.tags && project.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3">
@@ -150,7 +144,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
         )}
       </div>
 
-      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Description */}
       <div>
@@ -161,11 +155,9 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       {/* Challenge */}
       {project.challenge && (
         <>
-          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
-            <h3 className="text-lg font-medium mb-2 text-[#A28B55]">
-              Challenge
-            </h3>
+            <h3 className="text-lg font-medium mb-2 text-[#A28B55]">Challenge</h3>
             <p className="text-neutral-400">{project.challenge}</p>
           </div>
         </>
@@ -174,11 +166,9 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       {/* Solution */}
       {project.solution && (
         <>
-          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
-            <h3 className="text-lg font-medium mb-2 text-[#A28B55]">
-              Solution
-            </h3>
+            <h3 className="text-lg font-medium mb-2 text-[#A28B55]">Solution</h3>
             <p className="text-neutral-400">{project.solution}</p>
           </div>
         </>
@@ -187,7 +177,7 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       {/* Impact */}
       {project.impact && (
         <>
-          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-2 text-[#A28B55]">Impact</h3>
             <p className="text-neutral-400">{project.impact}</p>
@@ -196,27 +186,21 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
       )}
 
       {/* Testimonial */}
-      {project.testimonial && project.testimonial.quote && (
+      {project.testimonial?.quote && (
         <>
-          <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+          <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
           <div>
             <h3 className="text-lg font-medium mb-3 text-[#A28B55] flex items-center gap-2">
               <MessageSquare size={18} /> Client Testimonial
             </h3>
             <div className="bg-neutral-900/70 border border-[#3C3120] rounded-md p-4">
               <Quote className="h-5 w-5 text-[#A28B55] mb-2" />
-              <p className="text-neutral-300 italic mb-3">
-                {project.testimonial.quote}
-              </p>
+              <p className="text-neutral-300 italic mb-3">{project.testimonial.quote}</p>
               {project.testimonial.author && (
                 <div className="text-right">
-                  <p className="text-sm font-medium text-[#A28B55]">
-                    {project.testimonial.author}
-                  </p>
+                  <p className="text-sm font-medium text-[#A28B55]">{project.testimonial.author}</p>
                   {project.testimonial.position && (
-                    <p className="text-xs text-neutral-500">
-                      {project.testimonial.position}
-                    </p>
+                    <p className="text-xs text-neutral-500">{project.testimonial.position}</p>
                   )}
                 </div>
               )}
@@ -225,14 +209,12 @@ function ProjectContent({ project }: { project: PortfolioProjectType }) {
         </>
       )}
 
-      <div className="h-px bg-gradient-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
+      <div className="h-px bg-linear-to-r from-transparent via-[#3C3120] to-transparent my-1"></div>
 
       {/* Project ID */}
       <div className="text-sm text-neutral-500">
         <p>ID: {project.id || project.$id}</p>
-        {project.$createdAt && (
-          <p>Added: {new Date(project.$createdAt).toLocaleDateString()}</p>
-        )}
+        {project.$createdAt && <p>Added: {new Date(project.$createdAt).toLocaleDateString()}</p>}
       </div>
     </>
   );

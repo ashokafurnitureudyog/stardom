@@ -1,14 +1,11 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { Suspense } from "react";
-import { generateProductMetadata } from "@/lib/seo/page-metadata";
-import {
-  generateProductSchema,
-  generateBreadcrumbSchema,
-} from "@/lib/seo/dynamic-schemas";
-import { getProductById, fetchAllProducts } from "@/lib/server/server-products";
-import ProductDisplay from "./ProductDisplay";
-import { Product } from "@/types/ComponentTypes";
 import { ProductDetailsSkeleton } from "@/components/products/ProductDetailsSkeleton";
+import { generateBreadcrumbSchema, generateProductSchema } from "@/lib/seo/dynamic-schemas";
+import { generateProductMetadata } from "@/lib/seo/page-metadata";
+import { getProductById, getProductIds, getSimilarProducts } from "@/lib/server/products";
+import type { Product } from "@/types/ComponentTypes";
+import ProductDisplay from "./ProductDisplay";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -20,23 +17,18 @@ interface PageProps {
  */
 export async function generateStaticParams() {
   try {
-    const products = await fetchAllProducts();
-    return products.map((product) => ({
-      id: product.id,
-    }));
+    const ids = await getProductIds();
+    return ids.map((id) => ({ id }));
   } catch (error) {
     console.error("Error generating static params for products:", error);
-    // Return a fallback to satisfy the cacheComponents requirement
-    return [{ id: "placeholder" }];
+    return [];
   }
 }
 
 /**
  * Generates metadata for the product detail page
  */
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const product = await getProductById(id);
 
@@ -54,9 +46,7 @@ export async function generateMetadata({
   return generateProductMetadata({
     id,
     name: product.name,
-    description:
-      product.description ||
-      `Premium ${product.name} by Stardom Office Furniture`,
+    description: product.description || `Premium ${product.name} by Stardom Office Furniture`,
     images: product.images || [],
     category: product.category,
   });
@@ -66,8 +56,7 @@ export async function generateMetadata({
  * Creates breadcrumb path for the current product
  */
 function createBreadcrumbPath(product: Product | undefined, productId: string) {
-  const categorySlug =
-    product?.category?.toLowerCase().replace(/\s+/g, "-") || "category";
+  const categorySlug = product?.category?.toLowerCase().replace(/\s+/g, "-") || "category";
 
   return [
     { name: "Home", url: "https://stardom.co.in" },
@@ -87,25 +76,24 @@ function createBreadcrumbPath(product: Product | undefined, productId: string) {
  * Async component that fetches and displays product content
  */
 async function ProductContent({ id }: { id: string }) {
-  const product = await getProductById(id);
+  const [product, similarProducts] = await Promise.all([
+    getProductById(id),
+    getSimilarProducts(id),
+  ]);
 
   // Generate structured data for search engines
   const productSchema = product
     ? generateProductSchema({
         id,
         name: product.name,
-        description:
-          product.description ||
-          `Premium ${product.name} by Stardom Office Furniture`,
+        description: product.description || `Premium ${product.name} by Stardom Office Furniture`,
         images: product.images || [],
         category: product.category,
       })
     : null;
 
   // Generate breadcrumb schema
-  const breadcrumbSchema = generateBreadcrumbSchema(
-    createBreadcrumbPath(product, id),
-  );
+  const breadcrumbSchema = generateBreadcrumbSchema(createBreadcrumbPath(product, id));
 
   return (
     <>
@@ -126,7 +114,7 @@ async function ProductContent({ id }: { id: string }) {
       />
 
       {/* Product display component with initial server data */}
-      <ProductDisplay id={id} initialProduct={product} />
+      <ProductDisplay id={id} product={product} similarProducts={similarProducts} />
     </>
   );
 }

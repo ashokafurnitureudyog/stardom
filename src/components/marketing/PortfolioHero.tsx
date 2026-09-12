@@ -1,13 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
-import {
-  BackgroundMediaProps,
-  PortfolioHeroProps,
-} from "@/types/ComponentTypes";
-import AnimatedText from "../shared/HeroAnimatedText";
+import React, { useEffect, useState } from "react";
 import { useCompanyData } from "@/hooks/useCompanyData";
+import { BasicCompanyInfo as fallbackCompanyInfo } from "@/lib/constants/CompanyInfo";
+import type { BackgroundMediaProps, PortfolioHeroProps } from "@/types/ComponentTypes";
+import AnimatedText from "../shared/HeroAnimatedText";
 
 const BackgroundMedia = ({ item, isActive }: BackgroundMediaProps) => {
   const className = `absolute inset-0 w-full h-full transition-all duration-1000 ${
@@ -34,14 +31,7 @@ const BackgroundMedia = ({ item, isActive }: BackgroundMediaProps) => {
   if (item.type === "video") {
     return (
       <div className={className}>
-        <video
-          ref={videoRef}
-          muted
-          loop
-          playsInline
-          className="object-cover w-full h-full"
-          aria-hidden="true"
-        >
+        <video ref={videoRef} muted loop playsInline className="object-cover w-full h-full">
           <source src={item.src} type="video/mp4" />
         </video>
       </div>
@@ -83,12 +73,11 @@ export const PortfolioHero = ({
   overlayOpacity = 70,
 }: PortfolioHeroProps) => {
   const { companyInfo } = useCompanyData();
-  const established =
-    companyInfo?.established || fallbackCompanyInfo.established;
+  const established = companyInfo?.established || fallbackCompanyInfo.established;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [_isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     // Skip slideshow setup for single item
@@ -126,7 +115,7 @@ export const PortfolioHero = ({
 
         {/* Overlay */}
         <div
-          className={`absolute inset-0 bg-gradient-to-b from-black/${overlayOpacity} via-black/${Math.max(
+          className={`absolute inset-0 bg-linear-to-b from-black/${overlayOpacity} via-black/${Math.max(
             20,
             overlayOpacity - 20,
           )} to-black/${overlayOpacity}`}
@@ -145,37 +134,25 @@ export const PortfolioHero = ({
 
           <AnimatedText delay={0.2}>
             <h1 className="text-5xl lg:text-6xl tracking-tight mb-4 font-extralight">
-              Design{" "}
-              <span className="font-serif italic text-primary">Excellence</span>
+              Design <span className="font-serif italic text-primary">Excellence</span>
             </h1>
             <div className="h-px w-24 bg-primary my-6 mx-auto lg:mx-0" />
-            <p className="text-2xl text-white/90 font-serif">
-              Visionary Space Solutions
-            </p>
+            <p className="text-2xl text-white/90 font-serif">Visionary Space Solutions</p>
           </AnimatedText>
         </div>
 
         {/* Content Column */}
         <div className="text-center lg:text-left lg:border-l lg:border-white/20 lg:pl-16">
-          <AnimatedText
-            delay={0.4}
-            className="text-3xl lg:text-4xl font-light leading-tight mb-8"
-          >
+          <AnimatedText delay={0.4} className="text-3xl lg:text-4xl font-light leading-tight mb-8">
             <h2>
-              <span className="text-primary font-serif italic">
-                Transformative
-              </span>{" "}
-              Interior Narratives
+              <span className="text-primary font-serif italic">Transformative</span> Interior
+              Narratives
             </h2>
           </AnimatedText>
 
-          <AnimatedText
-            delay={0.6}
-            className="text-white/80 text-lg mb-12 leading-relaxed"
-          >
-            Witness the embodiment of our design philosophy through curated
-            commercial spaces that redefine workplace aesthetics and
-            functionality.
+          <AnimatedText delay={0.6} className="text-white/80 text-lg mb-12 leading-relaxed">
+            Witness the embodiment of our design philosophy through curated commercial spaces that
+            redefine workplace aesthetics and functionality.
           </AnimatedText>
         </div>
       </div>

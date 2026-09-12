@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { ReactNode, useState } from "react";
+import { AlertCircle, Check, Edit, Loader2 } from "lucide-react";
+import { type ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { CompanyInfo } from "@/types/ComponentTypes";
-import { Edit, Loader2, Check, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import type { CompanyInfo } from "@/types/ComponentTypes";
 
 interface EditBasicInfoDialogProps {
   initialData: CompanyInfo | null;
@@ -144,7 +144,7 @@ export const EditBasicInfoDialog = ({
 
       onSuccess();
       setOpen(false);
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -170,20 +170,14 @@ export const EditBasicInfoDialog = ({
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-6 bg-[#171410] border-[#352b1c]">
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <h2 className="text-2xl font-semibold text-[#A28B55] mb-2">
-              Edit Company Details
-            </h2>
-            <p className="text-neutral-400">
-              Update your basic company information
-            </p>
+            <h2 className="text-2xl font-semibold text-[#A28B55] mb-2">Edit Company Details</h2>
+            <p className="text-neutral-400">Update your basic company information</p>
           </div>
 
           <div className="space-y-6">
             {/* Company Identity */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-[#A28B55]">
-                Company Identity
-              </h3>
+              <h3 className="text-lg font-medium text-[#A28B55]">Company Identity</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-neutral-400">
@@ -204,9 +198,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="parentCompany"
                     value={formData.parentCompany}
-                    onChange={(e) =>
-                      handleInputChange("parentCompany", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("parentCompany", e.target.value)}
                     placeholder="Ashoka Furniture Udyog"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -218,9 +210,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="established"
                     value={formData.established}
-                    onChange={(e) =>
-                      handleInputChange("established", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("established", e.target.value)}
                     placeholder="1996"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -230,9 +220,7 @@ export const EditBasicInfoDialog = ({
 
             {/* Address */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-[#A28B55]">
-                Company Address
-              </h3>
+              <h3 className="text-lg font-medium text-[#A28B55]">Company Address</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="street" className="text-neutral-400">
@@ -241,9 +229,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="street"
                     value={formData.address.street}
-                    onChange={(e) =>
-                      handleAddressChange("street", e.target.value)
-                    }
+                    onChange={(e) => handleAddressChange("street", e.target.value)}
                     placeholder="Plot No. 304, Industrial Area Phase 2"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -255,9 +241,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="city"
                     value={formData.address.city}
-                    onChange={(e) =>
-                      handleAddressChange("city", e.target.value)
-                    }
+                    onChange={(e) => handleAddressChange("city", e.target.value)}
                     placeholder="Chandigarh"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -281,9 +265,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="country"
                     value={formData.address.Country}
-                    onChange={(e) =>
-                      handleAddressChange("Country", e.target.value)
-                    }
+                    onChange={(e) => handleAddressChange("Country", e.target.value)}
                     placeholder="India"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -295,9 +277,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="mapsLink"
                     value={formData.mapsLink}
-                    onChange={(e) =>
-                      handleInputChange("mapsLink", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("mapsLink", e.target.value)}
                     placeholder="https://maps.app.goo.gl/example"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -338,9 +318,7 @@ export const EditBasicInfoDialog = ({
 
             {/* Business Hours */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-[#A28B55]">
-                Business Hours
-              </h3>
+              <h3 className="text-lg font-medium text-[#A28B55]">Business Hours</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="weekday" className="text-neutral-400">
@@ -349,9 +327,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="weekday"
                     value={formData.hours.weekday}
-                    onChange={(e) =>
-                      handleHoursChange("weekday", e.target.value)
-                    }
+                    onChange={(e) => handleHoursChange("weekday", e.target.value)}
                     placeholder="10:00 AM - 6:30 PM"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -363,9 +339,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="sunday"
                     value={formData.hours.sunday}
-                    onChange={(e) =>
-                      handleHoursChange("sunday", e.target.value)
-                    }
+                    onChange={(e) => handleHoursChange("sunday", e.target.value)}
                     placeholder="Closed"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -375,9 +349,7 @@ export const EditBasicInfoDialog = ({
 
             {/* Contact Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-[#A28B55]">
-                Contact Information
-              </h3>
+              <h3 className="text-lg font-medium text-[#A28B55]">Contact Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-neutral-400">
@@ -411,9 +383,7 @@ export const EditBasicInfoDialog = ({
                   <Input
                     id="website"
                     value={formData.website}
-                    onChange={(e) =>
-                      handleInputChange("website", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("website", e.target.value)}
                     placeholder="https://stardom.co.in/"
                     className="bg-neutral-950/60 border-[#3C3120] focus:border-[#A28B55] text-white"
                   />
@@ -429,7 +399,7 @@ export const EditBasicInfoDialog = ({
             </div>
           )}
 
-          <Separator className="bg-gradient-to-r from-transparent via-[#3C3120] to-transparent" />
+          <Separator className="bg-linear-to-r from-transparent via-[#3C3120] to-transparent" />
 
           <div className="flex justify-end gap-3">
             <Button

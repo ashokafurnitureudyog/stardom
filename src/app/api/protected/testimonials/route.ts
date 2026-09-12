@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
   createTestimonial,
   deleteTestimonial,
@@ -44,10 +44,7 @@ export async function DELETE(request: NextRequest) {
     const documentId = testimonialId || id;
 
     if (!documentId) {
-      return NextResponse.json(
-        { message: "Testimonial ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ message: "Testimonial ID is required" }, { status: 400 });
     }
 
     const result = await deleteTestimonial(documentId);

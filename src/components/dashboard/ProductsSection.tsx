@@ -1,14 +1,14 @@
-import { useState, useOptimistic, useTransition } from "react";
-import { ProductCard } from "./products/ProductCard";
-import { AddProductDialog } from "./products/AddProductDialog";
-import type { Product } from "@/types/ComponentTypes";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { Search, RefreshCw, PackageOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useProducts } from "@/hooks/useProducts";
 import { useQueryClient } from "@tanstack/react-query";
+import { PackageOpen, RefreshCw, Search } from "lucide-react";
+import { useOptimistic, useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useProducts } from "@/hooks/useProducts";
+import type { Product } from "@/types/ComponentTypes";
+import { AddProductDialog } from "./products/AddProductDialog";
+import { ProductCard } from "./products/ProductCard";
 
 export const ProductsSection = () => {
   const {
@@ -23,9 +23,7 @@ export const ProductsSection = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const featuredProductIds = new Set(
-    featuredProducts.map((p) => p.id || p.$id || ""),
-  );
+  const featuredProductIds = new Set(featuredProducts.map((p) => p.id || p.$id || ""));
 
   const [optimisticProducts, addOptimisticProduct] = useOptimistic(
     products,
@@ -48,12 +46,8 @@ export const ProductsSection = () => {
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (product.category || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      (product.product_collection || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()),
+      (product.category || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.product_collection || "").toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleRefresh = () => {
@@ -82,12 +76,8 @@ export const ProductsSection = () => {
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-            Product Management
-          </h2>
-          <p className="text-muted-foreground">
-            {products.length} products in catalog
-          </p>
+          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">Product Management</h2>
+          <p className="text-muted-foreground">{products.length} products in catalog</p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -112,8 +102,7 @@ export const ProductsSection = () => {
               className="flex items-center gap-2 h-10 hover:bg-secondary"
               onClick={handleRefresh}
             >
-              <RefreshCw size={16} />{" "}
-              <span className="hidden lg:inline">Refresh</span>
+              <RefreshCw size={16} /> <span className="hidden lg:inline">Refresh</span>
             </Button>
 
             <AddProductDialog onSuccess={handleRefresh} />
@@ -125,11 +114,7 @@ export const ProductsSection = () => {
 
       {queryError && (
         <div className="bg-red-500/10 text-red-400 p-4 mb-6 rounded border border-red-900/50">
-          <p>
-            {queryError instanceof Error
-              ? queryError.message
-              : "Failed to load products"}
-          </p>
+          <p>{queryError instanceof Error ? queryError.message : "Failed to load products"}</p>
           <Button
             variant="outline"
             className="mt-2 bg-transparent border-[#3C3120] text-[#A28B55] hover:bg-neutral-800 hover:border-[#A28B55]"
@@ -145,7 +130,7 @@ export const ProductsSection = () => {
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
             <div
               key={item}
-              className="aspect-[4/5] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
+              className="aspect-4/5 bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
             />
           ))}
         </div>
@@ -157,9 +142,7 @@ export const ProductsSection = () => {
               product={product}
               onDelete={handleDelete}
               onUpdate={handleRefresh}
-              isFeatured={featuredProductIds.has(
-                product.id || product.$id || "",
-              )}
+              isFeatured={featuredProductIds.has(product.id || product.$id || "")}
             />
           ))}
         </div>
@@ -168,21 +151,13 @@ export const ProductsSection = () => {
           <PackageOpen className="mx-auto h-12 w-12 text-[#A28B55] opacity-70 mb-4" />
           {searchQuery ? (
             <>
-              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
-                No Products Found
-              </h3>
-              <p className="text-neutral-500 mb-6">
-                No products match your search query
-              </p>
+              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">No Products Found</h3>
+              <p className="text-neutral-500 mb-6">No products match your search query</p>
             </>
           ) : (
             <>
-              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">
-                No Products Yet
-              </h3>
-              <p className="text-neutral-500 mb-6">
-                Get started by adding your first product
-              </p>
+              <h3 className="text-xl font-medium mb-3 text-[#A28B55]">No Products Yet</h3>
+              <p className="text-neutral-500 mb-6">Get started by adding your first product</p>
               <div className="flex justify-center">
                 <AddProductDialog onSuccess={handleRefresh} />
               </div>

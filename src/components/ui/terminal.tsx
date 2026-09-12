@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/utils/utils";
-import { motion, MotionProps } from "motion/react";
+import { type MotionProps, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils/utils";
 
 interface AnimatedSpanProps extends MotionProps {
   children: React.ReactNode;
@@ -10,12 +10,7 @@ interface AnimatedSpanProps extends MotionProps {
   className?: string;
 }
 
-export const AnimatedSpan = ({
-  children,
-  delay = 0,
-  className,
-  ...props
-}: AnimatedSpanProps) => (
+export const AnimatedSpan = ({ children, delay = 0, className, ...props }: AnimatedSpanProps) => (
   <motion.div
     initial={{ opacity: 0, y: -5 }}
     animate={{ opacity: 1, y: 0 }}

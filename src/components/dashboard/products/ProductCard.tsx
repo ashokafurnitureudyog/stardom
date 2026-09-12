@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { Eye, Pencil, Star, Trash } from "lucide-react";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,9 +13,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash, Eye, Star, Pencil } from "lucide-react";
-import type { Product } from "@/types/ComponentTypes";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import type { Product } from "@/types/ComponentTypes";
 import { ProductDetails } from "../view-details";
 import { EditProductDialog } from "./EditProductDialog";
 
@@ -72,13 +72,10 @@ export const ProductCard = ({
           </AlertDialogTrigger>
           <AlertDialogContent className="bg-neutral-900 border border-[#3C3120]">
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-[#A28B55]">
-                Delete Product
-              </AlertDialogTitle>
+              <AlertDialogTitle className="text-[#A28B55]">Delete Product</AlertDialogTitle>
               <AlertDialogDescription className="text-neutral-400">
-                Are you sure you want to delete &quot;{product.name}&quot;? This
-                action cannot be undone and will permanently remove all
-                associated images.
+                Are you sure you want to delete &quot;{product.name}&quot;? This action cannot be
+                undone and will permanently remove all associated images.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -100,11 +97,8 @@ export const ProductCard = ({
       {/* Image container with View Details on hover */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <div
-            className="relative w-full cursor-pointer"
-            style={{ height: "280px" }}
-          >
-            {product.images && product.images[0] ? (
+          <div className="relative w-full cursor-pointer" style={{ height: "280px" }}>
+            {product.images?.[0] ? (
               <img
                 src={product.images[0]}
                 alt={product.name}
@@ -133,9 +127,7 @@ export const ProductCard = ({
       {/* Product info - simplified to match featured cards */}
       <div className="p-4">
         <h3 className="font-medium text-[#A28B55] truncate">{product.name}</h3>
-        <p className="text-xs text-neutral-500 truncate mt-1">
-          {product.description}
-        </p>
+        <p className="text-xs text-neutral-500 truncate mt-1">{product.description}</p>
       </div>
     </div>
   );

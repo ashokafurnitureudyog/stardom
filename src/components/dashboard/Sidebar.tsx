@@ -1,20 +1,20 @@
 "use client";
 import {
-  Package,
-  Star,
-  MessageSquare,
-  Image,
   Building2,
+  ChevronDown,
+  ChevronUp,
   Film,
+  Image,
   LayoutDashboard,
   LogOut,
+  type LucideIcon,
+  MessageSquare,
+  Package,
   Settings,
-  ChevronUp,
-  ChevronDown,
+  Star,
 } from "lucide-react";
-import { LucideIcon } from "lucide-react";
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { signOutUser } from "@/lib/controllers/AuthControllers";
 import { StorageUsage } from "./StorageUsage";
@@ -83,12 +83,8 @@ export const Sidebar = ({
       <div className="mb-8 flex items-start gap-3">
         <LayoutDashboard className="w-12 h-12 text-primary" />
         <div className="flex flex-col">
-          <h1 className="text-xl font-medium tracking-tight leading-tight">
-            Admin
-          </h1>
-          <h1 className="text-xl font-medium tracking-tight leading-tight">
-            Dashboard
-          </h1>
+          <h1 className="text-xl font-medium tracking-tight leading-tight">Admin</h1>
+          <h1 className="text-xl font-medium tracking-tight leading-tight">Dashboard</h1>
         </div>
       </div>
 
@@ -103,9 +99,7 @@ export const Sidebar = ({
                 : "text-muted-foreground hover:bg-secondary hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]"
             }`}
           >
-            <sidebarItem.icon
-              className={`w-5 h-5 transition-transform duration-200`}
-            />
+            <sidebarItem.icon className={`w-5 h-5 transition-transform duration-200`} />
             <span>{sidebarItem.label}</span>
           </button>
         ))}
@@ -120,9 +114,7 @@ export const Sidebar = ({
         >
           <div className="flex items-center gap-2">
             <Avatar className="w-8 h-8">
-              <AvatarFallback className="bg-[#A28B55]/90">
-                {user.name.charAt(0)}
-              </AvatarFallback>
+              <AvatarFallback className="bg-[#A28B55]/90">{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="text-left">
               <span className="block text-sm font-medium">{user.name}</span>

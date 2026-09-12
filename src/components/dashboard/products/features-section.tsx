@@ -1,18 +1,15 @@
+import { Plus, X } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { X, Plus } from "lucide-react";
 
 interface FeaturesSectionProps {
   features: string[];
   setFeatures: (features: string[]) => void;
 }
 
-export function FeaturesSection({
-  features,
-  setFeatures,
-}: FeaturesSectionProps) {
+export function FeaturesSection({ features, setFeatures }: FeaturesSectionProps) {
   const [currentFeature, setCurrentFeature] = useState("");
 
   const handleAddFeature = () => {
@@ -38,12 +35,7 @@ export function FeaturesSection({
             }
           }}
         />
-        <Button
-          type="button"
-          onClick={handleAddFeature}
-          className="flex-shrink-0"
-          size="icon"
-        >
+        <Button type="button" onClick={handleAddFeature} className="shrink-0" size="icon">
           <Plus size={16} />
         </Button>
       </div>
@@ -53,9 +45,7 @@ export function FeaturesSection({
             {feature}
             <button
               type="button"
-              onClick={() =>
-                setFeatures(features.filter((_, i) => i !== index))
-              }
+              onClick={() => setFeatures(features.filter((_, i) => i !== index))}
               className="ml-2 hover:bg-primary-foreground rounded-full"
             >
               <X size={14} />

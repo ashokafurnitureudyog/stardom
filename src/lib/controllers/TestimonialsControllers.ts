@@ -1,6 +1,6 @@
 "use server";
+import { ID, Query } from "node-appwrite";
 import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
-import { ID } from "node-appwrite";
 import { testimonialSchema } from "@/lib/validations/cms";
 
 interface TestimonialResponse {
@@ -16,19 +16,20 @@ export async function getTestimonials(): Promise<TestimonialResponse> {
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
     const collectionId = process.env.APPWRITE_TESTIMONIALS_COLLECTION_ID!;
 
-    const response = await database.listDocuments(databaseId, collectionId);
-    return { success: true, data: response.documents };
+    const response = await database.listRows({
+      databaseId: databaseId,
+      tableId: collectionId,
+      queries: [Query.limit(100)],
+    });
+    return { success: true, data: response.rows };
   } catch (error) {
     console.error("Failed to fetch testimonials:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch testimonials";
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch testimonials";
     return { success: false, error: errorMessage };
   }
 }
 
-export async function createTestimonial(
-  formData: FormData,
-): Promise<TestimonialResponse> {
+export async function createTestimonial(formData: FormData): Promise<TestimonialResponse> {
   try {
     const user = await getLoggedInUser();
     if (!user) throw new Error("Unauthorized");
@@ -43,8 +44,7 @@ export async function createTestimonial(
       };
     }
 
-    const { name, title, location, context, purchaseDate, quote, img } =
-      validatedData.data;
+    const { name, title, location, context, purchaseDate, quote, img } = validatedData.data;
 
     const { database } = await createAdminClient();
     const databaseId = process.env.APPWRITE_DATABASE_ID!;
@@ -55,34 +55,22 @@ export async function createTestimonial(
     }
 
     // Create testimonial document
-    const testimonial = await database.createDocument(
-      databaseId,
-      collectionId,
-      ID.unique(),
-      {
-        name,
-        title,
-        location,
-        context,
-        purchaseDate,
-        verified: true,
-        quote,
-        img,
-      },
-    );
+    const testimonial = await database.createRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: ID.unique(),
+      data: { name, title, location, context, purchaseDate, verified: true, quote, img },
+    });
 
     return { success: true, data: testimonial };
   } catch (error) {
     console.error("Failed to create testimonial:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to create testimonial";
+    const errorMessage = error instanceof Error ? error.message : "Failed to create testimonial";
     return { success: false, error: errorMessage };
   }
 }
 
-export async function deleteTestimonial(
-  testimonialId: string,
-): Promise<TestimonialResponse> {
+export async function deleteTestimonial(testimonialId: string): Promise<TestimonialResponse> {
   try {
     const user = await getLoggedInUser();
     if (!user) throw new Error("Unauthorized");
@@ -96,20 +84,21 @@ export async function deleteTestimonial(
     }
 
     // Delete testimonial document
-    await database.deleteDocument(databaseId, collectionId, testimonialId);
+    await database.deleteRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: testimonialId,
+    });
 
     return { success: true };
   } catch (error) {
     console.error("Failed to delete testimonial:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to delete testimonial";
+    const errorMessage = error instanceof Error ? error.message : "Failed to delete testimonial";
     return { success: false, error: errorMessage };
   }
 }
 
-export async function updateTestimonial(
-  formData: FormData,
-): Promise<TestimonialResponse> {
+export async function updateTestimonial(formData: FormData): Promise<TestimonialResponse> {
   try {
     const user = await getLoggedInUser();
     if (!user) throw new Error("Unauthorized");
@@ -160,27 +149,17 @@ export async function updateTestimonial(
     }
 
     // Update testimonial document
-    const testimonial = await database.updateDocument(
-      databaseId,
-      collectionId,
-      id,
-      {
-        name,
-        title,
-        location,
-        context,
-        purchaseDate,
-        verified: true,
-        quote,
-        img,
-      },
-    );
+    const testimonial = await database.updateRow({
+      databaseId: databaseId,
+      tableId: collectionId,
+      rowId: id,
+      data: { name, title, location, context, purchaseDate, verified: true, quote, img },
+    });
 
     return { success: true, data: testimonial };
   } catch (error) {
     console.error("Failed to update testimonial:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to update testimonial";
+    const errorMessage = error instanceof Error ? error.message : "Failed to update testimonial";
     return { success: false, error: errorMessage };
   }
 }

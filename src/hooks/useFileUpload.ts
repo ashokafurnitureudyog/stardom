@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  uploadFileToStorage,
-  uploadMultipleFilesToStorage,
-} from "@/lib/client/appwrite-upload";
+import { uploadFileToStorage, uploadMultipleFilesToStorage } from "@/lib/client/appwrite-upload";
 
 interface UploadProgress {
   uploading: boolean;
@@ -92,11 +89,7 @@ export function useFileUpload() {
         }));
       }, 200);
 
-      const fileUrls = await uploadMultipleFilesToStorage(
-        files,
-        bucketId,
-        options,
-      );
+      const fileUrls = await uploadMultipleFilesToStorage(files, bucketId, options);
 
       clearInterval(progressInterval);
       setUploadStatus({

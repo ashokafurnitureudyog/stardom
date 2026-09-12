@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
+  deleteCompanyInfo,
   getCompanyInfo,
   updateCompanyInfo,
   updateSocialLinks,
   updateTeamMembers,
-  deleteCompanyInfo,
 } from "@/lib/controllers/CompanyInfoController";
 import { apiHandler } from "@/lib/utils/api-utils";
 
@@ -46,10 +46,7 @@ export async function POST(request: NextRequest) {
           break;
 
         default:
-          return NextResponse.json(
-            { error: "Invalid section" },
-            { status: 400 },
-          );
+          return NextResponse.json({ error: "Invalid section" }, { status: 400 });
       }
 
       if (!result.success) {
@@ -69,10 +66,7 @@ export async function POST(request: NextRequest) {
         case "basic": {
           const dataString = formData.get("data")?.toString();
           if (!dataString) {
-            return NextResponse.json(
-              { error: "No data provided" },
-              { status: 400 },
-            );
+            return NextResponse.json({ error: "No data provided" }, { status: 400 });
           }
           const data = JSON.parse(dataString);
           result = await updateCompanyInfo(data);
@@ -82,10 +76,7 @@ export async function POST(request: NextRequest) {
         case "social": {
           const dataString = formData.get("data")?.toString();
           if (!dataString) {
-            return NextResponse.json(
-              { error: "No data provided" },
-              { status: 400 },
-            );
+            return NextResponse.json({ error: "No data provided" }, { status: 400 });
           }
           const data = JSON.parse(dataString);
           result = await updateSocialLinks(data);
@@ -95,10 +86,7 @@ export async function POST(request: NextRequest) {
         case "team": {
           const dataString = formData.get("data")?.toString();
           if (!dataString) {
-            return NextResponse.json(
-              { error: "No data provided" },
-              { status: 400 },
-            );
+            return NextResponse.json({ error: "No data provided" }, { status: 400 });
           }
           const data = JSON.parse(dataString);
           result = await updateTeamMembers(data);
@@ -106,10 +94,7 @@ export async function POST(request: NextRequest) {
         }
 
         default:
-          return NextResponse.json(
-            { error: "Invalid section" },
-            { status: 400 },
-          );
+          return NextResponse.json({ error: "Invalid section" }, { status: 400 });
       }
 
       if (!result.success) {

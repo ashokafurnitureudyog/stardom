@@ -1,5 +1,5 @@
-import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
-import { FacilityContentProps, FacilityData } from "@/types/ComponentTypes";
+import { Card, Carousel } from "@/components/ui/apple-cards-carousel";
+import type { FacilityContentProps, FacilityData } from "@/types/ComponentTypes";
 
 const FacilityContent: React.FC<FacilityContentProps> = ({ facility }) => {
   return (

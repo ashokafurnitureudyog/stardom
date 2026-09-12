@@ -1,7 +1,7 @@
 "use server";
-import { ID } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
-import { MediaItem } from "@/types/MediaTypes";
+import type { MediaItem } from "@/types/MediaTypes";
 
 const COLLECTION_ID = process.env.APPWRITE_HERO_MEDIA_COLLECTION_ID as string;
 const DATABASE_ID = process.env.APPWRITE_DATABASE_ID as string;
@@ -24,9 +24,7 @@ interface MediaInput {
   lowResSrc?: string;
 }
 
-function mapToMediaItem(
-  doc: Record<string, unknown>,
-): MediaItem & { id?: string } {
+function mapToMediaItem(doc: Record<string, unknown>): MediaItem & { id?: string } {
   return {
     type: doc.type as "image" | "video",
     src: doc.src as string,
@@ -43,9 +41,13 @@ export async function getHeroMedia(): Promise<HeroMediaResult> {
   try {
     const { database } = await createAdminClient();
 
-    const response = await database.listDocuments(DATABASE_ID, COLLECTION_ID);
+    const response = await database.listRows({
+      databaseId: DATABASE_ID,
+      tableId: COLLECTION_ID,
+      queries: [Query.limit(100)],
+    });
 
-    const mediaItems = response.documents.map(mapToMediaItem);
+    const mediaItems = response.rows.map(mapToMediaItem);
 
     return {
       success: true,
@@ -53,8 +55,7 @@ export async function getHeroMedia(): Promise<HeroMediaResult> {
     };
   } catch (error) {
     console.error("Error fetching hero media:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch hero media";
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch hero media";
     return {
       success: false,
       error: errorMessage,
@@ -62,9 +63,7 @@ export async function getHeroMedia(): Promise<HeroMediaResult> {
   }
 }
 
-export async function addHeroMedia(
-  media: MediaInput,
-): Promise<HeroMediaResult> {
+export async function addHeroMedia(media: MediaInput): Promise<HeroMediaResult> {
   try {
     const user = await getLoggedInUser();
     if (!user) throw new Error("Unauthorized");
@@ -88,11 +87,11 @@ export async function addHeroMedia(
       };
     }
 
-    const newMedia = await database.createDocument(
-      DATABASE_ID,
-      COLLECTION_ID,
-      ID.unique(),
-      {
+    const newMedia = await database.createRow({
+      databaseId: DATABASE_ID,
+      tableId: COLLECTION_ID,
+      rowId: ID.unique(),
+      data: {
         type: media.type,
         src: media.src,
         alt: media.alt || "",
@@ -101,7 +100,7 @@ export async function addHeroMedia(
         webmSrc: media.webmSrc || "",
         lowResSrc: media.lowResSrc || "",
       },
-    );
+    });
 
     return {
       success: true,
@@ -109,8 +108,7 @@ export async function addHeroMedia(
     };
   } catch (error) {
     console.error("Error adding hero media:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to add hero media";
+    const errorMessage = error instanceof Error ? error.message : "Failed to add hero media";
     return {
       success: false,
       error: errorMessage,
@@ -134,13 +132,14 @@ export async function deleteHeroMedia(id: string): Promise<HeroMediaResult> {
 
     try {
       // Get the media item to check if it's an uploaded file
-      const media = await database.getDocument(DATABASE_ID, COLLECTION_ID, id);
+      const media = await database.getRow({
+        databaseId: DATABASE_ID,
+        tableId: COLLECTION_ID,
+        rowId: id,
+      });
 
       // If it's an uploaded file (not an external URL), delete from storage
-      if (
-        media.src &&
-        media.src.includes(`/storage/buckets/${BUCKET_ID}/files/`)
-      ) {
+      if (media.src?.includes(`/storage/buckets/${BUCKET_ID}/files/`)) {
         // Extract file ID from URL
         const fileId = media.src.split("/files/")[1]?.split("/view")[0];
 
@@ -150,9 +149,7 @@ export async function deleteHeroMedia(id: string): Promise<HeroMediaResult> {
           } catch (storageError) {
             console.warn(
               `File not found in storage (fileId: ${fileId}): ${
-                storageError instanceof Error
-                  ? storageError.message
-                  : "Unknown error"
+                storageError instanceof Error ? storageError.message : "Unknown error"
               }`,
             );
           }
@@ -160,14 +157,17 @@ export async function deleteHeroMedia(id: string): Promise<HeroMediaResult> {
       }
 
       // Delete document
-      await database.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+      await database.deleteRow({
+        databaseId: DATABASE_ID,
+        tableId: COLLECTION_ID,
+        rowId: id,
+      });
 
       return {
         success: true,
       };
     } catch (docError) {
-      const errorMessage =
-        docError instanceof Error ? docError.message : "Unknown error occurred";
+      const errorMessage = docError instanceof Error ? docError.message : "Unknown error occurred";
 
       return {
         success: false,
@@ -175,8 +175,7 @@ export async function deleteHeroMedia(id: string): Promise<HeroMediaResult> {
       };
     }
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to delete hero media";
+    const errorMessage = error instanceof Error ? error.message : "Failed to delete hero media";
     return {
       success: false,
       error: errorMessage,
@@ -188,9 +187,13 @@ export async function getPublicHeroMedia(): Promise<HeroMediaResult> {
   try {
     const { database } = await createAdminClient();
 
-    const response = await database.listDocuments(DATABASE_ID, COLLECTION_ID);
+    const response = await database.listRows({
+      databaseId: DATABASE_ID,
+      tableId: COLLECTION_ID,
+      queries: [Query.limit(100)],
+    });
 
-    const mediaItems = response.documents.map((doc) => {
+    const mediaItems = response.rows.map((doc) => {
       const item = mapToMediaItem(doc);
       return item;
     });
@@ -201,8 +204,7 @@ export async function getPublicHeroMedia(): Promise<HeroMediaResult> {
     };
   } catch (error) {
     console.error("Error fetching public hero media:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to fetch hero media";
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch hero media";
     return {
       success: false,
       error: errorMessage,

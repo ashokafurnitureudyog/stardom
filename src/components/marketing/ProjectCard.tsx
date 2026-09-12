@@ -1,16 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
-import { ProjectCardProps } from "@/types/ComponentTypes";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import type { ProjectCardProps } from "@/types/ComponentTypes";
 
 export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
   <motion.div
@@ -35,9 +29,7 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
         </div>
       </div>
       <CardHeader>
-        <CardTitle className="font-serif text-2xl font-light">
-          {project.title}
-        </CardTitle>
+        <CardTitle className="font-serif text-2xl font-light">{project.title}</CardTitle>
         <div className="flex flex-wrap gap-2 mt-2">
           {project.tags?.map((tag, index) => (
             <Badge key={index} variant="outline" className="text-xs">
@@ -55,10 +47,8 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
           )}
         </div>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-sm text-muted-foreground line-clamp-3">
-          {project.description}
-        </p>
+      <CardContent className="grow">
+        <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
         {project.impact && (
           <div className="mt-4 p-3 bg-muted/30 rounded-md">
             <p className="text-sm font-medium">Impact</p>
@@ -76,9 +66,7 @@ export const ProjectCard = ({ project, onClick }: ProjectCardProps) => (
         </div>
         <div className="flex items-center gap-1">
           {project.gallery && (
-            <span className="text-xs text-muted-foreground">
-              {project.gallery.length} photos
-            </span>
+            <span className="text-xs text-muted-foreground">{project.gallery.length} photos</span>
           )}
         </div>
       </CardFooter>

@@ -1,15 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { ImagesSection } from "./images-section";
-import { FeaturesSection } from "./features-section";
-import { ColorsSection } from "./colors-section";
-import type { Product } from "@/types/ComponentTypes";
-import { useToast } from "@/hooks/use-toast";
-import { useFileUpload } from "@/hooks/useFileUpload";
 import { Progress } from "@/components/ui/progress"; // Ensure you have this component
 import {
   Select,
@@ -18,7 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useFileUpload } from "@/hooks/useFileUpload";
 import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
+import type { Product } from "@/types/ComponentTypes";
+import { ColorsSection } from "./colors-section";
+import { FeaturesSection } from "./features-section";
+import { ImagesSection } from "./images-section";
 
 interface ProductFormProps {
   onSuccess: () => void;
@@ -26,37 +26,21 @@ interface ProductFormProps {
   isEditing?: boolean;
 }
 
-export const ProductForm = ({
-  onSuccess,
-  initialData,
-  isEditing = false,
-}: ProductFormProps) => {
+export const ProductForm = ({ onSuccess, initialData, isEditing = false }: ProductFormProps) => {
   // Form state
   const [name, setName] = useState(initialData?.name || "");
-  const [description, setDescription] = useState(
-    initialData?.description || "",
-  );
+  const [description, setDescription] = useState(initialData?.description || "");
   const [category, setCategory] = useState(initialData?.category || "");
-  const [collection, setCollection] = useState(
-    initialData?.product_collection || "",
-  );
-  const [features, setFeatures] = useState<string[]>(
-    initialData?.features || [],
-  );
+  const [collection, setCollection] = useState(initialData?.product_collection || "");
+  const [features, setFeatures] = useState<string[]>(initialData?.features || []);
   const [colors, setColors] = useState<string[]>(initialData?.colors || []);
 
   // Image handling
   const [files, setFiles] = useState<File[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>(
-    initialData?.images || [],
-  );
-  const [initialImageUrls, setInitialImageUrls] = useState<string[]>(
-    initialData?.images || [],
-  );
+  const [imageUrls, setImageUrls] = useState<string[]>(initialData?.images || []);
+  const [initialImageUrls, setInitialImageUrls] = useState<string[]>(initialData?.images || []);
   const [newImageUrl, setNewImageUrl] = useState("");
-  const [imageColorMapping, setImageColorMapping] = useState<
-    Record<string, string>
-  >(() => {
+  const [imageColorMapping, setImageColorMapping] = useState<Record<string, string>>(() => {
     if (!initialData?.image_color_mapping) return {};
     try {
       return JSON.parse(initialData.image_color_mapping);
@@ -123,8 +107,7 @@ export const ProductForm = ({
           // If we have a mapping for this file name
           if (finalImageColorMapping[fileName]) {
             // Assign the color to the new URL
-            finalImageColorMapping[uploadedUrls[index]] =
-              finalImageColorMapping[fileName];
+            finalImageColorMapping[uploadedUrls[index]] = finalImageColorMapping[fileName];
             // Remove the temporary file name key
             delete finalImageColorMapping[fileName];
           }
@@ -147,9 +130,7 @@ export const ProductForm = ({
       // 3. For editing, track removed images
       let removedImages: string[] = [];
       if (isEditing && initialData) {
-        removedImages = initialImageUrls.filter(
-          (url) => !imageUrls.includes(url),
-        );
+        removedImages = initialImageUrls.filter((url) => !imageUrls.includes(url));
       }
 
       // 4. Send the product data to the API
@@ -160,10 +141,7 @@ export const ProductForm = ({
         },
         body: JSON.stringify({
           ...productData,
-          id:
-            isEditing && initialData
-              ? initialData.id || initialData.$id
-              : undefined,
+          id: isEditing && initialData ? initialData.id || initialData.$id : undefined,
           removedImages: removedImages.length > 0 ? removedImages : undefined,
         }),
         credentials: "include",
@@ -185,14 +163,11 @@ export const ProductForm = ({
 
       onSuccess();
     } catch (error: unknown) {
-      setErrorMessage(
-        error instanceof Error ? error.message : "Failed to save product",
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Failed to save product");
 
       toast({
         title: "Error",
-        description:
-          error instanceof Error ? error.message : "Failed to save product",
+        description: error instanceof Error ? error.message : "Failed to save product",
         variant: "destructive",
       });
     } finally {
@@ -231,10 +206,7 @@ export const ProductForm = ({
           </div>
 
           <div>
-            <label
-              htmlFor="description"
-              className="text-sm font-medium block mb-1"
-            >
+            <label htmlFor="description" className="text-sm font-medium block mb-1">
               Description
             </label>
             <Textarea
@@ -249,10 +221,7 @@ export const ProductForm = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label
-                htmlFor="category"
-                className="text-sm font-medium block mb-1"
-              >
+              <label htmlFor="category" className="text-sm font-medium block mb-1">
                 Category
               </label>
               <Select value={category} onValueChange={setCategory} required>
@@ -272,10 +241,7 @@ export const ProductForm = ({
               </Select>
             </div>
             <div>
-              <label
-                htmlFor="collection"
-                className="text-sm font-medium block mb-1"
-              >
+              <label htmlFor="collection" className="text-sm font-medium block mb-1">
                 Collection
               </label>
               <Input
@@ -322,12 +288,8 @@ export const ProductForm = ({
         {uploadStatus.uploading && (
           <div className="mt-4 space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-neutral-400">
-                Uploading files...
-              </span>
-              <span className="text-sm text-neutral-400">
-                {uploadStatus.progress}%
-              </span>
+              <span className="text-sm text-neutral-400">Uploading files...</span>
+              <span className="text-sm text-neutral-400">{uploadStatus.progress}%</span>
             </div>
             <Progress value={uploadStatus.progress} className="h-2" />
           </div>

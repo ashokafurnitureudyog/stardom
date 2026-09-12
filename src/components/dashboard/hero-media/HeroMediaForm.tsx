@@ -1,16 +1,16 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { Check, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress"; // Make sure this component exists
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { Check, Loader2 } from "lucide-react";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { MediaPreview } from "./MediaPreview";
 import { MediaTypeSelector } from "./MediaTypeSelector";
 import { MediaUploadTabs } from "./MediaUploadTabs";
-import { MediaPreview } from "./MediaPreview";
-import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
-import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 
 interface HeroMediaFormProps {
   onSuccess: () => void;
@@ -41,7 +41,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
   // Clean up object URLs on unmount to avoid memory leaks
   useEffect(() => {
     return () => {
-      if (previewUrlRef.current && previewUrlRef.current.startsWith("blob:")) {
+      if (previewUrlRef.current?.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrlRef.current);
       }
     };
@@ -49,7 +49,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
 
   // Function to safely clean up object URL if it exists
   const cleanupObjectUrl = () => {
-    if (previewUrlRef.current && previewUrlRef.current.startsWith("blob:")) {
+    if (previewUrlRef.current?.startsWith("blob:")) {
       URL.revokeObjectURL(previewUrlRef.current);
     }
   };
@@ -61,7 +61,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     setSelectedFile(null);
     setMediaUrl("");
     setMediaAlt("");
-  }, [mediaType]);
+  }, [cleanupObjectUrl]);
 
   // Reset state when method changes
   useEffect(() => {
@@ -69,7 +69,7 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     setPreviewUrl(null);
     setSelectedFile(null);
     setMediaUrl("");
-  }, [addMethod]);
+  }, [cleanupObjectUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

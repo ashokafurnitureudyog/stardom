@@ -1,23 +1,12 @@
 "use client";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils/utils";
-import { ReactNode } from "react";
-import NavbarComponent from "./NavbarComponent";
 import Footer from "./Footer";
+import NavbarComponent from "./NavbarComponent";
 
-const BaseLayout = ({
-  className,
-  children,
-}: {
-  className?: string;
-  children: ReactNode;
-}) => {
+const BaseLayout = ({ className, children }: { className?: string; children: ReactNode }) => {
   return (
-    <div
-      className={cn(
-        "w-screen flex flex-col justify-between min-h-screen font-sans",
-        className,
-      )}
-    >
+    <div className={cn("w-screen flex flex-col justify-between min-h-screen font-sans", className)}>
       <NavbarComponent />
       {children}
       <Footer />

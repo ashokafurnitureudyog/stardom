@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export const WhatsAppIcon = () => (
   <svg
@@ -61,11 +61,8 @@ export const ProductInfo = ({
         </h3>
         <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
           {product.features.map((feature, index) => (
-            <li
-              key={index}
-              className="text-muted-foreground flex items-start text-sm"
-            >
-              <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-3 flex-shrink-0" />
+            <li key={index} className="text-muted-foreground flex items-start text-sm">
+              <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-3 shrink-0" />
               <span className="leading-relaxed">{feature}</span>
             </li>
           ))}
@@ -111,9 +108,7 @@ export const ProductInfo = ({
           className="group w-full md:w-auto min-w-[300px] flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1fb855] text-white py-4 px-8 rounded-full transition-all shadow-lg hover:shadow-[#25D366]/30"
         >
           <WhatsAppIcon />
-          <span className="font-medium tracking-wide">
-            Inquire via WhatsApp
-          </span>
+          <span className="font-medium tracking-wide">Inquire via WhatsApp</span>
         </button>
       </motion.div>
     </motion.div>

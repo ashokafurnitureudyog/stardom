@@ -1,73 +1,155 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: hsl(36 100% 95%);
+  --foreground: hsl(36 5% 0%);
+  --card: hsl(36 50% 90%);
+  --card-foreground: hsl(36 5% 10%);
+  --popover: hsl(36 100% 95%);
+  --popover-foreground: hsl(36 100% 0%);
+  --primary: hsl(36 36% 51.6%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(36 30% 70%);
+  --secondary-foreground: hsl(0 0% 0%);
+  --muted: hsl(358 30% 85%);
+  --muted-foreground: hsl(36 5% 35%);
+  --accent: hsl(358 30% 80%);
+  --accent-foreground: hsl(36 5% 10%);
+  --destructive: hsl(0 100% 30%);
+  --destructive-foreground: hsl(36 5% 90%);
+  --border: hsl(36 30% 50%);
+  --input: hsl(36 30% 18%);
+  --ring: hsl(36 36% 51.6%);
+  --radius: 0.3rem;
 }
 
-@layer base {
-  :root {
-    --background: 36 100% 95%;
-    --foreground: 36 5% 0%;
-    --card: 36 50% 90%;
-    --card-foreground: 36 5% 10%;
-    --popover: 36 100% 95%;
-    --popover-foreground: 36 100% 0%;
-    --primary: 36 36% 51.6%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 36 30% 70%;
-    --secondary-foreground: 0 0% 0%;
-    --muted: -2 30% 85%;
-    --muted-foreground: 36 5% 35%;
-    --accent: -2 30% 80%;
-    --accent-foreground: 36 5% 10%;
-    --destructive: 0 100% 30%;
-    --destructive-foreground: 36 5% 90%;
-    --border: 36 30% 50%;
-    --input: 36 30% 18%;
-    --ring: 36 36% 51.6%;
-    --radius: 0.3rem;
+.dark {
+  --background: hsl(36 50% 5%);
+  --foreground: hsl(36 5% 90%);
+  --card: hsl(36 50% 0%);
+  --card-foreground: hsl(36 5% 90%);
+  --popover: hsl(36 50% 5%);
+  --popover-foreground: hsl(36 5% 90%);
+  --primary: hsl(36 36% 51.6%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(36 30% 10%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(358 30% 15%);
+  --muted-foreground: hsl(36 5% 60%);
+  --accent: hsl(358 30% 15%);
+  --accent-foreground: hsl(36 5% 90%);
+  --destructive: hsl(0 100% 30%);
+  --destructive-foreground: hsl(36 5% 90%);
+  --border: hsl(36 30% 18%);
+  --input: hsl(36 30% 18%);
+  --ring: hsl(36 36% 51.6%);
+}
+
+@theme inline {
+  --font-serif: var(--font-playfair), "Playfair Display", serif;
+  --font-sans: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s) infinite;
+  --animate-shine: shine var(--duration) infinite linear;
+  --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
   }
-  .dark {
-    --background: 36 50% 5%;
-    --foreground: 36 5% 90%;
-    --card: 36 50% 0%;
-    --card-foreground: 36 5% 90%;
-    --popover: 36 50% 5%;
-    --popover-foreground: 36 5% 90%;
-    --primary: 36 36% 51.6%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 36 30% 10%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: -2 30% 15%;
-    --muted-foreground: 36 5% 60%;
-    --accent: -2 30% 15%;
-    --accent-foreground: 36 5% 90%;
-    --destructive: 0 100% 30%;
-    --destructive-foreground: 36 5% 90%;
-    --border: 36 30% 18%;
-    --input: 36 30% 18%;
-    --ring: 36 36% 51.6%;
-    --radius: 0.3rem;
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
   }
-  body {
-    @apply bg-background text-foreground;
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+@keyframes ripple {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
   }
-  body {
-    @apply bg-background text-foreground;
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  to {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 200%;
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
   }
 }
 
@@ -79,6 +161,23 @@ body {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -106,12 +205,11 @@ body {
   background: #a28b55;
 }
 
-/* Firefox */
 * {
   scrollbar-color: #3c3120 #111111;
   scrollbar-width: thin;
 }
 
 [data-radix-popper-content-wrapper] {
-  z-index: 50 !important;
+  z-index: 50;
 }

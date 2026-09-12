@@ -6,13 +6,15 @@ import LegacySection from "@/components/marketing/Legacy";
 import PortfolioSection from "@/components/marketing/PortfolioSection";
 import CraftsmanshipSection from "@/components/marketing/Process";
 import TestimonialsSection from "@/components/marketing/Testimonials";
-import React from "react";
+import { getFeaturedProducts } from "@/lib/server/products";
 
-const Home = () => {
+const Home = async () => {
+  const featuredProducts = await getFeaturedProducts();
+
   return (
     <BaseLayout>
       <HeroSection />
-      <FeaturedProducts />
+      <FeaturedProducts featuredProducts={featuredProducts} />
       <LegacySection />
       {/* <SignatureCollection /> */}
       <CraftsmanshipSection />

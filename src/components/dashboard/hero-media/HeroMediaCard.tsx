@@ -1,10 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { Eye, Image as ImageIcon, Play, Trash } from "lucide-react";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { MediaItem } from "@/types/MediaTypes";
-import { Trash, Eye, Image as ImageIcon, Play } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +13,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import type { MediaItem } from "@/types/MediaTypes";
 import { HeroMediaDetails } from "./HeroMediaDetails";
 
 type MediaItemWithId = MediaItem & { id: string };
@@ -64,12 +64,9 @@ export const HeroMediaCard = ({ item, onDelete }: HeroMediaCardProps) => {
         </AlertDialogTrigger>
         <AlertDialogContent className="bg-[#171410] border border-[#352b1c]">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#A28B55]">
-              Delete Media
-            </AlertDialogTitle>
+            <AlertDialogTitle className="text-[#A28B55]">Delete Media</AlertDialogTitle>
             <AlertDialogDescription className="text-neutral-400">
-              Are you sure you want to delete this {item.type}? This action
-              cannot be undone.
+              Are you sure you want to delete this {item.type}? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -90,10 +87,7 @@ export const HeroMediaCard = ({ item, onDelete }: HeroMediaCardProps) => {
       {/* Media container with View Details on hover */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <div
-            className="relative w-full cursor-pointer"
-            style={{ height: "280px" }}
-          >
+          <div className="relative w-full cursor-pointer" style={{ height: "280px" }}>
             {item.type === "image" ? (
               <img
                 src={item.src}

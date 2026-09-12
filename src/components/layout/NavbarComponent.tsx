@@ -1,194 +1,111 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-} from "@heroui/react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import { ModeToggle } from "../ui/ThemeSwitcher";
-import { useTheme } from "next-themes";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Link } from "next-view-transitions";
-import { MenuLinkProps } from "@/types/ComponentTypes";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { LOGO_DIMENSIONS, MENU_ITEMS } from "@/lib/constants/NavbarConstants";
+import type { MenuLinkProps } from "@/types/ComponentTypes";
+import { ModeToggle } from "../ui/ThemeSwitcher";
 
-const MenuLink: React.FC<MenuLinkProps> = ({ item, isMobile = false }) => {
+const MenuLink = ({ item, isMobile = false }: MenuLinkProps) => {
   const pathname = usePathname();
   const isActive = pathname === item.path;
-  const [isHovered, setIsHovered] = useState(false);
-
-  const desktopStyles = !isMobile && (
-    <>
-      <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
-      <div className="absolute top-0 left-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full group-hover:left-0" />
-      <div
-        className={`
-          absolute 
-          -left-2 
-          top-1/2 
-          -translate-y-1/2 
-          opacity-0 
-          transition-all 
-          duration-300
-          ${isHovered ? "opacity-100 -translate-x-1" : ""}
-        `}
-      >
-        •
-      </div>
-      <div
-        className={`
-          absolute 
-          -right-2 
-          top-1/2 
-          -translate-y-1/2 
-          opacity-0 
-          transition-all 
-          duration-300
-          ${isHovered ? "opacity-100 translate-x-1" : ""}
-        `}
-      >
-        •
-      </div>
-    </>
-  );
 
   return (
     <Link
       href={item.path}
-      className={`
-        relative
-        group
-        px-2
-        py-1
-        transition-all
-        duration-300
-        font-sans
-        ${isActive ? "text-primary font-medium" : "text-foreground"}
-        ${isMobile ? "w-full p-4 hover:bg-default-100 rounded-lg" : ""}
-      `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      aria-current={isActive ? "page" : undefined}
+      className={`relative group px-2 py-1 font-sans transition-all duration-300 ${
+        isActive ? "text-primary font-medium" : "text-foreground"
+      } ${isMobile ? "block w-full p-4 rounded-lg hover:bg-primary/5" : ""}`}
     >
-      {desktopStyles}
       <span className="relative">
         {item.name}
         <span
-          className={`
-            absolute
-            -bottom-1
-            left-0
-            w-full
-            h-px
-            bg-primary
-            transform
-            scale-x-0
-            transition-transform
-            duration-300
-            ${isActive ? "scale-x-100" : ""}
-          `}
+          className={`absolute -bottom-1 left-0 h-px w-full origin-left bg-primary transition-transform duration-300 ${
+            isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+          }`}
         />
       </span>
     </Link>
   );
 };
 
-// Main component
-const NavbarComponent: React.FC = () => {
+/**
+ * Sticky site header. The logo swaps with the resolved theme, so it renders the
+ * light asset until the theme is known on the client.
+ */
+const NavbarComponent = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme, resolvedTheme } = useTheme();
-  const [logoSrc, setLogoSrc] = useState("/images/logo.png");
-  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    const currentTheme = resolvedTheme || theme;
-    setLogoSrc(
-      currentTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png",
-    );
-  }, [theme, resolvedTheme]);
+  useEffect(() => setIsMenuOpen(false), [pathname]);
 
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
+  const logoSrc = resolvedTheme === "dark" ? "/images/logo-dark.png" : "/images/logo.png";
 
   return (
-    <Navbar
-      onMenuOpenChange={setIsMenuOpen}
-      className={`
-        bg-background/80 
-        backdrop-blur-xl 
-        transition-all 
-        duration-300
-        ${scrolled ? "shadow-lg" : ""}
-      `}
-      isMenuOpen={isMenuOpen}
-      maxWidth="xl"
-      position="sticky"
+    <header
+      className={`sticky top-0 z-50 w-full bg-background/80 backdrop-blur-xl transition-shadow duration-300 ${
+        scrolled ? "shadow-lg" : ""
+      }`}
     >
-      {/* Left section with menu toggle and logo */}
-      <NavbarContent className="gap-4">
-        <NavbarMenuToggle
+      <nav className="mx-auto flex h-16 max-w-(--breakpoint-xl) items-center gap-4 px-6">
+        <button
+          type="button"
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((open) => !open)}
           className="sm:hidden"
-        />
-        <NavbarBrand>
-          <Link href="/">
-            <div className="overflow-hidden">
-              <Image
-                src={logoSrc}
-                width={LOGO_DIMENSIONS.width}
-                height={LOGO_DIMENSIONS.height}
-                alt="Logo"
-                className="transition-all duration-300 hover:scale-105"
-                priority
-              />
-            </div>
-          </Link>
-        </NavbarBrand>
-      </NavbarContent>
+        >
+          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
 
-      {/* Center section with navigation links */}
-      <NavbarContent className="hidden sm:flex gap-8" justify="center">
-        {MENU_ITEMS.map((item) => (
-          <NavbarItem key={item.path}>
-            <MenuLink item={item} />
-          </NavbarItem>
-        ))}
-      </NavbarContent>
+        <Link href="/" className="overflow-hidden">
+          <Image
+            src={logoSrc}
+            width={LOGO_DIMENSIONS.width}
+            height={LOGO_DIMENSIONS.height}
+            alt="Stardom"
+            className="transition-transform duration-300 hover:scale-105"
+            priority
+          />
+        </Link>
 
-      {/* Right section with theme toggle */}
-      <NavbarContent justify="end">
-        <NavbarItem>
-          <div className="transition-transform hover:scale-105">
-            <ModeToggle />
-          </div>
-        </NavbarItem>
-      </NavbarContent>
+        <ul className="hidden flex-1 justify-center gap-8 sm:flex">
+          {MENU_ITEMS.map((item) => (
+            <li key={item.path}>
+              <MenuLink item={item} />
+            </li>
+          ))}
+        </ul>
 
-      {/* Mobile menu */}
-      <NavbarMenu className="pt-6 gap-6 bg-background/95 backdrop-blur-xl">
-        {MENU_ITEMS.map((item) => (
-          <NavbarMenuItem key={item.path}>
-            <MenuLink item={item} isMobile={true} />
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
-    </Navbar>
+        <div className="ml-auto sm:ml-0">
+          <ModeToggle />
+        </div>
+      </nav>
+
+      {isMenuOpen && (
+        <ul className="flex flex-col gap-2 border-t border-border/40 bg-background/95 px-6 py-6 backdrop-blur-xl sm:hidden">
+          {MENU_ITEMS.map((item) => (
+            <li key={item.path}>
+              <MenuLink item={item} isMobile />
+            </li>
+          ))}
+        </ul>
+      )}
+    </header>
   );
 };
 

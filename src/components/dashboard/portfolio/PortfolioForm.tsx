@@ -1,17 +1,17 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress"; // Make sure this component exists
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
+import { ChallengeSection } from "./ChallengeSection";
 import { ImagesSection } from "./ImagesSection";
 import { ProjectDetailsSection } from "./ProjectDetailsSection";
-import { ChallengeSection } from "./ChallengeSection";
+import type { PortfolioFormData } from "./portfolio/types";
 import { TestimonialSection } from "./TestimonialSection";
 import { ThumbnailUploader } from "./ThumbnailUploader";
-import { useToast } from "@/hooks/use-toast";
-import { PortfolioFormData } from "./portfolio/types";
-import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
-import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 
 interface PortfolioFormProps {
   onSuccess: () => void;
@@ -282,7 +282,7 @@ export const PortfolioForm = ({
 
         {errorMessage && (
           <div className="bg-red-500/10 border border-red-900/50 text-red-400 p-4 rounded-md flex items-start gap-3 mb-6">
-            <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
             <p>{errorMessage}</p>
           </div>
         )}

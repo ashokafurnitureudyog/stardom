@@ -1,21 +1,18 @@
 "use client";
-import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { TeamMember } from "@/types/ComponentTypes";
-import { EditTeamMembersDialog } from "./EditTeamMembersDialog";
 import { ChevronRight, PenSquare, Users } from "lucide-react";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import type { TeamMember } from "@/types/ComponentTypes";
+import { EditTeamMembersDialog } from "./EditTeamMembersDialog";
 
 interface TeamMembersCardProps {
   teamMembers: TeamMember[];
   onRefresh: () => Promise<void>;
 }
 
-export const TeamMembersCard = ({
-  teamMembers,
-  onRefresh,
-}: TeamMembersCardProps) => {
+export const TeamMembersCard = ({ teamMembers, onRefresh }: TeamMembersCardProps) => {
   const [detailsDialog, setDetailsDialog] = useState<{
     open: boolean;
     memberId?: number;
@@ -33,10 +30,7 @@ export const TeamMembersCard = ({
 
           {/* Only show edit button in top right if there are team members */}
           {teamMembers && teamMembers.length > 0 && (
-            <EditTeamMembersDialog
-              initialData={teamMembers}
-              onSuccess={onRefresh}
-            />
+            <EditTeamMembersDialog initialData={teamMembers} onSuccess={onRefresh} />
           )}
         </CardHeader>
 
@@ -57,7 +51,7 @@ export const TeamMembersCard = ({
                   <DialogTrigger asChild>
                     <div className="group/member cursor-pointer bg-black/50 border border-[#3C3120] rounded-md p-3 hover:border-[#A28B55] hover:bg-black/80 transition-all duration-200">
                       <div className="flex gap-3 items-start">
-                        <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 border border-[#3C3120]">
+                        <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-[#3C3120]">
                           <img
                             src={
                               member.image ||
@@ -79,12 +73,8 @@ export const TeamMembersCard = ({
                             </h4>
                             <ChevronRight className="h-4 w-4 text-[#A28B55] opacity-0 group-hover/member:opacity-100 transition-opacity duration-200" />
                           </div>
-                          <p className="text-[#A28B55] text-sm truncate">
-                            {member.role}
-                          </p>
-                          <p className="text-neutral-400 text-xs line-clamp-1 mt-1">
-                            {member.bio}
-                          </p>
+                          <p className="text-[#A28B55] text-sm truncate">{member.role}</p>
+                          <p className="text-neutral-400 text-xs line-clamp-1 mt-1">{member.bio}</p>
                         </div>
                       </div>
                     </div>
@@ -107,29 +97,20 @@ export const TeamMembersCard = ({
                           }}
                         />
                       </div>
-                      <h2 className="text-xl font-semibold text-white">
-                        {member.name}
-                      </h2>
+                      <h2 className="text-xl font-semibold text-white">{member.name}</h2>
                       <p className="text-[#A28B55] mt-1">{member.role}</p>
                     </div>
 
                     <Separator className="bg-[#3C3120] my-4" />
 
                     <div>
-                      <h3 className="text-[#A28B55] text-sm font-medium uppercase mb-2">
-                        Bio
-                      </h3>
-                      <p className="text-neutral-300 whitespace-pre-line">
-                        {member.bio}
-                      </p>
+                      <h3 className="text-[#A28B55] text-sm font-medium uppercase mb-2">Bio</h3>
+                      <p className="text-neutral-300 whitespace-pre-line">{member.bio}</p>
                     </div>
 
                     {/* Edit button at bottom of dialog */}
                     <div className="mt-6 flex justify-center">
-                      <EditTeamMembersDialog
-                        initialData={teamMembers}
-                        onSuccess={onRefresh}
-                      />
+                      <EditTeamMembersDialog initialData={teamMembers} onSuccess={onRefresh} />
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -138,9 +119,7 @@ export const TeamMembersCard = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-[240px] relative">
               <Users className="h-16 w-16 text-[#A28B55]/30 mb-4" />
-              <p className="text-neutral-500 mb-5 text-center">
-                No team members added yet
-              </p>
+              <p className="text-neutral-500 mb-5 text-center">No team members added yet</p>
 
               <EditTeamMembersDialog
                 initialData={[]}

@@ -1,9 +1,10 @@
-import { useState } from "react";
+"use client";
+
 import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Product } from "@/types/ComponentTypes";
-import { Link } from "next-view-transitions";
+import { Card } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -11,6 +12,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import type { Product } from "@/types/ComponentTypes";
 
 interface ProductCardProps {
   product: Product;
@@ -23,18 +25,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="group relative">
       {/* Glow effect container */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
+      <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 rounded-lg blur-lg opacity-0 group-hover:opacity-75 transition-all duration-700 group-hover:duration-500" />
 
       {/* Inner glow effect */}
-      <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
+      <div className="absolute -inset-0.5 bg-linear-to-br from-primary/10 to-accent/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
       <Card className="relative overflow-hidden bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 h-full flex flex-col">
-        <div className="aspect-[4/3] w-full relative overflow-hidden">
+        <div className="aspect-4/3 w-full relative overflow-hidden">
           <Carousel className="w-full" opts={{ loop: true }}>
             <CarouselContent>
               {images.map((image, index) => (
                 <CarouselItem key={index}>
-                  <div className="relative aspect-[4/3] w-full overflow-hidden p-1">
+                  <div className="relative aspect-4/3 w-full overflow-hidden p-1">
                     <Image
                       src={
                         imgError
@@ -56,24 +58,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <CarouselNext className="right-2 opacity-0 group-hover:opacity-70 transition-opacity" />
           </Carousel>
           <div className="absolute bottom-0 left-0 p-3 z-10">
-            <Badge
-              variant="secondary"
-              className="bg-background/80 hover:bg-background/90"
-            >
+            <Badge variant="secondary" className="bg-background/80 hover:bg-background/90">
               {product_collection
-                ? product_collection.charAt(0).toUpperCase() +
-                  product_collection.slice(1)
+                ? product_collection.charAt(0).toUpperCase() + product_collection.slice(1)
                 : "Uncategorized"}
             </Badge>
           </div>
         </div>
-        <div className="p-6 flex flex-col flex-grow">
-          <h3 className="text-xl font-light text-foreground font-serif">
-            {name}
-          </h3>
-          <p className="text-muted-foreground/80 text-sm mt-2 line-clamp-2 flex-grow">
-            {description}
-          </p>
+        <div className="p-6 flex flex-col grow">
+          <h3 className="text-xl font-light text-foreground font-serif">{name}</h3>
+          <p className="text-muted-foreground/80 text-sm mt-2 line-clamp-2 grow">{description}</p>
 
           <div className="mt-4 pt-4 border-t border-primary/10">
             <Link href={`/products/${id}`}>

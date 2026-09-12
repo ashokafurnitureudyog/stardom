@@ -1,4 +1,4 @@
-import { FAQ, FAQCategory } from "@/types/ComponentTypes";
+import type { FAQ, FAQCategory } from "@/types/ComponentTypes";
 
 export const contactPageFaq: FAQ[] = [
   {

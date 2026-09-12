@@ -1,26 +1,15 @@
 "use client";
+import { BuildingIcon, Calendar, Clock, Globe, MapPin, PenSquare, Phone } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CompanyInfo } from "@/types/ComponentTypes";
+import type { CompanyInfo } from "@/types/ComponentTypes";
 import { EditBasicInfoDialog } from "./EditBasicInfoDialog";
-import {
-  BuildingIcon,
-  MapPin,
-  Phone,
-  Clock,
-  Calendar,
-  Globe,
-  PenSquare,
-} from "lucide-react";
 
 interface CompanyDetailsCardProps {
   companyInfo: CompanyInfo | null;
   onRefresh: () => Promise<void>;
 }
 
-export const CompanyDetailsCard = ({
-  companyInfo,
-  onRefresh,
-}: CompanyDetailsCardProps) => {
+export const CompanyDetailsCard = ({ companyInfo, onRefresh }: CompanyDetailsCardProps) => {
   return (
     <div className="relative group h-full">
       <Card className="bg-black/40 border-[#3C3120] h-full group-hover:border-[#A28B55] transition-colors duration-300">
@@ -30,12 +19,7 @@ export const CompanyDetailsCard = ({
           </CardTitle>
 
           {/* Original edit button */}
-          {companyInfo && (
-            <EditBasicInfoDialog
-              initialData={companyInfo}
-              onSuccess={onRefresh}
-            />
-          )}
+          {companyInfo && <EditBasicInfoDialog initialData={companyInfo} onSuccess={onRefresh} />}
         </CardHeader>
 
         <CardContent className="pt-4">
@@ -43,15 +27,10 @@ export const CompanyDetailsCard = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <div className="col-span-1 md:col-span-2">
                 <div className="bg-black/30 rounded-md p-4 border border-[#3C3120]/50 hover:border-[#A28B55]/60 hover:bg-black/40 transition-colors duration-200">
-                  <h3 className="text-lg font-medium text-white mb-1">
-                    {companyInfo.name}
-                  </h3>
-                  <p className="text-neutral-400">
-                    {companyInfo.parentCompany}
-                  </p>
+                  <h3 className="text-lg font-medium text-white mb-1">{companyInfo.name}</h3>
+                  <p className="text-neutral-400">{companyInfo.parentCompany}</p>
                   <p className="text-sm text-[#A28B55] mt-2 flex items-center">
-                    <Calendar className="h-3.5 w-3.5 mr-1.5" /> Est.{" "}
-                    {companyInfo.established}
+                    <Calendar className="h-3.5 w-3.5 mr-1.5" /> Est. {companyInfo.established}
                   </p>
                 </div>
               </div>
@@ -60,9 +39,7 @@ export const CompanyDetailsCard = ({
                 <h4 className="text-xs uppercase text-[#A28B55] mb-2 flex items-center font-medium">
                   <MapPin className="h-3 w-3 mr-1" /> Address
                 </h4>
-                <p className="text-neutral-300 text-sm">
-                  {companyInfo.address.street}
-                </p>
+                <p className="text-neutral-300 text-sm">{companyInfo.address.street}</p>
                 <p className="text-neutral-300 text-sm">
                   {companyInfo.address.city}, {companyInfo.address.Country}{" "}
                   {companyInfo.address.zip}
@@ -101,12 +78,8 @@ export const CompanyDetailsCard = ({
                 <h4 className="text-xs uppercase text-[#A28B55] mb-2 flex items-center font-medium">
                   <Clock className="h-3 w-3 mr-1" /> Hours
                 </h4>
-                <p className="text-neutral-300 text-sm">
-                  Weekdays: {companyInfo.hours.weekday}
-                </p>
-                <p className="text-neutral-300 text-sm">
-                  Sunday: {companyInfo.hours.sunday}
-                </p>
+                <p className="text-neutral-300 text-sm">Weekdays: {companyInfo.hours.weekday}</p>
+                <p className="text-neutral-300 text-sm">Sunday: {companyInfo.hours.sunday}</p>
               </div>
 
               {/* Adding the coordinates block in the bottom right corner */}
@@ -125,9 +98,7 @@ export const CompanyDetailsCard = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-[240px]">
               <BuildingIcon className="h-16 w-16 text-[#A28B55]/30 mb-4" />
-              <p className="text-neutral-500 mb-5 text-center">
-                No company details added yet
-              </p>
+              <p className="text-neutral-500 mb-5 text-center">No company details added yet</p>
 
               <EditBasicInfoDialog
                 initialData={null}

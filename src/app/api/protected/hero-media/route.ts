@@ -1,8 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  addHeroMedia,
-  deleteHeroMedia,
-} from "@/lib/controllers/HeroMediaController";
+import { type NextRequest, NextResponse } from "next/server";
+import { addHeroMedia, deleteHeroMedia } from "@/lib/controllers/HeroMediaController";
 import { apiHandler } from "@/lib/utils/api-utils";
 
 export async function POST(request: NextRequest) {

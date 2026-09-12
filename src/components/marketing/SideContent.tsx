@@ -1,35 +1,34 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { type LucideProps, Phone } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
-  Phone,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Youtube,
-  LucideProps,
-} from "lucide-react";
-import { RiTwitterXFill } from "@remixicon/react";
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  XIcon,
+  YoutubeIcon,
+} from "@/components/ui/brand-icons";
 import { cn } from "@/lib/utils/utils";
-import { FAQ, SocialLink } from "@/types/ComponentTypes";
+import type { FAQ, SocialLink } from "@/types/ComponentTypes";
 
 type IconComponent = React.ComponentType<LucideProps>;
 
 // Map platform names to icon components
 const platformIcons: Record<string, IconComponent> = {
-  facebook: Facebook,
-  instagram: Instagram,
-  linkedin: Linkedin,
-  twitter: RiTwitterXFill as unknown as IconComponent,
-  x: RiTwitterXFill as unknown as IconComponent,
-  youtube: Youtube,
+  facebook: FacebookIcon,
+  instagram: InstagramIcon,
+  linkedin: LinkedinIcon,
+  twitter: XIcon as unknown as IconComponent,
+  x: XIcon as unknown as IconComponent,
+  youtube: YoutubeIcon,
 };
 
 // Animation constants
@@ -43,10 +42,7 @@ const ANIMATIONS = {
 
 // Emergency support section
 const EmergencySupport = () => (
-  <motion.div
-    {...ANIMATIONS.fadeInUp}
-    transition={{ duration: 0.4, delay: 0.1 }}
-  >
+  <motion.div {...ANIMATIONS.fadeInUp} transition={{ duration: 0.4, delay: 0.1 }}>
     <Alert className="border-primary/20 bg-primary/5 backdrop-blur-sm hover:bg-primary/10 transition-colors duration-300">
       <div className="flex items-start gap-4">
         <div className="mt-1">
@@ -75,18 +71,14 @@ const EmergencySupport = () => (
 
 // Social links section
 const SocialLinks = ({ socialLinks }: { socialLinks: SocialLink[] }) => (
-  <motion.div
-    {...ANIMATIONS.fadeInUp}
-    transition={{ duration: 0.4, delay: 0.2 }}
-  >
+  <motion.div {...ANIMATIONS.fadeInUp} transition={{ duration: 0.4, delay: 0.2 }}>
     <h2 className="text-2xl lg:text-3xl font-light mb-8 font-serif">
       Connect with <span className="font-serif italic text-primary">Us</span>
     </h2>
     <div className="flex gap-4">
       {socialLinks.map((social, index) => {
         // Get the icon component based on platform name
-        const IconComponent =
-          platformIcons[social.platform?.toLowerCase()] || null;
+        const IconComponent = platformIcons[social.platform?.toLowerCase()] || null;
 
         return (
           <motion.a
@@ -100,9 +92,7 @@ const SocialLinks = ({ socialLinks }: { socialLinks: SocialLink[] }) => (
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
           >
-            {IconComponent && (
-              <IconComponent className="w-5 h-5" aria-hidden="true" />
-            )}
+            {IconComponent && <IconComponent className="w-5 h-5" aria-hidden="true" />}
           </motion.a>
         );
       })}
@@ -112,24 +102,16 @@ const SocialLinks = ({ socialLinks }: { socialLinks: SocialLink[] }) => (
 
 // FAQ section
 const FAQSection = ({ faqs }: { faqs: FAQ[] }) => (
-  <motion.div
-    {...ANIMATIONS.fadeInUp}
-    transition={{ duration: 0.4, delay: 0.3 }}
-  >
+  <motion.div {...ANIMATIONS.fadeInUp} transition={{ duration: 0.4, delay: 0.3 }}>
     <h3 className="text-2xl lg:text-3xl font-light mb-8 flex items-center gap-2 font-serif">
-      Frequently Asked{" "}
-      <span className="font-serif italic text-primary relative">Questions</span>
+      Frequently Asked <span className="font-serif italic text-primary relative">Questions</span>
     </h3>
     {faqs.length === 0 ? (
       <p className="text-muted-foreground">No FAQs available at the moment.</p>
     ) : (
       <Accordion type="single" collapsible>
         {faqs.map((faq, index) => (
-          <AccordionItem
-            key={index}
-            value={`faq-${index}`}
-            className="border-b border-input/50"
-          >
+          <AccordionItem key={index} value={`faq-${index}`} className="border-b border-input/50">
             <AccordionTrigger className="text-left hover:no-underline py-6 transition-all hover:text-primary">
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
@@ -162,11 +144,7 @@ interface SideContentProps {
   className?: string;
 }
 
-export const SideContent = ({
-  faqs = [],
-  socialLinks = [],
-  className,
-}: SideContentProps) => {
+export const SideContent = ({ faqs = [], socialLinks = [], className }: SideContentProps) => {
   return (
     <AnimatePresence>
       <div className={cn("space-y-12", className)}>

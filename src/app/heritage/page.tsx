@@ -9,14 +9,10 @@ import { MissionStatement } from "@/components/marketing/MissionStatement";
 import { TeamSection } from "@/components/marketing/TeamSection";
 import TestingToolsSection from "@/components/marketing/TestingTools";
 import { LogoRevealCard } from "@/components/shared/RevealCard";
-import {
-  AnimatedSpan,
-  Terminal,
-  TypingAnimation,
-} from "@/components/ui/terminal";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
 import { Timeline } from "@/components/ui/timeline";
 import { useCompanyData } from "@/hooks/useCompanyData";
-import { Skeleton } from "@/components/ui/skeleton";
 
 //Will not shift to constants as it integrates react components
 const timelineData = [
@@ -28,8 +24,7 @@ const timelineData = [
           Founded as Ashoka Furniture Udyog
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Started serving the local Chandigarh market with quality handcrafted
-          furniture.
+          Started serving the local Chandigarh market with quality handcrafted furniture.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
@@ -58,8 +53,8 @@ const timelineData = [
           Regional Expansion
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Expanded operations across Northern India including Delhi NCR, Punjab,
-          Haryana, Himachal Pradesh and Uttar Pradesh.
+          Expanded operations across Northern India including Delhi NCR, Punjab, Haryana, Himachal
+          Pradesh and Uttar Pradesh.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
@@ -88,8 +83,7 @@ const timelineData = [
           Global Partnerships
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Expanded into international markets with global partners and
-          suppliers.
+          Expanded into international markets with global partners and suppliers.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
@@ -118,8 +112,7 @@ const timelineData = [
           Premium Brand Launch
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Launched Stardom as a premium furniture brand under Ashoka Furniture
-          Udyog.
+          Launched Stardom as a premium furniture brand under Ashoka Furniture Udyog.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div className="overflow-hidden rounded-lg">
@@ -138,10 +131,7 @@ const timelineData = [
           </div>
         </div>
         <div className="flex items-center justify-center w-full mx-auto mt-6">
-          <LogoRevealCard
-            imageUrl="/images/logo.png"
-            revealText="stardom.co.in"
-          />
+          <LogoRevealCard imageUrl="/images/logo.png" revealText="stardom.co.in" />
         </div>
       </div>
     ),
@@ -154,8 +144,7 @@ const timelineData = [
           Digital Transformation
         </h3>
         <p className="text-neutral-700 dark:text-neutral-300 text-sm md:text-base font-normal mb-6">
-          Launched comprehensive digital product showcase platform with
-          interactive features.
+          Launched comprehensive digital product showcase platform with interactive features.
         </p>
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="overflow-hidden rounded-lg">
@@ -238,22 +227,19 @@ const HeritagePage: React.FC = () => {
         </Section>
         <Section className="bg-background">
           <SectionTitle>
-            Our{" "}
-            <span className="font-serif italic text-primary">Facilities</span>
+            Our <span className="font-serif italic text-primary">Facilities</span>
           </SectionTitle>
           <ManufacturingFacilities />
         </Section>
         <Section className="bg-background">
           <SectionTitle>
-            Our{" "}
-            <span className="font-serif italic text-primary">Standards</span>
+            Our <span className="font-serif italic text-primary">Standards</span>
           </SectionTitle>
           <CertificationsSection />
         </Section>
         <Section className="bg-background">
           <SectionTitle>
-            Testing{" "}
-            <span className="font-serif italic text-primary">Equipment</span>
+            Testing <span className="font-serif italic text-primary">Equipment</span>
           </SectionTitle>
           <TestingToolsSection />
         </Section>

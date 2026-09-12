@@ -1,7 +1,7 @@
 "use client";
 
+import { motion } from "motion/react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { motion } from "framer-motion";
 
 export const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <motion.div

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
   createPortfolioProject,
   deletePortfolioProject,
@@ -74,10 +74,7 @@ export async function DELETE(request: NextRequest) {
     const { projectId, imageUrls } = await req.json();
 
     if (!projectId) {
-      return NextResponse.json(
-        { message: "Project ID is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ message: "Project ID is required" }, { status: 400 });
     }
 
     const result = await deletePortfolioProject(

@@ -1,4 +1,4 @@
-import { MenuItem } from "@/types/ComponentTypes";
+import type { MenuItem } from "@/types/ComponentTypes";
 
 export const MENU_ITEMS: MenuItem[] = [
   { name: "Home", path: "/" },

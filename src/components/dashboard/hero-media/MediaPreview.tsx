@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MediaPreviewProps {
   mediaType: "image" | "video";
@@ -42,12 +42,7 @@ export const MediaPreview = ({
           </div>
         ) : (
           <div className="w-full max-h-[300px] flex items-center justify-center p-4">
-            <video
-              src={previewUrl}
-              className="max-w-full max-h-[300px]"
-              controls
-              muted
-            />
+            <video src={previewUrl} className="max-w-full max-h-[300px]" controls muted />
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,7 +13,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ClientTestimonial } from "@/types/ComponentTypes";
 import { EditTestimonialDialog } from "./EditTestimonialDialog";
@@ -37,10 +37,7 @@ export const TestimonialCard = ({
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      await onDelete(
-        testimonial.id || testimonial.$id || "",
-        testimonial.img || "",
-      );
+      await onDelete(testimonial.id || testimonial.$id || "", testimonial.img || "");
     } finally {
       setIsDeleting(false);
     }
@@ -163,12 +160,10 @@ export const TestimonialCard = ({
               </AlertDialogTrigger>
               <AlertDialogContent className="bg-[#171410] border-[#3C3120]">
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-[#A28B55]">
-                    Delete Testimonial
-                  </AlertDialogTitle>
+                  <AlertDialogTitle className="text-[#A28B55]">Delete Testimonial</AlertDialogTitle>
                   <AlertDialogDescription className="text-neutral-400">
-                    Are you sure you want to delete this testimonial from{" "}
-                    {testimonial.name}? This action cannot be undone.
+                    Are you sure you want to delete this testimonial from {testimonial.name}? This
+                    action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

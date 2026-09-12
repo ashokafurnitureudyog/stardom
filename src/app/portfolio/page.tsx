@@ -2,21 +2,20 @@
 
 import { useState } from "react";
 import BaseLayout from "@/components/layout/BaseLayout";
-import { PortfolioHero } from "@/components/marketing/PortfolioHero";
-import { ProjectGrid } from "@/components/marketing/ProjectGrid";
-import { ProjectDetails } from "@/components/marketing/ProjectDetails";
-import TestimonialsSection from "@/components/marketing/Testimonials";
-import { PortfolioCTA } from "@/components/marketing/PortfolioCTA";
-import { PortfolioProject } from "@/types/ComponentTypes";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
 import CertificationsSection from "@/components/marketing/CertificationSection";
+import { PortfolioCTA } from "@/components/marketing/PortfolioCTA";
+import { PortfolioHero } from "@/components/marketing/PortfolioHero";
+import { ProjectDetails } from "@/components/marketing/ProjectDetails";
+import { ProjectGrid } from "@/components/marketing/ProjectGrid";
+import TestimonialsSection from "@/components/marketing/Testimonials";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePortfolioProjects } from "@/hooks/usePortfolioProjects";
+import type { PortfolioProject } from "@/types/ComponentTypes";
 
 const PortfolioPage = () => {
-  const [selectedProject, setSelectedProject] =
-    useState<PortfolioProject | null>(null);
+  const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
   const { data: projects, isLoading, error } = usePortfolioProjects();
 
   const handleProjectSelect = (project: PortfolioProject) => {
@@ -42,21 +41,13 @@ const PortfolioPage = () => {
           </div>
         ) : error ? (
           <div className="p-8 text-center">
-            <p className="text-red-500 mb-6">
-              There was an error loading our portfolio projects.
-            </p>
+            <p className="text-red-500 mb-6">There was an error loading our portfolio projects.</p>
             {projects && projects.length > 0 && (
-              <ProjectGrid
-                projects={projects}
-                onProjectSelect={handleProjectSelect}
-              />
+              <ProjectGrid projects={projects} onProjectSelect={handleProjectSelect} />
             )}
           </div>
         ) : (
-          <ProjectGrid
-            projects={projects || []}
-            onProjectSelect={handleProjectSelect}
-          />
+          <ProjectGrid projects={projects || []} onProjectSelect={handleProjectSelect} />
         )}
       </Section>
 

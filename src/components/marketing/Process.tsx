@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
-import { motion } from "framer-motion";
+import { Check, FileStack, Pencil } from "lucide-react";
+import { motion } from "motion/react";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileStack, Pencil, Check } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+
 const CraftsmanshipSection = () => {
   const processes = [
     {
@@ -59,15 +59,12 @@ const CraftsmanshipSection = () => {
 
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-extralight tracking-tight text-foreground font-serif mb-8">
             The Art of Fine
-            <span className="block mt-4 font-normal italic text-primary/90">
-              Craftsmanship
-            </span>
+            <span className="block mt-4 font-normal italic text-primary/90">Craftsmanship</span>
           </h2>
 
           <p className="text-muted-foreground/90 max-w-2xl mx-auto text-lg leading-relaxed">
-            Each piece embodies the perfect harmony of traditional artisanship
-            and contemporary innovation, creating timeless masterpieces that
-            define luxury.
+            Each piece embodies the perfect harmony of traditional artisanship and contemporary
+            innovation, creating timeless masterpieces that define luxury.
           </p>
         </div>
 
@@ -80,8 +77,8 @@ const CraftsmanshipSection = () => {
               transition={{ delay: index * 0.2 }}
             >
               {/* Enhanced Glow Effects */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-xl blur-2xl opacity-0 group-hover:opacity-75 transition-all duration-700" />
-              <div className="absolute -inset-0.5 bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
+              <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-accent/20 to-primary/20 rounded-xl blur-2xl opacity-0 group-hover:opacity-75 transition-all duration-700" />
+              <div className="absolute -inset-0.5 bg-linear-to-br from-primary/10 to-accent/10 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-700 blur-sm" />
 
               <Card className="relative bg-background/95 border border-primary/10 group-hover:border-primary/30 transition-all duration-500 rounded-xl overflow-hidden">
                 <CardContent className="p-8">
@@ -94,9 +91,7 @@ const CraftsmanshipSection = () => {
                   <p className="text-sm text-primary/70 mb-4 font-medium tracking-wide">
                     {process.detail}
                   </p>
-                  <p className="text-muted-foreground/90 leading-relaxed">
-                    {process.description}
-                  </p>
+                  <p className="text-muted-foreground/90 leading-relaxed">{process.description}</p>
                 </CardContent>
               </Card>
             </motion.div>

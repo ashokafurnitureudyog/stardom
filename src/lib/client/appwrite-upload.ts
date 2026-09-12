@@ -1,6 +1,6 @@
 "use client";
 
-import { Client, Storage, ID, Permission, Role } from "appwrite";
+import { Client, ID, Permission, Role, Storage } from "appwrite";
 
 // Initialize the Appwrite client for uploads only
 const client = new Client()
@@ -41,9 +41,7 @@ export async function uploadFileToStorage(
     // 1. Validate File Size
     const maxSize = (options.maxSizeInMB || 100) * 1024 * 1024;
     if (file.size > maxSize) {
-      throw new Error(
-        `File size exceeds the limit of ${options.maxSizeInMB || 100}MB`,
-      );
+      throw new Error(`File size exceeds the limit of ${options.maxSizeInMB || 100}MB`);
     }
 
     // 2. Validate File Type
@@ -64,9 +62,7 @@ export async function uploadFileToStorage(
     });
 
     if (!isAllowed) {
-      throw new Error(
-        `Invalid file type: ${file.type}. Allowed types: ${allowedTypes.join(", ")}`,
-      );
+      throw new Error(`Invalid file type: ${file.type}. Allowed types: ${allowedTypes.join(", ")}`);
     }
 
     // Generate a unique file ID
@@ -74,9 +70,7 @@ export async function uploadFileToStorage(
 
     // Upload the file to Appwrite storage with public read permission
     // Note: We use Permission.read(Role.any()) assuming these are public assets (images).
-    await storage.createFile(bucketId, fileId, file, [
-      Permission.read(Role.any()),
-    ]);
+    await storage.createFile(bucketId, fileId, file, [Permission.read(Role.any())]);
 
     // Return the file URL in the same format used by server-side code
     return `${process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT}/storage/buckets/${bucketId}/files/${fileId}/view?project=${process.env.NEXT_PUBLIC_APPWRITE_PROJECT}`;
@@ -95,9 +89,7 @@ export async function uploadMultipleFilesToStorage(
   options: UploadOptions = DEFAULT_OPTIONS,
 ): Promise<string[]> {
   try {
-    const uploadPromises = files.map((file) =>
-      uploadFileToStorage(file, bucketId, options),
-    );
+    const uploadPromises = files.map((file) => uploadFileToStorage(file, bucketId, options));
     return await Promise.all(uploadPromises);
   } catch (error) {
     console.error("Error uploading multiple files:", error);

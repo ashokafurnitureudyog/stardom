@@ -1,6 +1,7 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
 
 // Contact form schema with validation rules
 const formSchema = z.object({
@@ -36,9 +36,7 @@ interface SubmitContactFormProps {
 }
 
 // API call function to submit the contact form data
-async function submitContactForm({
-  data,
-}: SubmitContactFormProps): Promise<void> {
+async function submitContactForm({ data }: SubmitContactFormProps): Promise<void> {
   const response = await fetch("/api/contact", {
     method: "POST",
     headers: {
@@ -104,11 +102,7 @@ export default function ContactForm() {
       </h2>
 
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-          aria-busy={isSubmitting}
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" aria-busy={isSubmitting}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name field */}
             <FormField
@@ -133,12 +127,7 @@ export default function ContactForm() {
                 <FormItem>
                   <FormLabel htmlFor="email">Email</FormLabel>
                   <FormControl>
-                    <Input
-                      id="email"
-                      type="email"
-                      {...field}
-                      disabled={isSubmitting}
-                    />
+                    <Input id="email" type="email" {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -154,12 +143,7 @@ export default function ContactForm() {
               <FormItem>
                 <FormLabel htmlFor="phone">Phone (optional)</FormLabel>
                 <FormControl>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    {...field}
-                    disabled={isSubmitting}
-                  />
+                  <Input id="phone" type="tel" {...field} disabled={isSubmitting} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -189,12 +173,7 @@ export default function ContactForm() {
               <FormItem>
                 <FormLabel htmlFor="message">Message</FormLabel>
                 <FormControl>
-                  <Textarea
-                    id="message"
-                    rows={6}
-                    {...field}
-                    disabled={isSubmitting}
-                  />
+                  <Textarea id="message" rows={6} {...field} disabled={isSubmitting} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

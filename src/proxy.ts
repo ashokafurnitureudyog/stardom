@@ -1,6 +1,6 @@
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getLoggedInUser } from "@/lib/server/appwrite";
-import type { NextRequest } from "next/server";
 
 // Constants
 const ROUTES = {
@@ -14,9 +14,7 @@ const ROUTES = {
 /**
  * Handle API protected routes
  */
-async function handleApiProtectedRoutes(
-  request: NextRequest,
-): Promise<NextResponse | null> {
+async function handleApiProtectedRoutes(request: NextRequest): Promise<NextResponse | null> {
   const url = new URL(request.url);
 
   if (!url.pathname.startsWith(ROUTES.API_PROTECTED)) {
@@ -38,9 +36,7 @@ async function handleApiProtectedRoutes(
 /**
  * Handle auth page
  */
-async function handleAuthPage(
-  request: NextRequest,
-): Promise<NextResponse | null> {
+async function handleAuthPage(request: NextRequest): Promise<NextResponse | null> {
   const url = new URL(request.url);
 
   if (url.pathname !== ROUTES.AUTH) {
@@ -59,15 +55,10 @@ async function handleAuthPage(
 /**
  * Handle admin routes
  */
-async function handleAdminRoutes(
-  request: NextRequest,
-): Promise<NextResponse | null> {
+async function handleAdminRoutes(request: NextRequest): Promise<NextResponse | null> {
   const url = new URL(request.url);
 
-  if (
-    !url.pathname.startsWith(ROUTES.ADMIN) &&
-    url.pathname !== ROUTES.AUTH_DASHBOARD
-  ) {
+  if (!url.pathname.startsWith(ROUTES.ADMIN) && url.pathname !== ROUTES.AUTH_DASHBOARD) {
     return null;
   }
 
@@ -78,17 +69,13 @@ async function handleAdminRoutes(
   }
 
   if (user.$id !== process.env.APPWRITE_ADMIN_USER_ID) {
-    return NextResponse.redirect(
-      new URL(`${ROUTES.AUTH}?error=unauthorized`, request.url),
-    );
+    return NextResponse.redirect(new URL(`${ROUTES.AUTH}?error=unauthorized`, request.url));
   }
 
   return null;
 }
 
-export default async function proxy(
-  request: NextRequest,
-): Promise<NextResponse> {
+export default async function proxy(request: NextRequest): Promise<NextResponse> {
   // Check API routes first
   const apiResponse = await handleApiProtectedRoutes(request);
   if (apiResponse) return apiResponse;
@@ -108,19 +95,11 @@ export default async function proxy(
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set(
-    "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=()",
-  );
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
   return response;
 }
 
 export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/auth",
-    "/auth/dashboard",
-    "/api/protected/:path*",
-  ],
+  matcher: ["/admin/:path*", "/auth", "/auth/dashboard", "/api/protected/:path*"],
 };

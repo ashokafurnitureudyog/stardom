@@ -1,6 +1,6 @@
 "use client";
 
-import { Component, ErrorInfo, ReactNode } from "react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 
 /**
  * Props for the ErrorBoundary component
@@ -28,10 +28,7 @@ interface ErrorBoundaryState {
  * Prevents the entire app from crashing when a component fails,
  * displaying a fallback UI instead.
  */
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };

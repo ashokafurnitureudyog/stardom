@@ -1,24 +1,18 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { AnimatedTextProps, MediaItem } from "@/types/MediaTypes";
-import {
-  HERO_SLIDE_DURATION,
-  HERO_TRANSITION_DURATION,
-} from "@/lib/constants/MediaConstants";
-import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { Link } from "next-view-transitions";
-import { useCompanyData } from "@/hooks/useCompanyData";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
+import type React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useCompanyData } from "@/hooks/useCompanyData";
+import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
+import { HERO_SLIDE_DURATION, HERO_TRANSITION_DURATION } from "@/lib/constants/MediaConstants";
+import type { AnimatedTextProps, MediaItem } from "@/types/MediaTypes";
 
-const AnimatedText: React.FC<AnimatedTextProps> = ({
-  children,
-  delay = 2,
-  className = "",
-}) => (
+const AnimatedText: React.FC<AnimatedTextProps> = ({ children, delay = 2, className = "" }) => (
   <motion.div
     variants={fadeInUpVariants}
     initial="hidden"
@@ -104,9 +98,7 @@ const BackgroundMedia: React.FC<{
   return <div className={className} ref={mediaRef} />;
 };
 
-const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
-  mediaItems,
-}) => {
+const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({ mediaItems }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [, setIsTransitioning] = useState(false);
 
@@ -127,7 +119,7 @@ const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
     }, HERO_SLIDE_DURATION);
 
     return () => clearTimeout(slideTimer);
-  }, [currentIndex, mediaItems]);
+  }, [mediaItems, getNextIndex]);
 
   if (mediaItems.length === 0) {
     return <div className="absolute inset-0 bg-black/80"></div>;
@@ -145,7 +137,7 @@ const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
         />
       ))}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"
+        className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/70"
         aria-hidden="true"
       />
     </div>
@@ -153,10 +145,7 @@ const BackgroundSlideshow: React.FC<{ mediaItems: MediaItem[] }> = ({
 };
 
 const HeroSection: React.FC = () => {
-  const buttonBaseClass = useMemo(
-    () => "min-w-[240px] h-14 text-lg tracking-wide",
-    [],
-  );
+  const buttonBaseClass = useMemo(() => "min-w-[240px] h-14 text-lg tracking-wide", []);
 
   // Fetch company data using our hook
   const { companyInfo, isLoading: isCompanyLoading } = useCompanyData();
@@ -194,9 +183,7 @@ const HeroSection: React.FC = () => {
           <div className="text-center p-8 max-w-md">
             <p className="text-red-400 text-xl mb-4">Failed to load media</p>
             <p className="text-white/70">
-              {mediaError instanceof Error
-                ? mediaError.message
-                : "An unknown error occurred"}
+              {mediaError instanceof Error ? mediaError.message : "An unknown error occurred"}
             </p>
           </div>
         </div>
@@ -236,18 +223,13 @@ const HeroSection: React.FC = () => {
           <AnimatedText delay={0.4}>
             <h2 className="text-3xl lg:text-4xl font-light leading-tight mb-8">
               Elevate Your Workspace with{" "}
-              <span className="text-primary font-serif italic">Timeless</span>{" "}
-              Design
+              <span className="text-primary font-serif italic">Timeless</span> Design
             </h2>
           </AnimatedText>
 
-          <AnimatedText
-            delay={0.6}
-            className="text-white/80 text-lg mb-12 leading-relaxed"
-          >
-            Experience the fusion of artisanal craftsmanship and contemporary
-            luxury in every piece. Creating distinguished office environments
-            for those who demand excellence.
+          <AnimatedText delay={0.6} className="text-white/80 text-lg mb-12 leading-relaxed">
+            Experience the fusion of artisanal craftsmanship and contemporary luxury in every piece.
+            Creating distinguished office environments for those who demand excellence.
           </AnimatedText>
 
           <AnimatedText delay={0.8}>

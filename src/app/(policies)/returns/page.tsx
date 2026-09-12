@@ -1,7 +1,9 @@
 "use client";
 
+import { AlertCircle, FileText, Truck } from "lucide-react";
+import { motion } from "motion/react";
+import Link from "next/link";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import BaseLayout from "@/components/layout/BaseLayout";
 import { Section } from "@/components/layout/Section";
 import { SectionTitle } from "@/components/layout/SectionTitle";
@@ -12,10 +14,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { Link } from "next-view-transitions";
-import { FileText, AlertCircle, Truck } from "lucide-react";
 import { fadeInUpVariants } from "@/lib/constants/AnimationConstants";
-import { ReturnCategory } from "@/types/ComponentTypes";
+import type { ReturnCategory } from "@/types/ComponentTypes";
 
 const returnsCategories: ReturnCategory[] = [
   {
@@ -84,9 +84,7 @@ const returnsCategories: ReturnCategory[] = [
 ];
 
 const ReturnsInfoPage: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>(
-    returnsCategories[0]?.title || "",
-  );
+  const [activeCategory, setActiveCategory] = useState<string>(returnsCategories[0]?.title || "");
 
   const scrollToCategory = (categoryId: string): void => {
     document.getElementById(categoryId)?.scrollIntoView({
@@ -106,12 +104,11 @@ const ReturnsInfoPage: React.FC = () => {
               Returns Information
             </span>
             <SectionTitle>
-              Return{" "}
-              <span className="font-serif italic text-primary">Policy</span>
+              Return <span className="font-serif italic text-primary">Policy</span>
             </SectionTitle>
             <p className="text-muted-foreground text-lg mx-auto mb-10">
-              Learn about our return process, eligibility criteria, and policies
-              for our premium furniture collections.
+              Learn about our return process, eligibility criteria, and policies for our premium
+              furniture collections.
             </p>
           </div>
         </Section>
@@ -122,9 +119,7 @@ const ReturnsInfoPage: React.FC = () => {
             {/* Navigation Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-32 space-y-8">
-                <h3 className="text-lg font-medium mb-4 text-foreground/80">
-                  Information
-                </h3>
+                <h3 className="text-lg font-medium mb-4 text-foreground/80">Information</h3>
                 <nav className="space-y-1">
                   {returnsCategories.map((category, idx) => (
                     <button
@@ -143,9 +138,7 @@ const ReturnsInfoPage: React.FC = () => {
                 </nav>
 
                 <div className="pt-6 mt-6 border-t border-input/30">
-                  <h3 className="text-lg font-medium mb-4 text-foreground/80">
-                    Need more help?
-                  </h3>
+                  <h3 className="text-lg font-medium mb-4 text-foreground/80">Need more help?</h3>
                   <Button
                     className="w-full justify-start border-input/50 hover:border-primary/50 mb-2"
                     asChild
@@ -177,7 +170,7 @@ const ReturnsInfoPage: React.FC = () => {
                       {category.icon}
                       {category.title}
                     </h2>
-                    <div className="h-px flex-grow bg-primary/20" />
+                    <div className="h-px grow bg-primary/20" />
                   </div>
 
                   <Accordion type="single" collapsible className="w-full">
@@ -209,19 +202,15 @@ const ReturnsInfoPage: React.FC = () => {
               Personalized Support
             </span>
             <SectionTitle>
-              Questions About{" "}
-              <span className="font-serif italic text-primary">Returns?</span>
+              Questions About <span className="font-serif italic text-primary">Returns?</span>
             </SectionTitle>
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
-              Our B2B support team is ready to assist with your specific return
-              requirements. For established business relationships, we offer
-              customized return solutions tailored to your needs.
+              Our B2B support team is ready to assist with your specific return requirements. For
+              established business relationships, we offer customized return solutions tailored to
+              your needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                className="min-w-[200px] h-14 text-lg tracking-wide"
-                asChild
-              >
+              <Button className="min-w-[200px] h-14 text-lg tracking-wide" asChild>
                 <Link href="/contact">Contact Support Team</Link>
               </Button>
             </div>

@@ -1,11 +1,11 @@
 "use client";
+import { ImagePlus, Link, Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Link, ImagePlus, X, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import Image from "next/image";
-import { useState } from "react";
 
 interface ThumbnailUploaderProps {
   thumbnailUrl: string;
@@ -25,15 +25,14 @@ export const ThumbnailUploader = ({
   const [isImageLoading, setIsImageLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.target.files?.[0]) {
       const file = e.target.files[0];
 
       // Validate file type
       if (!file.type.startsWith("image/")) {
         toast({
           title: "Invalid file type",
-          description:
-            "Please select an image file (JPG, PNG, WEBP, GIF, etc.)",
+          description: "Please select an image file (JPG, PNG, WEBP, GIF, etc.)",
           variant: "destructive",
         });
         return;
@@ -152,9 +151,7 @@ export const ThumbnailUploader = ({
     if (thumbnailFile || thumbnailUrl) {
       return (
         <div className="mt-6">
-          <h4 className="text-sm font-medium text-neutral-400 mb-3">
-            Current Thumbnail
-          </h4>
+          <h4 className="text-sm font-medium text-neutral-400 mb-3">Current Thumbnail</h4>
           <div className="group relative w-40 h-40 mx-auto">
             <div className="aspect-square rounded-md overflow-hidden border border-[#3C3120] bg-neutral-950/50">
               {thumbnailFile ? (

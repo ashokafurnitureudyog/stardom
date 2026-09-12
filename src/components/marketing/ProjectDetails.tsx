@@ -1,32 +1,25 @@
-import React from "react";
+import { Quote } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent } from "@/components/ui/card";
-import { Quote } from "lucide-react";
-import { ProjectDetailsProps } from "@/types/ComponentTypes";
+import type { ProjectDetailsProps } from "@/types/ComponentTypes";
 
-export const ProjectDetails = ({
-  project,
-  open,
-  onClose,
-}: ProjectDetailsProps) => {
+export const ProjectDetails = ({ project, open, onClose }: ProjectDetailsProps) => {
   if (!project) return null;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden bg-gradient-to-b from-background to-background/80 backdrop-blur-sm font-sans">
+      <DialogContent className="max-w-6xl h-[90vh] p-0 overflow-hidden bg-linear-to-b from-background to-background/80 backdrop-blur-sm font-sans">
         <ScrollArea className="h-full">
           <div className="p-8 md:p-12">
             {/* Enhanced Header Section */}
             <div className="max-w-3xl mb-20 relative">
               <div className="space-y-2">
-                <h2 className="text-5xl font-serif font-light mb-8 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+                <h2 className="text-5xl font-serif font-light mb-8 tracking-tight bg-clip-text text-transparent bg-linear-to-r from-primary to-primary/80">
                   {project.title}
                 </h2>
               </div>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                {project.description}
-              </p>
+              <p className="text-xl text-muted-foreground leading-relaxed">{project.description}</p>
             </div>
 
             {/* Enhanced Main Content */}
@@ -38,9 +31,7 @@ export const ProjectDetails = ({
                     <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-primary font-medium">1</span>
                     </span>
-                    <h3 className="text-2xl font-serif tracking-tight">
-                      The Challenge
-                    </h3>
+                    <h3 className="text-2xl font-serif tracking-tight">The Challenge</h3>
                   </div>
                   <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
                     {project.challenge}
@@ -48,13 +39,13 @@ export const ProjectDetails = ({
                 </section>
                 {project.gallery[0] && (
                   <div className="md:w-1/2 w-full">
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
+                    <div className="relative aspect-4/3 overflow-hidden rounded-xl shadow-lg">
                       <img
                         src={project.gallery[0]}
                         alt={`${project.title} - Challenge`}
                         className="w-full h-full object-cover hover:scale-105 transition-all duration-500 ease-out"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </div>
                 )}
@@ -67,9 +58,7 @@ export const ProjectDetails = ({
                     <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-primary font-medium">2</span>
                     </span>
-                    <h3 className="text-2xl font-serif tracking-tight">
-                      Our Solution
-                    </h3>
+                    <h3 className="text-2xl font-serif tracking-tight">Our Solution</h3>
                   </div>
                   <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
                     {project.solution}
@@ -77,13 +66,13 @@ export const ProjectDetails = ({
                 </section>
                 {project.gallery[1] && (
                   <div className="md:w-1/2 w-full">
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
+                    <div className="relative aspect-4/3 overflow-hidden rounded-xl shadow-lg">
                       <img
                         src={project.gallery[1]}
                         alt={`${project.title} - Solution`}
                         className="w-full h-full object-cover hover:scale-105 transition-all duration-500 ease-out"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </div>
                 )}
@@ -96,9 +85,7 @@ export const ProjectDetails = ({
                     <span className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                       <span className="text-primary font-medium">3</span>
                     </span>
-                    <h3 className="text-2xl font-serif tracking-tight">
-                      The Impact
-                    </h3>
+                    <h3 className="text-2xl font-serif tracking-tight">The Impact</h3>
                   </div>
                   <p className="text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
                     {project.impact}
@@ -106,13 +93,13 @@ export const ProjectDetails = ({
                 </section>
                 {project.gallery[2] && (
                   <div className="md:w-1/2 w-full">
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
+                    <div className="relative aspect-4/3 overflow-hidden rounded-xl shadow-lg">
                       <img
                         src={project.gallery[2]}
                         alt={`${project.title} - Impact`}
                         className="w-full h-full object-cover hover:scale-105 transition-all duration-500 ease-out"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </div>
                 )}
@@ -134,9 +121,7 @@ export const ProjectDetails = ({
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium">
-                          {project.testimonial.author}
-                        </p>
+                        <p className="font-medium">{project.testimonial.author}</p>
                         <p className="text-sm text-muted-foreground">
                           {project.testimonial.position}
                         </p>
@@ -152,14 +137,14 @@ export const ProjectDetails = ({
                   {project.gallery.slice(3).map((image, index) => (
                     <div
                       key={index}
-                      className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg cursor-pointer"
+                      className="group relative aspect-4/3 overflow-hidden rounded-xl shadow-lg cursor-pointer"
                     >
                       <img
                         src={image}
                         alt={`${project.title} - Additional Image ${index + 4}`}
                         className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ease-out"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   ))}
                 </div>

@@ -1,11 +1,20 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { JSDOM } from "jsdom";
-import DOMPurify from "dompurify";
 
-// Initialize DOMPurify with jsdom
-const window = new JSDOM("").window;
-const purify = DOMPurify(window);
+const HTML_ESCAPES: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
+/**
+ * Escapes a form field for interpolation into the notification email. The
+ * fields are plain text, so escaping is the whole job: no markup survives.
+ */
+const escapeHtml = (value: string) =>
+  String(value).replace(/[&<>"']/g, (char) => HTML_ESCAPES[char]);
 
 const rateLimits = new Map<string, { count: number; timestamp: number }>();
 
@@ -13,16 +22,12 @@ const rateLimits = new Map<string, { count: number; timestamp: number }>();
 const RATE_LIMIT_MAX = 30; // Maximum requests per time window
 const RATE_LIMIT_WINDOW = 3600 * 1000; // Time window in milliseconds (1 hour)
 
-// Clean up stale rate limit entries periodically
-const cleanupInterval = 3600 * 1000; // 1 hour
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, data] of rateLimits.entries()) {
-    if (now - data.timestamp > RATE_LIMIT_WINDOW) {
-      rateLimits.delete(key);
-    }
+/** Drops rate-limit entries whose window has already elapsed. */
+const pruneRateLimits = (now: number) => {
+  for (const [key, data] of rateLimits) {
+    if (now - data.timestamp > RATE_LIMIT_WINDOW) rateLimits.delete(key);
   }
-}, cleanupInterval);
+};
 
 const transporter = nodemailer.createTransport({
   // @ts-expect-error idk why this is throwing an error
@@ -47,6 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Check rate limit
     const now = Date.now();
+    pruneRateLimits(now);
     const rateLimit = rateLimits.get(ip) || { count: 0, timestamp: now };
 
     // Reset counter if the time window has passed
@@ -74,26 +80,20 @@ export async function POST(request: NextRequest) {
 
     // Validate inputs
     if (!name.trim() || !email.trim() || !message.trim()) {
-      return NextResponse.json(
-        { error: "Name, email, and message are required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Name, email, and message are required" }, { status: 400 });
     }
 
     // Sanitize inputs
-    const sanitizedName = purify.sanitize(name);
-    const sanitizedEmail = purify.sanitize(email);
-    const sanitizedPhone = purify.sanitize(phone);
-    const sanitizedSubject = purify.sanitize(subject);
-    const sanitizedMessage = purify.sanitize(message);
+    const sanitizedName = escapeHtml(name);
+    const sanitizedEmail = escapeHtml(email);
+    const sanitizedPhone = escapeHtml(phone);
+    const sanitizedSubject = escapeHtml(subject);
+    const sanitizedMessage = escapeHtml(message);
 
     // Simple email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(sanitizedEmail)) {
-      return NextResponse.json(
-        { error: "Please provide a valid email address" },
-        { status: 400 },
-      );
+    if (!emailRegex.test(email.trim())) {
+      return NextResponse.json({ error: "Please provide a valid email address" }, { status: 400 });
     }
 
     // Get current date in a nice format

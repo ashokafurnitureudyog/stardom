@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { Edit, Eye, Trash } from "lucide-react";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,11 +13,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash, Eye, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { PortfolioProjectDetails } from "./PortfolioProjectDetails";
-import { PortfolioProjectType } from "./portfolio/types";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { EditPortfolioDialog } from "./EditPortfolioDialog";
+import { PortfolioProjectDetails } from "./PortfolioProjectDetails";
+import type { PortfolioProjectType } from "./portfolio/types";
 
 interface PortfolioCardProps {
   project: PortfolioProjectType;
@@ -93,9 +93,8 @@ export const PortfolioCard = ({
                 Delete Portfolio Project
               </AlertDialogTitle>
               <AlertDialogDescription className="text-neutral-400">
-                Are you sure you want to delete &quot;{project.title}&quot;?
-                This action cannot be undone and will permanently remove all
-                associated images.
+                Are you sure you want to delete &quot;{project.title}&quot;? This action cannot be
+                undone and will permanently remove all associated images.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -125,10 +124,7 @@ export const PortfolioCard = ({
       {/* Image container with View Details on hover */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
-          <div
-            className="relative w-full cursor-pointer"
-            style={{ height: "200px" }}
-          >
+          <div className="relative w-full cursor-pointer" style={{ height: "200px" }}>
             {project.thumbnail ? (
               <Image
                 src={project.thumbnail}
@@ -160,9 +156,7 @@ export const PortfolioCard = ({
       {/* Project info */}
       <div className="p-4">
         <h3 className="font-medium text-[#A28B55] truncate">{project.title}</h3>
-        <p className="text-xs text-neutral-500 truncate mt-1 mb-3">
-          {project.description}
-        </p>
+        <p className="text-xs text-neutral-500 truncate mt-1 mb-3">{project.description}</p>
 
         <div className="flex flex-nowrap overflow-hidden gap-2">
           {project.tags.slice(0, 2).map((tag, index) => (
@@ -177,7 +171,7 @@ export const PortfolioCard = ({
           {project.tags.length > 2 && (
             <Badge
               variant="outline"
-              className="text-xs bg-neutral-800/30 text-neutral-500 border-neutral-700/50 whitespace-nowrap flex-shrink-0"
+              className="text-xs bg-neutral-800/30 text-neutral-500 border-neutral-700/50 whitespace-nowrap shrink-0"
             >
               +{project.tags.length - 2} more
             </Badge>

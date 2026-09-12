@@ -1,13 +1,13 @@
 "use client";
+import { AlertCircle, CheckCircle2, Plus, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Product } from "@/types/ComponentTypes";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Plus, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
-import { ProductDetails } from "./view-details";
+import type { Product } from "@/types/ComponentTypes";
 import { FeaturedProductCard } from "./featured/FeaturedProductCard";
 import { ProductSelectionDialog } from "./featured/ProductSelectionDialog";
+import { ProductDetails } from "./view-details";
 
 export const FeaturedSection = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -16,8 +16,7 @@ export const FeaturedSection = () => {
   const [error, setError] = useState("");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [productDetailsOpen, setProductDetailsOpen] = useState(false);
-  const [selectedProductForDetails, setSelectedProductForDetails] =
-    useState<Product | null>(null);
+  const [selectedProductForDetails, setSelectedProductForDetails] = useState<Product | null>(null);
 
   // Calculate remaining slots
   const remainingSlots = 4 - featuredProducts.length;
@@ -26,8 +25,7 @@ export const FeaturedSection = () => {
   const availableProducts = allProducts.filter(
     (product) =>
       !featuredProducts.some(
-        (featured) =>
-          featured.id === product.id || featured.$id === product.$id,
+        (featured) => featured.id === product.id || featured.$id === product.$id,
       ),
   );
 
@@ -46,11 +44,7 @@ export const FeaturedSection = () => {
       setFeaturedProducts(data);
     } catch (error: unknown) {
       console.error("Failed to fetch featured products:", error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to load featured products",
-      );
+      setError(error instanceof Error ? error.message : "Failed to load featured products");
     } finally {
       setLoading(false);
     }
@@ -99,11 +93,7 @@ export const FeaturedSection = () => {
       await fetchFeaturedProducts();
       setAddDialogOpen(false);
     } catch (error: unknown) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to add to featured products",
-      );
+      setError(error instanceof Error ? error.message : "Failed to add to featured products");
     }
   };
 
@@ -111,9 +101,7 @@ export const FeaturedSection = () => {
     try {
       // Optimistically update UI
       setFeaturedProducts((prev) =>
-        prev.filter(
-          (product) => product.id !== productId && product.$id !== productId,
-        ),
+        prev.filter((product) => product.id !== productId && product.$id !== productId),
       );
 
       const response = await fetch("/api/protected/featured", {
@@ -125,19 +113,13 @@ export const FeaturedSection = () => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(
-          data.error || "Failed to remove from featured products",
-        );
+        throw new Error(data.error || "Failed to remove from featured products");
       }
 
       setError("Product removed from featured section");
       setTimeout(() => setError(""), 3000); // Clear after 3 seconds
     } catch (error: unknown) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to remove from featured products",
-      );
+      setError(error instanceof Error ? error.message : "Failed to remove from featured products");
       // Revert optimistic update on error
       await fetchFeaturedProducts();
     }
@@ -152,15 +134,13 @@ export const FeaturedSection = () => {
   useEffect(() => {
     fetchFeaturedProducts();
     fetchAllProducts();
-  }, []);
+  }, [fetchFeaturedProducts, fetchAllProducts]);
 
   return (
     <div>
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
         <div>
-          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">
-            Featured Products
-          </h2>
+          <h2 className="text-3xl font-semibold mb-2 text-[#A28B55]">Featured Products</h2>
           <p className="text-muted-foreground">
             Display up to 4 products on the homepage featured section
           </p>
@@ -176,8 +156,7 @@ export const FeaturedSection = () => {
               fetchAllProducts();
             }}
           >
-            <RefreshCw size={16} />{" "}
-            <span className="hidden lg:inline">Refresh</span>
+            <RefreshCw size={16} /> <span className="hidden lg:inline">Refresh</span>
           </Button>
 
           <Dialog>
@@ -197,8 +176,7 @@ export const FeaturedSection = () => {
                   }
                 }}
               >
-                <Plus size={16} />{" "}
-                <span className="hidden md:inline lg:inline">Add Featured</span>
+                <Plus size={16} /> <span className="hidden md:inline lg:inline">Add Featured</span>
                 <span className="md:hidden">Add</span>
               </Button>
             </DialogTrigger>
@@ -215,14 +193,9 @@ export const FeaturedSection = () => {
           />
 
           {/* Product Details Dialog */}
-          <Dialog
-            open={productDetailsOpen}
-            onOpenChange={setProductDetailsOpen}
-          >
+          <Dialog open={productDetailsOpen} onOpenChange={setProductDetailsOpen}>
             <DialogContent className="w-[95vw] sm:max-w-[950px] h-[90vh] p-0 border-[#3C3120] bg-neutral-900">
-              {selectedProductForDetails && (
-                <ProductDetails product={selectedProductForDetails} />
-              )}
+              {selectedProductForDetails && <ProductDetails product={selectedProductForDetails} />}
             </DialogContent>
           </Dialog>
         </div>
@@ -234,22 +207,15 @@ export const FeaturedSection = () => {
       {error && (
         <div className="bg-zinc-800/70 border border-zinc-700 px-5 py-3 mb-6 rounded-md">
           <div className="flex items-center gap-3">
-            {error.includes("failed") ||
-            error.includes("Failed") ||
-            error.includes("error") ? (
-              <AlertCircle size={18} className="text-red-400 flex-shrink-0" />
+            {error.includes("failed") || error.includes("Failed") || error.includes("error") ? (
+              <AlertCircle size={18} className="text-red-400 shrink-0" />
             ) : (
-              <CheckCircle2
-                size={18}
-                className="text-green-400 flex-shrink-0"
-              />
+              <CheckCircle2 size={18} className="text-green-400 shrink-0" />
             )}
             <div className="space-y-1">
               <p
                 className={`font-medium ${
-                  error.includes("failed") ||
-                  error.includes("Failed") ||
-                  error.includes("error")
+                  error.includes("failed") || error.includes("Failed") || error.includes("error")
                     ? "text-red-100"
                     : "text-green-100"
                 }`}
@@ -260,11 +226,7 @@ export const FeaturedSection = () => {
           </div>
 
           {(error.includes("failed") || error.includes("Failed")) && (
-            <Button
-              variant="outline"
-              className="mt-3 ml-9"
-              onClick={fetchFeaturedProducts}
-            >
+            <Button variant="outline" className="mt-3 ml-9" onClick={fetchFeaturedProducts}>
               Try Again
             </Button>
           )}
@@ -276,7 +238,7 @@ export const FeaturedSection = () => {
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
-              className="aspect-[4/5] bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
+              className="aspect-4/5 bg-black/40 border border-[#3C3120]/50 rounded-md animate-pulse"
             />
           ))}
         </div>
@@ -300,9 +262,7 @@ export const FeaturedSection = () => {
           <Button
             onClick={() => {
               if (allProducts.length === 0) {
-                setError(
-                  "No products available. Add some products first before featuring them.",
-                );
+                setError("No products available. Add some products first before featuring them.");
                 setTimeout(() => setError(""), 3000);
               } else {
                 setAddDialogOpen(true);

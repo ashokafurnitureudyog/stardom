@@ -1,8 +1,8 @@
 "use client";
-import { cn } from "@/lib/utils/utils";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { cn } from "@/lib/utils/utils";
 
 export const CanvasRevealEffect = ({
   animationSpeed = 0.4,
@@ -29,9 +29,7 @@ export const CanvasRevealEffect = ({
         <DotMatrix
           colors={colors ?? [[0, 255, 255]]}
           dotSize={dotSize ?? 3}
-          opacities={
-            opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]
-          }
+          opacities={opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]}
           shader={`
               float animation_speed_factor = ${animationSpeed.toFixed(1)};
               float intro_offset = distance(u_resolution / 2.0 / u_total_size, st2) * 0.01 + (random(st2) * 0.15);
@@ -41,9 +39,7 @@ export const CanvasRevealEffect = ({
           center={["x", "y"]}
         />
       </div>
-      {showGradient && (
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-84%" />
-      )}
+      {showGradient && <div className="absolute inset-0 bg-linear-to-t from-gray-950 to-84%" />}
     </div>
   );
 };
@@ -66,41 +62,16 @@ const DotMatrix: React.FC<DotMatrixProps> = ({
   center = ["x", "y"],
 }) => {
   const uniforms = React.useMemo(() => {
-    let colorsArray = [
-      colors[0],
-      colors[0],
-      colors[0],
-      colors[0],
-      colors[0],
-      colors[0],
-    ];
+    let colorsArray = [colors[0], colors[0], colors[0], colors[0], colors[0], colors[0]];
     if (colors.length === 2) {
-      colorsArray = [
-        colors[0],
-        colors[0],
-        colors[0],
-        colors[1],
-        colors[1],
-        colors[1],
-      ];
+      colorsArray = [colors[0], colors[0], colors[0], colors[1], colors[1], colors[1]];
     } else if (colors.length === 3) {
-      colorsArray = [
-        colors[0],
-        colors[0],
-        colors[1],
-        colors[1],
-        colors[2],
-        colors[2],
-      ];
+      colorsArray = [colors[0], colors[0], colors[1], colors[1], colors[2], colors[2]];
     }
 
     return {
       u_colors: {
-        value: colorsArray.map((color) => [
-          color[0] / 255,
-          color[1] / 255,
-          color[2] / 255,
-        ]),
+        value: colorsArray.map((color) => [color[0] / 255, color[1] / 255, color[2] / 255]),
         type: "uniform3fv",
       },
       u_opacities: {
@@ -212,12 +183,7 @@ const ShaderMaterial = ({
     const preparedUniforms: Record<
       string,
       {
-        value:
-          | THREE.Vector2
-          | THREE.Vector3
-          | number
-          | number[]
-          | THREE.Vector3[];
+        value: THREE.Vector2 | THREE.Vector3 | number | number[] | THREE.Vector3[];
         type?: string;
       }
     > = {};
@@ -241,9 +207,7 @@ const ShaderMaterial = ({
           break;
         case "uniform3fv":
           preparedUniforms[uniformName] = {
-            value: uniform.value.map((v: number[]) =>
-              new THREE.Vector3().fromArray(v),
-            ),
+            value: uniform.value.map((v: number[]) => new THREE.Vector3().fromArray(v)),
             type: "3fv",
           };
           break;
@@ -259,8 +223,8 @@ const ShaderMaterial = ({
       }
     }
 
-    preparedUniforms["u_time"] = { value: 0, type: "1f" };
-    preparedUniforms["u_resolution"] = {
+    preparedUniforms.u_time = { value: 0, type: "1f" };
+    preparedUniforms.u_resolution = {
       value: new THREE.Vector2(size.width * 2, size.height * 2),
     }; // Initialize u_resolution
     return preparedUniforms;
@@ -291,7 +255,7 @@ const ShaderMaterial = ({
     });
 
     return materialObject;
-  }, [size.width, size.height, source]);
+  }, [source, getUniforms]);
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

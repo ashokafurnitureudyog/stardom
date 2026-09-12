@@ -1,11 +1,10 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ImagePlus, Link, Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { Upload, Link, ImagePlus, X, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -13,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 
 interface ImagesSectionProps {
   files: File[];
@@ -71,14 +72,11 @@ export function ImagesSection({
       const newFiles = Array.from(fileList);
 
       // Validate file types
-      const invalidFiles = newFiles.filter(
-        (file) => !file.type.startsWith("image/"),
-      );
+      const invalidFiles = newFiles.filter((file) => !file.type.startsWith("image/"));
       if (invalidFiles.length > 0) {
         toast({
           title: "Invalid file type",
-          description:
-            "Please select only image files (JPG, PNG, WEBP, GIF, etc.)",
+          description: "Please select only image files (JPG, PNG, WEBP, GIF, etc.)",
           variant: "destructive",
         });
         e.target.value = "";
@@ -87,9 +85,7 @@ export function ImagesSection({
 
       // Validate file sizes (max 50MB each - we're now using direct Appwrite upload)
       // This is a client-side check for better UX, the actual limit is handled by Appwrite
-      const largeFiles = newFiles.filter(
-        (file) => file.size > 50 * 1024 * 1024,
-      );
+      const largeFiles = newFiles.filter((file) => file.size > 50 * 1024 * 1024);
       if (largeFiles.length > 0) {
         toast({
           title: "File too large",
@@ -181,8 +177,7 @@ export function ImagesSection({
         description: "The image URL was verified and added to your gallery",
       });
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to validate image URL";
+      const errorMessage = err instanceof Error ? err.message : "Failed to validate image URL";
 
       toast({
         title: "Invalid Image URL",
@@ -235,9 +230,7 @@ export function ImagesSection({
       {/* Current Images Display - always visible */}
       {imageUrls.length > 0 && (
         <div className="mb-6">
-          <h4 className="text-sm font-medium mb-3">
-            Current Images ({imageUrls.length})
-          </h4>
+          <h4 className="text-sm font-medium mb-3">Current Images ({imageUrls.length})</h4>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {imageUrls.map((url, index) => (
               <div key={`img-${index}`} className="group relative">
@@ -283,9 +276,7 @@ export function ImagesSection({
                       <SelectTrigger className="w-full h-8 text-xs bg-neutral-900 border border-[#3C3120] focus:ring-[#A28B55]/50">
                         <SelectValue
                           placeholder={
-                            !colors || colors.length === 0
-                              ? "Add colors first"
-                              : "All Colors"
+                            !colors || colors.length === 0 ? "Add colors first" : "All Colors"
                           }
                         />
                       </SelectTrigger>
@@ -348,19 +339,12 @@ export function ImagesSection({
 
           {files.length > 0 && fileUrls.length > 0 && (
             <div className="mt-6">
-              <h4 className="text-sm font-medium mb-3">
-                New Files ({files.length})
-              </h4>
+              <h4 className="text-sm font-medium mb-3">New Files ({files.length})</h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {fileUrls.map(({ file, url }, index) => (
                   <div key={`file-${index}`} className="group relative">
                     <div className="aspect-square bg-black/40 border border-[#3C3120]/50 rounded-md overflow-hidden mb-2">
-                      <Image
-                        src={url}
-                        alt={file.name}
-                        fill
-                        className="object-cover"
-                      />
+                      <Image src={url} alt={file.name} fill className="object-cover" />
                       <Button
                         type="button"
                         variant="destructive"
@@ -396,9 +380,7 @@ export function ImagesSection({
                           <SelectTrigger className="w-full h-8 text-xs bg-neutral-900 border border-[#3C3120] focus:ring-[#A28B55]/50">
                             <SelectValue
                               placeholder={
-                                !colors || colors.length === 0
-                                  ? "Add colors first"
-                                  : "All Colors"
+                                !colors || colors.length === 0 ? "Add colors first" : "All Colors"
                               }
                             />
                           </SelectTrigger>
@@ -415,9 +397,7 @@ export function ImagesSection({
                     )}
 
                     <p className="text-xs truncate text-center text-muted-foreground mt-2">
-                      {file.name.length > 20
-                        ? file.name.substring(0, 17) + "..."
-                        : file.name}
+                      {file.name.length > 20 ? `${file.name.substring(0, 17)}...` : file.name}
                     </p>
                   </div>
                 ))}
@@ -456,7 +436,7 @@ export function ImagesSection({
               type="button"
               onClick={handleAddUrlClick}
               disabled={isImageLoading || !newImageUrl.trim()}
-              className="flex-shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
+              className="shrink-0 whitespace-nowrap bg-[#A28B55] text-neutral-900 hover:bg-[#A28B55]/80 transition-all duration-300"
             >
               {isImageLoading ? (
                 <>

@@ -1,13 +1,8 @@
 "use client";
 
+import type React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils/utils";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 
 interface FlickeringGridProps extends React.HTMLAttributes<HTMLDivElement> {
   squareSize?: number;
@@ -181,11 +176,7 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   }, [setupCanvas, updateSquares, drawGrid, width, height, isInView]);
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(`h-full w-full ${className}`)}
-      {...props}
-    >
+    <div ref={containerRef} className={cn(`h-full w-full ${className}`)} {...props}>
       <canvas
         ref={canvasRef}
         className="pointer-events-none"
