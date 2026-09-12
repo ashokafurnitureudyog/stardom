@@ -27,7 +27,7 @@ export const FeaturedProductCard = ({
   const productId = product.id || product.$id || "";
 
   return (
-    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
+    <div className="group relative rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
       {/* Image container with fixed dimensions */}
       <div className="relative w-full" style={{ height: "280px" }}>
         {product.images?.[0] ? (

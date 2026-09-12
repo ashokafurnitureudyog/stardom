@@ -80,7 +80,7 @@ export const TestimonialCard = ({
   }
 
   return (
-    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
+    <div className="group relative rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
       <div className="relative h-full flex flex-col">
         <div className="p-4 border-b border-[#3C3120] group-hover:border-[#A28B55]/40 transition-colors duration-300">
           <div className="flex items-center gap-3">

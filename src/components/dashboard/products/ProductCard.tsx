@@ -43,8 +43,7 @@ export const ProductCard = ({
   };
 
   return (
-    <div className="group rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
-      {/* Featured badge - refined premium styling */}
+    <div className="group relative rounded-md overflow-hidden bg-black/40 border border-[#3C3120] transition-all duration-300 hover:border-[#A28B55] hover:shadow-[0_0_12px_rgba(162,139,85,0.2)] transform hover:scale-[1.03] hover:z-10">
       {isFeatured && (
         <div className="absolute top-2 left-2 z-10">
           <Badge className="bg-black/80 backdrop-blur-sm border border-[#A28B55] text-[#A28B55] flex gap-1.5 items-center px-3 py-1 shadow-[0_0_10px_rgba(0,0,0,0.3)]">
@@ -54,7 +53,6 @@ export const ProductCard = ({
         </div>
       )}
 
-      {/* Action buttons - top right corner, only visible on hover */}
       <div className="absolute right-2 top-2 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-200">
         {/* Edit button */}
         <EditProductDialog product={product} onSuccess={onUpdate}>
