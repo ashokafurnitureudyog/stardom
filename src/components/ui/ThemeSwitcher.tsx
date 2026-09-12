@@ -35,9 +35,9 @@ export function ModeToggle() {
       size="icon"
       aria-label={`Theme: ${LABELS[current]}. Switch to ${LABELS[next]}`}
       onClick={() => setTheme(next)}
-      className="relative w-12 h-12 rounded-xl border border-transparent transition-all duration-500 ease-in-out hover:bg-primary/10 hover:text-primary hover:border-primary/20"
+      className="relative h-9 w-9 rounded-full text-foreground/70 transition-colors duration-200 hover:bg-transparent hover:text-primary"
     >
-      <Icon className="h-5 w-5 transition-transform duration-500 ease-in-out hover:rotate-12" />
+      <Icon className="h-[18px] w-[18px]" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   );

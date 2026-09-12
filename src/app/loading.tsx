@@ -1,32 +1,18 @@
-import "./loading.css";
-import BaseLayout from "@/components/layout/BaseLayout";
-
-const Loading = () => {
-  return (
-    <BaseLayout className="flex items-center justify-between flex-col">
-      {/* From Uiverse.io by elijahgummer */}
-      <div className="mainWrap">
-        <div className="wrapper">
-          <div className="c1">
-            <div className="c2">
-              <div className="c3">
-                <div className="rect1">
-                  <div className="miniC" />
-                  <div className="c4">
-                    <div className="rect2">
-                      <div className="rect3" />
-                    </div>
-                  </div>
-                  <div className="c5" />
-                  <div className="c6" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+/**
+ * Route-level loading state. A quiet brass rail rather than a spinner: the page
+ * behind it is usually a fraction of a second away, and a spinning graphic
+ * makes that wait feel longer than it is.
+ */
+const Loading = () => (
+  <div className="flex min-h-screen items-center justify-center bg-background px-6">
+    <div className="w-full max-w-xs text-center">
+      <p className="font-serif text-3xl tracking-wide text-foreground">Stardom</p>
+      <div className="loading-rail mt-6 h-px w-full overflow-hidden bg-border/40">
+        <div className="loading-rail-fill h-full w-1/3 bg-primary" />
       </div>
-    </BaseLayout>
-  );
-};
+      <p className="mt-6 text-xs text-muted-foreground">Loading</p>
+    </div>
+  </div>
+);
 
 export default Loading;
