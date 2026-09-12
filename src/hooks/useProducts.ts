@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Product, SortOption } from "@/types/ComponentTypes";
 import { productService } from "@/lib/services/productService";
+import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
 
 /**
  * Sort option configuration
@@ -35,7 +36,7 @@ interface UseProductsReturn {
   products: Product[];
   filteredProducts: Product[];
   featuredProducts: Product[];
-  categories: string[];
+  categories: readonly string[];
   collections: string[];
   product?: Product;
   similarProducts: Product[];
@@ -74,7 +75,6 @@ interface UseProductsReturn {
   // Query objects (for advanced use cases)
   productsQuery: ReturnType<typeof useQuery<Product[], Error>>;
   featuredProductsQuery: ReturnType<typeof useQuery<Product[], Error>>;
-  categoriesQuery: ReturnType<typeof useQuery<string[], Error>>;
   collectionsQuery: ReturnType<typeof useQuery<string[], Error>>;
   individualProductQuery: ReturnType<
     typeof useQuery<Product | undefined, Error>
@@ -115,15 +115,6 @@ export const useProducts = (productId?: string): UseProductsReturn => {
     queryFn: productService.getFeaturedProducts,
     staleTime: CACHE_CONFIG.PRODUCTS_STALE_TIME,
     retry: CACHE_CONFIG.DEFAULT_RETRY_COUNT,
-  });
-
-  // Categories are derived from products
-  const categoriesQuery = useQuery({
-    queryKey: ["categories"],
-    queryFn: productService.getCategories,
-    staleTime: CACHE_CONFIG.METADATA_STALE_TIME,
-    retry: CACHE_CONFIG.DEFAULT_RETRY_COUNT,
-    enabled: !!productsQuery.data, // Only run after products are loaded
   });
 
   // Collections are derived from products
@@ -209,26 +200,19 @@ export const useProducts = (productId?: string): UseProductsReturn => {
     products: productsQuery.data || [],
     filteredProducts,
     featuredProducts: featuredProductsQuery.data || [],
-    categories: categoriesQuery.data || [],
+    categories: PRODUCT_CATEGORIES,
     collections: collectionsQuery.data || [],
     product: individualProductQuery.data,
     similarProducts: similarProductQuery.data || [],
 
     // Loading states
-    isLoading:
-      productsQuery.isLoading ||
-      categoriesQuery.isLoading ||
-      collectionsQuery.isLoading,
+    isLoading: productsQuery.isLoading || collectionsQuery.isLoading,
     isFeaturedLoading: featuredProductsQuery.isLoading,
     isProductLoading: individualProductQuery.isLoading,
     isSimilarProductsLoading: similarProductQuery.isLoading,
 
     // Error states
-    error:
-      productsQuery.error ||
-      categoriesQuery.error ||
-      collectionsQuery.error ||
-      null,
+    error: productsQuery.error || collectionsQuery.error || null,
     featuredError: featuredProductsQuery.error,
     productError: individualProductQuery.error,
 
@@ -249,7 +233,6 @@ export const useProducts = (productId?: string): UseProductsReturn => {
     // Queries (for direct access if needed)
     productsQuery,
     featuredProductsQuery,
-    categoriesQuery,
     collectionsQuery,
     individualProductQuery,
     similarProductQuery,

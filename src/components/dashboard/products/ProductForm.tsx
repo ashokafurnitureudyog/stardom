@@ -11,6 +11,14 @@ import type { Product } from "@/types/ComponentTypes";
 import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { Progress } from "@/components/ui/progress"; // Ensure you have this component
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
 
 interface ProductFormProps {
   onSuccess: () => void;
@@ -247,14 +255,21 @@ export const ProductForm = ({
               >
                 Category
               </label>
-              <Input
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Category"
-                required
-                className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus-visible:ring-[#A28B55]/20 focus-visible:border-[#A28B55]"
-              />
+              <Select value={category} onValueChange={setCategory} required>
+                <SelectTrigger
+                  id="category"
+                  className="bg-neutral-950/70 border-[#352b1c] text-neutral-200 focus:ring-[#A28B55]/20 focus:border-[#A28B55]"
+                >
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent className="bg-neutral-950 border-[#352b1c] text-neutral-200">
+                  {PRODUCT_CATEGORIES.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label

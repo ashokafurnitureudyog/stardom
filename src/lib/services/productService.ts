@@ -49,15 +49,6 @@ export const productService = {
   },
 
   /**
-   * Extracts unique categories from all products
-   * @returns Promise resolving to an array of unique category strings
-   */
-  getCategories: async (): Promise<string[]> => {
-    const products = await productService.getProducts();
-    return [...new Set(products.map((product) => product.category))];
-  },
-
-  /**
    * Extracts unique collections from all products
    * @returns Promise resolving to an array of unique collection strings
    */

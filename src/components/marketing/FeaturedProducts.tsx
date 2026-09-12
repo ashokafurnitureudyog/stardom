@@ -4,16 +4,15 @@ import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRightIcon,
-  ArchiveIcon,
-  ClipboardIcon,
-  LampDeskIcon,
-  LayoutGridIcon,
-  TableIcon,
-  LucideIcon,
-  SofaIcon,
-  Table2Icon,
-  TableColumnsSplitIcon,
+  ArmchairIcon,
+  BriefcaseIcon,
   CoffeeIcon,
+  CrownIcon,
+  LampDeskIcon,
+  LucideIcon,
+  MonitorIcon,
+  UsersIcon,
+  WineIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "next-view-transitions";
@@ -21,21 +20,16 @@ import { useProducts } from "@/hooks/useProducts";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 
-// Define better icons matching your actual product categories
 const categoryIcons: Record<string, LucideIcon> = {
-  chairs: ArchiveIcon,
-  tables: TableIcon,
-  workstations: LayoutGridIcon,
-  reception: ClipboardIcon,
-  storage: ArchiveIcon,
-  lounges: SofaIcon,
-  training: Table2Icon,
-  desks: Table2Icon,
-  partitions: TableColumnsSplitIcon,
-  cafeteria: CoffeeIcon,
+  "signature series": CrownIcon,
+  "director series": BriefcaseIcon,
+  "executive series": ArmchairIcon,
+  "work series": MonitorIcon,
+  "visitor series": UsersIcon,
+  "café series": CoffeeIcon,
+  "bar series": WineIcon,
 };
 
-// Fallback icon for categories not in the map
 const getIconForCategory = (category: string) => {
   return categoryIcons[category.toLowerCase()] || LampDeskIcon;
 };
@@ -121,10 +115,11 @@ export function FeaturedProducts() {
   // Fallback data with the same improved contrast
   const fallbackFeatures = [
     {
-      Icon: Table2Icon,
-      name: "Luxury Executive Desks",
-      description: "Handcrafted masterpieces for distinguished leaders",
-      detail: "Imported Italian Wood",
+      Icon: CrownIcon,
+      name: "Signature Series",
+      description:
+        "Flagship statement chairs, handcrafted for the corner office",
+      detail: "Imported Italian Leather",
       href: "/products",
       cta: "Discover More",
       className: "col-span-3 lg:col-span-2",
@@ -132,7 +127,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1497215728101-856f4ea42174"
-            alt="Luxury Executive Desk"
+            alt="Signature Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 66vw"
@@ -142,10 +137,11 @@ export function FeaturedProducts() {
       ),
     },
     {
-      Icon: TableIcon,
-      name: "Premium Conference Solutions",
-      description: "Where visionary decisions take shape",
-      detail: "Smart Integration Ready",
+      Icon: BriefcaseIcon,
+      name: "Director Series",
+      description:
+        "Premium MD and leadership chairs where decisions take shape",
+      detail: "Full-Grain Upholstery",
       href: "/products",
       cta: "Discover More",
       className: "col-span-3 lg:col-span-1",
@@ -153,7 +149,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1431540015161-0bf868a2d407"
-            alt="Conference Room"
+            alt="Director Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 33vw"
@@ -163,9 +159,10 @@ export function FeaturedProducts() {
       ),
     },
     {
-      Icon: ArchiveIcon,
-      name: "Elite Ergonomic Seating",
-      description: "Precision-engineered comfort for excellence",
+      Icon: ArmchairIcon,
+      name: "Executive Series",
+      description:
+        "Professional managerial chairs, precision-engineered for the full day",
       detail: "German Engineering",
       href: "/products",
       cta: "Discover More",
@@ -174,7 +171,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1681418659069-eef28d44aeab"
-            alt="Ergonomic Chair"
+            alt="Executive Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 33vw"
@@ -184,9 +181,10 @@ export function FeaturedProducts() {
       ),
     },
     {
-      Icon: SofaIcon,
-      name: "Designer Lounge Collection",
-      description: "Contemporary comfort meets timeless sophistication",
+      Icon: MonitorIcon,
+      name: "Work Series",
+      description:
+        "Workstation, task and staff chairs built for everyday performance",
       detail: "Artisan Crafted",
       href: "/products",
       cta: "Discover More",
@@ -195,7 +193,7 @@ export function FeaturedProducts() {
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="https://images.unsplash.com/photo-1464029902023-f42eba355bde"
-            alt="Lounge Collection"
+            alt="Work Series chair"
             fill
             className="object-cover opacity-80 transition-all duration-500 group-hover:scale-105"
             sizes="(max-width: 1024px) 100vw, 66vw"
