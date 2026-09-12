@@ -1,6 +1,8 @@
 "use server";
+import { updateTag } from "next/cache";
 import { AppwriteException, Query } from "node-appwrite";
 import { createAdminClient, getLoggedInUser } from "@/lib/server/appwrite";
+import { FEATURED_TAG } from "@/lib/server/products";
 
 // Get a product by ID
 async function getProductById(productId: string) {
@@ -91,6 +93,7 @@ export async function addToFeatured(productId: string) {
     },
   });
 
+  updateTag(FEATURED_TAG);
   return { success: true, message: "Product added to featured" };
 }
 
@@ -106,5 +109,6 @@ export async function removeFromFeatured(productId: string) {
     rowId: productId,
   });
 
+  updateTag(FEATURED_TAG);
   return { success: true };
 }

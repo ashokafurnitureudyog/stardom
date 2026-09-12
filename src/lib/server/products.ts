@@ -6,6 +6,7 @@ import type { Product, SortOption } from "@/types/ComponentTypes";
 import { appwriteIds, createAdminClient } from "./appwrite";
 
 export const PRODUCTS_TAG = "products";
+export const FEATURED_TAG = "featured-products";
 
 /** Appwrite caps a single page at 100 rows; the catalogue is well under that. */
 const PAGE_SIZE = 100;
@@ -112,24 +113,38 @@ export async function getSimilarProducts(id: string, limit = 4): Promise<Product
   ]);
 }
 
-/** The newest product in each of the first few categories, for the home grid. */
+/**
+ * The products the dashboard has marked as featured. Each featured row carries
+ * the product's own id, so the product itself is read fresh here rather than
+ * from the copy stored alongside it, which goes stale the moment a product is
+ * edited.
+ */
 export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
   "use cache";
-  cacheTag(PRODUCTS_TAG);
+  cacheTag(PRODUCTS_TAG, FEATURED_TAG);
   cacheLife("max");
 
-  const products = await getProducts();
-  const seen = new Set<string>();
-  const featured: Product[] = [];
+  const ids = appwriteIds();
+  if (!ids.featured) return [];
 
-  for (const product of products) {
-    if (seen.has(product.category)) continue;
-    seen.add(product.category);
-    featured.push(product);
-    if (featured.length === limit) break;
-  }
+  const { tables } = await createAdminClient();
+  const featured = await tables.listRows({
+    databaseId: ids.database,
+    tableId: ids.featured,
+    queries: [Query.limit(limit), Query.select(["$id"])],
+  });
 
-  return featured;
+  const featuredIds = featured.rows.map((row) => row.$id);
+  if (featuredIds.length === 0) return [];
+
+  const products = await listRows([
+    Query.equal("$id", featuredIds),
+    Query.select(LIST_COLUMNS),
+    Query.limit(limit),
+  ]);
+
+  const order = new Map(featuredIds.map((id, index) => [id, index]));
+  return products.sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
 }
 
 /** Every product id, for `generateStaticParams`. */
