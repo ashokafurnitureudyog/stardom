@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/hooks/use-toast";
 import { sendContactMessage } from "@/lib/actions/contact-actions";
 
 // Contact form schema with validation rules
@@ -63,8 +63,7 @@ export default function ContactForm() {
     try {
       await submitContactForm({ data });
 
-      toast({
-        title: "Message Submitted",
+      toast("Message Submitted", {
         description:
           "Thank you for reaching out! We've received your message and will get back to you soon.",
       });
@@ -72,14 +71,11 @@ export default function ContactForm() {
       form.reset();
     } catch (error) {
       console.error("Contact form submission error:", error);
-      toast({
-        variant: "destructive",
-        title: "Oops! Something went wrong",
-        description:
-          error instanceof Error
-            ? error.message
-            : "We couldn't send your message right now. Please try again later.",
-      });
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "We couldn't send your message right now. Please try again later.",
+      );
     } finally {
       setIsSubmitting(false);
     }

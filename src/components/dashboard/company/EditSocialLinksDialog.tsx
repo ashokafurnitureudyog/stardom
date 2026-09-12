@@ -1,6 +1,7 @@
 "use client";
 import { AlertCircle, Check, Edit, Loader2, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { updateSocialLinks } from "@/lib/controllers/CompanyInfoController";
 
 export const EditSocialLinksDialog = ({
@@ -31,7 +31,6 @@ export const EditSocialLinksDialog = ({
   const [links, setLinks] = useState<Array<{ platform: string; url: string; id?: string }>>(
     initialData.length > 0 ? initialData : [{ platform: "", url: "" }],
   );
-  const { toast } = useToast();
 
   const PLATFORM_OPTIONS = [
     { value: "facebook", label: "Facebook" },
@@ -80,22 +79,13 @@ export const EditSocialLinksDialog = ({
       const result = await updateSocialLinks(links);
       if (!result.ok) throw new Error(result.error);
 
-      toast({
-        title: "Success",
-        description: "Social links updated successfully",
-        duration: 3000,
-      });
+      toast.success("Social links updated successfully", { duration: 3000 });
 
       onSuccess();
       setOpen(false);
     } catch (error: unknown) {
       console.error("Failed to update social links:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update social links",
-        duration: 3000,
-      });
+      toast.error("Failed to update social links", { duration: 3000 });
     } finally {
       setIsSubmitting(false);
     }

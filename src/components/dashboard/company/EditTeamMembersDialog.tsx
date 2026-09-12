@@ -12,6 +12,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -20,7 +21,6 @@ import { Progress } from "@/components/ui/progress"; // Make sure this component
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
 import { updateTeamMembers } from "@/lib/controllers/CompanyInfoController";
 import { cn } from "@/lib/utils/utils";
@@ -45,7 +45,6 @@ export const EditTeamMembersDialog = ({
     initialData.length > 0 ? initialData : [{ name: "", role: "", bio: "", image: "" }],
   );
   const [imageTab, setImageTab] = useState<Record<number, string>>({});
-  const { toast } = useToast();
 
   // Use the file upload hook
   const { uploadFile, uploadStatus } = useFileUpload();
@@ -82,21 +81,13 @@ export const EditTeamMembersDialog = ({
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast({
-        variant: "destructive",
-        title: "Invalid file type",
-        description: "Please select an image file (JPG, PNG, WebP, etc.)",
-      });
+      toast.error("Please select an image file (JPG, PNG, WebP, etc.)");
       return;
     }
 
     // Validate file size (10MB max)
     if (file.size > 10 * 1024 * 1024) {
-      toast({
-        variant: "destructive",
-        title: "File too large",
-        description: "Image size should be less than 10MB",
-      });
+      toast.error("Image size should be less than 10MB");
       return;
     }
 
@@ -116,16 +107,9 @@ export const EditTeamMembersDialog = ({
       // Update member's image URL
       handleMemberChange(index, "image", imageUrl);
 
-      toast({
-        title: "Image uploaded",
-        description: "Image uploaded successfully",
-        duration: 3000,
-      });
+      toast("Image uploaded", { description: "Image uploaded successfully", duration: 3000 });
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Upload failed",
-        description: error instanceof Error ? error.message : "Failed to upload image",
+      toast.error(error instanceof Error ? error.message : "Failed to upload image", {
         duration: 3000,
       });
     } finally {
@@ -161,21 +145,12 @@ export const EditTeamMembersDialog = ({
       const result = await updateTeamMembers(members);
       if (!result.ok) throw new Error(result.error);
 
-      toast({
-        title: "Success",
-        description: "Team members updated successfully",
-        duration: 3000,
-      });
+      toast.success("Team members updated successfully", { duration: 3000 });
 
       onSuccess();
       setOpen(false);
     } catch (_error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update team members",
-        duration: 3000,
-      });
+      toast.error("Failed to update team members", { duration: 3000 });
     } finally {
       setIsSubmitting(false);
     }

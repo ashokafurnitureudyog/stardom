@@ -1,9 +1,9 @@
 import { ImageIcon, RefreshCw, Search } from "lucide-react";
 import { useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { usePortfolio } from "@/hooks/usePortfolio";
 import type { PortfolioProject } from "@/types/ComponentTypes";
 import { AddPortfolioDialog } from "./portfolio/AddPortfolioDialog";
@@ -24,8 +24,6 @@ export const PortfolioSection = () => {
     deleteProject,
     refresh,
   } = usePortfolio();
-
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
   const [optimisticProjects, addOptimisticProject] = useOptimistic(
@@ -62,17 +60,10 @@ export const PortfolioSection = () => {
       addOptimisticProject(projectId);
       try {
         await deleteProject({ projectId, imageUrls });
-        toast({
-          title: "Success",
-          description: "Project deleted successfully",
-        });
+        toast.success("Project deleted successfully");
       } catch (error) {
         console.error("Delete failed:", error);
-        toast({
-          title: "Error",
-          description: "Failed to delete portfolio project",
-          variant: "destructive",
-        });
+        toast.error("Failed to delete portfolio project");
       }
     });
   };

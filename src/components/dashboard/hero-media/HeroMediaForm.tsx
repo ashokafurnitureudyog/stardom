@@ -1,12 +1,12 @@
 "use client";
 import { Check, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
 import { addHeroMedia } from "@/lib/controllers/HeroMediaController";
 import { MediaPreview } from "./MediaPreview";
@@ -19,7 +19,6 @@ interface HeroMediaFormProps {
 }
 
 export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
-  const { toast } = useToast();
   const [addMethod, setAddMethod] = useState<"url" | "upload">("upload");
   const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [mediaUrl, setMediaUrl] = useState("");
@@ -79,21 +78,13 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
     try {
       // Validate inputs
       if (addMethod === "url" && !mediaUrl) {
-        toast({
-          title: "Validation Error",
-          description: "Please provide a URL for the media",
-          variant: "destructive",
-        });
+        toast.error("Please provide a URL for the media");
         setIsSubmitting(false);
         return;
       }
 
       if (addMethod === "upload" && !selectedFile) {
-        toast({
-          title: "Validation Error",
-          description: "Please select a file to upload",
-          variant: "destructive",
-        });
+        toast.error("Please select a file to upload");
         setIsSubmitting(false);
         return;
       }
@@ -142,31 +133,19 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
       const result = await addHeroMedia(mediaData);
       if (!result.ok) throw new Error(result.error);
 
-      toast({
-        title: "Media Added",
-        description: "Hero media has been added successfully.",
-        variant: "default",
-      });
+      toast("Media Added", { description: "Hero media has been added successfully." });
 
       onSuccess();
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Failed to add media";
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleImageError = () => {
-    toast({
-      title: "Error Loading Image",
-      description: "Could not load the image from the provided URL.",
-      variant: "destructive",
-    });
+    toast.error("Could not load the image from the provided URL.");
     clearPreview();
   };
 
@@ -180,20 +159,12 @@ export const HeroMediaForm = ({ onSuccess, onCancel }: HeroMediaFormProps) => {
 
   const handleFileValidation = (file: File, type: "image" | "video"): boolean => {
     if (type === "image" && !file.type.startsWith("image/")) {
-      toast({
-        title: "Invalid File",
-        description: "Please select an image file.",
-        variant: "destructive",
-      });
+      toast.error("Please select an image file.");
       return false;
     }
 
     if (type === "video" && !file.type.startsWith("video/")) {
-      toast({
-        title: "Invalid File",
-        description: "Please select a video file.",
-        variant: "destructive",
-      });
+      toast.error("Please select a video file.");
       return false;
     }
 

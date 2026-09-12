@@ -1,10 +1,10 @@
 "use client";
 import { Film, Loader2, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { loadHeroMedia } from "@/lib/actions/content-actions";
 import { deleteHeroMedia } from "@/lib/controllers/HeroMediaController";
 import type { HeroMedia } from "@/types/MediaTypes";
@@ -12,7 +12,6 @@ import { AddHeroMediaDialog } from "./hero-media/AddHeroMediaDialog";
 import { HeroMediaCard } from "./hero-media/HeroMediaCard";
 
 export const HeroFilesSection = () => {
-  const { toast } = useToast();
   const [data, setData] = useState<HeroMedia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,21 +47,13 @@ export const HeroFilesSection = () => {
         throw new Error(result.error);
       }
 
-      toast({
-        title: "Media Deleted",
-        description: "Hero media has been deleted successfully.",
-        variant: "default",
-      });
+      toast("Media Deleted", { description: "Hero media has been deleted successfully." });
 
       fetchHeroMedia();
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Failed to delete media item";
       setError(errorMessage);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

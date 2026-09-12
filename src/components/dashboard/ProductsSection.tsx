@@ -1,9 +1,9 @@
 import { PackageOpen, RefreshCw, Search } from "lucide-react";
 import { useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { useProducts } from "@/hooks/useProducts";
 import type { Product } from "@/types/ComponentTypes";
 import { AddProductDialog } from "./products/AddProductDialog";
@@ -18,8 +18,6 @@ export const ProductsSection = () => {
     featuredIds,
     refresh,
   } = useProducts();
-
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
 
   const featuredProductIds = new Set(featuredIds);
@@ -60,11 +58,7 @@ export const ProductsSection = () => {
         await deleteProduct({ productId, imageUrls });
       } catch (error) {
         console.error("Delete failed:", error);
-        toast({
-          title: "Error",
-          description: "Failed to delete product",
-          variant: "destructive",
-        });
+        toast.error("Failed to delete product");
         refresh();
       }
     });

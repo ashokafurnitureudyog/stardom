@@ -1,9 +1,9 @@
 import { MessageSquare, RefreshCw, Search } from "lucide-react";
 import { useOptimistic, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { useTestimonials } from "@/hooks/useTestimonials";
 import type { ClientTestimonial } from "@/types/ComponentTypes";
 import { AddTestimonialDialog } from "./testimonials/AddTestimonialDialog";
@@ -19,7 +19,6 @@ export const TestimonialsSection = () => {
   } = useTestimonials();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const { toast } = useToast();
 
   // Optimistic UI state
   const [optimisticTestimonials, addOptimisticTestimonial] = useOptimistic(
@@ -57,17 +56,10 @@ export const TestimonialsSection = () => {
       addOptimisticTestimonial(id);
       try {
         await deleteTestimonial({ id, imageUrl });
-        toast({
-          title: "Success",
-          description: "Testimonial deleted successfully",
-        });
+        toast.success("Testimonial deleted successfully");
       } catch (error) {
         console.error("Delete failed:", error);
-        toast({
-          title: "Error",
-          description: "Failed to delete testimonial",
-          variant: "destructive",
-        });
+        toast.error("Failed to delete testimonial");
         // React Query will automatically refetch/revert if mutation fails
       }
     });

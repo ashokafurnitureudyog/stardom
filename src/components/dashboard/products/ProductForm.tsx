@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress"; // Ensure you have this component
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
 import { addProduct, updateProduct } from "@/lib/controllers/ProductControllers";
@@ -53,7 +53,6 @@ export const ProductForm = ({ onSuccess, initialData, isEditing = false }: Produ
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const { toast } = useToast();
   const { uploadMultipleFiles, uploadStatus } = useFileUpload();
 
   // Track initial image URLs for comparison during updates
@@ -150,11 +149,7 @@ export const ProductForm = ({ onSuccess, initialData, isEditing = false }: Produ
     } catch (error: unknown) {
       setErrorMessage(error instanceof Error ? error.message : "Failed to save product");
 
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save product",
-        variant: "destructive",
-      });
+      toast.error(error instanceof Error ? error.message : "Failed to save product");
     } finally {
       setIsSubmitting(false);
     }

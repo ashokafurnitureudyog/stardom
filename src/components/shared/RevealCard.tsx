@@ -1,16 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import type React from "react";
 import { useState } from "react";
-
-// Pulls in three.js, so it is fetched on hover rather than with the page.
-const CanvasRevealEffect = dynamic(
-  () => import("../ui/canvas-reveal-effect").then((mod) => mod.CanvasRevealEffect),
-  { ssr: false },
-);
+import { DotRevealEffect } from "../ui/dot-reveal-effect";
 
 type LogoRevealCardProps = {
   imageUrl: string;
@@ -48,7 +42,7 @@ export const LogoRevealCard: React.FC<LogoRevealCardProps> = ({
             exit={{ opacity: 0 }}
             className="absolute inset-0 h-full w-full overflow-hidden rounded-lg"
           >
-            <CanvasRevealEffect animationSpeed={3} containerClassName="bg-transparent" />
+            <DotRevealEffect containerClassName="bg-transparent" />
             <div className="absolute inset-0 flex items-center justify-center p-4">
               <h2
                 className={`z-20 text-center text-3xl font-bold text-white ${revealTextClassName}`}

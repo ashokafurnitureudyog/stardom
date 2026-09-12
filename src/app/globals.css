@@ -153,6 +153,37 @@
   }
 }
 
+@keyframes dot-reveal-sweep {
+  from {
+    mask-size: 0% 0%;
+    opacity: 0;
+  }
+  to {
+    mask-size: 250% 250%;
+    opacity: 1;
+  }
+}
+
+.dot-reveal {
+  background-image: radial-gradient(
+    var(--dot-color) calc(var(--dot-size) / 2),
+    transparent calc(var(--dot-size) / 2)
+  );
+  background-size: var(--dot-spacing) var(--dot-spacing);
+  mask-image: radial-gradient(circle at center, #000 40%, transparent 70%);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  animation: dot-reveal-sweep var(--dot-duration) ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot-reveal {
+    animation: none;
+    mask-size: 250% 250%;
+    opacity: 1;
+  }
+}
+
 @keyframes slide-in {
   from {
     transform: translateX(100%);

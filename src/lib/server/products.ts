@@ -128,23 +128,19 @@ export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
   if (!ids.featured) return [];
 
   const { tables } = await createAdminClient();
-  const featured = await tables.listRows({
-    databaseId: ids.database,
-    tableId: ids.featured,
-    queries: [Query.limit(limit), Query.select(["$id"])],
-  });
-
-  const featuredIds = featured.rows.map((row) => row.$id);
-  if (featuredIds.length === 0) return [];
-
-  const products = await listRows([
-    Query.equal("$id", featuredIds),
-    Query.select(LIST_COLUMNS),
-    Query.limit(limit),
+  const [featured, catalogue] = await Promise.all([
+    tables.listRows({
+      databaseId: ids.database,
+      tableId: ids.featured,
+      queries: [Query.limit(limit), Query.orderAsc("$createdAt"), Query.select(["$id"])],
+    }),
+    getProducts(),
   ]);
 
-  const order = new Map(featuredIds.map((id, index) => [id, index]));
-  return products.sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
+  const byId = new Map(catalogue.map((product) => [product.id, product]));
+  return featured.rows
+    .map((row) => byId.get(row.$id))
+    .filter((product): product is Product => Boolean(product));
 }
 
 /** Every product id, for `generateStaticParams`. */
@@ -157,13 +153,41 @@ export async function getProductIds(): Promise<string[]> {
   return products.map((product) => product.id);
 }
 
-/** Distinct collections across the catalogue, for the filter bar. */
+export interface ProductSitemapEntry {
+  id: string;
+  updatedAt: string;
+}
+
+/**
+ * Ids and last-modified dates for the sitemap. Deliberately uncached: the
+ * sitemap route renders outside the prerender, where a "use cache" read is
+ * rejected, and a crawler hitting it a few times a day does not need one.
+ */
+export async function getProductSitemapEntries(): Promise<ProductSitemapEntry[]> {
+  const { tables } = await createAdminClient();
+  const ids = appwriteIds();
+  const { rows } = await tables.listRows({
+    databaseId: ids.database,
+    tableId: ids.products,
+    queries: [Query.limit(PAGE_SIZE), Query.select(["$id", "$updatedAt"])],
+  });
+
+  return rows.map((row) => ({
+    id: row.$id,
+    updatedAt: (row.$updatedAt as string) ?? (row.$createdAt as string),
+  }));
+}
+
+/**
+ * Distinct collections, for the filter bar. Derived from the cached catalogue
+ * rather than queried: the values are already in memory, and a second query
+ * would cost another round trip for data the caller has.
+ */
 export async function getCollections(): Promise<string[]> {
   "use cache";
   cacheTag(PRODUCTS_TAG);
   cacheLife("max");
 
-  const products = await listRows([Query.limit(PAGE_SIZE), Query.select(["product_collection"])]);
-
+  const products = await getProducts();
   return [...new Set(products.map((product) => product.product_collection).filter(Boolean))].sort();
 }

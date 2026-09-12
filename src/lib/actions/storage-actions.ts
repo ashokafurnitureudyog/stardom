@@ -2,6 +2,7 @@
 
 import { Query } from "node-appwrite";
 import { appwriteIds, createAdminClient } from "../server/appwrite";
+import { fileIdFromUrl } from "../utils/media-urls";
 
 const PAGE_SIZE = 100;
 
@@ -33,16 +34,6 @@ export async function getStorageUsage() {
     console.error("Error getting storage usage:", error);
     return { totalSize: 0, error: "Failed to fetch storage data" };
   }
-}
-
-/**
- * Extracts the Appwrite file id from a stored URL, or null when the URL points
- * somewhere else. Matches on the bucket path rather than the hostname, so a
- * self-hosted endpoint works the same as Appwrite Cloud.
- */
-function fileIdFromUrl(url: string): string | null {
-  const match = /\/storage\/buckets\/[^/]+\/files\/([^/?]+)/.exec(url);
-  return match?.[1] ?? null;
 }
 
 export interface DeletionResult {

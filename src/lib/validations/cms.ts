@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PRODUCT_CATEGORIES } from "@/lib/constants/ProductCategories";
+import { PRODUCT_CATEGORIES } from "../constants/ProductCategories.ts";
 
 /**
  * Every shape the dashboard can write. Server actions parse their input against

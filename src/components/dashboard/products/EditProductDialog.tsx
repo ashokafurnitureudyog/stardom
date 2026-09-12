@@ -1,7 +1,7 @@
 "use client";
 import { type ReactNode, useState } from "react";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/types/ComponentTypes";
 import { ProductForm } from "./ProductForm";
 
@@ -13,15 +13,11 @@ interface EditProductDialogProps {
 
 export function EditProductDialog({ product, onSuccess, children }: EditProductDialogProps) {
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
 
   const handleSuccess = () => {
     setOpen(false);
 
-    toast({
-      title: "Product updated",
-      description: "The product has been successfully updated.",
-    });
+    toast("Product updated", { description: "The product has been successfully updated." });
 
     if (onSuccess) {
       onSuccess();

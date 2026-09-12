@@ -1,10 +1,10 @@
 "use client";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress"; // Make sure this component exists
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { useFileUpload } from "@/hooks/useFileUpload"; // Import the existing hook
 import {
   createPortfolioProject,
@@ -28,7 +28,6 @@ export const PortfolioForm = ({
   initialData,
   isEditing = false,
 }: PortfolioFormProps) => {
-  const { toast } = useToast();
   const { uploadFile, uploadMultipleFiles, uploadStatus } = useFileUpload(); // Use the existing hook
 
   // Project details
@@ -190,12 +189,11 @@ export const PortfolioForm = ({
 
       if (!result.ok) throw new Error(result.error);
 
-      toast({
-        title: "Success",
-        description: isEditing
+      toast.success(
+        isEditing
           ? "Portfolio project updated successfully"
           : "Portfolio project created successfully",
-      });
+      );
 
       onSuccess();
     } catch (error: unknown) {
@@ -203,11 +201,7 @@ export const PortfolioForm = ({
         error instanceof Error ? error.message : "Failed to save portfolio project";
       console.error("Portfolio submission error:", error);
       setErrorMessage(errorMessage);
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -229,11 +223,7 @@ export const PortfolioForm = ({
     } else if (url) {
       // When setting a URL, make sure it's not longer than 512 chars
       if (url.length > 512) {
-        toast({
-          title: "URL too long",
-          description: "The image URL exceeds the maximum allowed length of 512 characters",
-          variant: "destructive",
-        });
+        toast.error("The image URL exceeds the maximum allowed length of 512 characters");
         return;
       }
       setThumbnailUrl(url);

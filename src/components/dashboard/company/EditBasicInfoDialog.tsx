@@ -2,12 +2,12 @@
 "use client";
 import { AlertCircle, Check, Edit, Loader2 } from "lucide-react";
 import { type ReactNode, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { updateCompanyInfo } from "@/lib/controllers/CompanyInfoController";
 import type { CompanyInfo } from "@/types/ComponentTypes";
 
@@ -53,7 +53,6 @@ export const EditBasicInfoDialog = ({
       mapsLink: "",
     },
   );
-  const { toast } = useToast();
 
   const handleInputChange = (key: string, value: string) => {
     setFormData({ ...formData, [key]: value });
@@ -127,21 +126,12 @@ export const EditBasicInfoDialog = ({
       const result = await updateCompanyInfo(formData);
       if (!result.ok) throw new Error(result.error);
 
-      toast({
-        title: "Success",
-        description: "Company information updated successfully",
-        duration: 3000,
-      });
+      toast.success("Company information updated successfully", { duration: 3000 });
 
       onSuccess();
       setOpen(false);
     } catch (_error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update company information",
-        duration: 3000,
-      });
+      toast.error("Failed to update company information", { duration: 3000 });
     } finally {
       setIsSubmitting(false);
     }

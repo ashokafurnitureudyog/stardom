@@ -65,7 +65,35 @@ async function isRateLimited(fingerprint: string): Promise<boolean> {
     data: { fingerprint },
   });
 
+  void pruneExpired(since);
   return false;
+}
+
+/**
+ * Drops log rows older than the window. Nothing else reads them, so left alone
+ * the table would grow for the life of the site.
+ */
+async function pruneExpired(cutoff: string) {
+  const ids = appwriteIds();
+  const tableId = ids.contactLog;
+  if (!tableId) return;
+
+  try {
+    const { tables } = await createAdminClient();
+    const stale = await tables.listRows({
+      databaseId: ids.database,
+      tableId,
+      queries: [Query.lessThan("$createdAt", cutoff), Query.limit(100), Query.select(["$id"])],
+    });
+
+    await Promise.all(
+      stale.rows.map((row) =>
+        tables.deleteRow({ databaseId: ids.database, tableId, rowId: row.$id }),
+      ),
+    );
+  } catch (error) {
+    console.error("Could not prune the contact log:", error);
+  }
 }
 
 /**
